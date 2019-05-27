@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/micro_course"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:checked="true"
+            android:background="@drawable/left_top_button_background"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:text="微课数据"/>
+
+        <RadioButton
+            android:id="@+id/question"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:checked="false"
+            android:background="@drawable/right_top_button_background"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:text="习题数据"/>
+
+    </RadioGroup>
+
+    <FrameLayout
+        android:id="@+id/framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

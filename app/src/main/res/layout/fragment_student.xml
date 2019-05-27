@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <LinearLayout
+        android:id="@+id/leftbar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_learning"
+            style="@style/ColorButton"
+            android:background="@drawable/button_3_selector"
+            android:text="选择学案"/>
+
+
+        <Button
+            android:id="@+id/micro_course"
+            style="@style/ColorButton"
+            android:background="@drawable/button_4_selector"
+            android:text="查看微课"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/framelayout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
+    <LinearLayout
+        android:id="@+id/rightbar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/chat"
+            style="@style/ColorButton"
+            android:background="@drawable/button_5_selector"
+            android:enabled="false"
+            android:text="提问"/>
+
+        <Button
+            android:id="@+id/exam"
+            style="@style/ColorButton"
+            android:background="@drawable/button_6_selector"
+            android:enabled="false"
+            android:text="练习"/>
+
+        <Button
+            android:id="@+id/btn_wrong_question"
+            style="@style/ColorButton"
+            android:background="@drawable/button_7_selector"
+            android:text="错题记录"/>
+
+    </LinearLayout>
+
+</LinearLayout>

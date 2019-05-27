@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#6CB0DF</color>
+
+    <color name="dialog_background">#A0000000</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="drop_pop_menu_bg_color">#a0000000</color>
+    <color name="menu_background">#FF535353</color>
+
+    <color name="button_pressed">#ffc997</color>
+    <color name="button_blue">#3e9df8</color>
+    <color name="button_color1">#89c997</color>
+    <color name="button_color2">#84ccc9</color>
+    <color name="button_color3">#7ecef4</color>
+    <color name="button_color4">#88abda</color>
+    <color name="button_color5">#f8b551</color>
+    <color name="button_color6">#f19149</color>
+    <color name="button_color7">#eb6877</color>
+    <color name="button_color8">#ea68a2</color>
+    <color name="button_color9">#ae5da1</color>
+    <color name="button_disable">#A0A0A0</color>
+
+    <color name="radio_button_checked">#556fb5</color>
+    <color name="radio_button_uncheck">#CACACA</color>
+
+    <color name="description">#686868</color>
+    <color name="linefill">#FFDEEFE4</color>
+    <color name="bar">#6CB0DF</color>
+
+    <color name="online">#FF12FF12</color>
+    <color name="offline">#FFFF1212</color>
+</resources>

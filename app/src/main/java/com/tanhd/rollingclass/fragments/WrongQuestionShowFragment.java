@@ -1,0 +1,172 @@
+package com.tanhd.rollingclass.fragments;
+
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.fragments.pages.ErrorQuestionPage;
+import com.tanhd.rollingclass.fragments.pages.MarkAnswerPage;
+import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.AnswerData;
+import com.tanhd.rollingclass.server.data.ExternalParam;
+import com.tanhd.rollingclass.server.data.LessonSampleData;
+import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.UserData;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class WrongQuestionShowFragment extends Fragment {
+    private ProgressBar mProgressBar;
+    private TextView mTypeNameView;
+    private TextView mPositionView;
+    private TextView mTotalView;
+    private ViewPager mViewPager;
+    private ErrorPageAdapter mAdapter;
+    private List<QuestionData> mQuestionList;
+    private String mStudentID;
+    private HashMap<String, AnswerData> mAnswerMap = new HashMap<>();
+    private HashMap<Integer, Fragment> mPageMap = new HashMap<>();
+
+    public static WrongQuestionShowFragment newInstance(String studentID) {
+        Bundle args = new Bundle();
+        args.putString("studentID", studentID);
+        WrongQuestionShowFragment fragment = new WrongQuestionShowFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mStudentID = getArguments().getString("studentID");
+        View view = inflater.inflate(R.layout.fragment_wrong_question_show, container, false);
+        init(view);
+        return view;
+    }
+
+    private void init(View view) {
+        mProgressBar = view.findViewById(R.id.progressbar);
+        mTypeNameView = view.findViewById(R.id.type_name);
+        mPositionView = view.findViewById(R.id.tv_sequence);
+        mTotalView = view.findViewById(R.id.tv_total_count);
+        mViewPager = view.findViewById(R.id.vp);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+                refreshPage();
+            }
+        });
+
+        new LoadDataTask().execute();
+    }
+
+    private void refreshPage() {
+        if (mQuestionList == null || mQuestionList.isEmpty())
+            return;
+
+        int currentPage = mViewPager.getCurrentItem();
+        mPositionView.setVisibility(View.VISIBLE);
+        mTotalView.setVisibility(View.VISIBLE);
+        QuestionData questionData = mQuestionList.get(currentPage);
+        mTypeNameView.setText(String.format("[%s]", questionData.Context.QuestionCategoryName));
+        mPositionView.setText(String.valueOf(currentPage + 1));
+        mTotalView.setText("/" + String.valueOf(mQuestionList.size()));
+    }
+
+    private class ErrorPageAdapter extends FragmentStatePagerAdapter {
+
+        public ErrorPageAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            Fragment page = mPageMap.get(i);
+            return page;
+        }
+
+        @Override
+        public int getCount() {
+            return mPageMap.size();
+        }
+    }
+
+    private class LoadDataTask extends AsyncTask<Void, Void, Integer> {
+
+        @Override
+        protected void onPreExecute() {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Integer ret) {
+            mProgressBar.setVisibility(View.GONE);
+            if (ret != 0) {
+                Toast.makeText(getContext().getApplicationContext(), "未获得错题记录!", Toast.LENGTH_LONG).show();
+                DialogFragment dialog = (DialogFragment) getParentFragment();
+                dialog.dismiss();
+                return;
+            }
+
+            mAdapter = new ErrorPageAdapter(getChildFragmentManager());
+            mViewPager.setAdapter(mAdapter);
+            refreshPage();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
+            List<AnswerData> answerList = ScopeServer.getInstance().QureyErrorAnswerv2ByStudentID(mStudentID);
+            if (answerList == null)
+                return -1;
+
+            mQuestionList = new ArrayList<>();
+            for (AnswerData answerData: answerList) {
+                if (!answerData.LessonSampleID.equals(lessonSampleData.LessonSampleID))
+                    continue;
+
+                List<QuestionData> list = ScopeServer.getInstance().QureyQuestionByID(answerData.QuestionID);
+                if (list == null || list.isEmpty())
+                    continue;
+                QuestionData questionData = list.get(0);
+                mQuestionList.add(questionData);
+                mAnswerMap.put(answerData.QuestionID, answerData);
+            }
+
+            for (int i=0; i<mQuestionList.size(); i++) {
+                QuestionData questionData = mQuestionList.get(i);
+                mPageMap.put(i, ErrorQuestionPage.newInstance(questionData, mAnswerMap.get(questionData.QuestionID)));
+            }
+
+            if (mQuestionList.isEmpty())
+                return -2;
+
+            return 0;
+        }
+    }
+}

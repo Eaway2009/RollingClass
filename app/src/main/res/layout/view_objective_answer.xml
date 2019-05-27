@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tanhd.rollingclass.views.ObjectiveAnswerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFEAEAEA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:layout_width="450dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/soft_key"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@drawable/radiobutton_background"
+                android:button="@null"
+                android:textColor="@drawable/radiobutton_textcolor"
+                android:textSize="20sp"
+                android:text="软键盘输入"/>
+
+            <RadioButton
+                android:id="@+id/usb_pen"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginStart="1dp"
+                android:gravity="center"
+                android:background="@drawable/radiobutton_background"
+                android:button="@null"
+                android:textColor="@drawable/radiobutton_textcolor"
+                android:textSize="20sp"
+                android:text="智能笔"/>
+
+            <RadioButton
+                android:id="@+id/load_image"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginStart="1dp"
+                android:gravity="center"
+                android:background="@drawable/radiobutton_background"
+                android:button="@null"
+                android:textColor="@drawable/radiobutton_textcolor"
+                android:textSize="20sp"
+                android:text="图片"/>
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/answer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/usbview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.tanhd.library.smartpen.SmartPenView
+                    android:id="@+id/answer_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:visibility="visible"/>
+
+            </LinearLayout>
+
+
+            <EditText
+                android:id="@+id/answer_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:padding="3dp"
+                android:background="@drawable/edit_border_gray"
+                android:hint="@string/write_answer_here"
+                android:layout_marginTop="10dp"
+                android:gravity="left|top"
+                android:lines="10"
+                android:maxLines="20"/>
+
+            <ImageView
+                android:id="@+id/sel_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        app:srcCompat="@android:drawable/ic_menu_gallery" />
+
+
+
+</com.tanhd.rollingclass.views.ObjectiveAnswerView>

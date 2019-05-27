@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="network_ping" type="id" />
+    <item name="logout" type="id" />
+    <item name="server_test" type="id" />
+    <item name="show_bar" type="id" />
+    <item name="hide_bar" type="id" />
+</resources>

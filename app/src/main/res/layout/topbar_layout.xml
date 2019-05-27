@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tanhd.rollingclass.views.TopbarView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textSize="20sp"
+                android:textColor="#FF3e9df8"
+                android:text="翻转课堂"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="50dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/datetext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="#FF3e9df8" />
+
+            <TextView
+                android:id="@+id/weektext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="20sp"
+                android:textColor="#FF3e9df8" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/inbox"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="50dp"
+            android:gravity="center">
+
+            <com.tanhd.rollingclass.views.CornerImageView
+                android:id="@+id/count_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo"
+                app:cornerBackground="@android:color/holo_red_light"
+                app:cornerTextColor="@color/white"
+                app:cornerTextSize="11dp"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textSize="20sp"
+                android:textColor="#FF3e9df8"
+                android:text="我的消息"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/userinfo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="50dp"
+            android:gravity="center">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/sample_person"
+                app:civ_border_width="0.1dp"
+                app:civ_border_color="#FFCACACA"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:textSize="20sp"
+                android:textColor="#FF3e9df8"
+                android:text="个人设置中心"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/more"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/more_icon"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</com.tanhd.rollingclass.views.TopbarView>

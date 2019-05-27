@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CornerImageView">
+        <attr name="cornerText" format="string" />
+        <attr name="cornerTextSize" format="dimension" />
+        <attr name="cornerTop" format="dimension" />
+        <attr name="cornerRight" format="dimension" />
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="hiddenCorner" format="boolean" />
+        <attr name="hiddenCornerText" format="boolean" />
+        <attr name="cornerBackground" format="reference|color" />
+        <attr name="cornerLoadColor" format="reference" />
+        <attr name="cornerTextColor" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ArrowTextView">
+        <attr name="radius" format="dimension" />
+        <attr name="arrowWidth" format="dimension" />
+        <attr name="arrowHeight" format="dimension" />
+        <attr name="bg" format="color" />
+    </declare-styleable>
+</resources>

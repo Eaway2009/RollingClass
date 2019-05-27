@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal|bottom"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/person"/>
+
+            <LinearLayout
+                style="@style/UserInfoInputLayout">
+
+                <TextView
+                    style="@style/UserInfoLabel"
+                    android:text="姓    名: " />
+
+                <EditText
+                    android:id="@+id/name"
+                    style="@style/UserInfoInputEdit"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/UserInfoInputLayout">
+
+                <TextView
+                    style="@style/UserInfoLabel"
+                    android:text="性    别: " />
+
+                <RadioGroup
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/man"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:text="男"/>
+
+                    <RadioButton
+                        android:id="@+id/female"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:textSize="20sp"
+                        android:text="女"/>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/UserInfoInputLayout">
+
+                <TextView
+                    style="@style/UserInfoLabel"
+                    android:text="账    号: " />
+
+                <EditText
+                    android:id="@+id/username"
+                    style="@style/UserInfoInputEdit"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/UserInfoInputLayout">
+
+                <TextView
+                    style="@style/UserInfoLabel"
+                    android:text="手    机: " />
+
+                <EditText
+                    android:id="@+id/mobile"
+                    style="@style/UserInfoInputEdit"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/UserInfoInputLayout">
+
+                <TextView
+                    style="@style/UserInfoLabel"
+                    android:text="学    校: " />
+
+                <EditText
+                    android:id="@+id/school"
+                    style="@style/UserInfoInputEdit"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/teacher_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/UserInfoInputLayout">
+
+                    <TextView
+                        style="@style/UserInfoLabel"
+                        android:text="任教年级: " />
+
+                    <EditText
+                        android:id="@+id/grade"
+                        style="@style/UserInfoInputEdit"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/UserInfoInputLayout">
+
+                    <TextView
+                        style="@style/UserInfoLabel"
+                        android:text="任教班级: " />
+
+                    <EditText
+                        android:id="@+id/class1"
+                        style="@style/UserInfoInputEdit"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/UserInfoInputLayout">
+
+                    <TextView
+                        style="@style/UserInfoLabel"
+                        android:text="任教学科: " />
+
+                    <EditText
+                        android:id="@+id/category"
+                        style="@style/UserInfoInputEdit"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/student_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/UserInfoInputLayout">
+
+                    <TextView
+                        style="@style/UserInfoLabel"
+                        android:text="学    级: " />
+
+                    <EditText
+                        android:id="@+id/student_xj"
+                        style="@style/UserInfoInputEdit"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/UserInfoInputLayout">
+
+                    <TextView
+                        style="@style/UserInfoLabel"
+                        android:text="年    级: " />
+
+                    <EditText
+                        android:id="@+id/student_grade"
+                        style="@style/UserInfoInputEdit"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/UserInfoInputLayout">
+
+                    <TextView
+                        style="@style/UserInfoLabel"
+                        android:text="班    级: " />
+
+                    <EditText
+                        android:id="@+id/student_class"
+                        style="@style/UserInfoInputEdit"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/UserInfoInputLayout">
+
+                    <TextView
+                        style="@style/UserInfoLabel"
+                        android:text="修改密码: " />
+
+                    <EditText
+                        android:id="@+id/password1"
+                        style="@style/UserInfoInputEdit"
+                        android:enabled="true"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionNext"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/UserInfoInputLayout">
+
+                    <TextView
+                        style="@style/UserInfoLabel"
+                        android:text="@null" />
+
+                    <EditText
+                        android:id="@+id/password2"
+                        style="@style/UserInfoInputEdit"
+                        android:enabled="true"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionNext"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/UserInfoInputLayout">
+
+                    <TextView
+                        style="@style/UserInfoLabel"
+                        android:text="@null" />
+
+                    <EditText
+                        android:id="@+id/password3"
+                        style="@style/UserInfoInputEdit"
+                        android:enabled="true"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionDone"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textSize="26sp"
+        android:text="确定"/>
+
+</LinearLayout>

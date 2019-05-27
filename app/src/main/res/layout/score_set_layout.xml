@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tanhd.rollingclass.views.ScoreView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/score_set_layout"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/edit_border_gray">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="#0077FF"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:text="得分"/>
+
+        <TextView
+            android:id="@+id/score0"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:text="0"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="#848484" />
+
+        <TextView
+            android:id="@+id/score1"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:text="1"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="#848484" />
+
+        <TextView
+            android:id="@+id/score2"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:text="2"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="#848484" />
+
+        <TextView
+            android:id="@+id/score3"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:text="3"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="#848484" />
+
+        <TextView
+            android:id="@+id/score4"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:text="4"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="#848484" />
+
+        <TextView
+            android:id="@+id/score5"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:text="5"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mark_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/mark"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/button_3_selector"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="点评"/>
+
+        <TextView
+            android:id="@+id/student_mark"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/button_4_selector"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:text="授权点评"/>
+
+
+    </LinearLayout>
+
+</com.tanhd.rollingclass.views.ScoreView>
