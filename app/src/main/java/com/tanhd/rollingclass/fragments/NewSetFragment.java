@@ -52,7 +52,6 @@ public class NewSetFragment extends Fragment {
                     dialog.dismiss();
                     return;
                 }
-
                 showFragment(QuestionSelectorFragment.newInstance(new QuestionSelectorFragment.QuestionSelectListener() {
                     @Override
                     public void onQuestionSelected(List<QuestionData> questionList) {

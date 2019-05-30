@@ -8,20 +8,26 @@
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
+    <color name="lesson_text">#3E3E3E</color>
+    <color name="lesson_list_background">#0078FF</color>
     <color name="drop_pop_menu_bg_color">#a0000000</color>
     <color name="menu_background">#FF535353</color>
 
     <color name="button_pressed">#ffc997</color>
     <color name="button_blue">#3e9df8</color>
-    <color name="button_color1">#89c997</color>
-    <color name="button_color2">#84ccc9</color>
-    <color name="button_color3">#7ecef4</color>
-    <color name="button_color4">#88abda</color>
     <color name="button_color5">#f8b551</color>
     <color name="button_color6">#f19149</color>
     <color name="button_color7">#eb6877</color>
-    <color name="button_color8">#ea68a2</color>
-    <color name="button_color9">#ae5da1</color>
+    <color name="button_1_teacher_color">#CCE198</color>
+    <color name="button_2_teacher_color">#ACD598</color>
+    <color name="button_3_teacher_color">#89c997</color>
+    <color name="button_4_teacher_color">#84ccc9</color>
+    <color name="button_5_teacher_color">#7ecef4</color>
+    <color name="button_6_teacher_color">#88ABDA</color>
+    <color name="button_7_teacher_color">#8C97CB</color>
+    <color name="button_8_teacher_color">#AA89BD</color>
+    <color name="button_orange">#FF4200</color>
+    <color name="button_gray">#959595</color>
     <color name="button_disable">#A0A0A0</color>
 
     <color name="radio_button_checked">#556fb5</color>

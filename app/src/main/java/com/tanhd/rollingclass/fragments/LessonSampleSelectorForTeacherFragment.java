@@ -6,9 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -80,8 +82,7 @@ public class LessonSampleSelectorForTeacherFragment extends Fragment {
 
                 ItemData itemData = new ItemData();
                 itemData.lessonSampleData = sampleData;
-                itemData.name = "【" + materialData.TeachingMaterialName + "-" + materialData.SubjectName + "-" + "】" +
-                        knowledgeData.ChapterName + "-" + knowledgeData.SectionName + "-" + knowledgeData.KnowledgePointName;
+                itemData.name = knowledgeData.ChapterName + " " + knowledgeData.SectionName + " 《" + knowledgeData.KnowledgePointName+"》";
                 itemData.title = sampleData.LessonSampleName;
                 mItemList.add(itemData);
             }
@@ -123,7 +124,7 @@ public class LessonSampleSelectorForTeacherFragment extends Fragment {
             final ItemData itemData = mItemList.get(position);
             titleView.setText(itemData.title);
             nameView.setText(itemData.name);
-            view.setBackgroundResource(R.drawable.list_item_selector);
+            nameView.setBackgroundResource(R.drawable.list_item_selector);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

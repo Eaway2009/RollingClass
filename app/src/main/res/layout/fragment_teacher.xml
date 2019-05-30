@@ -3,36 +3,64 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    
+
     <LinearLayout
         android:id="@+id/leftbar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="100dp"
+        android:paddingTop="80dp">
 
         <Button
             android:id="@+id/btn_lesson_sample"
             style="@style/ColorButton"
-            android:background="@drawable/button_1_selector"
-            android:text="查看学案"/>
+            android:background="@drawable/button_1_teacher_selector"
+            android:text="学案列表"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btn_class_list"
+            style="@style/ColorButton"
+            android:background="@drawable/button_2_teacher_selector"
+            android:text="微课列表"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/start_lesson"
             style="@style/ColorButton"
-            android:background="@drawable/button_2_selector"
+            android:background="@drawable/button_3_teacher_selector"
             android:text="@string/class_begin"/>
 
-        <Button
-            android:id="@+id/btn_student_wrong"
-            style="@style/ColorButton"
-            android:background="@drawable/button_3_selector"
-            android:text="学生错题集"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/btn_static"
             style="@style/ColorButton"
-            android:background="@drawable/button_4_selector"
+            android:background="@drawable/button_4_teacher_selector"
             android:text="学情数据"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btn_student_wrong"
+            style="@style/ColorButton"
+            android:background="@drawable/button_6_teacher_selector"
+            android:text="学生错题集"/>
 
     </LinearLayout>
 
@@ -64,21 +92,52 @@
         android:id="@+id/rightbar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="100dp"
+        android:paddingTop="80dp">
+
+        <Button
+            android:id="@+id/learning_detail_btn"
+            style="@style/ColorButton"
+            android:background="@drawable/button_6_teacher_selector"
+            android:enabled="false"
+            android:text="自学详情"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/ask_btn"
             style="@style/ColorButton"
-            android:background="@drawable/button_5_selector"
+            android:background="@drawable/button_7_teacher_selector"
             android:enabled="false"
-            android:text="提问"/>
+            android:text="提问学生"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/result_btn"
             style="@style/ColorButton"
-            android:background="@drawable/button_6_selector"
+            android:background="@drawable/button_8_teacher_selector"
             android:enabled="false"
             android:text="提问结果"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/review_papers_btn"
+            style="@style/ColorButton"
+            android:background="@drawable/button_9_teacher_selector"
+            android:enabled="false"
+            android:text="评审试卷"/>
 
     </LinearLayout>
 

@@ -13,14 +13,14 @@
         <Button
             android:id="@+id/btn_learning"
             style="@style/ColorButton"
-            android:background="@drawable/button_3_selector"
+            android:background="@drawable/button_6_teacher_selector"
             android:text="选择学案"/>
 
 
         <Button
             android:id="@+id/micro_course"
             style="@style/ColorButton"
-            android:background="@drawable/button_4_selector"
+            android:background="@drawable/button_7_teacher_selector"
             android:text="查看微课"/>
 
     </LinearLayout>

@@ -1,6 +1,5 @@
 package com.tanhd.rollingclass.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,29 +13,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.server.RequestCallback;
-import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.ServerRequest;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.GroupData;
 import com.tanhd.rollingclass.server.data.StudentData;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 
 public class StudentSelectorFragment extends Fragment {
     public static interface StudentSelectListener {
         void onStudentSelected(ArrayList<StudentData> studentList);
     }
+
     private static class Args implements Serializable {
         public boolean single;
         public HashSet<String> filter;
@@ -44,6 +36,7 @@ public class StudentSelectorFragment extends Fragment {
 
     private StudentSelectListener mListener;
     private HashSet<StudentData> mSelList = new HashSet<>();
+    private List<GroupData> mAllGroupList = new ArrayList<>();
     private View mRootView;
     private boolean isSingle;
     private HashSet<String> mFilter;
@@ -77,15 +70,44 @@ public class StudentSelectorFragment extends Fragment {
     }
 
     private void init(View view) {
-        Button btn = view.findViewById(R.id.btn_confirm);
+        View askLayout = view.findViewById(R.id.layout_ask);
         if (isSingle) {
-            btn.setVisibility(View.GONE);
+            askLayout.setVisibility(View.GONE);
         } else {
-            btn.setVisibility(View.VISIBLE);
+            askLayout.setVisibility(View.VISIBLE);
+            Button btn = view.findViewById(R.id.btn_confirm);
+            Button allAskBtn = view.findViewById(R.id.btn_all_ask);
+            Button randomAskBtn = view.findViewById(R.id.btn_random_ask);
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dismiss();
+                }
+            });
+            allAskBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSelList.clear();
+                    for (GroupData data : mAllGroupList) {
+                        mSelList.addAll(data.StudentList);
+                    }
+                    dismiss();
+                }
+            });
+            randomAskBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSelList.clear();
+                    try {
+                        Random random = new Random();
+                        int x = random.nextInt(mAllGroupList.size());
+                        List<StudentData> studentList = mAllGroupList.get(x).StudentList;
+                        int y = random.nextInt(studentList.size());
+                        mSelList.add(studentList.get(y));
+                        dismiss();
+                    } catch (Exception e) {
+
+                    }
                 }
             });
         }
@@ -102,10 +124,12 @@ public class StudentSelectorFragment extends Fragment {
         TextView classNameView = view.findViewById(R.id.class_name);
 
         classNameView.setText(classData.ClassName);
-        if (classData.Groups == null)
+        if (classData.Groups == null) {
             return;
-
-        for (GroupData groupData: classData.Groups) {
+        }
+        mAllGroupList.clear();
+        mAllGroupList.addAll(classData.Groups);
+        for (GroupData groupData : classData.Groups) {
             final ViewGroup viewGroup = (ViewGroup) getLayoutInflater().inflate(R.layout.item_student_selector_group, layoutView, false);
             TextView groupName = viewGroup.findViewById(R.id.group_name);
             groupName.setText(groupData.GroupName);
@@ -113,14 +137,14 @@ public class StudentSelectorFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     ViewGroup layout = viewGroup.findViewById(R.id.container);
-                    for (int i=0; i<layout.getChildCount(); i++) {
+                    for (int i = 0; i < layout.getChildCount(); i++) {
                         View studentView = layout.getChildAt(i);
                         studentView.callOnClick();
                     }
                 }
             });
 
-            for (StudentData studentData: groupData.StudentList) {
+            for (StudentData studentData : groupData.StudentList) {
                 ViewGroup layout = viewGroup.findViewById(R.id.container);
                 View v = getLayoutInflater().inflate(R.layout.item_student_selector, layout, false);
                 TextView nameView = v.findViewById(R.id.name);
