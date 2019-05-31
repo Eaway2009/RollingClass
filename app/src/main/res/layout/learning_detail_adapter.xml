@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/group_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="一小组:"
+            android:textColor="@color/group_name"
+            android:textSize="22sp"
+            android:layout_marginLeft="15dp"/>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:progressDrawable="@drawable/learning_progress_background"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="10dp"
+            android:max="100"
+            android:progress="50" />
+
+        <TextView
+            android:id="@+id/progress_size_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5"
+            android:textColor="@color/progress_size"
+            android:textSize="22sp"/>
+        <TextView
+            android:id="@+id/progress_slash_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:textColor="@color/group_name"
+            android:textSize="22sp"/>
+        <TextView
+            android:id="@+id/progress_length_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8"
+            android:textColor="@color/progress_background"
+            android:textSize="22sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:text="详情"
+            android:textSize="22sp"
+            android:textColor="@color/lesson_list_background" />
+
+        <ImageView
+            android:id="@+id/detail_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/down_detail"/>
+    </LinearLayout>
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:verticalSpacing="16dp"
+        android:horizontalSpacing="16dp"
+        android:numColumns="8"
+        android:paddingLeft="100dp"
+        android:paddingRight="100dp"
+        android:scrollbars="none">
+    </GridView>
+</LinearLayout>

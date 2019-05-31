@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="lesson_text">#3E3E3E</color>
+    <color name="group_name">#484848</color>
     <color name="lesson_list_background">#0078FF</color>
     <color name="drop_pop_menu_bg_color">#a0000000</color>
     <color name="menu_background">#FF535353</color>
@@ -32,6 +33,8 @@
 
     <color name="radio_button_checked">#556fb5</color>
     <color name="radio_button_uncheck">#CACACA</color>
+    <color name="progress_background">#D2D2D2</color>
+    <color name="progress_size">#00A0E9</color>
 
     <color name="description">#686868</color>
     <color name="linefill">#FFDEEFE4</color>
