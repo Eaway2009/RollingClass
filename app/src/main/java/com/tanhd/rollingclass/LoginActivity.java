@@ -10,14 +10,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,10 +22,8 @@ import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.rollingclass.db.Database;
-import com.tanhd.rollingclass.server.FakeServer;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.BaseJsonClass;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
@@ -38,7 +33,6 @@ import com.tanhd.rollingclass.utils.AppUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,7 +138,6 @@ public class LoginActivity extends AppCompatActivity {
         //findViewById(R.id.sign).callOnClick();
     }
 
-
     private class LoginTask extends AsyncTask<Void, Void, Integer> {
         private final String mUserName;
         private final String mPassword;
@@ -156,10 +149,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            mProgressBar.setVisibility(View.VISIBLE);
-            mUserView.setEnabled(false);
-            mPasswordView.setEnabled(false);
-            mSignButtonView.setEnabled(false);
+            changeViewsStatus(true);
         }
 
         @Override
@@ -212,32 +202,27 @@ public class LoginActivity extends AppCompatActivity {
                 //初始化MQ
                 if (MQTT.getInstance(ownerID, 8080) == null) {
                     Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
-                    mProgressBar.setVisibility(View.GONE);
-                    mUserView.setEnabled(true);
-                    mPasswordView.setEnabled(true);
-                    mSignButtonView.setEnabled(true);
+                    changeViewsStatus(false);
                     return;
                 }
 
                 boolean flag = MQTT.getInstance().connect();
                 if (!flag) {
                     Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
-                    mProgressBar.setVisibility(View.GONE);
-                    mUserView.setEnabled(true);
-                    mPasswordView.setEnabled(true);
-                    mSignButtonView.setEnabled(true);
+                    changeViewsStatus(false);
                     return;
                 }
 
-                Intent in = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(in);
-                finish();
+                if(!userData.isTeacher()){
+                    changeViewsStatus(false);
+                    ScopeServer.getInstance().refreshExpiration(ownerID, callback);
+                } else {
+                    Intent in = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(in);
+                    finish();
+                }
             } else {
-                mProgressBar.setVisibility(View.GONE);
-                mUserView.setEnabled(true);
-                mPasswordView.setEnabled(true);
-                mSignButtonView.setEnabled(true);
-
+                changeViewsStatus(false);
                 if (result == -3)
                     Toast.makeText(getApplicationContext(), "连接超时，请检查服务器是否工作!", Toast.LENGTH_LONG).show();
                 else
@@ -246,5 +231,38 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    RequestCallback callback = new RequestCallback() {
+        @Override
+        public void onProgress(boolean b) {
+
+        }
+
+        @Override
+        public void onResponse(String body) {
+            Intent in = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(in);
+            finish();
+        }
+
+        @Override
+        public void onError(String code, String message) {
+            Toast.makeText(getApplicationContext(), "您的账号已在另一台设备登陆，请退出重新登录! ", Toast.LENGTH_LONG).show();
+        }
+    };
+
+    private void changeViewsStatus(boolean loading){
+        if(loading){
+            mProgressBar.setVisibility(View.VISIBLE);
+            mUserView.setEnabled(false);
+            mPasswordView.setEnabled(false);
+            mSignButtonView.setEnabled(false);
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+            mUserView.setEnabled(true);
+            mPasswordView.setEnabled(true);
+            mSignButtonView.setEnabled(true);
+
+        }
+    }
 
 }

@@ -242,6 +242,13 @@ public class ScopeServer extends ServerRequest {
         new RequestTask(HOST_URL + "/teacher/UpdataTeacherPasswd/" + mToken, METHOD.POST, params, null, callback).execute();
     }
 
+    public void refreshExpiration(String token, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("token", token);
+
+        new RequestTask(HOST_URL + "/student/RefreshExpiration/", METHOD.POST, params, null, callback).execute();
+    }
+
     public void UpdataStudentPasswd(String studentID, String oldpasswd, String newpasswd, RequestCallback callback) {
         HashMap<String, String> params = new HashMap<>();
         params.put("studentID", studentID);
@@ -358,6 +365,18 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("lessonsampleID", lessonsampleID);
         String response = sendRequest(HOST_URL + "/question/QureyQuestionByLessonSampleID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    public List<QuestionData> QureyQuestionByLessonSampleID(String lessonsampleID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("lessonsampleID", lessonsampleID);
+        String response = sendRequest(HOST_URL + "/question/QureyMicroCourseByTeacherID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);
             return list;

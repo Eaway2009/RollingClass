@@ -34,12 +34,6 @@ import com.tanhd.rollingclass.server.data.SubjectData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class StudentFragment extends Fragment {
@@ -86,6 +80,18 @@ public class StudentFragment extends Fragment {
                         intent.putExtra("MicroCourseID", microCourseData.MicroCourseID);
                         intent.putExtra("ResourceAddr", ScopeServer.RESOURCE_URL  + microCourseData.VideoUrl);
                         startActivity(intent);
+                    }
+                }));
+            }
+        });
+
+        view.findViewById(R.id.pre_learning).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(new SubjectSelectorFragment.SelectorSubjectListener() {
+                    @Override
+                    public void onSubjectSelected(SubjectData subjectData) {
+                        subjectData.
                     }
                 }));
             }

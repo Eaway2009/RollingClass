@@ -8,7 +8,9 @@
         android:id="@+id/leftbar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="80dp"
+        android:paddingBottom="100dp">
 
         <Button
             android:id="@+id/btn_learning"
@@ -16,12 +18,28 @@
             android:background="@drawable/button_6_teacher_selector"
             android:text="选择学案"/>
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/micro_course"
             style="@style/ColorButton"
             android:background="@drawable/button_7_teacher_selector"
             android:text="查看微课"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+
+        <Button
+            android:id="@+id/pre_learning"
+            style="@style/ColorButton"
+            android:background="@drawable/button_8_teacher_selector"
+            android:text="课前自学"/>
 
     </LinearLayout>
 
@@ -37,21 +55,33 @@
         android:id="@+id/rightbar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="80dp"
+        android:paddingBottom="100dp">
 
         <Button
             android:id="@+id/chat"
             style="@style/ColorButton"
             android:background="@drawable/button_5_selector"
             android:enabled="false"
-            android:text="提问"/>
+            android:text="提问老师"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/exam"
             style="@style/ColorButton"
             android:background="@drawable/button_6_selector"
             android:enabled="false"
-            android:text="练习"/>
+            android:text="随堂练习"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/btn_wrong_question"
