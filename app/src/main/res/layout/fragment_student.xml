@@ -29,18 +29,6 @@
             android:background="@drawable/button_7_teacher_selector"
             android:text="查看微课"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-
-        <Button
-            android:id="@+id/pre_learning"
-            style="@style/ColorButton"
-            android:background="@drawable/button_8_teacher_selector"
-            android:text="课前自学"/>
-
     </LinearLayout>
 
     <FrameLayout

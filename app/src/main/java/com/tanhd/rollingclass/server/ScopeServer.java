@@ -373,7 +373,7 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
-    public List<QuestionData> QureyQuestionByLessonSampleID(String lessonsampleID) {
+    public List<QuestionData> QureyMicroCourseByTeacherID(String lessonsampleID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("lessonsampleID", lessonsampleID);
         String response = sendRequest(HOST_URL + "/question/QureyMicroCourseByTeacherID/" + mToken, METHOD.GET, params);

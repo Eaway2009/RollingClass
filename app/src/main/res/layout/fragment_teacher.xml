@@ -97,18 +97,6 @@
         android:paddingTop="80dp">
 
         <Button
-            android:id="@+id/learning_detail_btn"
-            style="@style/ColorButton"
-            android:background="@drawable/button_6_teacher_selector"
-            android:enabled="false"
-            android:text="自学详情"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <Button
             android:id="@+id/ask_btn"
             style="@style/ColorButton"
             android:background="@drawable/button_7_teacher_selector"

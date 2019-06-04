@@ -50,13 +50,25 @@ public class StudentFragment extends Fragment {
         view.findViewById(R.id.btn_learning).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FrameDialog.show(getChildFragmentManager(), PreLearningFragment.newInstance(new PreLearningFragment.PreLearningListener() {
+                FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(new SubjectSelectorFragment.SelectorSubjectListener() {
                     @Override
-                    public void onCompleted() {
-                        LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
-                        showLessonSample(lessonSampleData.UrlContent, ShowDocumentFragment.SYNC_MODE.NONE);
-                        view.findViewById(R.id.chat).setEnabled(true);
-                        view.findViewById(R.id.exam).setEnabled(true);
+                    public void onSubjectSelected(SubjectData subjectData) {
+                        FrameDialog.show(getChildFragmentManager(),
+                                LessonSampleSelectorFragment.newInstance(new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
+                            @Override
+                            public void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData) {
+                                ExternalParam.getInstance().setLessonSample(lessonSampleData);
+                                ExternalParam.getInstance().setKnowledge(knowledgeData);
+                                showLessonSample(lessonSampleData.UrlContent, ShowDocumentFragment.SYNC_MODE.NONE);
+                                view.findViewById(R.id.chat).setEnabled(true);
+                                view.findViewById(R.id.exam).setEnabled(true);
+
+                                if (getParentFragment() instanceof FrameDialog) {
+                                    FrameDialog dialog = (FrameDialog) getParentFragment();
+                                    dialog.dismiss();
+                                }
+                            }
+                        }));
                     }
                 }));
             }
@@ -73,25 +85,19 @@ public class StudentFragment extends Fragment {
         view.findViewById(R.id.micro_course).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FrameDialog.show(getChildFragmentManager(), MicroCourseSelectorFragment.newInstance(new MicroCourseSelectorFragment.SelectorMicroCourseListener() {
-                    @Override
-                    public void onMicroCourseSelected(MicroCourseData microCourseData) {
-                        Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
-                        intent.putExtra("MicroCourseID", microCourseData.MicroCourseID);
-                        intent.putExtra("ResourceAddr", ScopeServer.RESOURCE_URL  + microCourseData.VideoUrl);
-                        startActivity(intent);
-                    }
-                }));
-            }
-        });
-
-        view.findViewById(R.id.pre_learning).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(new SubjectSelectorFragment.SelectorSubjectListener() {
                     @Override
                     public void onSubjectSelected(SubjectData subjectData) {
-                        subjectData.
+                        FrameDialog.show(getChildFragmentManager(), MicroCourseSelectorFragment.newInstance(
+                                new MicroCourseSelectorFragment.SelectorMicroCourseListener() {
+                                    @Override
+                                    public void onMicroCourseSelected(MicroCourseData microCourseData) {
+                                        Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
+                                        intent.putExtra("MicroCourseID", microCourseData.MicroCourseID);
+                                        intent.putExtra("ResourceAddr", ScopeServer.RESOURCE_URL + microCourseData.VideoUrl);
+                                        startActivity(intent);
+                                    }
+                                }));
                     }
                 }));
             }

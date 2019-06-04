@@ -10,8 +10,8 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:textSize="28sp"
-        android:textColor="@color/black" />
+        android:layout_gravity="center"
+        android:textColor="@drawable/lesson_text_selector" />
 
 </LinearLayout>

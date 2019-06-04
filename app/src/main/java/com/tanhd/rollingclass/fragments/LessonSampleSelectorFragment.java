@@ -141,6 +141,7 @@ public class LessonSampleSelectorFragment extends Fragment {
             final ItemData itemData = mItemList.get(position);
             titleView.setText(itemData.title);
             nameView.setText(itemData.name);
+
             view.setBackgroundResource(R.drawable.list_item_selector);
 
             view.setOnClickListener(new View.OnClickListener() {

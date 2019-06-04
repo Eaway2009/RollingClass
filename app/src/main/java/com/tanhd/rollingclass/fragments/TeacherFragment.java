@@ -108,7 +108,6 @@ public class TeacherFragment extends Fragment {
                             enableToolbar(false);
                             mBtnBarView.setVisibility(View.VISIBLE);
 
-                            view.findViewById(R.id.learning_detail_btn).setEnabled(true);
                             view.findViewById(R.id.result_btn).setEnabled(true);
                             view.findViewById(R.id.ask_btn).setEnabled(true);
                             view.findViewById(R.id.review_papers_btn).setEnabled(true);

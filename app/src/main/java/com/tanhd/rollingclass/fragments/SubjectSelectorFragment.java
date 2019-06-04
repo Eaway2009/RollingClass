@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +40,7 @@ public class SubjectSelectorFragment extends Fragment {
     }
 
     private List<SubjectData> mItemList;
-    private ListView mListView;
+    private GridView mGridView;
     private SubjectAdapter mAdapter;
     private SelectorSubjectListener mListener;
 
@@ -56,7 +57,7 @@ public class SubjectSelectorFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_subject_selector, container, false);
-        mListView = view.findViewById(R.id.list);
+        mGridView = view.findViewById(R.id.grid_view);
         new InitDataTask().execute();
         return view;
     }
@@ -84,7 +85,7 @@ public class SubjectSelectorFragment extends Fragment {
                 return;
             }
             mAdapter = new SubjectAdapter();
-            mListView.setAdapter(mAdapter);
+            mGridView.setAdapter(mAdapter);
         }
     }
 
