@@ -61,7 +61,7 @@ public class MicroCourseBarChartView extends LinearLayout {
         protected List doInBackground(Void... voids) {
             if (mStudentData == null) {
                 ClassData classData = ExternalParam.getInstance().getClassData();
-                List<Integer> list = ScopeServer.getInstance().CountClassMicorcourseTimes(classData.ClassID, mCourseData.MicroCourseID);
+                List<Integer> list = ScopeServer.getInstance().CountClassMicorcourseTimes(classData.ClassID, mCourseData.MicroCourseInfo.MicroCourseID);
                 if (list == null)
                     return null;
 
@@ -73,7 +73,7 @@ public class MicroCourseBarChartView extends LinearLayout {
 
                 return entries;
             } else {
-                List<CountMicroCourseStudentData> list = ScopeServer.getInstance().QureyMicroCourseStatisticByCoureseID(mCourseData.MicroCourseID);
+                List<CountMicroCourseStudentData> list = ScopeServer.getInstance().QureyMicroCourseStatisticByCoureseID(mCourseData.MicroCourseInfo.MicroCourseID);
                 List<BarEntry> entries = new ArrayList<>();
                 int pos = 1;
                 mLineValues = new ArrayList<>();
@@ -136,7 +136,7 @@ public class MicroCourseBarChartView extends LinearLayout {
         } else {
             multiLineChartView.setVisibility(VISIBLE);
             for (int i=0; i<lineValues.size(); i++) {
-                multiLineChartView.addData((List<Entry>) lineValues.get(i), ColorTemplate.VORDIPLOM_COLORS[i % 5], String.format("%d", i+1), mCourseData.Duration);
+                multiLineChartView.addData((List<Entry>) lineValues.get(i), ColorTemplate.VORDIPLOM_COLORS[i % 5], String.format("%d", i+1), mCourseData.MicroCourseInfo.Duration);
             }
         }
         multiLineChartView.invalidate();
