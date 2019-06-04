@@ -361,22 +361,22 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
-    public List<QuestionData> QureyQuestionByLessonSampleID(String lessonsampleID) {
+    public List<MicroCourseData> QureyMicroCourseByTeacherIDV2(String teacherID) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("lessonsampleID", lessonsampleID);
-        String response = sendRequest(HOST_URL + "/question/QureyQuestionByLessonSampleID/" + mToken, METHOD.GET, params);
+        params.put("teacherID ", teacherID);
+        String response = sendRequest(HOST_URL + "/microcourse/QureyMicroCourseByTeacherIDV2/" + mToken, METHOD.GET, params);
         if (response != null) {
-            List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);
+            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
             return list;
         }
 
         return null;
     }
 
-    public List<QuestionData> QureyMicroCourseByTeacherID(String lessonsampleID) {
+    public List<QuestionData> QureyQuestionByLessonSampleID(String lessonsampleID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("lessonsampleID", lessonsampleID);
-        String response = sendRequest(HOST_URL + "/question/QureyMicroCourseByTeacherID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(HOST_URL + "/question/QureyQuestionByLessonSampleID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);
             return list;

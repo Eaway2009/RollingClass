@@ -1,6 +1,7 @@
 package com.tanhd.rollingclass.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.VideoPlayerActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.MSG_TYPE;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -24,6 +26,7 @@ import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
+import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.QuestionData;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
@@ -70,6 +73,21 @@ public class TeacherFragment extends Fragment {
                         }
                     }
                 }));
+            }
+        });
+        view.findViewById(R.id.btn_class_list).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FrameDialog.show(getChildFragmentManager(), TeacherMicroCourseSelectorFragment.newInstance(
+                        new TeacherMicroCourseSelectorFragment.SelectorMicroCourseListener() {
+                            @Override
+                            public void onMicroCourseSelected(MicroCourseData microCourseData) {
+                                Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
+                                intent.putExtra("MicroCourseID", microCourseData.MicroCourseID);
+                                intent.putExtra("ResourceAddr", ScopeServer.RESOURCE_URL + microCourseData.VideoUrl);
+                                startActivity(intent);
+                            }
+                        }));
             }
         });
 
