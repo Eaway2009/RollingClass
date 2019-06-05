@@ -2,6 +2,7 @@ package com.tanhd.rollingclass.server;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ChapterData;
@@ -43,6 +44,7 @@ public class ScopeServer extends ServerRequest {
     private String mToken;
 
     private static ScopeServer mInstance = null;
+
     public static ScopeServer getInstance() {
         if (mInstance == null) {
             mInstance = new ScopeServer();
@@ -125,10 +127,10 @@ public class ScopeServer extends ServerRequest {
         if (list == null)
             return null;
 
-        for (ClassData classData: list) {
-            for (GroupData groupData: classData.Groups) {
+        for (ClassData classData : list) {
+            for (GroupData groupData : classData.Groups) {
                 ArrayList<StudentData> studentList = new ArrayList<>();
-                for (String studentID: groupData.Students) {
+                for (String studentID : groupData.Students) {
                     StudentData studentData = getStudentData(studentID);
                     if (studentData != null)
                         studentList.add(studentData);
@@ -180,7 +182,7 @@ public class ScopeServer extends ServerRequest {
         String response = sendRequest(HOST_URL + "/studysection/QureyStudySection/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<StudySectionData> list = jsonToList(StudySectionData.class.getName(), response);
-            for (StudySectionData sectionData: list) {
+            for (StudySectionData sectionData : list) {
                 sectionData.GradeList = getGradeData(schoolID, sectionData.StudysectionID);
                 sectionData.SubjectList = getSubjectData(schoolID, sectionData.StudysectionCode);
             }
@@ -210,7 +212,7 @@ public class ScopeServer extends ServerRequest {
         String response = sendRequest(HOST_URL + "/grade/QureyGradeBySchoolID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<GradeData> list = jsonToList(GradeData.class.getName(), response);
-            for (GradeData gradeData: list) {
+            for (GradeData gradeData : list) {
                 gradeData.ClassList = getClassData(schoolID, studysectionID, gradeData.GradeID);
             }
             return list;
@@ -269,7 +271,7 @@ public class ScopeServer extends ServerRequest {
     }
 
     public List<TeachingMaterialData> QueryTeachingMaterial(int studysectioncode, int gradecode,
-                                                   int subjectcode, int teachingmaterialcode) {
+                                                            int subjectcode, int teachingmaterialcode) {
         HashMap<String, String> params = new HashMap<>();
         params.put("studysectioncode", String.valueOf(studysectioncode));
         params.put("gradecode", String.valueOf(gradecode));
@@ -282,20 +284,20 @@ public class ScopeServer extends ServerRequest {
             if (list == null)
                 return null;
 
-            for (TeachingMaterialData materialData: list) {
+            for (TeachingMaterialData materialData : list) {
                 if (materialData.Chapters == null)
                     continue;
 
-                for (ChapterData chapterData: materialData.Chapters) {
+                for (ChapterData chapterData : materialData.Chapters) {
                     if (chapterData.Sections == null)
                         continue;
 
-                    for (SectionData sectionData: chapterData.Sections) {
+                    for (SectionData sectionData : chapterData.Sections) {
                         if (sectionData.PointIDs == null)
                             continue;
 
                         ArrayList<KnowledgeData> arrayList = new ArrayList<>();
-                        for (String knowledgeID: sectionData.PointIDs) {
+                        for (String knowledgeID : sectionData.PointIDs) {
                             KnowledgeData data = QureyKnowledgeByID(knowledgeID);
                             if (data == null)
                                 continue;
@@ -580,7 +582,7 @@ public class ScopeServer extends ServerRequest {
                 JSONArray CorrectArray = result.optJSONArray("CorrectArray");
                 ArrayList<String> list = new ArrayList<>();
                 if (CorrectArray != null) {
-                    for (int i=0; i<CorrectArray.length(); i++) {
+                    for (int i = 0; i < CorrectArray.length(); i++) {
                         list.add(CorrectArray.getString(i));
                     }
                 }
@@ -590,7 +592,7 @@ public class ScopeServer extends ServerRequest {
                 JSONArray ErrorArray = result.optJSONArray("ErrorArray");
                 list = new ArrayList<>();
                 if (ErrorArray != null) {
-                    for (int i=0; i<ErrorArray.length(); i++) {
+                    for (int i = 0; i < ErrorArray.length(); i++) {
                         list.add(ErrorArray.getString(i));
                     }
                 }
@@ -599,7 +601,7 @@ public class ScopeServer extends ServerRequest {
                 JSONArray UnAnswerArray = result.optJSONArray("UnAnswerArray");
                 list = new ArrayList<>();
                 if (UnAnswerArray != null) {
-                    for (int i=0; i<UnAnswerArray.length(); i++) {
+                    for (int i = 0; i < UnAnswerArray.length(); i++) {
                         list.add(UnAnswerArray.getString(i));
                     }
                 }
@@ -657,7 +659,7 @@ public class ScopeServer extends ServerRequest {
             List<QuestionSetData> list = jsonToList(QuestionSetData.class.getName(), response);
             if (list == null)
                 return null;
-            for (QuestionSetData questionSetData: list) {
+            for (QuestionSetData questionSetData : list) {
                 if (questionSetData.QuestionSetID.equals(questionSetID))
                     return questionSetData;
             }
@@ -704,10 +706,28 @@ public class ScopeServer extends ServerRequest {
     }
 
     public List<LessonSampleData> QureyLessonSampleByClassID(String classID) {
+        Log.i("LessonSampleByClassID", "classID:" + classID);
+        Log.i("LessonSampleBySubject", "mToken:" + mToken);
         HashMap<String, String> params = new HashMap<>();
         params.put("classID", classID);
 
         String response = sendRequest(HOST_URL + "/teachingSample/QureyLessonSampleByClassID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<LessonSampleData> list = jsonToList(LessonSampleData.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    public List<LessonSampleData> QureyLessonSampleBySubject(int subjectCode) {
+        Log.i("LessonSampleBySubject", "mToken:" + mToken);
+        Log.i("LessonSampleBySubject", "subjectCode:" + subjectCode);
+        HashMap<String, String> params = new HashMap<>();
+        params.put("subjectcode", String.valueOf(subjectCode));
+        params.put("token", mToken);
+
+        String response = sendRequest(HOST_URL + "/teachingSample/QureyLessonSampleBySubject/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<LessonSampleData> list = jsonToList(LessonSampleData.class.getName(), response);
             return list;

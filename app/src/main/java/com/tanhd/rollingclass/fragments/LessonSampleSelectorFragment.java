@@ -1,11 +1,9 @@
 package com.tanhd.rollingclass.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,30 +14,30 @@ import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.ChapterData;
-import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
-import com.tanhd.rollingclass.server.data.SchoolData;
-import com.tanhd.rollingclass.server.data.SectionData;
 import com.tanhd.rollingclass.server.data.StudentData;
-import com.tanhd.rollingclass.server.data.SubjectData;
-import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
-import com.tanhd.rollingclass.server.data.UserData;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LessonSampleSelectorFragment extends Fragment {
+
+    private static final int QUERY_MODE_SUBJECT = 1;
+    private static final int QUERY_MODE_CLASS = 2;
+
+    private int mQueryMode = 2;
+    private int mSubjectCode;
+
     private class ItemData {
         String title;
         String name;
         LessonSampleData lessonSampleData;
         KnowledgeData knowledgeData;
     }
+
     public static interface OnSelectorLessonSampleListener {
         void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData);
     }
@@ -50,7 +48,20 @@ public class LessonSampleSelectorFragment extends Fragment {
     private OnSelectorLessonSampleListener mListener;
 
     public static LessonSampleSelectorFragment newInstance(OnSelectorLessonSampleListener listener) {
+        Bundle args = new Bundle();
+        args.putInt("query_mode", QUERY_MODE_CLASS);
         LessonSampleSelectorFragment fragment = new LessonSampleSelectorFragment();
+        fragment.setArguments(args);
+        fragment.setListener(listener);
+        return fragment;
+    }
+
+    public static LessonSampleSelectorFragment newInstance(int subjectCode, OnSelectorLessonSampleListener listener) {
+        Bundle args = new Bundle();
+        args.putInt("query_mode", QUERY_MODE_SUBJECT);
+        args.putInt("subject_code", subjectCode);
+        LessonSampleSelectorFragment fragment = new LessonSampleSelectorFragment();
+        fragment.setArguments(args);
         fragment.setListener(listener);
         return fragment;
     }
@@ -70,6 +81,7 @@ public class LessonSampleSelectorFragment extends Fragment {
     }
 
     private void initData() {
+        mQueryMode = getArguments().getInt("query_mode");
         new InitDataTask().execute();
     }
 
@@ -79,14 +91,21 @@ public class LessonSampleSelectorFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             if (ExternalParam.getInstance().getUserData().isTeacher())
                 return null;
+            List<LessonSampleData> sampleList = null;
 
-            StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+            if (mQueryMode == QUERY_MODE_CLASS) {
+                StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
 
-            List<LessonSampleData> sampleList = ScopeServer.getInstance().QureyLessonSampleByClassID(studentData.ClassID);
+                sampleList = ScopeServer.getInstance().QureyLessonSampleByClassID(studentData.ClassID);
+            } else {
+                mSubjectCode = getArguments().getInt("subject_code");
+                sampleList = ScopeServer.getInstance().QureyLessonSampleBySubject(mQueryMode);
+            }
+
             if (sampleList == null)
                 return null;
 
-            for (LessonSampleData sampleData: sampleList) {
+            for (LessonSampleData sampleData : sampleList) {
                 KnowledgeData knowledgeData = ScopeServer.getInstance().QureyKnowledgeByID(sampleData.KnowledgeID);
                 if (knowledgeData == null)
                     continue;
