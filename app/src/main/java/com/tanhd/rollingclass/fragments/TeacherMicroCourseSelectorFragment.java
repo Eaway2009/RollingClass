@@ -74,7 +74,7 @@ public class TeacherMicroCourseSelectorFragment extends Fragment {
                 return null;
             }
             TeacherData teacherData = (TeacherData) userData.getUserData();
-            List<MicroCourseData> sampleList = ScopeServer.getInstance().QureyMicroCourseByTeacherIDV2(teacherData.TeacherID);
+            List<MicroCourseData> sampleList = ScopeServer.getInstance().QureyMicroCourseByTeacherID(teacherData.TeacherID);
             if (sampleList == null)
                 return null;
 

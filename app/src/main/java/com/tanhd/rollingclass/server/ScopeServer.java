@@ -361,10 +361,10 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
-    public List<MicroCourseData> QureyMicroCourseByTeacherIDV2(String teacherID) {
+    public List<MicroCourseData> QureyMicroCourseByTeacherID(String teacherID) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("teacherID ", teacherID);
-        String response = sendRequest(HOST_URL + "/microcourse/QureyMicroCourseByTeacherIDV2/" + mToken, METHOD.GET, params);
+        params.put("teacherID", teacherID);
+        String response = sendRequest(HOST_URL + "/microcourse/QureyMicroCourseByTeacherID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
             return list;
