@@ -78,14 +78,13 @@ public class MicroCourseSelectorFragment extends Fragment {
                 return null;
 
             for (MicroCourseData microCourseData: sampleList) {
-//                KnowledgeData knowledgeData = ScopeServer.getInstance().QureyKnowledgeByID(microCourseData.KnowledgeID);
-//                TeachingMaterialData materialData = ScopeServer.getInstance().QueryTeachingMaterialById(knowledgeData.TeachingMaterialID);
+                KnowledgeData knowledgeData = ScopeServer.getInstance().QureyKnowledgeByID(microCourseData.KnowledgeID);
+                TeachingMaterialData materialData = ScopeServer.getInstance().QueryTeachingMaterialById(knowledgeData.TeachingMaterialID);
 
                 ItemData itemData = new ItemData();
                 itemData.microCourseData = microCourseData;
-                itemData.name = microCourseData.ChapterName + "-" + microCourseData.SectionName + "-" + microCourseData.PointName;
-                //"【" + materialData.TeachingMaterialName + "-" + materialData.SubjectName + "】" + knowledgeData.ChapterName + "-" + knowledgeData.SectionName + "-" + knowledgeData.KnowledgePointName;
-                itemData.title = microCourseData.MicroCourseInfo.MicroCourseName;
+                itemData.name = "【" + materialData.TeachingMaterialName + "-" + materialData.SubjectName + "】" + knowledgeData.ChapterName + "-" + knowledgeData.SectionName + "-" + knowledgeData.KnowledgePointName;
+                itemData.title = microCourseData.MicroCourseName;
                 mItemList.add(itemData);
             }
 

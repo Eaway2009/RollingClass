@@ -3,7 +3,6 @@ package com.tanhd.rollingclass.server.data;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,26 +10,17 @@ import java.util.UUID;
 import java.util.jar.JarEntry;
 
 public class MicroCourseData extends BaseJsonClass {
-    public String ChapterName;
-    public String GradeName;
-
-    public MicroCourseInfo MicroCourseInfo;
-
-    public static class MicroCourseInfo implements Serializable {
-        public List<String> ClassIds;
-        public List<String> GradeIds;
-        public long CreateTime;
-        public int Duration;
-        public String KnowledgeID;
-        public String MicroCourseID;
-        public String MicroCourseName;
-        public String Remark;
-        public String TeacherID;
-        public String UpdateTime;
-        public String VideoUrl;
-    }
-    public String PointName;
-    public String SectionName;
+    public String MicroCourseID;
+    public String MicroCourseName;
+    public String KnowledgeID;
+    public String Remark;
+    public String VideoUrl;
+    public String TeacherID;
+    public long CreateTime;
+    public long UpdateTime;
+    public int Duration;
+    public List<String> ClassIds;
+    public List<String> GradeIds;
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {
