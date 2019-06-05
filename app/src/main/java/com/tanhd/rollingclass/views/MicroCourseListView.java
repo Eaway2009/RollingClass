@@ -81,9 +81,9 @@ public class MicroCourseListView extends LinearLayout {
             }
             TextView nameView = view.findViewById(R.id.name);
             final MicroCourseData itemData = mMicroCourseList.get(position);
-            nameView.setText(itemData.MicroCourseInfo.MicroCourseName);
+            nameView.setText(itemData.MicroCourseName);
 
-            if (itemData.MicroCourseInfo.MicroCourseID.equals(mSelMicroCourseID)) {
+            if (itemData.MicroCourseID.equals(mSelMicroCourseID)) {
                 nameView.setTextColor(getResources().getColor(R.color.white));
                 view.setBackgroundColor(getResources().getColor(R.color.button_blue));
             } else {
@@ -94,7 +94,7 @@ public class MicroCourseListView extends LinearLayout {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mSelMicroCourseID = itemData.MicroCourseInfo.MicroCourseID;
+                    mSelMicroCourseID = itemData.MicroCourseID;
                     if (mListener != null) {
                         mListener.onSelectedItem(itemData);
                     }

@@ -16,7 +16,7 @@ public class MicroCourseData extends BaseJsonClass {
 
     public MicroCourseInfo MicroCourseInfo;
 
-    public static class MicroCourseInfo extends BaseJsonClass {
+    public static class MicroCourseInfo implements Serializable {
         public List<String> ClassIds;
         public List<String> GradeIds;
         public long CreateTime;
@@ -26,43 +26,26 @@ public class MicroCourseData extends BaseJsonClass {
         public String MicroCourseName;
         public String Remark;
         public String TeacherID;
-        public long UpdateTime;
+        public String UpdateTime;
         public String VideoUrl;
+    }
+    public String PointName;
+    public String SectionName;
 
-        @Override
-        protected void onDealListField(Object object, Field field, JSONObject json, String key) {
-            super.onDealListField(object, field, json, key);
+    @Override
+    protected void onDealListField(Object object, Field field, JSONObject json, String key) {
+        super.onDealListField(object, field, json, key);
+        if (key.equals("ClassIds") || key.equals("GradeIds")) {
+            JSONArray array = json.optJSONArray(key);
+            ArrayList<String> list = new ArrayList<>();
+            for (int i=0; i<array.length(); i++) {
+                list.add(array.optString(i));
+            }
             try {
-                if (key.equals("ClassIds") || key.equals("GradeIds")) {
-                    JSONArray array = json.optJSONArray(key);
-                    ArrayList<String> list = new ArrayList<>();
-                    for (int i = 0; i < array.length(); i++) {
-                        list.add(array.optString(i));
-                    }
-                    field.set(object, list);
-                }
+                field.set(object, list);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
     }
-
-    public String PointName;
-    public String SectionName;
-
-
-    @Override
-    protected void onDealListField(Object object, Field field, JSONObject json, String key) {
-        super.onDealListField(object, field, json, key);
-        try {
-            if (key.equals("MicroCourseInfo")) {
-                MicroCourseInfo sectionData = new MicroCourseInfo();
-                sectionData.parse(sectionData, json.optJSONObject(key));
-                field.set(object, sectionData);
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

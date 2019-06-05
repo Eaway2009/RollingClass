@@ -93,8 +93,8 @@ public class StudentFragment extends Fragment {
                                     @Override
                                     public void onMicroCourseSelected(MicroCourseData microCourseData) {
                                         Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
-                                        intent.putExtra("MicroCourseID", microCourseData.MicroCourseInfo.MicroCourseID);
-                                        intent.putExtra("ResourceAddr", ScopeServer.RESOURCE_URL + microCourseData.MicroCourseInfo.VideoUrl);
+                                        intent.putExtra("MicroCourseID", microCourseData.MicroCourseID);
+                                        intent.putExtra("ResourceAddr", ScopeServer.RESOURCE_URL + microCourseData.VideoUrl);
                                         startActivity(intent);
                                     }
                                 }));
