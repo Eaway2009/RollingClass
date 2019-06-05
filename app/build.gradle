@@ -2,6 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.tanhd.rollingclass"
+        minSdkVersion 20
+        targetSdkVersion 28
+        versionCode 110
+        versionName "1.10"
+    }
     signingConfigs {
         release {
             keyAlias 'joetan'
@@ -16,24 +23,20 @@ android {
             storePassword 'qwe332we%$rfe'
         }
     }
-    defaultConfig {
-        applicationId "com.tanhd.rollingclass"
-        minSdkVersion 20
-        targetSdkVersion 28
-        versionCode 110
-        versionName "1.10"
-    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+        }
+    }
 
-            android.applicationVariants.all { variant ->
-                variant.outputs.all {
-                    outputFileName = "flip" + "-v" + defaultConfig.versionName + ".apk"
-                }
-            }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "flip" + "-v" + defaultConfig.versionName + ".apk"
         }
     }
 }

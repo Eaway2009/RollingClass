@@ -1,6 +1,5 @@
 package com.tanhd.rollingclass.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -17,12 +16,8 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
-import com.tanhd.rollingclass.server.data.KnowledgeData;
-import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
-import com.tanhd.rollingclass.server.data.TeachingMaterialData;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,13 +73,9 @@ public class MicroCourseSelectorFragment extends Fragment {
                 return null;
 
             for (MicroCourseData microCourseData: sampleList) {
-//                KnowledgeData knowledgeData = ScopeServer.getInstance().QureyKnowledgeByID(microCourseData.KnowledgeID);
-//                TeachingMaterialData materialData = ScopeServer.getInstance().QueryTeachingMaterialById(knowledgeData.TeachingMaterialID);
-
                 ItemData itemData = new ItemData();
                 itemData.microCourseData = microCourseData;
                 itemData.name = microCourseData.ChapterName + "-" + microCourseData.SectionName + "-" + microCourseData.PointName;
-                //"【" + materialData.TeachingMaterialName + "-" + materialData.SubjectName + "】" + knowledgeData.ChapterName + "-" + knowledgeData.SectionName + "-" + knowledgeData.KnowledgePointName;
                 itemData.title = microCourseData.MicroCourseInfo.MicroCourseName;
                 mItemList.add(itemData);
             }
