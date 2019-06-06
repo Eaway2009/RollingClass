@@ -66,12 +66,11 @@ public class SubjectSelectorFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ClassData classData = ExternalParam.getInstance().getClassData();
             SchoolData schoolData = ExternalParam.getInstance().getSchoolData();
-            if (classData == null)
+            if (schoolData == null)
                 return null;
 
-            List<SubjectData> subjectList = schoolData.querySubjects(classData.StudysectionCode);
+            List<SubjectData> subjectList =  ScopeServer.getInstance().qureySubject(schoolData.SchoolID);
             mItemList = subjectList;
             return null;
         }
@@ -79,7 +78,7 @@ public class SubjectSelectorFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             if (mItemList == null) {
-                Toast.makeText(getContext().getApplicationContext(), "没有设置学科!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext().getApplicationContext(), "没有科目!", Toast.LENGTH_LONG).show();
                 DialogFragment dialog = (DialogFragment) getParentFragment();
                 dialog.dismiss();
                 return;

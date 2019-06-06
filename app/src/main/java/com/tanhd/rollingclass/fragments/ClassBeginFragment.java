@@ -74,7 +74,7 @@ public class ClassBeginFragment extends Fragment {
         transaction.commit();
     }
 
-    private class LoadDataTask extends AsyncTask<Void, Void, Void> {
+    private class  LoadDataTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {

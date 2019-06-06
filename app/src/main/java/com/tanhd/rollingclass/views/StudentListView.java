@@ -88,7 +88,7 @@ public class StudentListView extends LinearLayout {
         classNameView.setText(classData.ClassName + "学生列表");
 
         mStudentList = new ArrayList<>();
-        for (GroupData groupData: classData.Groups) {
+        for (GroupData groupData : classData.Groups) {
             mStudentList.addAll(groupData.StudentList);
         }
 
@@ -111,13 +111,16 @@ public class StudentListView extends LinearLayout {
         }
 
         @Override
-        public Object getItem(int position) {
-            return null;
+        public StudentData getItem(int position) {
+            if (mStudentList == null) {
+                return null;
+            }
+            return mStudentList.get(position);
         }
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            return position;
         }
 
         @Override
@@ -127,7 +130,11 @@ public class StudentListView extends LinearLayout {
                 view = LayoutInflater.from(getContext()).inflate(R.layout.item_student_wrong_list_student, parent, false);
             }
 
-            final StudentData studentData = mStudentList.get(position);
+            final StudentData studentData = getItem(position);
+            if(studentData==null){
+                return view;
+            }
+
             TextView nameView = view.findViewById(R.id.name);
             nameView.setText(studentData.Username);
 

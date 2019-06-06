@@ -54,7 +54,7 @@ public class StudentFragment extends Fragment {
                     @Override
                     public void onSubjectSelected(SubjectData subjectData) {
                         FrameDialog.show(getChildFragmentManager(),
-                                LessonSampleSelectorFragment.newInstance(new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
+                                LessonSampleSelectorFragment.newInstance(subjectData.SubjectCode, new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
                             @Override
                             public void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData) {
                                 ExternalParam.getInstance().setLessonSample(lessonSampleData);

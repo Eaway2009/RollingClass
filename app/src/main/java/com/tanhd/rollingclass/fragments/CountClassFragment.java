@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.fragments.pages.CountClassLessonSamplePage;
 import com.tanhd.rollingclass.fragments.pages.CountClassMicroCoursePage;
 import com.tanhd.rollingclass.fragments.pages.CountExamPage;
 

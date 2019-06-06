@@ -99,7 +99,7 @@ public class LessonSampleSelectorFragment extends Fragment {
                 sampleList = ScopeServer.getInstance().QureyLessonSampleByClassID(studentData.ClassID);
             } else {
                 mSubjectCode = getArguments().getInt("subject_code");
-                sampleList = ScopeServer.getInstance().QureyLessonSampleBySubject(mQueryMode);
+                sampleList = ScopeServer.getInstance().QureyLessonSampleBySubject(mSubjectCode);
             }
 
             if (sampleList == null)

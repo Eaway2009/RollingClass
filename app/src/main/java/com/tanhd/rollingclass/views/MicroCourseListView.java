@@ -28,7 +28,6 @@ public class MicroCourseListView extends LinearLayout {
     }
 
     private ListView mListView;
-    private List<MicroCourseData> mMicroCourseList;
     private String mSelMicroCourseID;
     private MicroCourseAdapter mAdapter;
     private MicroCourseListViewListener mListener;
@@ -58,40 +57,57 @@ public class MicroCourseListView extends LinearLayout {
 
     private class MicroCourseAdapter extends BaseAdapter {
 
-        @Override
-        public int getCount() {
-            return mMicroCourseList.size();
+        private List<MicroCourseData> mMicroCourseList;
+
+        public void setData(List<MicroCourseData> dataList) {
+            mMicroCourseList = dataList;
         }
 
         @Override
-        public Object getItem(int position) {
-            return null;
+        public int getCount() {
+            if (mMicroCourseList != null) {
+                return mMicroCourseList.size();
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        public MicroCourseData getItem(int position) {
+            if (mMicroCourseList == null) {
+                return null;
+            } else {
+                return mMicroCourseList.get(position);
+            }
         }
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            return position;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            if (view == null) {
-                view = LayoutInflater.from(getContext()).inflate(R.layout.item_microcourse_listview, parent, false);
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_microcourse_listview, parent, false);
             }
-            TextView nameView = view.findViewById(R.id.name);
-            final MicroCourseData itemData = mMicroCourseList.get(position);
-            nameView.setText(itemData.MicroCourseName);
 
+            final MicroCourseData itemData = getItem(position);
+            if (itemData == null) {
+                return convertView;
+            }
+
+            TextView nameView = convertView.findViewById(R.id.name);
+            nameView.setText(itemData.MicroCourseName);
             if (itemData.MicroCourseID.equals(mSelMicroCourseID)) {
                 nameView.setTextColor(getResources().getColor(R.color.white));
-                view.setBackgroundColor(getResources().getColor(R.color.button_blue));
+                convertView.setBackgroundColor(getResources().getColor(R.color.button_blue));
             } else {
                 nameView.setTextColor(getResources().getColor(R.color.black));
-                view.setBackground(null);
+                convertView.setBackground(null);
             }
 
-            view.setOnClickListener(new View.OnClickListener() {
+            convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mSelMicroCourseID = itemData.MicroCourseID;
@@ -103,37 +119,33 @@ public class MicroCourseListView extends LinearLayout {
             });
 
             if (mSelMicroCourseID == null && position == 0) {
-                view.callOnClick();
+                convertView.callOnClick();
             }
-            return view;
+            return convertView;
         }
     }
 
-    private class InitDataTask extends AsyncTask<Void, Void, Void> {
+    private class InitDataTask extends AsyncTask<Void, Void, List<MicroCourseData>> {
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected List<MicroCourseData> doInBackground(Void... voids) {
             ClassData classData = ExternalParam.getInstance().getClassData();
             if (classData == null) {
                 return null;
             }
             List<MicroCourseData> sampleList = ScopeServer.getInstance().QureyMicroCourseByClassID(classData.ClassID);
-            if (sampleList == null)
-                return null;
-
-            mMicroCourseList = sampleList;
-            return null;
+            return sampleList;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(List<MicroCourseData> dataList) {
             mAdapter = new MicroCourseAdapter();
             mListView.setAdapter(mAdapter);
-            mListView.callOnClick();
-
-            if (mMicroCourseList.size() == 0) {
+            if (dataList == null || dataList.size() == 0) {
                 Toast.makeText(getContext().getApplicationContext(), "没有找到相关的微课资源!", Toast.LENGTH_LONG).show();
+                return;
             }
+            mAdapter.setData(dataList);
         }
     }
 }

@@ -205,6 +205,19 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
+    public List<SubjectData> qureySubject(String schoolID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("schoolID", schoolID);
+        params.put("token", mToken);
+        String response = sendRequest(HOST_URL + "/subject/QureySubject/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<SubjectData> list = jsonToList(SubjectData.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
     public List<GradeData> getGradeData(String schoolID, String studysectionID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("schoolID", schoolID);
