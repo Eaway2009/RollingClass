@@ -63,7 +63,6 @@
             android:id="@+id/exam"
             style="@style/ColorButton"
             android:background="@drawable/button_6_selector"
-            android:enabled="false"
             android:text="随堂练习"/>
 
         <View

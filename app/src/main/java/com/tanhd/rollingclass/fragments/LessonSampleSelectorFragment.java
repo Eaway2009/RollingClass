@@ -18,6 +18,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.StudentData;
+import com.tanhd.rollingclass.server.data.SubjectData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
 
 import java.util.ArrayList;
@@ -25,11 +26,7 @@ import java.util.List;
 
 public class LessonSampleSelectorFragment extends Fragment {
 
-    private static final int QUERY_MODE_SUBJECT = 1;
-    private static final int QUERY_MODE_CLASS = 2;
-
-    private int mQueryMode = 2;
-    private int mSubjectCode;
+    private SubjectData mSubjectData;
 
     private class ItemData {
         String title;
@@ -48,20 +45,7 @@ public class LessonSampleSelectorFragment extends Fragment {
     private OnSelectorLessonSampleListener mListener;
 
     public static LessonSampleSelectorFragment newInstance(OnSelectorLessonSampleListener listener) {
-        Bundle args = new Bundle();
-        args.putInt("query_mode", QUERY_MODE_CLASS);
         LessonSampleSelectorFragment fragment = new LessonSampleSelectorFragment();
-        fragment.setArguments(args);
-        fragment.setListener(listener);
-        return fragment;
-    }
-
-    public static LessonSampleSelectorFragment newInstance(int subjectCode, OnSelectorLessonSampleListener listener) {
-        Bundle args = new Bundle();
-        args.putInt("query_mode", QUERY_MODE_SUBJECT);
-        args.putInt("subject_code", subjectCode);
-        LessonSampleSelectorFragment fragment = new LessonSampleSelectorFragment();
-        fragment.setArguments(args);
         fragment.setListener(listener);
         return fragment;
     }
@@ -81,7 +65,7 @@ public class LessonSampleSelectorFragment extends Fragment {
     }
 
     private void initData() {
-        mQueryMode = getArguments().getInt("query_mode");
+        mSubjectData = (SubjectData) getArguments().getSerializable(SubjectSelectorFragment.SELECTED_SUBJECT);
         new InitDataTask().execute();
     }
 
@@ -93,13 +77,12 @@ public class LessonSampleSelectorFragment extends Fragment {
                 return null;
             List<LessonSampleData> sampleList = null;
 
-            if (mQueryMode == QUERY_MODE_CLASS) {
+            if (mSubjectData==null) {
                 StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
 
                 sampleList = ScopeServer.getInstance().QureyLessonSampleByClassID(studentData.ClassID);
             } else {
-                mSubjectCode = getArguments().getInt("subject_code");
-                sampleList = ScopeServer.getInstance().QureyLessonSampleBySubject(mSubjectCode);
+                sampleList = ScopeServer.getInstance().QureyLessonSampleBySubject(mSubjectData.SubjectCode);
             }
 
             if (sampleList == null)
