@@ -93,13 +93,12 @@ public class ClassBeginFragment extends Fragment {
                 Toast.makeText(getContext().getApplicationContext(), "加载数据失败!", Toast.LENGTH_LONG).show();
             }
 
-            if (showStudentState)
+            if (showStudentState) {
                 showFragment(new ClassStateFragment());
-
-            /*if (getParentFragment() instanceof FrameDialog) {
+            } else if (getParentFragment() instanceof FrameDialog) {
                 FrameDialog dialog = (FrameDialog) getParentFragment();
                 dialog.dismiss();
-            }*/
+            }
         }
     }
 }

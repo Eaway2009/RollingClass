@@ -21,6 +21,7 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.VideoPlayerActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.MSG_TYPE;
+import com.tanhd.rollingclass.fragments.pages.LearningStaticsFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
@@ -194,7 +195,8 @@ public class TeacherFragment extends Fragment {
                     FrameDialog.show(getChildFragmentManager(), ClassBeginFragment.newInstance(false, new ClassBeginFragment.ClassBeginListener() {
                         @Override
                         public void onCompleted() {
-                            FrameDialog.show(getChildFragmentManager(), CountClassFragment.newInstance());
+                            showNewFragment(CountClassFragment.newInstance());
+                            enableToolbar(false);
                         }
                     }));
                 } else {
@@ -250,6 +252,16 @@ public class TeacherFragment extends Fragment {
     private void showLessonSample(String url, ShowDocumentFragment.SYNC_MODE mode) {
         String fragmentTag = "lessonSample";
         ShowDocumentFragment fragment = ShowDocumentFragment.newInstance(ScopeServer.RESOURCE_URL + url, mode);
+        FragmentManager fragmentManager = getChildFragmentManager();
+        FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
+        beginTransaction.replace(R.id.framelayout, fragment);
+        beginTransaction.addToBackStack(fragmentTag);
+        beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        beginTransaction.commit();
+    }
+
+    private void showNewFragment(Fragment fragment) {
+        String fragmentTag = "staticFragment";
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
         beginTransaction.replace(R.id.framelayout, fragment);

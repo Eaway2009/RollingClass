@@ -391,6 +391,7 @@ public class ScopeServer extends ServerRequest {
     public List<QuestionData> QureyQuestionByLessonSampleID(String lessonsampleID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("lessonsampleID", lessonsampleID);
+        params.put("token", mToken);
         String response = sendRequest(HOST_URL + "/question/QureyQuestionByLessonSampleID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <include
+            android:id="@+id/micro_view"
+            layout="@layout/view_microcourse_listview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <include
+            android:id="@+id/student_view"
+            layout="@layout/view_student_listview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/micro_course"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@drawable/left_top_button_background"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="微课数据"
+                android:textColor="@color/white"
+                android:textSize="26sp" />
+
+            <RadioButton
+                android:id="@+id/question"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@drawable/right_top_button_background"
+                android:button="@null"
+                android:checked="false"
+                android:gravity="center"
+                android:text="习题数据"
+                android:textColor="@color/white"
+                android:textSize="26sp" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/framelayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                layout="@layout/view_microcourse_barchart"
+                android:id="@+id/micro_course_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

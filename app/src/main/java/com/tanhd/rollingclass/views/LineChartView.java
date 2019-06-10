@@ -91,6 +91,7 @@ public class LineChartView extends LinearLayout {
         l.setForm(Legend.LegendForm.LINE);
 //        l.setTextSize(11f);
         l.setTextColor(Color.BLACK);
+        l.setDirection(Legend.LegendDirection.LEFT_TO_RIGHT);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
@@ -100,18 +101,19 @@ public class LineChartView extends LinearLayout {
         xAxis.setTextSize(11f);
         xAxis.setTextColor(Color.BLACK);
         xAxis.setAxisMinimum(0);
-        xAxis.setDrawGridLines(true);
+        xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setTextColor(ColorTemplate.getHoloBlue());
         leftAxis.setAxisMinimum(0);
-        leftAxis.setDrawGridLines(true);
+        leftAxis.setDrawGridLines(false);
         leftAxis.setGranularityEnabled(true);
         leftAxis.setValueFormatter(new MyValueFormatter("", "次"));
 
         YAxis rightAxis = chart.getAxisRight();
-        rightAxis.setDrawAxisLine(true);
+        rightAxis.setDrawAxisLine(false);
         rightAxis.setDrawLabels(false);
         rightAxis.setTextColor(Color.BLACK);
         rightAxis.setDrawGridLines(false);

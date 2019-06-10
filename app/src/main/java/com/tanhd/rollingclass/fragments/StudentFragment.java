@@ -102,7 +102,7 @@ public class StudentFragment extends Fragment {
                             LessonSampleSelectorFragment.newInstance(new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
                                         @Override
                                         public void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData) {
-                                            FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(lessonSampleData.LessonSampleID, null, null));
+                                            FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(lessonSampleData.LessonSampleID, null));
                                         }
                                     }
                             )));

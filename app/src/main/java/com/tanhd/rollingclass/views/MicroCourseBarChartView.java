@@ -23,6 +23,7 @@ import com.tanhd.rollingclass.utils.MyValueFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class MicroCourseBarChartView extends LinearLayout {
     private TextView mTitleView;
@@ -65,19 +66,34 @@ public class MicroCourseBarChartView extends LinearLayout {
                 if (list == null)
                     return null;
 
+                int mostData = 0;
+                int allVal = 0;
                 List<Entry> entries = new ArrayList<>();
-                for (int i=0; i<list.size(); i++) {
+                for (int i = 0; i < list.size(); i++) {
                     int val = list.get(i);
-                    entries.add(new Entry(i, val));
-                }
+                    int j = i % 10;
+                    if (val > 0) {
+                        allVal += val;
 
-                return entries;
+                        mostData = i;
+                    }
+                    if (j == 0) {
+                        entries.add(new Entry(i, allVal));
+                        allVal = 0;
+                    }
+                }
+                int lastData = (mostData / 10 + 2) * 10;
+                if (lastData < entries.size()) {
+                    return entries.subList(0, lastData);
+                } else {
+                    return entries;
+                }
             } else {
                 List<CountMicroCourseStudentData> list = ScopeServer.getInstance().QureyMicroCourseStatisticByCoureseID(mCourseData.MicroCourseID);
                 List<BarEntry> entries = new ArrayList<>();
                 int pos = 1;
                 mLineValues = new ArrayList<>();
-                for (int i=0; i<list.size(); i++) {
+                for (int i = 0; i < list.size(); i++) {
                     CountMicroCourseStudentData data = list.get(i);
                     if (!data.StudentID.equals(mStudentData.StudentID))
                         continue;
@@ -86,7 +102,7 @@ public class MicroCourseBarChartView extends LinearLayout {
                     entries.add(new BarEntry(pos, count));
 
                     List<Entry> values = new ArrayList<>();
-                    for (int j=data.VideoStartTime; j<=data.VideoEndTime; j++) {
+                    for (int j = data.VideoStartTime; j <= data.VideoEndTime; j++) {
                         values.add(new Entry(j, pos));
                     }
                     pos++;
@@ -127,7 +143,7 @@ public class MicroCourseBarChartView extends LinearLayout {
         studentChartLayout.setVisibility(VISIBLE);
 
         BarChartView barChartView = findViewById(R.id.barchart_view);
-        barChartView.setData(mStudentData.Username + "微课情况统计", null, entries, new MyValueFormatter("第", "次"), new MyValueFormatter("", "秒"),"秒");
+        barChartView.setData(mStudentData.Username + "微课情况统计", null, entries, new MyValueFormatter("第", "次"), new MyValueFormatter("", "秒"), "秒");
 
         MultiLineChartView multiLineChartView = findViewById(R.id.multi_linechart_view);
         multiLineChartView.clearData();
@@ -135,8 +151,8 @@ public class MicroCourseBarChartView extends LinearLayout {
             multiLineChartView.setVisibility(GONE);
         } else {
             multiLineChartView.setVisibility(VISIBLE);
-            for (int i=0; i<lineValues.size(); i++) {
-                multiLineChartView.addData((List<Entry>) lineValues.get(i), ColorTemplate.VORDIPLOM_COLORS[i % 5], String.format("%d", i+1), mCourseData.Duration);
+            for (int i = 0; i < lineValues.size(); i++) {
+                multiLineChartView.addData((List<Entry>) lineValues.get(i), ColorTemplate.VORDIPLOM_COLORS[i % 5], String.format("%d", i + 1), mCourseData.Duration);
             }
         }
         multiLineChartView.invalidate();

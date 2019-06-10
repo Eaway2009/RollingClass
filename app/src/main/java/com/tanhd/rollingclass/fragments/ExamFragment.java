@@ -71,6 +71,15 @@ public class ExamFragment extends Fragment {
         return fragment;
     }
 
+    public static ExamFragment newInstance(String lessonSampleId, ExamListener listener) {
+        Bundle args = new Bundle();
+        args.putString("lessonSampleId", lessonSampleId);
+        ExamFragment fragment = new ExamFragment();
+        fragment.setArguments(args);
+        fragment.setListener(listener);
+        return fragment;
+    }
+
     public void setListener(ExamListener listener) {
         this.mListener = listener;
     }
@@ -366,9 +375,27 @@ public class ExamFragment extends Fragment {
         protected List doInBackground(Void... strings) {
             String teacherID = getArguments().getString("teacherID");
             String questionSetID = getArguments().getString("questionSetID");
+            String lessonSampleId = getArguments().getString("lessonSampleId");
 
             List<QuestionData> questionList = null;
-            if (questionSetID == null) {
+            if(lessonSampleId!=null){
+                questionList = ScopeServer.getInstance().QureyQuestionByLessonSampleID(lessonSampleId);
+                if (questionList == null)
+                    return null;
+
+                String studentID = ExternalParam.getInstance().getUserData().getOwnerID();
+                for (QuestionData questionData: questionList) {
+                    List<AnswerData> answerList = ScopeServer.getInstance().QureyAnswerv2ByStudentIDAndQuestionID(studentID, questionData.QuestionID);
+                    if (answerList == null || answerList.isEmpty())
+                        continue;
+                    for (AnswerData answerData: answerList) {
+                        if (answerData.QuestionSetID == null) {
+                            answerMap.put(questionData.QuestionID, answerList.get(0));
+                            break;
+                        }
+                    }
+                }
+            } else if (questionSetID == null) {
                 LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
                 if (lessonSampleData == null)
                     return null;
