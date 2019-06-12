@@ -776,11 +776,13 @@ public class ScopeServer extends ServerRequest {
         params.put("questionID", questionID);
 
         String response = sendRequest(HOST_URL + "/answer/QureyAnswerv2ByTeacherIDAndQuestionID/" + mToken, METHOD.GET, params);
+        List<AnswerData> list = null;
         if (response != null) {
-            List<AnswerData> list = jsonToList(AnswerData.class.getName(), response);
-            return list;
+            list = jsonToList(AnswerData.class.getName(), response);
         }
-
-        return null;
+        if(list==null){
+            list = new ArrayList<>();
+        }
+        return list;
     }
 }

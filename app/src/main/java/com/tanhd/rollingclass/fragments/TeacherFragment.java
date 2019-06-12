@@ -48,6 +48,17 @@ public class TeacherFragment extends Fragment {
     private View mLeftToolbar;
     private View mRightToolbar;
     private View mBtnBarView;
+    private BackListener mListener;
+
+    public static TeacherFragment newInstance(BackListener listener) {
+        TeacherFragment fragment = new TeacherFragment();
+        fragment.setListener(listener);
+        return fragment;
+    }
+
+    public void setListener(BackListener listener) {
+        this.mListener = listener;
+    }
 
     @Nullable
     @Override
@@ -76,6 +87,7 @@ public class TeacherFragment extends Fragment {
                 }));
             }
         });
+
         view.findViewById(R.id.btn_class_list).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,6 +280,7 @@ public class TeacherFragment extends Fragment {
         beginTransaction.addToBackStack(fragmentTag);
         beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         beginTransaction.commit();
+        mListener.showBack(true);
     }
 
     private MqttListener mqttListener = new MqttListener() {
@@ -311,4 +324,8 @@ public class TeacherFragment extends Fragment {
 
         }
     };
+
+    public interface BackListener{
+        public void showBack(boolean show);
+    }
 }

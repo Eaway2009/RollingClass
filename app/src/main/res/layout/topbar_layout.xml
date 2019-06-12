@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tanhd.rollingclass.views.TopbarView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/white">
+
+    <ImageView
+        android:id="@+id/back_button"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:paddingBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:visibility="invisible"
+        android:clickable="false"
+        android:src="@drawable/back" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -21,39 +34,39 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/logo"/>
+                android:src="@drawable/logo" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:textSize="20sp"
+                android:text="翻转课堂"
                 android:textColor="#FF3e9df8"
-                android:text="翻转课堂"/>
+                android:textSize="20sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginStart="50dp"
+            android:layout_weight="1"
             android:gravity="center">
 
             <TextView
                 android:id="@+id/datetext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:textColor="#FF3e9df8" />
+                android:textColor="#FF3e9df8"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/weektext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:textSize="20sp"
-                android:textColor="#FF3e9df8" />
+                android:textColor="#FF3e9df8"
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -61,8 +74,8 @@
             android:id="@+id/inbox"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginStart="50dp"
+            android:layout_weight="1"
             android:gravity="center">
 
             <com.tanhd.rollingclass.views.CornerImageView
@@ -79,9 +92,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:textSize="20sp"
+                android:text="我的消息"
                 android:textColor="#FF3e9df8"
-                android:text="我的消息"/>
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -89,8 +102,8 @@
             android:id="@+id/userinfo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginStart="50dp"
+            android:layout_weight="1"
             android:gravity="center">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -98,16 +111,16 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:src="@drawable/sample_person"
-                app:civ_border_width="0.1dp"
-                app:civ_border_color="#FFCACACA"/>
+                app:civ_border_color="#FFCACACA"
+                app:civ_border_width="0.1dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:textSize="20sp"
+                android:text="个人设置中心"
                 android:textColor="#FF3e9df8"
-                android:text="个人设置中心"/>
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -121,7 +134,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/more_icon"/>
+                android:src="@drawable/more_icon" />
 
         </LinearLayout>
 

@@ -47,12 +47,24 @@ public class MainActivity extends AppCompatActivity {
     private TopbarView mTopbarView;
     private MediaPlayer mediaPlayer;
     private AlertDialog mNetworkDialog;
+    private View mBackButton;
+    private Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTopbarView = findViewById(R.id.topbar);
+        mBackButton = findViewById(R.id.back_button);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, fragment).commit();
+                mBackButton.setClickable(false);
+                mBackButton.setVisibility(View.INVISIBLE);
+            }
+        });
+
         findViewById(R.id.inbox).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
-        if (MQTT.getInstance() == null ) {
+        if (MQTT.getInstance() == null) {
             MQTT.getInstance(userData.getOwnerID(), 8080);
         }
         MQTT.register(mqttListener);
@@ -130,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     MQTT.publishMessage(PushMessage.COMMAND.PING_OK, message.from, null);
                     break;
                 }
-                case COMMENT_START:{
+                case COMMENT_START: {
                     String question = message.parameters.get("Question");
                     String answer = message.parameters.get("Answer");
                     QuestionData questionData = new QuestionData();
@@ -178,9 +190,19 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Fragment fragment;
         if (ExternalParam.getInstance().getUserData().isTeacher()) {
-            fragment = new TeacherFragment();
+            fragment = TeacherFragment.newInstance(new TeacherFragment.BackListener() {
+                @Override
+                public void showBack(boolean show) {
+                    if (show) {
+                        mBackButton.setVisibility(View.VISIBLE);
+                        mBackButton.setClickable(true);
+                    } else {
+                        mBackButton.setVisibility(View.INVISIBLE);
+                        mBackButton.setClickable(false);
+                    }
+                }
+            });
         } else {
             fragment = new StudentFragment();
         }
