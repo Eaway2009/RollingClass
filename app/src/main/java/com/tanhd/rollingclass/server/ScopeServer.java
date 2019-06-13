@@ -40,6 +40,7 @@ public class ScopeServer extends ServerRequest {
 
     private static final String HOST_URL = "http://www.sea-ai.com:8001/flip";
     public static final String RESOURCE_URL = "http://www.sea-ai.com:8002/";
+    private static final String TAG = "ScopeServer";
 
     private String mToken;
 
@@ -95,8 +96,19 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
+    public void initToken(UserData userData) {
+        if (userData.isTeacher()) {
+            TeacherData teacherData = (TeacherData) userData.getUserData();
+            mToken = teacherData.Token;
+        } else {
+            StudentData studentData = (StudentData) userData.getUserData();
+            mToken = studentData.Token;
+        }
+    }
+
     public void initUserData(UserData userData) {
         if (userData.isTeacher()) {
+            Log.i(TAG, "initUserData: teacher");
             TeacherData teacherData = (TeacherData) userData.getUserData();
             mToken = teacherData.Token;
 
@@ -106,6 +118,7 @@ public class ScopeServer extends ServerRequest {
             List<ClassData> teachingClass = getTeachingClass(teacherData.SchoolID, teacherData.TeacherID);
             ExternalParam.getInstance().setTeachingClass(teachingClass);
         } else {
+            Log.i(TAG, "initUserData: student");
             StudentData studentData = (StudentData) userData.getUserData();
             mToken = studentData.Token;
 
@@ -257,11 +270,27 @@ public class ScopeServer extends ServerRequest {
         new RequestTask(HOST_URL + "/teacher/UpdataTeacherPasswd/" + mToken, METHOD.POST, params, null, callback).execute();
     }
 
-    public void refreshExpiration(String token, RequestCallback callback) {
+    public Map<String, String> refreshExpiration(String token) {
         HashMap<String, String> params = new HashMap<>();
         params.put("token", token);
+        Log.i("refreshExpiration", ": token"+token);
 
-        new RequestTask(HOST_URL + "/student/RefreshExpiration/", METHOD.POST, params, null, callback).execute();
+        String response = sendRequest(HOST_URL + "/student/RefreshExpiration", METHOD.POST, params);
+        Map<String, String> map = new HashMap<>();
+        if (response != null) {
+            JSONObject json;
+            try {
+                json = new JSONObject(response);
+                Log.i("refreshExpiration", ": errorCode"+json.getInt("errorCode"));
+                Log.i("refreshExpiration", ": errorMessage"+json.getString("errorMessage"));
+                map.put("errorCode", json.optString("errorCode"));
+                map.put("errorMessage", json.getString("errorMessage"));
+                return map;
+            } catch (JSONException e) {
+            }
+        }
+
+        return map;
     }
 
     public void UpdataStudentPasswd(String studentID, String oldpasswd, String newpasswd, RequestCallback callback) {

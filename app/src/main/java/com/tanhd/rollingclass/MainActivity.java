@@ -1,6 +1,7 @@
 package com.tanhd.rollingclass;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -44,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
     private TopbarView mTopbarView;
     private MediaPlayer mediaPlayer;
     private AlertDialog mNetworkDialog;
@@ -52,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate: 从LoginActivity过来");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTopbarView = findViewById(R.id.topbar);
@@ -81,9 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
         UserData userData = ExternalParam.getInstance().getUserData();
         if (userData == null) {
+            Log.i(TAG, "onCreate: on UserData");
             Toast.makeText(getApplicationContext(), "获取用户信息失败, 请重新登录!", Toast.LENGTH_LONG).show();
             finish();
             return;
+        } else {
+            Log.i(TAG, "onCreate: has UserData");
+            new RefreshDataTask(userData).execute();
         }
         if (MQTT.getInstance() == null) {
             MQTT.getInstance(userData.getOwnerID(), 8080);
@@ -213,4 +222,22 @@ public class MainActivity extends AppCompatActivity {
         FrameDialog.show(getSupportFragmentManager(), ChatFragment.newInstance(message.fromId));
     }
 
+
+    private class RefreshDataTask extends AsyncTask<Void, Void, Void> {
+
+        private UserData mUserData;
+
+        public RefreshDataTask(UserData userData) {
+            mUserData = userData;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            String ownerID = mUserData.getOwnerID();
+            Database.getInstance(getApplicationContext(), ownerID);
+
+            ScopeServer.getInstance().initUserData(mUserData);
+            return null;
+        }
+    }
 }

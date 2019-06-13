@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -35,13 +36,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION = 1;
+    private static final String TAG = "LoginActivity";
     private EditText mUserView;
     private EditText mPasswordView;
     private View mSignButtonView;
     private ProgressBar mProgressBar;
+    private CheckBox  mCheckBox;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        mCheckBox = findViewById(R.id.save_pwd);
 
         mSignButtonView = findViewById(R.id.sign);
         mSignButtonView.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                new LoginTask(username, password).execute();
+                new LoginTask(username, password, mCheckBox.isChecked()).execute();
             }
         });
 
@@ -141,20 +146,26 @@ public class LoginActivity extends AppCompatActivity {
     private class LoginTask extends AsyncTask<Void, Void, Integer> {
         private final String mUserName;
         private final String mPassword;
+        private final boolean mChecked;
 
-        public LoginTask(String userName, String password) {
+        public LoginTask(String userName, String password, boolean checked) {
             mUserName = userName;
             mPassword = password;
+            mChecked = checked;
         }
 
         @Override
         protected void onPreExecute() {
+            Log.i(TAG, "onPreExecute: 开始时间");
             changeViewsStatus(true);
         }
 
         @Override
         protected Integer doInBackground(Void... voids) {
+            Log.i(TAG, "doInBackground: 准备调用接口");
             String response = ScopeServer.getInstance().loginToServer(mUserName, mPassword);
+            Log.i(TAG, "doInBackground: 接口返回");
+
             if (response != null) {
                 JSONObject json;
                 try {
@@ -174,7 +185,13 @@ public class LoginActivity extends AppCompatActivity {
                             userData.setData(UserData.ROLE.STUDENT, studentData);
                         }
                         ExternalParam.getInstance().setUserData(userData);
-                        ScopeServer.getInstance().initUserData(userData);
+                        ScopeServer.getInstance().initToken(userData);
+                        if (mChecked) {
+                            AppUtils.saveLoginInfo(getApplicationContext(), mUserName, mPassword);
+                        } else {
+                            AppUtils.clearLoginInfo(getApplicationContext());
+                        }
+                        Log.i(TAG, "doInBackground: 返回解析完成");
                         return 0;
                     }
                 } catch (JSONException e) {
@@ -188,23 +205,18 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer result) {
+            Log.i(TAG, "onPostExecute: 处理结果");
             if (result == 0) {
-                CheckBox checkBox = findViewById(R.id.save_pwd);
-                if (checkBox.isChecked()) {
-                    AppUtils.saveLoginInfo(getApplicationContext(), mUserName, mPassword);
-                } else {
-                    AppUtils.clearLoginInfo(getApplicationContext());
-                }
-
                 UserData userData = ExternalParam.getInstance().getUserData();
                 String ownerID = userData.getOwnerID();
-                Database.getInstance(getApplicationContext(), ownerID);
+                Log.i(TAG, "onPostExecute: 初始化MQ");
                 //初始化MQ
                 if (MQTT.getInstance(ownerID, 8080) == null) {
                     Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
                     changeViewsStatus(false);
                     return;
                 }
+                Log.i(TAG, "onPostExecute: 初始化MQ完成");
 
                 boolean flag = MQTT.getInstance().connect();
                 if (!flag) {
@@ -212,15 +224,17 @@ public class LoginActivity extends AppCompatActivity {
                     changeViewsStatus(false);
                     return;
                 }
+                Log.i(TAG, "onPostExecute: 连接MQ");
 
-                if(!userData.isTeacher()){
-                    changeViewsStatus(false);
-                    ScopeServer.getInstance().refreshExpiration(ownerID, callback);
-                } else {
-                    Intent in = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(in);
-                    finish();
-                }
+//                if (!userData.isTeacher()) {
+//                    StudentData studentData = (StudentData) userData.getUserData();
+//                    new RefreshTask(studentData.Token).execute();
+//
+//                } else {
+                Intent in = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(in);
+                finish();
+//                }
             } else {
                 changeViewsStatus(false);
                 if (result == -3)
@@ -231,27 +245,38 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    RequestCallback callback = new RequestCallback() {
-        @Override
-        public void onProgress(boolean b) {
+    private class RefreshTask extends AsyncTask<Void, Void, Map<String, String>> {
+        private String mToken;
 
+        public RefreshTask(String token) {
+            mToken = token;
         }
 
         @Override
-        public void onResponse(String body) {
-            Intent in = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(in);
-            finish();
+        protected Map<String, String> doInBackground(Void... voids) {
+            return ScopeServer.getInstance().refreshExpiration(mToken);
         }
 
         @Override
-        public void onError(String code, String message) {
-            Toast.makeText(getApplicationContext(), "您的账号已在另一台设备登陆，请退出重新登录! ", Toast.LENGTH_LONG).show();
+        protected void onPostExecute(Map<String, String> result) {
+            changeViewsStatus(false);
+            if (result.containsKey("errorCode")) {
+                String code = result.get("errorCode");
+                if ("0".equals(code)) {
+                    Intent in = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(in);
+                    finish();
+                } else {
+                    String errorMessage = result.get("errorMessage");
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+                }
+            }
         }
-    };
 
-    private void changeViewsStatus(boolean loading){
-        if(loading){
+    }
+
+    private void changeViewsStatus(boolean loading) {
+        if (loading) {
             mProgressBar.setVisibility(View.VISIBLE);
             mUserView.setEnabled(false);
             mPasswordView.setEnabled(false);

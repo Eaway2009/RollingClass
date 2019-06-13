@@ -152,6 +152,10 @@ public class TeacherFragment extends Fragment {
                     MQTT.getInstance().unsubscribe(classData.ClassID);
                     ExternalParam.getInstance().setStatus(0);
                     mBtnBarView.setVisibility(View.GONE);
+
+                    view.findViewById(R.id.result_btn).setEnabled(false);
+                    view.findViewById(R.id.ask_btn).setEnabled(false);
+                    view.findViewById(R.id.review_papers_btn).setEnabled(false);
                 }
 
             }
@@ -160,19 +164,12 @@ public class TeacherFragment extends Fragment {
         view.findViewById(R.id.btn_student_wrong).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClassData classData = ExternalParam.getInstance().getClassData();
-                LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
-
-                if (classData == null || lessonSampleData == null) {
-                    FrameDialog.show(getChildFragmentManager(), ClassBeginFragment.newInstance(false, new ClassBeginFragment.ClassBeginListener() {
-                        @Override
-                        public void onCompleted() {
-                            FrameDialog.show(getChildFragmentManager(), new StudentWrongListFragment());
-                        }
-                    }));
-                } else {
-                    FrameDialog.show(getChildFragmentManager(), new StudentWrongListFragment());
-                }
+                FrameDialog.show(getChildFragmentManager(), ClassBeginFragment.newInstance(false, new ClassBeginFragment.ClassBeginListener() {
+                    @Override
+                    public void onCompleted() {
+                        FrameDialog.show(getChildFragmentManager(), new StudentWrongListFragment());
+                    }
+                }));
             }
         });
 
@@ -201,20 +198,12 @@ public class TeacherFragment extends Fragment {
         view.findViewById(R.id.btn_static).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClassData classData = ExternalParam.getInstance().getClassData();
-                LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
-                if (classData == null || lessonSampleData == null) {
-                    FrameDialog.show(getChildFragmentManager(), ClassBeginFragment.newInstance(false, new ClassBeginFragment.ClassBeginListener() {
-                        @Override
-                        public void onCompleted() {
-                            showNewFragment(CountClassFragment.newInstance());
-                            enableToolbar(false);
-                        }
-                    }));
-                } else {
-                    FrameDialog.show(getChildFragmentManager(), CountClassFragment.newInstance());
-                }
-
+                FrameDialog.show(getChildFragmentManager(), ClassBeginFragment.newInstance(false, new ClassBeginFragment.ClassBeginListener() {
+                    @Override
+                    public void onCompleted() {
+                        FrameDialog.fullShow(getChildFragmentManager(), CountClassFragment.newInstance());
+                    }
+                }));
             }
         });
 

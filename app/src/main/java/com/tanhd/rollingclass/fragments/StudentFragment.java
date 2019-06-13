@@ -96,37 +96,29 @@ public class StudentFragment extends Fragment {
         view.findViewById(R.id.exam).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final LessonSampleData learningLessonSampleData = ExternalParam.getInstance().getLessonSample();
-                if (learningLessonSampleData == null) {
-                    FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(
-                            LessonSampleSelectorFragment.newInstance(new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
-                                        @Override
-                                        public void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData) {
-                                            FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(lessonSampleData.LessonSampleID, null));
-                                        }
-                                    }
-                            )));
-                } else {
-                    FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(learningLessonSampleData.LessonSampleID, null, null));
-                }
+                FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(
+                        LessonSampleSelectorFragment.newInstance(new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
+                                                                     @Override
+                                                                     public void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData) {
+                                                                         FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(lessonSampleData.LessonSampleID, null));
+                                                                     }
+                                                                 }
+                        )));
             }
         });
 
         view.findViewById(R.id.btn_wrong_question).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ExternalParam.getInstance().getLessonSample() == null) {
-                    FrameDialog.show(getChildFragmentManager(), PreLearningFragment.newInstance(new PreLearningFragment.PreLearningListener() {
-                        @Override
-                        public void onCompleted() {
-                            UserData userData = ExternalParam.getInstance().getUserData();
-                            FrameDialog.fullShow(getChildFragmentManager(), WrongQuestionShowFragment.newInstance(userData.getOwnerID()));
-                        }
-                    }));
-                } else {
-                    UserData userData = ExternalParam.getInstance().getUserData();
-                    FrameDialog.fullShow(getChildFragmentManager(), WrongQuestionShowFragment.newInstance(userData.getOwnerID()));
-                }
+                FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(
+                        LessonSampleSelectorFragment.newInstance(new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
+                                                                     @Override
+                                                                     public void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData) {
+                                                                         UserData userData = ExternalParam.getInstance().getUserData();
+                                                                         FrameDialog.fullShow(getChildFragmentManager(), WrongQuestionShowFragment.newInstance(userData.getOwnerID()));
+                                                                     }
+                                                                 }
+                        )));
             }
         });
 

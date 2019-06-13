@@ -55,11 +55,11 @@ public class FrameDialog extends DialogFragment {
             view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                try {
-                    dismiss();
-                } catch (Exception e) {
+                    try {
+                        dismiss();
+                    } catch (Exception e) {
 
-                }
+                    }
                 }
             });
         } else {

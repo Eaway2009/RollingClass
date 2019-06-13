@@ -66,7 +66,9 @@ public class LessonSampleSelectorFragment extends Fragment {
     }
 
     private void initData() {
-        mSubjectData = (SubjectData) getArguments().getSerializable(SubjectSelectorFragment.SELECTED_SUBJECT);
+        if(getArguments()!=null) {
+            mSubjectData = (SubjectData) getArguments().getSerializable(SubjectSelectorFragment.SELECTED_SUBJECT);
+        }
         new InitDataTask().execute();
     }
 
