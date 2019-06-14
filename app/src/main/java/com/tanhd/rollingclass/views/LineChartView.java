@@ -106,11 +106,10 @@ public class LineChartView extends LinearLayout {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setTextColor(Color.BLACK);
         leftAxis.setAxisMinimum(0);
         leftAxis.setDrawGridLines(false);
         leftAxis.setGranularityEnabled(true);
-        leftAxis.setValueFormatter(new MyValueFormatter("", "次"));
 
         YAxis rightAxis = chart.getAxisRight();
         rightAxis.setDrawAxisLine(false);
@@ -145,8 +144,8 @@ public class LineChartView extends LinearLayout {
             //set1.enableDashedLine(10f, 5f, 0f);
 
             // black lines and points
-            set1.setColor(Color.BLACK);
-            set1.setCircleColor(Color.BLACK);
+            set1.setColor(getResources().getColor(R.color.button_blue_item));
+            set1.setCircleColor(getResources().getColor(R.color.button_blue_item));
 
             // line thickness and point size
             set1.setLineWidth(1f);
@@ -174,7 +173,6 @@ public class LineChartView extends LinearLayout {
                     return mLineChart.getAxisLeft().getAxisMinimum();
                 }
             });*/
-            set1.setValueFormatter(new MyValueFormatter("", ""));
             set1.setDrawValues(false);
 
             // set color of filled area

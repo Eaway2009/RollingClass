@@ -16,8 +16,5 @@
         android:right="10dp"
         android:top="10dp" />
     <size android:width="100dp" />
-    <solid android:color="#CACACA" />
-    <stroke
-        android:width="0.1dp"
-        android:color="#dcdcdc" />
+    <solid android:color="@color/button_orange_item" />
 </shape>

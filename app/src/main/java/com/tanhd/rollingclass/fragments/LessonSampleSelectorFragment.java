@@ -153,6 +153,8 @@ public class LessonSampleSelectorFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    ExternalParam.getInstance().setLessonSample(itemData.lessonSampleData);
+
                     if (mListener != null)
                         mListener.onLessonSampleSelected(itemData.knowledgeData, itemData.lessonSampleData);
 

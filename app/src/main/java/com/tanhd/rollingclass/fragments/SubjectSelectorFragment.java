@@ -89,8 +89,10 @@ public class SubjectSelectorFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             SchoolData schoolData = ExternalParam.getInstance().getSchoolData();
-            if (schoolData == null)
-                return null;
+            if (schoolData == null) {
+                schoolData = ScopeServer.getInstance().getSchoolData();
+                ExternalParam.getInstance().setSchoolData(schoolData);
+            }
 
             List<SubjectData> subjectList = ScopeServer.getInstance().qureySubject(schoolData.SchoolID);
             mItemList = subjectList;

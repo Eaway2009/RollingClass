@@ -10,6 +10,7 @@ import java.util.List;
 public class AnswerData extends BaseJsonClass {
     public String AnswerID;
     public String AnswerName;
+    public int AnswerType;
     public String AnswerUserID;
     public String AnswerUserName;
     public long CreateTime;

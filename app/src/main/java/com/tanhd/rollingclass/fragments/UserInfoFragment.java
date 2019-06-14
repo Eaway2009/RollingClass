@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,9 +21,12 @@ import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.SchoolData;
 import com.tanhd.rollingclass.server.data.StudentData;
+import com.tanhd.rollingclass.server.data.SubjectData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
+
+import java.util.List;
 
 public class UserInfoFragment extends Fragment {
     private EditText mNameView;
@@ -50,6 +54,7 @@ public class UserInfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_info, container, false);
         init(view);
+        initData();
         return view;
     }
 
@@ -85,8 +90,7 @@ public class UserInfoFragment extends Fragment {
             }
             mUsernameView.setText(teacherData.Username);
             mMobileView.setText(teacherData.Mobile);
-            SchoolData schoolData = ExternalParam.getInstance().getSchoolData();
-            mSchoolView.setText(schoolData.SchoolName);
+
             view.findViewById(R.id.teacher_layout).setVisibility(View.VISIBLE);
             view.findViewById(R.id.student_layout).setVisibility(View.GONE);
 
@@ -113,8 +117,6 @@ public class UserInfoFragment extends Fragment {
             mUsernameView.setText(studentData.Username);
             mMobileView.setText(studentData.Mobile);
 
-            SchoolData schoolData = ExternalParam.getInstance().getSchoolData();
-            mSchoolView.setText(schoolData.SchoolName);
             view.findViewById(R.id.teacher_layout).setVisibility(View.GONE);
             view.findViewById(R.id.student_layout).setVisibility(View.VISIBLE);
 
@@ -134,6 +136,30 @@ public class UserInfoFragment extends Fragment {
         });
     }
 
+    private void initData(){
+        new InitDataTask().execute();
+    }
+
+    private class InitDataTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            SchoolData schoolData = ExternalParam.getInstance().getSchoolData();
+            if (schoolData == null) {
+                schoolData = ScopeServer.getInstance().getSchoolData();
+                ExternalParam.getInstance().setSchoolData(schoolData);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            SchoolData schoolData = ExternalParam.getInstance().getSchoolData();
+            if(schoolData!=null) {
+                mSchoolView.setText(schoolData.SchoolName);
+            }
+        }
+    }
     private void updatePassword() {
         String oldPassword = mPassword1View.getText().toString();
         String newPassword1 = mPassword2View.getText().toString();

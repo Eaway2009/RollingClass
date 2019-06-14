@@ -6,18 +6,11 @@
         android:bottomRightRadius="0dp"
         android:topLeftRadius="0dp"
         android:topRightRadius="5dp" />
-    <gradient
-            android:angle="45"
-            android:endColor="#72cb60"
-            android:startColor="#72cb60" />
     <padding
         android:bottom="10dp"
         android:left="10dp"
         android:right="10dp"
         android:top="10dp" />
     <size android:width="100dp" />
-    <solid android:color="#CACACA" />
-    <stroke
-        android:width="0.1dp"
-        android:color="#dcdcdc" />
+    <solid android:color="@color/button_blue_item" />
 </shape>

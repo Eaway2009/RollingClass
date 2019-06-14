@@ -301,6 +301,7 @@ public class ExamFragment extends Fragment {
                 answerData.QuestionID = questionData.QuestionID;
                 answerData.QuestionName = questionData.Context.Stem;
                 answerData.AnswerUserID = userID;
+                answerData.AnswerType = 2;
                 answerData.AnswerUserName = userName;
                 answerData.LessonSampleID = questionData.LessonSampleID;
                 answerData.LessonSampleName = questionData.LessonSampleName;

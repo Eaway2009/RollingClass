@@ -100,10 +100,8 @@ public class MicroCourseListView extends LinearLayout {
             TextView nameView = convertView.findViewById(R.id.name);
             nameView.setText(itemData.MicroCourseName);
             if (itemData.MicroCourseID.equals(mSelMicroCourseID)) {
-                nameView.setTextColor(getResources().getColor(R.color.white));
                 convertView.setBackgroundColor(getResources().getColor(R.color.button_blue));
             } else {
-                nameView.setTextColor(getResources().getColor(R.color.black));
                 convertView.setBackground(null);
             }
 

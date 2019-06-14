@@ -68,6 +68,7 @@ public class MicroCourseBarChartView extends LinearLayout {
 
                 int mostData = 0;
                 int allVal = 0;
+                int lastVal=0;
                 List<Entry> entries = new ArrayList<>();
                 for (int i = 0; i < list.size(); i++) {
                     int val = list.get(i);
@@ -77,8 +78,14 @@ public class MicroCourseBarChartView extends LinearLayout {
 
                         mostData = i;
                     }
-                    if (j == 0) {
+                    if (j == 9) {
+                        if((i-9>0&&allVal!=lastVal)||i-9==0) {
+                            entries.add(new Entry(i-9, allVal));
+                        }
                         entries.add(new Entry(i, allVal));
+
+                        lastVal = allVal;
+
                         allVal = 0;
                     }
                 }
@@ -118,11 +125,11 @@ public class MicroCourseBarChartView extends LinearLayout {
             if (list == null)
                 return;
 
-            if (mStudentData == null) {
+//            if (mStudentData == null) {
                 initClassView(list);
-            } else {
-                initStudentVieww(list, mLineValues);
-            }
+//            } else {
+//                initStudentVieww(list, mLineValues);
+//            }
         }
     }
 

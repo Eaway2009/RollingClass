@@ -1,6 +1,7 @@
 package com.tanhd.rollingclass.fragments;
 
 import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,8 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
+import com.tanhd.rollingclass.server.data.SchoolData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
@@ -65,15 +68,48 @@ public class ClassSelectorFragment extends Fragment {
         UserData userData = ExternalParam.getInstance().getUserData();
         if (userData.isTeacher()) {
             TeacherData teacherData = (TeacherData) userData.getUserData();
-            for (ClassData classData: ExternalParam.getInstance().getTeachingClass()) {
-                ItemData itemData = new ItemData();
-                itemData.title = classData.ClassName;
-                itemData.classData = classData;
-                mItemList.add(itemData);
+            if (ExternalParam.getInstance().getTeachingClass() != null) {
+                refreshTeachingClass();
+            } else {
+                new InitDataTask(teacherData).execute();
             }
         }
 
+    }
+
+    private void refreshTeachingClass() {
+        for (ClassData classData : ExternalParam.getInstance().getTeachingClass()) {
+            ItemData itemData = new ItemData();
+            itemData.title = classData.ClassName;
+            itemData.classData = classData;
+            mItemList.add(itemData);
+        }
         mAdapter.notifyDataSetChanged();
+
+    }
+
+
+    private class InitDataTask extends AsyncTask<Void, Void, Void> {
+
+        private final TeacherData mTeacherData;
+
+        public InitDataTask(TeacherData teacherData) {
+            mTeacherData = teacherData;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            List<ClassData> teachingClass = ScopeServer.getInstance().getTeachingClass(mTeacherData.SchoolID, mTeacherData.TeacherID);
+            ExternalParam.getInstance().setTeachingClass(teachingClass);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (ExternalParam.getInstance().getTeachingClass() != null) {
+                refreshTeachingClass();
+            }
+        }
     }
 
     private class ClassAdapter extends BaseAdapter {

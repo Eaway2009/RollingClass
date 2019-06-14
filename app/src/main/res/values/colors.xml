@@ -14,6 +14,11 @@
     <color name="drop_pop_menu_bg_color">#a0000000</color>
     <color name="menu_background">#FF535353</color>
 
+    <color name="count_class_left_background">#1F2837</color>
+    <color name="button_blue_item_checked">#2196F3</color>
+    <color name="button_blue_item">#80BFF4</color>
+    <color name="button_orange_item_checked">#FF9800</color>
+    <color name="button_orange_item">#F0C07A</color>
     <color name="button_pressed">#ffc997</color>
     <color name="button_blue">#3e9df8</color>
     <color name="button_color5">#f8b551</color>

@@ -73,7 +73,6 @@ public class StudentListView extends LinearLayout {
             @Override
             public void onClick(View v) {
                 setSelectedItem(null);
-                mClassNameView.setTextColor(getResources().getColor(R.color.white));
                 mClassLayout.setBackgroundColor(getResources().getColor(R.color.button_blue));
                 if (mListener != null) {
                     mListener.onSelectedItem(null);
@@ -139,13 +138,12 @@ public class StudentListView extends LinearLayout {
             nameView.setText(studentData.Username);
 
             if (studentData.StudentID.equals(mSelStudentID)) {
-                nameView.setTextColor(getResources().getColor(R.color.white));
+
                 view.setBackgroundColor(getResources().getColor(R.color.button_blue));
 
-                mClassNameView.setTextColor(getResources().getColor(R.color.black));
+
                 mClassLayout.setBackground(null);
             } else {
-                nameView.setTextColor(getResources().getColor(R.color.black));
                 view.setBackground(null);
             }
 
