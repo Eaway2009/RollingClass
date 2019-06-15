@@ -27,8 +27,11 @@ import java.util.ListIterator;
 
 public class MicroCourseBarChartView extends LinearLayout {
     private TextView mTitleView;
+    private TextView mStaticsResultView;
     private MicroCourseData mCourseData;
     private StudentData mStudentData;
+    private int mLargestValue;
+    private String mTime;
 
     public MicroCourseBarChartView(Context context) {
         super(context);
@@ -46,6 +49,7 @@ public class MicroCourseBarChartView extends LinearLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mTitleView = findViewById(R.id.chart_title);
+        mStaticsResultView = findViewById(R.id.statics_result);
     }
 
     public void setData(MicroCourseData courseData, StudentData studentData) {
@@ -56,84 +60,106 @@ public class MicroCourseBarChartView extends LinearLayout {
     }
 
     private class LoadDataTask extends AsyncTask<Void, Void, List> {
-        List<List<Entry>> mLineValues;
 
         @Override
         protected List doInBackground(Void... voids) {
+            List<Integer> list = null;
             if (mStudentData == null) {
                 ClassData classData = ExternalParam.getInstance().getClassData();
-                List<Integer> list = ScopeServer.getInstance().CountClassMicorcourseTimes(classData.ClassID, mCourseData.MicroCourseID);
-                if (list == null)
-                    return null;
-
-                int mostData = 0;
-                int allVal = 0;
-                int lastVal=0;
-                List<Entry> entries = new ArrayList<>();
-                for (int i = 0; i < list.size(); i++) {
-                    int val = list.get(i);
-                    int j = i % 10;
-                    if (val > 0) {
-                        allVal += val;
-
-                        mostData = i;
-                    }
-                    if (j == 9) {
-                        if((i-9>0&&allVal!=lastVal)||i-9==0) {
-                            entries.add(new Entry(i-9, allVal));
-                        }
-                        entries.add(new Entry(i, allVal));
-
-                        lastVal = allVal;
-
-                        allVal = 0;
-                    }
-                }
-                int lastData = (mostData / 10 + 2) * 10;
-                if (lastData < entries.size()) {
-                    return entries.subList(0, lastData);
-                } else {
-                    return entries;
-                }
+                list = ScopeServer.getInstance().CountClassMicorcourseTimes(classData.ClassID, mCourseData.MicroCourseID);
             } else {
-                List<CountMicroCourseStudentData> list = ScopeServer.getInstance().QureyMicroCourseStatisticByCoureseID(mCourseData.MicroCourseID);
-                List<BarEntry> entries = new ArrayList<>();
-                int pos = 1;
-                mLineValues = new ArrayList<>();
-                for (int i = 0; i < list.size(); i++) {
-                    CountMicroCourseStudentData data = list.get(i);
-                    if (!data.StudentID.equals(mStudentData.StudentID))
-                        continue;
+                list = ScopeServer.getInstance().CountStudentMicorcourseTimes(mStudentData.StudentID, mCourseData.MicroCourseID);
+            }
 
-                    int count = data.VideoEndTime - data.VideoStartTime;
-                    entries.add(new BarEntry(pos, count));
+            List<Entry> entries = new ArrayList<>();
+            if (list == null) {
+                return entries;
+            }
 
-                    List<Entry> values = new ArrayList<>();
-                    for (int j = data.VideoStartTime; j <= data.VideoEndTime; j++) {
-                        values.add(new Entry(j, pos));
-                    }
-                    pos++;
-                    mLineValues.add(values);
+            int mostData = 0;
+            int allVal = 0;
+            int lastVal = 0;
+            mLargestValue = 0;
+            mTime = new String();
+            for (int i = 0; i < list.size(); i++) {
+                int val = list.get(i);
+                int remainder = i % 10;
+                if (val > 0) {
+                    allVal += val;
+
+                    mostData = i;
                 }
+                if (remainder == 9) {
+                    if ((allVal != lastVal) || i - 9 == 0) {
+                        entries.add(new Entry(i - 9, allVal));
+                    }
+                    entries.add(new Entry(i, allVal));
 
+                    lastVal = allVal;
+
+                    if (allVal > mLargestValue) {
+                        mLargestValue = allVal;
+                        mTime = String.valueOf(i - 9) + "s - " + i + "s";
+                    }
+
+                    allVal = 0;
+                }else if(i == list.size()-1){
+                    if ((allVal != lastVal) || i - remainder == 0) {
+                        entries.add(new Entry(i - remainder, allVal));
+                    }
+                    int lastData = (mostData / 10 + 1) * 10;
+                    entries.add(new Entry(lastData, allVal));
+
+                    lastVal = allVal;
+
+                    if (allVal > mLargestValue) {
+                        mLargestValue = allVal;
+                        mTime = String.valueOf(i - remainder) + "s - " + i + "s";
+                    }
+
+                    allVal = 0;
+
+                }
+            }
+            int lastData = (mostData / 10 + 2) * 10;
+            if (lastData < entries.size()) {
+                return entries.subList(0, lastData);
+            } else {
                 return entries;
             }
         }
 
         @Override
         protected void onPostExecute(List list) {
-            if (list == null)
-                return;
 
-//            if (mStudentData == null) {
-                initClassView(list);
-//            } else {
-//                initStudentVieww(list, mLineValues);
-//            }
+            initClassView(list);
+            if(mLargestValue>0){
+                if (mStudentData == null) {
+                    mStaticsResultView.setText("同学们在" + mTime + "区间停顿多，达到" + mLargestValue + "人次");
+                } else {
+                    mStaticsResultView.setText(mStudentData.Username + "同学在" + mTime + "区间停顿多，达到" + mLargestValue + "次");
+                }
+            }else{
+                if (mStudentData == null) {
+                    mStaticsResultView.setText("同学们不曾看过此微课");
+                } else {
+                    mStaticsResultView.setText(mStudentData.Username + "同学不曾看过此微课");
+                }
+            }
         }
     }
 
     private void initClassView(List entries) {
+        LineChartView lineChartView = findViewById(R.id.linechart_view);
+        View studentChartLayout = findViewById(R.id.student_chart_layout);
+        lineChartView.setVisibility(VISIBLE);
+        studentChartLayout.setVisibility(GONE);
+
+        ClassData classData = ExternalParam.getInstance().getClassData();
+        lineChartView.setData(classData.ClassName + "微课情况统计", entries);
+    }
+
+    private void initStudentView(List entries) {
         LineChartView lineChartView = findViewById(R.id.linechart_view);
         View studentChartLayout = findViewById(R.id.student_chart_layout);
         lineChartView.setVisibility(VISIBLE);

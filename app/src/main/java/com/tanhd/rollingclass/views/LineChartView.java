@@ -74,13 +74,14 @@ public class LineChartView extends LinearLayout {
         chart.setScaleEnabled(true);
         chart.setDrawGridBackground(false);
         chart.setHighlightPerDragEnabled(true);
-
+        chart.setContentDescription("时间轴");
+//        chart.setDescription("同时观看次数");
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(true);
 
 
         // set an alternative background color
-        chart.setBackgroundColor(Color.WHITE);
+        chart.setBackgroundColor(getResources().getColor(R.color.count_class_background));
 
         chart.animateX(500);
 

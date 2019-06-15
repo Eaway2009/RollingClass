@@ -118,6 +118,7 @@ public class MicroCourseListView extends LinearLayout {
 
             if (mSelMicroCourseID == null && position == 0) {
                 convertView.callOnClick();
+                convertView.setBackgroundColor(getResources().getColor(R.color.button_blue));
             }
             return convertView;
         }

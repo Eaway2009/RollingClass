@@ -23,4 +23,5 @@
     <string name="update_prompt">发现新版本，是否需要更新？</string>
     <string name="no_update_prompt">当前已经是最新版本, 无需更新!</string>
     <string name="into_class">进入课堂</string>
+    <string name="statics_result">统计结果：</string>
 </resources>

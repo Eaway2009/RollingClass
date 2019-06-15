@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -589,6 +590,49 @@ public class ScopeServer extends ServerRequest {
         String response = sendRequest(HOST_URL + "/microCourseStatistic/CountClassMicorcourseTimes/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<Integer> list = jsonToList(Integer.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    public List<Integer> CountStudentMicorcourseTimes(String studentID, String courseID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("studentID", studentID);
+        params.put("courseID", courseID);
+
+        String response = sendRequest(HOST_URL + "/microCourseStatistic/CountStudentMicorcourseTimes/" + mToken, METHOD.GET, params);
+        List<Integer> list = new ArrayList<>();
+        if (response != null) {
+            JSONObject resp = null;
+            try {
+                resp = new JSONObject(response);
+                int errorCode = resp.getInt("errorCode");
+                if (errorCode != 0)
+                    return null;
+
+                JSONObject result = resp.getJSONObject("result");
+                Iterator it = result.keys();
+                while(it.hasNext()){
+                    String key = (String) it.next();
+                    //得到value的值
+                    Integer value = (Integer) result.get(key);
+                    int index = Integer.valueOf(key);
+                    if(list.size()>index){
+                        list.set(index, value);
+                    }else {
+                        int add = list.size();
+                        while(add<index){
+                            list.add(add, 0);
+                            add++;
+                        }
+                        list.add(index, value);
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return list;
         }
 

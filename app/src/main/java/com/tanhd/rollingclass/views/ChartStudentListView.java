@@ -21,7 +21,7 @@ import com.tanhd.rollingclass.server.data.StudentData;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentListView extends LinearLayout {
+public class ChartStudentListView extends LinearLayout {
     public static interface StudentListViewListener {
         void onSelectedItem(StudentData studentData);
     }
@@ -35,15 +35,15 @@ public class StudentListView extends LinearLayout {
     private TextView mClassNameView;
     private boolean mEnableClass = true;
 
-    public StudentListView(Context context) {
+    public ChartStudentListView(Context context) {
         super(context);
     }
 
-    public StudentListView(Context context, AttributeSet attrs) {
+    public ChartStudentListView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public StudentListView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ChartStudentListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -73,7 +73,6 @@ public class StudentListView extends LinearLayout {
             @Override
             public void onClick(View v) {
                 setSelectedItem(null);
-                mClassNameView.setTextColor(getResources().getColor(R.color.white));
                 mClassLayout.setBackgroundColor(getResources().getColor(R.color.button_blue));
                 if (mListener != null) {
                     mListener.onSelectedItem(null);
@@ -139,13 +138,12 @@ public class StudentListView extends LinearLayout {
             nameView.setText(studentData.Username);
 
             if (studentData.StudentID.equals(mSelStudentID)) {
-                nameView.setTextColor(getResources().getColor(R.color.white));
+
                 view.setBackgroundColor(getResources().getColor(R.color.button_blue));
 
-                mClassNameView.setTextColor(getResources().getColor(R.color.black));
+
                 mClassLayout.setBackground(null);
             } else {
-                nameView.setTextColor(getResources().getColor(R.color.black));
                 view.setBackground(null);
             }
 

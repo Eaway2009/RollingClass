@@ -1,6 +1,5 @@
 package com.tanhd.rollingclass.fragments.pages;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,15 +12,16 @@ import android.widget.Toast;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.StudentData;
+import com.tanhd.rollingclass.views.ChartStudentListView;
 import com.tanhd.rollingclass.views.MicroCourseBarChartView;
 import com.tanhd.rollingclass.views.MicroCourseListView;
-import com.tanhd.rollingclass.views.StudentListView;
 
 public class CountClassMicroCoursePage extends Fragment {
     private MicroCourseBarChartView mBarChartView;
     private MicroCourseListView mMicroCourseListView;
-    private StudentListView mStudentListView;
+    private ChartStudentListView mStudentListView;
     private MicroCourseData mSelectedCourseData;
+    private StudentData mSelectedStudentData;
 
     @Nullable
     @Override
@@ -32,22 +32,21 @@ public class CountClassMicroCoursePage extends Fragment {
         mMicroCourseListView.setListener(new MicroCourseListView.MicroCourseListViewListener() {
             @Override
             public void onSelectedItem(MicroCourseData microCourseData) {
-                mStudentListView.setSelectedItem(null);
                 mSelectedCourseData = microCourseData;
-                mBarChartView.setData(mSelectedCourseData, null);
+                mBarChartView.setData(mSelectedCourseData, mSelectedStudentData);
             }
         });
 
         mStudentListView = view.findViewById(R.id.student_view);
         mStudentListView.enableClass(false);
-        mStudentListView.setListener(new StudentListView.StudentListViewListener() {
+        mStudentListView.setListener(new ChartStudentListView.StudentListViewListener() {
             @Override
             public void onSelectedItem(StudentData studentData) {
                 if (mSelectedCourseData == null) {
                     Toast.makeText(getContext().getApplicationContext(), "请先选择微课!", Toast.LENGTH_LONG).show();
                     return;
                 }
-
+                mSelectedStudentData = studentData;
                 mBarChartView.setData(mSelectedCourseData, studentData);
             }
         });
