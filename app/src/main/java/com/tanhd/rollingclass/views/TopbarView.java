@@ -38,6 +38,7 @@ public class TopbarView extends CardView {
     private TextView mWeekView;
     private CornerImageView mMessageView;
     private PopMenu mPopMenu;
+    private Callback mCallback;
 
     public TopbarView(Context context) {
         super(context);
@@ -100,6 +101,10 @@ public class TopbarView extends CardView {
                 if (menuItem.itemId == R.id.logout) {
                     Activity activity = (Activity) getContext();
                     activity.finish();
+                } else if (menuItem.itemId == R.id.connect_again) {
+                    if(mCallback!=null){
+                        mCallback.connect_again();
+                    }
                 } else if (menuItem.itemId == R.id.network_ping) {
                     if (ExternalParam.getInstance().getUserData().isTeacher()) {
                         if (ExternalParam.getInstance().getClassData() == null) {
@@ -146,5 +151,13 @@ public class TopbarView extends CardView {
 
         }
     };
+
+    public void setCallback(Callback callback){
+        mCallback = callback;
+    }
+
+    public interface Callback{
+        public void connect_again();
+    }
 
 }

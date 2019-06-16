@@ -20,6 +20,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
+import com.tanhd.rollingclass.server.data.SubjectData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
 
 import java.io.Serializable;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MicroCourseSelectorFragment extends Fragment {
+    private SubjectData mSubjectData;
+
     private class ItemData {
         String title;
         String name;
@@ -62,6 +65,10 @@ public class MicroCourseSelectorFragment extends Fragment {
     }
 
     private void initData() {
+
+        if(getArguments()!=null) {
+            mSubjectData = (SubjectData) getArguments().getSerializable(SubjectSelectorFragment.SELECTED_SUBJECT);
+        }
         new InitDataTask().execute();
     }
 
@@ -69,11 +76,10 @@ public class MicroCourseSelectorFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ClassData classData = ExternalParam.getInstance().getClassData();
-            if (classData == null) {
+            if (mSubjectData == null) {
                 return null;
             }
-            List<MicroCourseData> sampleList = ScopeServer.getInstance().QureyMicroCourseByClassID(classData.ClassID);
+            List<MicroCourseData> sampleList = ScopeServer.getInstance().QureyMicroCourseBySubjectCode(mSubjectData.SubjectCode);
             if (sampleList == null)
                 return null;
 

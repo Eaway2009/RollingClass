@@ -14,16 +14,37 @@
         android:layout_marginEnd="16dp"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <include layout="@layout/score_set_layout"
             android:id="@+id/score_layout"/>
 
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_red_light" />
         <TextView
             android:id="@+id/btn_analysis"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginTop="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
             android:background="@color/button_blue"
             android:gravity="center"
             android:textColor="@color/white"
@@ -32,9 +53,13 @@
 
         <TextView
             android:id="@+id/teacher_mark"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:layout_marginLeft="40dp"
             android:background="@color/button_blue"
             android:gravity="center"
             android:visibility="gone"

@@ -39,8 +39,10 @@ import java.util.Map;
 
 public class ScopeServer extends ServerRequest {
 
-    private static final String HOST_URL = "http://www.sea-ai.com:8001/flip";
-    public static final String RESOURCE_URL = "http://www.sea-ai.com:8002/";
+//    private static final String HOST_URL = "http://www.sea-ai.com:8001/flip";
+    private static final String HOST_URL = "http://192.168.90.207:8001/flip";
+//    public static final String RESOURCE_URL = "http://www.sea-ai.com:8002/";
+    public static final String RESOURCE_URL = "http://192.168.90.207:8002/";
     private static final String TAG = "ScopeServer";
 
     private String mToken;
@@ -80,6 +82,52 @@ public class ScopeServer extends ServerRequest {
         }
 
         response = sendRequest(HOST_URL + "/teacher/TeacherLogin", METHOD.POST, params);
+        if (response != null) {
+            JSONObject json;
+            try {
+                json = new JSONObject(response);
+                json.put("role", "1");
+            } catch (JSONException e) {
+                json = null;
+            }
+
+            if (json != null) {
+                return json.toString();
+            }
+        }
+
+        return null;
+    }
+
+    public String studentLoginToServer(String username, String password) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("account", username);
+        params.put("password", password);
+
+        String response = sendRequest(HOST_URL + "/student/Studentlogin", METHOD.POST, params);
+        if (response != null) {
+            JSONObject json;
+            try {
+                json = new JSONObject(response);
+                json.put("role", "0");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                json = null;
+            }
+
+            if (json != null) {
+                return json.toString();
+            }
+        }
+        return null;
+    }
+
+    public String teacherLoginToServer(String username, String password) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("account", username);
+        params.put("password", password);
+
+        String response = sendRequest(HOST_URL + "/teacher/TeacherLogin", METHOD.POST, params);
         if (response != null) {
             JSONObject json;
             try {
@@ -398,6 +446,19 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("classID", classID);
         String response = sendRequest(HOST_URL + "/microcourse/QureyMicroCourseByClassID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    public List<MicroCourseData> QureyMicroCourseBySubjectCode(int subjectcode) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("subjectcode", ""+subjectcode);
+        params.put("token", mToken);
+        String response = sendRequest(HOST_URL + "/microcourse/QureyMicroCourseBySubjectCode/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
             return list;

@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog mNetworkDialog;
     private View mBackButton;
     private Fragment fragment;
+    private int refreshData = 1;
+    private RefreshTask mRefreshTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,20 +95,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.i(TAG, "onCreate: has UserData");
             new RefreshDataTask(userData).execute();
+//            new ConnectMqttTask(userData).execute();
         }
-        if (MQTT.getInstance() == null) {
-            MQTT.getInstance(userData.getOwnerID(), 8080);
-        }
-        MQTT.register(mqttListener);
-        MQTT.getInstance().subscribe();
-
-        if (!userData.isTeacher()) {
-            StudentData studentData = (StudentData) userData.getUserData();
-            MQTT.getInstance().subscribe(studentData.ClassID);
-        } else {
-            MQTT.getInstance().subscribe();
-        }
-
+//        mTopbarView.setCallback(new TopbarView.Callback() {
+//            @Override
+//            public void connect_again() {
+//                if(ExternalParam.getInstance().getUserData()!=null) {
+//                    new ConnectMqttTask(ExternalParam.getInstance().getUserData()).execute();
+//                }
+//            }
+//        });
         initUserUI();
         SmartPenService.getInstance().init(getApplicationContext());
         SmartPenService.getInstance().tryToConnect();
@@ -115,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MQTT.unregister(mqttListener);
-        MQTT.getInstance().unsubscribe();
-        MQTT.getInstance().disconnect();
+//        MQTT.unregister(mqttListener);
+//        MQTT.getInstance().unsubscribe();
+//        MQTT.getInstance().disconnect();
     }
 
     @Override
@@ -195,9 +193,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initUserUI() {
-        if (MQTT.getInstance() == null) {
-            return;
-        }
+//        if (MQTT.getInstance() == null) {
+//            return;
+//        }
 
         if (ExternalParam.getInstance().getUserData().isTeacher()) {
             fragment = TeacherFragment.newInstance(new TeacherFragment.BackListener() {
@@ -213,6 +211,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
+            final StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+            mHandler.postAtTime(new Runnable() {
+                @Override
+                public void run() {
+                    getRefreshTask(studentData.Token).execute();
+                }
+            }, 10000);
+
             fragment = new StudentFragment();
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, fragment).commit();
@@ -238,6 +244,73 @@ public class MainActivity extends AppCompatActivity {
 
             ScopeServer.getInstance().initUserData(mUserData);
             return null;
+        }
+    }
+
+    private RefreshTask getRefreshTask(String token){
+        if(mRefreshTask == null){
+            mRefreshTask = new RefreshTask(token);
+        }
+        return mRefreshTask;
+    }
+
+    private class RefreshTask extends AsyncTask<Void, Void, Void> {
+
+        private String mUserToken;
+
+        public RefreshTask(String token) {
+            mUserToken = token;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ScopeServer.getInstance().refreshExpiration(mUserToken);
+            return null;
+        }
+    }
+
+    private Handler mHandler = new Handler();
+
+    private class ConnectMqttTask extends AsyncTask<Void, Void, Integer> {
+
+        private UserData mUserData;
+
+        public ConnectMqttTask(UserData userData) {
+            mUserData = userData;
+            //初始化MQ
+
+            if(MQTT.getInstance()==null) {
+                MQTT.getInstance(mUserData.getOwnerID(), 8080);
+            }
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            boolean flag = MQTT.getInstance().connect();
+            if (!flag) {
+                return -1;
+            }
+            Log.i(TAG, "onPostExecute: 连接MQ");
+            return 0;
+        }
+
+        @Override
+        protected void onPostExecute(Integer returnCode) {
+            super.onPostExecute(returnCode);
+            if(returnCode==-1){
+                Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            MQTT.register(mqttListener);
+            MQTT.getInstance().subscribe();
+
+            if (!mUserData.isTeacher()) {
+                StudentData studentData = (StudentData) mUserData.getUserData();
+                MQTT.getInstance().subscribe(studentData.ClassID);
+            } else {
+                MQTT.getInstance().subscribe();
+            }
+
         }
     }
 }

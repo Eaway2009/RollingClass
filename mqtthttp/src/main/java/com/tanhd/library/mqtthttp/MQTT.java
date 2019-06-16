@@ -95,7 +95,7 @@ public class MQTT {
             options.setUserName("admin");
             options.setPassword("admin".toCharArray());
             options.setConnectionTimeout(10);
-            options.setKeepAliveInterval(3000);
+            options.setKeepAliveInterval(30000);
             options.setAutomaticReconnect(true);
             mClient = new MqttClient(MQTT_SERVER, PREF_CLIENT_ID + mClientID, new MemoryPersistence());
             mClient.setCallback(mCallback);

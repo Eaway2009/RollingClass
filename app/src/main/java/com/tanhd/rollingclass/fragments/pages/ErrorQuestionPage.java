@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.fragments.FrameDialog;
@@ -23,11 +24,13 @@ public class ErrorQuestionPage extends Fragment {
 
     private QuestionData mQuestionData;
     private AnswerData mAnswerData;
+    private String mDescription;
 
-    public static ErrorQuestionPage newInstance(QuestionData questionData, AnswerData answerData) {
+    public static ErrorQuestionPage newInstance(QuestionData questionData, AnswerData answerData, String description) {
         Bundle args = new Bundle();
         args.putSerializable("questionData", questionData);
         args.putSerializable("answerData", answerData);
+        args.putSerializable("description", description);
         ErrorQuestionPage page = new ErrorQuestionPage();
         page.setArguments(args);
         return page;
@@ -38,6 +41,7 @@ public class ErrorQuestionPage extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mQuestionData = (QuestionData) getArguments().get("questionData");
         mAnswerData = (AnswerData) getArguments().get("answerData");
+        mDescription = getArguments().getString("description");
         View view = inflater.inflate(R.layout.page_error_question, container, false);
         QuestionAnswerView answerView = view.findViewById(R.id.question_answer);
         answerView.setData(mQuestionData, mAnswerData);
@@ -70,6 +74,14 @@ public class ErrorQuestionPage extends Fragment {
                     FrameDialog.fullShow(getChildFragmentManager(), ShowAnswerCommentFragment.newInstance(mQuestionData, mAnswerData));
                 }
             });
+        }
+
+        TextView descriptionView = view.findViewById(R.id.description);
+
+        if(mQuestionData.isChoiceType()&&!TextUtils.isEmpty(mDescription)){
+            descriptionView.setText(mDescription);
+        }else{
+            descriptionView.setText("");
         }
         return view;
     }

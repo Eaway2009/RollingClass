@@ -44,8 +44,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mUserView;
     private EditText mPasswordView;
     private View mSignButtonView;
+    private View mTeacherButtonView;
     private ProgressBar mProgressBar;
-    private CheckBox  mCheckBox;
+    private CheckBox mCheckBox;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +65,8 @@ public class LoginActivity extends AppCompatActivity {
         }
         mCheckBox = findViewById(R.id.save_pwd);
 
-        mSignButtonView = findViewById(R.id.sign);
+        mSignButtonView = findViewById(R.id.student_sign);
+        mTeacherButtonView = findViewById(R.id.teacher_sign);
         mSignButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +77,20 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                new LoginTask(username, password, mCheckBox.isChecked()).execute();
+                new LoginTask(username, password, mCheckBox.isChecked(), false).execute();
+            }
+        });
+        mTeacherButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = mUserView.getText().toString();
+                String password = mPasswordView.getText().toString();
+                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+                    Toast.makeText(getApplicationContext(), "用户名和密码不能为空!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                new LoginTask(username, password, mCheckBox.isChecked(), true).execute();
             }
         });
 
@@ -144,14 +159,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private class LoginTask extends AsyncTask<Void, Void, Integer> {
+        private String mErrorMessage;
         private final String mUserName;
         private final String mPassword;
         private final boolean mChecked;
+        private final boolean mIsTeacher;
 
-        public LoginTask(String userName, String password, boolean checked) {
+        public LoginTask(String userName, String password, boolean checked, boolean isTeacher) {
             mUserName = userName;
             mPassword = password;
             mChecked = checked;
+            mIsTeacher = isTeacher;
         }
 
         @Override
@@ -163,7 +181,12 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... voids) {
             Log.i(TAG, "doInBackground: 准备调用接口");
-            String response = ScopeServer.getInstance().loginToServer(mUserName, mPassword);
+            String response;
+            if (mIsTeacher) {
+                response = ScopeServer.getInstance().teacherLoginToServer(mUserName, mPassword);
+            } else {
+                response = ScopeServer.getInstance().studentLoginToServer(mUserName, mPassword);
+            }
             Log.i(TAG, "doInBackground: 接口返回");
 
             if (response != null) {
@@ -171,30 +194,35 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     json = new JSONObject(response);
                     String errorCode = json.optString("errorCode");
-                    if (!TextUtils.isEmpty(errorCode) && errorCode.equals("0")) {
-                        JSONObject result = json.getJSONObject("result");
-                        UserData userData = new UserData();
-                        int role = json.optInt("role");
-                        if (role == 1) {
-                            TeacherData teacherData = new TeacherData();
-                            teacherData.parse(teacherData, result);
-                            userData.setData(UserData.ROLE.TEACHER, teacherData);
-                        } else {
-                            StudentData studentData = new StudentData();
-                            studentData.parse(studentData, result);
-                            userData.setData(UserData.ROLE.STUDENT, studentData);
+                    mErrorMessage = json.optString("errorMessage");
+                    if (!TextUtils.isEmpty(errorCode)) {
+                        if(errorCode.equals("0")){
+                            JSONObject result = json.getJSONObject("result");
+                            UserData userData = new UserData();
+                            int role = json.optInt("role");
+                            if (role == 1) {
+                                TeacherData teacherData = new TeacherData();
+                                teacherData.parse(teacherData, result);
+                                userData.setData(UserData.ROLE.TEACHER, teacherData);
+                            } else {
+                                StudentData studentData = new StudentData();
+                                studentData.parse(studentData, result);
+                                userData.setData(UserData.ROLE.STUDENT, studentData);
+                            }
+                            ExternalParam.getInstance().setUserData(userData);
+                            ScopeServer.getInstance().initToken(userData);
+                            if (mChecked) {
+                                AppUtils.saveLoginInfo(getApplicationContext(), mUserName, mPassword);
+                            } else {
+                                AppUtils.clearLoginInfo(getApplicationContext());
+                            }
+                            Log.i(TAG, "doInBackground: 返回解析完成");
+                            return 0;
+                        }else{
+                            return Integer.valueOf(errorCode);
                         }
-                        ExternalParam.getInstance().setUserData(userData);
-                        ScopeServer.getInstance().initToken(userData);
-                        if (mChecked) {
-                            AppUtils.saveLoginInfo(getApplicationContext(), mUserName, mPassword);
-                        } else {
-                            AppUtils.clearLoginInfo(getApplicationContext());
-                        }
-                        Log.i(TAG, "doInBackground: 返回解析完成");
-                        return 0;
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     return -1;
                 }
                 return -2;
@@ -207,43 +235,20 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             Log.i(TAG, "onPostExecute: 处理结果");
             if (result == 0) {
-                UserData userData = ExternalParam.getInstance().getUserData();
-                String ownerID = userData.getOwnerID();
-                Log.i(TAG, "onPostExecute: 初始化MQ");
-                //初始化MQ
-                if (MQTT.getInstance(ownerID, 8080) == null) {
-                    Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
-                    changeViewsStatus(false);
-                    return;
-                }
-                Log.i(TAG, "onPostExecute: 初始化MQ完成");
-
-                boolean flag = MQTT.getInstance().connect();
-                if (!flag) {
-                    Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
-                    changeViewsStatus(false);
-                    return;
-                }
-                Log.i(TAG, "onPostExecute: 连接MQ");
-
-//                if (!userData.isTeacher()) {
-//                    StudentData studentData = (StudentData) userData.getUserData();
-//                    new RefreshTask(studentData.Token).execute();
-//
-//                } else {
                 Intent in = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(in);
                 finish();
-//                }
             } else {
                 changeViewsStatus(false);
-                if (result == -3)
+                if (result < 0) {
                     Toast.makeText(getApplicationContext(), "连接超时，请检查服务器是否工作!", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(getApplicationContext(), "登陆失败，用户名或密码错误!", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(getApplicationContext(), mErrorMessage, Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
+
 
     private class RefreshTask extends AsyncTask<Void, Void, Map<String, String>> {
         private String mToken;

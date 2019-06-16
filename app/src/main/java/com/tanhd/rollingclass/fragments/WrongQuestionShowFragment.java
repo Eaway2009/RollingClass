@@ -22,6 +22,8 @@ import com.tanhd.rollingclass.fragments.pages.ErrorQuestionPage;
 import com.tanhd.rollingclass.fragments.pages.MarkAnswerPage;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
+import com.tanhd.rollingclass.server.data.ClassData;
+import com.tanhd.rollingclass.server.data.CountClassLessonSampleData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.QuestionData;
@@ -42,6 +44,7 @@ public class WrongQuestionShowFragment extends Fragment {
     private String mStudentID;
     private HashMap<String, AnswerData> mAnswerMap = new HashMap<>();
     private HashMap<Integer, Fragment> mPageMap = new HashMap<>();
+    private List<CountClassLessonSampleData> mCountDataList;
 
     public static WrongQuestionShowFragment newInstance(String studentID) {
         Bundle args = new Bundle();
@@ -141,6 +144,9 @@ public class WrongQuestionShowFragment extends Fragment {
         @Override
         protected Integer doInBackground(Void... voids) {
             LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
+
+            ClassData classData = ExternalParam.getInstance().getClassData();
+            mCountDataList = ScopeServer.getInstance().CountClassLessonSample(classData.ClassID, lessonSampleData.LessonSampleID);
             List<AnswerData> answerList = ScopeServer.getInstance().QureyErrorAnswerv2ByStudentID(mStudentID);
             if (answerList == null)
                 return -1;
@@ -160,7 +166,7 @@ public class WrongQuestionShowFragment extends Fragment {
 
             for (int i=0; i<mQuestionList.size(); i++) {
                 QuestionData questionData = mQuestionList.get(i);
-                mPageMap.put(i, ErrorQuestionPage.newInstance(questionData, mAnswerMap.get(questionData.QuestionID)));
+                mPageMap.put(i, ErrorQuestionPage.newInstance(questionData, mAnswerMap.get(questionData.QuestionID), queryCountData(questionData.QuestionID)));
             }
 
             if (mQuestionList.isEmpty())
@@ -168,5 +174,21 @@ public class WrongQuestionShowFragment extends Fragment {
 
             return 0;
         }
+    }
+
+
+
+    private String queryCountData(String questionID) {
+        if (mCountDataList == null)
+            return null;
+
+        for (CountClassLessonSampleData data: mCountDataList) {
+            if (data.QuestionID.equals(questionID)) {
+                String text = String.format("【%d人正确, %d人错误, %d人未提交】", data.CorrectTotal, data.ErrorTotal, data.NoAnswerTotal);
+                return text;
+            }
+        }
+
+        return null;
     }
 }

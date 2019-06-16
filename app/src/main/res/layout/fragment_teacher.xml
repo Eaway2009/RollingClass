@@ -38,12 +38,14 @@
             android:id="@+id/start_lesson"
             style="@style/ColorButton"
             android:background="@drawable/button_3_teacher_selector"
-            android:text="@string/class_begin"/>
+            android:text="@string/class_begin"
+            android:visibility="gone"/>
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_static"
@@ -118,14 +120,16 @@
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/review_papers_btn"
             style="@style/ColorButton"
             android:background="@drawable/button_9_teacher_selector"
             android:enabled="false"
-            android:text="评审试卷"/>
+            android:text="评审试卷"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

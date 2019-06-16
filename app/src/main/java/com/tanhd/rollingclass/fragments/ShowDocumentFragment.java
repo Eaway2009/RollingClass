@@ -59,8 +59,8 @@ public class ShowDocumentFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mUrl = getArguments().getString("url");
         int mode = getArguments().getInt("mode");
+        mUrl = getArguments().getString("url");
         mSyncMode = SYNC_MODE.values()[mode];
         View view = inflater.inflate(R.layout.fragment_show_document, container, false);
         webView = view.findViewById(R.id.webview);
@@ -81,8 +81,13 @@ public class ShowDocumentFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (mSyncMode == SYNC_MODE.SLAVE)
-            MQTT.register(mqttListener);
+//        if (mSyncMode == SYNC_MODE.SLAVE)
+//            MQTT.register(mqttListener);
+        downloadPDF();
+    }
+
+    public void refreshPdf(String url){
+        mUrl = url;
         downloadPDF();
     }
 
@@ -121,9 +126,9 @@ public class ShowDocumentFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-
-        if (mSyncMode == SYNC_MODE.SLAVE)
-            MQTT.unregister(mqttListener);
+//临时注释
+//        if (mSyncMode == SYNC_MODE.SLAVE)
+//            MQTT.unregister(mqttListener);
     }
 
     private void load() {

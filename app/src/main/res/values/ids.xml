@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="network_ping" type="id" />
+    <item name="connect_again" type="id" />
     <item name="logout" type="id" />
     <item name="server_test" type="id" />
     <item name="show_bar" type="id" />
