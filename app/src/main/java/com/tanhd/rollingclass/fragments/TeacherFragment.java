@@ -49,6 +49,7 @@ public class TeacherFragment extends Fragment {
     private View mRightToolbar;
     private View mBtnBarView;
     private BackListener mListener;
+    private ShowDocumentFragment mShowDocumentFragment;
 
     public static TeacherFragment newInstance(BackListener listener) {
         TeacherFragment fragment = new TeacherFragment();
@@ -252,13 +253,24 @@ public class TeacherFragment extends Fragment {
 
     private void showLessonSample(String url, ShowDocumentFragment.SYNC_MODE mode) {
         String fragmentTag = "lessonSample";
-        ShowDocumentFragment fragment = ShowDocumentFragment.newInstance(ScopeServer.RESOURCE_URL + url, mode);
+        ShowDocumentFragment fragment = getShowDocumentFragment(url, mode);
         FragmentManager fragmentManager = getChildFragmentManager();
-        FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
-        beginTransaction.replace(R.id.framelayout, fragment);
-        beginTransaction.addToBackStack(fragmentTag);
-        beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        beginTransaction.commit();
+        if(!fragment.isAdded()) {
+            FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
+            beginTransaction.replace(R.id.framelayout, fragment);
+            beginTransaction.addToBackStack(fragmentTag);
+            beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            beginTransaction.commit();
+        }else{
+            fragment.refreshPdf(url);
+        }
+    }
+
+    private ShowDocumentFragment getShowDocumentFragment(String url, ShowDocumentFragment.SYNC_MODE mode){
+        if(mShowDocumentFragment==null){
+            mShowDocumentFragment = ShowDocumentFragment.newInstance(ScopeServer.RESOURCE_URL + url, mode);
+        }
+        return mShowDocumentFragment;
     }
 
     private void showNewFragment(Fragment fragment) {

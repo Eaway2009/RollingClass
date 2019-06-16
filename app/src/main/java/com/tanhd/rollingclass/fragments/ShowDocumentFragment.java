@@ -47,6 +47,7 @@ public class ShowDocumentFragment extends Fragment {
     private String mUrl;
     private String mPdfFilePath;
     private SYNC_MODE mSyncMode;
+    private boolean downLoadFinish = true;
 
     public static ShowDocumentFragment newInstance(String url, SYNC_MODE mode) {
         Bundle args = new Bundle();
@@ -87,8 +88,10 @@ public class ShowDocumentFragment extends Fragment {
     }
 
     public void refreshPdf(String url){
-        mUrl = url;
-        downloadPDF();
+        if(downLoadFinish || mUrl!=url){
+            mUrl = url;
+            downloadPDF();
+        }
     }
 
     private void downloadPDF() {
@@ -100,7 +103,7 @@ public class ShowDocumentFragment extends Fragment {
             load();
             return;
         }
-
+        downLoadFinish = false;
         ScopeServer.getInstance().downloadFile(mUrl, mPdfFilePath, new RequestCallback() {
             @Override
             public void onProgress(boolean b) {
@@ -113,12 +116,14 @@ public class ShowDocumentFragment extends Fragment {
             @Override
             public void onResponse(String body) {
                 load();
+                downLoadFinish = true;
             }
 
             @Override
             public void onError(String code, String message) {
                 mProgressBarView.setVisibility(View.GONE);
                 mLoadFailView.setVisibility(View.VISIBLE);
+                downLoadFinish = true;
             }
         });
     }
