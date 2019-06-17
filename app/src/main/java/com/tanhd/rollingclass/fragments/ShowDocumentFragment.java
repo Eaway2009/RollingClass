@@ -48,6 +48,7 @@ public class ShowDocumentFragment extends Fragment {
     private String mPdfFilePath;
     private SYNC_MODE mSyncMode;
     private boolean downLoadFinish = true;
+    private static final String TAG = "ShowDocumentFragment";
 
     public static ShowDocumentFragment newInstance(String url, SYNC_MODE mode) {
         Bundle args = new Bundle();

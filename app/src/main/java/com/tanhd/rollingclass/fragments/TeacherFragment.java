@@ -255,19 +255,19 @@ public class TeacherFragment extends Fragment {
         String fragmentTag = "lessonSample";
         ShowDocumentFragment fragment = getShowDocumentFragment(url, mode);
         FragmentManager fragmentManager = getChildFragmentManager();
-        if(!fragment.isAdded()) {
+        if (!fragment.isAdded()) {
             FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
             beginTransaction.replace(R.id.framelayout, fragment);
             beginTransaction.addToBackStack(fragmentTag);
             beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             beginTransaction.commit();
-        }else{
-            fragment.refreshPdf(url);
+        } else {
+            fragment.refreshPdf(ScopeServer.RESOURCE_URL + url);
         }
     }
 
-    private ShowDocumentFragment getShowDocumentFragment(String url, ShowDocumentFragment.SYNC_MODE mode){
-        if(mShowDocumentFragment==null){
+    private ShowDocumentFragment getShowDocumentFragment(String url, ShowDocumentFragment.SYNC_MODE mode) {
+        if (mShowDocumentFragment == null) {
             mShowDocumentFragment = ShowDocumentFragment.newInstance(ScopeServer.RESOURCE_URL + url, mode);
         }
         return mShowDocumentFragment;
@@ -326,7 +326,7 @@ public class TeacherFragment extends Fragment {
         }
     };
 
-    public interface BackListener{
+    public interface BackListener {
         public void showBack(boolean show);
     }
 }
