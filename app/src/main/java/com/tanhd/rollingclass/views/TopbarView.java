@@ -3,6 +3,7 @@ package com.tanhd.rollingclass.views;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -88,6 +89,7 @@ public class TopbarView extends CardView {
         mPopMenu = new PopMenu(findViewById(R.id.more));
         mPopMenu.addItem(R.drawable.menu_save_icon, R.id.server_test, getResources().getString(R.string.menu_server_test));
         mPopMenu.addItem(R.drawable.menu_update_icon, R.id.network_ping, "网络测试");
+        mPopMenu.addItem(R.drawable.menu_update_icon, R.id.app_update, "版本更新");
         mPopMenu.addItem(R.drawable.menu_save_icon, R.id.logout, getResources().getString(R.string.menu_logout));
 
         mPopMenu.setOnItemClickListener(new PopMenu.OnItemClickListener() {
@@ -114,6 +116,11 @@ public class TopbarView extends CardView {
                     }
                     AppCompatActivity activity = (AppCompatActivity) getContext();
                     FrameDialog.show(activity.getSupportFragmentManager(), new NetWorkTestFragment());
+                } else if (menuItem.itemId == R.id.app_update) {
+                    Uri uri = Uri.parse("https://github.com/Eaway2009/GitTest/blob/master/flip-v1.10_20190621.apk?raw=true");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    Activity activity = (Activity) getContext();
+                    activity.startActivity(intent);
                 } else if (menuItem.itemId == R.id.server_test) {
                     AppCompatActivity activity = (AppCompatActivity) getContext();
                     FrameDialog.show(activity.getSupportFragmentManager(), ServerTesterFragment.newInstance());

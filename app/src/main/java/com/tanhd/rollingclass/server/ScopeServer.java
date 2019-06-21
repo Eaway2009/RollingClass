@@ -40,9 +40,9 @@ import java.util.Map;
 public class ScopeServer extends ServerRequest {
 
 //    private static final String HOST_URL = "http://www.sea-ai.com:8001/flip";
-    private static final String HOST_URL = "http://192.168.90.207:8001/flip";
+    private static final String HOST_URL = "http://10.10.33.67:8001/flip";
 //    public static final String RESOURCE_URL = "http://www.sea-ai.com:8002/";
-    public static final String RESOURCE_URL = "http://192.168.90.207:8002/";
+    public static final String RESOURCE_URL = "http://10.10.33.67:8002/";
     private static final String TAG = "ScopeServer";
 
     private String mToken;

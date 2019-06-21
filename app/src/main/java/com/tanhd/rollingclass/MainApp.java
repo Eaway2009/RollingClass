@@ -11,11 +11,8 @@ import org.acra.sender.HttpSender;
 
 @ReportsCrashes(
         logcatArguments = { "-t", "1000", "-v", "long", "*:S", "LogEng"},
-        formUri = "http://106.12.122.176:5984/acra-myapp/_design/acra-storage/_update/report",
-        formUriBasicAuthLogin = "reporter",
-        formUriBasicAuthPassword = "1q2w3e4r5t",
-        reportType = HttpSender.Type.JSON,
-        httpMethod = HttpSender.Method.PUT,
+        reportSenderFactoryClasses={com.tanhd.rollingclass.utils.MyMailSenderfactory.class},
+        mode = ReportingInteractionMode.TOAST,
         customReportContent = {
                 ReportField.APP_VERSION_CODE,
                 ReportField.APP_VERSION_NAME,
@@ -55,7 +52,6 @@ import org.acra.sender.HttpSender;
                 ReportField.THREAD_DETAILS,
                 ReportField.USER_IP
         },
-        mode = ReportingInteractionMode.TOAST,
         resToastText = R.string.toast_crash
 )
 public class MainApp extends Application {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="app_update" type="id" />
     <item name="network_ping" type="id" />
     <item name="connect_again" type="id" />
     <item name="logout" type="id" />

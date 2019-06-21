@@ -25,10 +25,12 @@ import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.UpdateHelper;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.server.data.VersionMessage;
 import com.tanhd.rollingclass.utils.AppUtils;
 
 import org.json.JSONException;
@@ -97,6 +99,26 @@ public class LoginActivity extends AppCompatActivity {
         ExternalParam.getInstance().empty();
         ScopeServer.getInstance();
         requestPermission();
+        UpdateHelper.getInstance().update(new RequestCallback() {
+            @Override
+            public void onProgress(boolean b) {
+            }
+
+            @Override
+            public void onResponse(String body) {
+                StringBuffer returnBody = new StringBuffer(body);
+                VersionMessage versionMessage = UpdateHelper.getVersion(body);
+                if (versionMessage != null) {
+                    returnBody.append(versionMessage.versionCode + versionMessage.message + versionMessage.versionName);
+                }
+                Toast.makeText(LoginActivity.this, returnBody, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(String code, String message) {
+                Toast.makeText(LoginActivity.this, code + message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -196,7 +218,7 @@ public class LoginActivity extends AppCompatActivity {
                     String errorCode = json.optString("errorCode");
                     mErrorMessage = json.optString("errorMessage");
                     if (!TextUtils.isEmpty(errorCode)) {
-                        if(errorCode.equals("0")){
+                        if (errorCode.equals("0")) {
                             JSONObject result = json.getJSONObject("result");
                             UserData userData = new UserData();
                             int role = json.optInt("role");
@@ -218,7 +240,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             Log.i(TAG, "doInBackground: 返回解析完成");
                             return 0;
-                        }else{
+                        } else {
                             return Integer.valueOf(errorCode);
                         }
                     }
@@ -242,7 +264,7 @@ public class LoginActivity extends AppCompatActivity {
                 changeViewsStatus(false);
                 if (result < 0) {
                     Toast.makeText(getApplicationContext(), "连接超时，请检查服务器是否工作!", Toast.LENGTH_LONG).show();
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), mErrorMessage, Toast.LENGTH_LONG).show();
                 }
             }
