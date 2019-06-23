@@ -119,7 +119,7 @@ public class CommentAnswerPage extends Fragment {
             } else {
                 textLayout.setVisibility(View.GONE);
                 imageView.setVisibility(View.VISIBLE);
-                Glide.with(getContext()).load(ScopeServer.RESOURCE_URL + mAnswerData.AnswerUrl).into(imageView);
+                Glide.with(getContext()).load(ScopeServer.getInstance().getResourceUrl() + mAnswerData.AnswerUrl).into(imageView);
             }
         }
 

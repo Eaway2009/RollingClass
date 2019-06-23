@@ -4,4 +4,5 @@ public class VersionMessage extends BaseJsonClass {
     public String versionCode;
     public String versionName;
     public String message;
+    public String apkUrl;
 }

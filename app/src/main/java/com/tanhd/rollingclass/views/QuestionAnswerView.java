@@ -75,7 +75,7 @@ public class QuestionAnswerView extends ScrollView {
                 imageView.setVisibility(View.VISIBLE);
                 textLayout.setVisibility(View.GONE);
 
-                Glide.with(getContext()).load(ScopeServer.RESOURCE_URL + answerData.AnswerUrl).into(imageView);
+                Glide.with(getContext()).load(ScopeServer.getInstance().getResourceUrl() + answerData.AnswerUrl).into(imageView);
             }
         } else {
             imageView.setVisibility(View.GONE);

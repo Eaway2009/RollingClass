@@ -86,7 +86,7 @@ public class StudentFragment extends Fragment {
                             public void onMicroCourseSelected(MicroCourseData microCourseData) {
                                 Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
                                 intent.putExtra("MicroCourseID", microCourseData.MicroCourseID);
-                                intent.putExtra("ResourceAddr", ScopeServer.RESOURCE_URL + microCourseData.VideoUrl);
+                                intent.putExtra("ResourceAddr", ScopeServer.getInstance().getResourceUrl() + microCourseData.VideoUrl);
                                 startActivity(intent);
                             }
                         })));
@@ -236,7 +236,7 @@ public class StudentFragment extends Fragment {
 
     private void showLessonSample(String url, ShowDocumentFragment.SYNC_MODE mode) {
         String fragmentTag = "lessonSample";
-        ShowDocumentFragment fragment = ShowDocumentFragment.newInstance(ScopeServer.RESOURCE_URL + url, mode);
+        ShowDocumentFragment fragment = ShowDocumentFragment.newInstance(ScopeServer.getInstance().getResourceUrl() + url, mode);
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
         beginTransaction.replace(R.id.framelayout, fragment);

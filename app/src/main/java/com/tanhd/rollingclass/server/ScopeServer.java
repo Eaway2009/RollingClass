@@ -39,10 +39,11 @@ import java.util.Map;
 
 public class ScopeServer extends ServerRequest {
 
-//    private static final String HOST_URL = "http://www.sea-ai.com:8001/flip";
-    private static final String HOST_URL = "http://10.10.33.67:8001/flip";
-//    public static final String RESOURCE_URL = "http://www.sea-ai.com:8002/";
-    public static final String RESOURCE_URL = "http://10.10.33.67:8002/";
+    private static final String HOST_URL_HTTP = "http://";
+    private static final String HOST_URL_PORT = ":8001/flip";
+    public static final String RESOURCE_URL_PORT = ":8002/";
+    private String mHostUrl = "www.sea-ai.com";
+//    private String mHostUrl = "10.1.1.123";
     private static final String TAG = "ScopeServer";
 
     private String mToken;
@@ -57,12 +58,28 @@ public class ScopeServer extends ServerRequest {
         return mInstance;
     }
 
+    private String getHostUrl(){
+        return HOST_URL_HTTP+mHostUrl+HOST_URL_PORT;
+    }
+
+    public String getResourceUrl(){
+        return HOST_URL_HTTP+mHostUrl+RESOURCE_URL_PORT;
+    }
+
+    public String getHost(){
+        return mHostUrl;
+    }
+
+    public void setHost(String hostUrl){
+        mHostUrl = hostUrl;
+    }
+
     public String loginToServer(String username, String password) {
         HashMap<String, String> params = new HashMap<>();
         params.put("account", username);
         params.put("password", password);
 
-        String response = sendRequest(HOST_URL + "/student/Studentlogin", METHOD.POST, params);
+        String response = sendRequest(getHostUrl() + "/student/Studentlogin", METHOD.POST, params);
         if (response != null) {
             JSONObject json;
             try {
@@ -81,7 +98,7 @@ public class ScopeServer extends ServerRequest {
             }
         }
 
-        response = sendRequest(HOST_URL + "/teacher/TeacherLogin", METHOD.POST, params);
+        response = sendRequest(getHostUrl() + "/teacher/TeacherLogin", METHOD.POST, params);
         if (response != null) {
             JSONObject json;
             try {
@@ -104,7 +121,7 @@ public class ScopeServer extends ServerRequest {
         params.put("account", username);
         params.put("password", password);
 
-        String response = sendRequest(HOST_URL + "/student/Studentlogin", METHOD.POST, params);
+        String response = sendRequest(getHostUrl() + "/student/Studentlogin", METHOD.POST, params);
         if (response != null) {
             JSONObject json;
             try {
@@ -127,7 +144,7 @@ public class ScopeServer extends ServerRequest {
         params.put("account", username);
         params.put("password", password);
 
-        String response = sendRequest(HOST_URL + "/teacher/TeacherLogin", METHOD.POST, params);
+        String response = sendRequest(getHostUrl() + "/teacher/TeacherLogin", METHOD.POST, params);
         if (response != null) {
             JSONObject json;
             try {
@@ -184,7 +201,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("schoolID", schoolID);
         params.put("teacherID", teacherID);
-        String response = sendRequest(HOST_URL + "/class/QureyClassByTeacherID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/class/QureyClassByTeacherID/" + mToken, METHOD.GET, params);
         List<ClassData> list = jsonToList(ClassData.class.getName(), response);
         if (list == null)
             return null;
@@ -207,7 +224,7 @@ public class ScopeServer extends ServerRequest {
     public StudentData getStudentData(String studentID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("studentID", studentID);
-        String response = sendRequest(HOST_URL + "/student/QureyStudentByStudentID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/student/QureyStudentByStudentID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<StudentData> list = jsonToList(StudentData.class.getName(), response);
             if (list != null && list.size() > 0)
@@ -218,7 +235,7 @@ public class ScopeServer extends ServerRequest {
     }
 
     public SchoolData getSchoolData() {
-        String response = sendRequest(HOST_URL + "/school/QureySchool/" + mToken, METHOD.GET, (Map<String, String>) null);
+        String response = sendRequest(getHostUrl() + "/school/QureySchool/" + mToken, METHOD.GET, (Map<String, String>) null);
         if (response != null) {
             JSONObject json;
             try {
@@ -241,7 +258,7 @@ public class ScopeServer extends ServerRequest {
     public List<StudySectionData> getStudySectionData(String schoolID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("schoolID", schoolID);
-        String response = sendRequest(HOST_URL + "/studysection/QureyStudySection/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/studysection/QureyStudySection/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<StudySectionData> list = jsonToList(StudySectionData.class.getName(), response);
             for (StudySectionData sectionData : list) {
@@ -258,7 +275,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("schoolID", schoolID);
         params.put("studysectionCode", String.valueOf(studysectionCode));
-        String response = sendRequest(HOST_URL + "/subject/QureySubjectByStudySection/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/subject/QureySubjectByStudySection/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<SubjectData> list = jsonToList(SubjectData.class.getName(), response);
             return list;
@@ -271,7 +288,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("schoolID", schoolID);
         params.put("token", mToken);
-        String response = sendRequest(HOST_URL + "/subject/QureySubject/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/subject/QureySubject/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<SubjectData> list = jsonToList(SubjectData.class.getName(), response);
             return list;
@@ -284,7 +301,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("schoolID", schoolID);
         params.put("studysectionID", studysectionID);
-        String response = sendRequest(HOST_URL + "/grade/QureyGradeBySchoolID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/grade/QureyGradeBySchoolID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<GradeData> list = jsonToList(GradeData.class.getName(), response);
             for (GradeData gradeData : list) {
@@ -301,7 +318,7 @@ public class ScopeServer extends ServerRequest {
         params.put("schoolID", schoolID);
         params.put("studysectionID", studysectionID);
         params.put("gradeID", gradeID);
-        String response = sendRequest(HOST_URL + "/class/QureyClass/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/class/QureyClass/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<ClassData> list = jsonToList(ClassData.class.getName(), response);
             return list;
@@ -316,7 +333,7 @@ public class ScopeServer extends ServerRequest {
         params.put("oldpasswd", oldpasswd);
         params.put("newpasswd", newpasswd);
 
-        new RequestTask(HOST_URL + "/teacher/UpdataTeacherPasswd/" + mToken, METHOD.POST, params, null, callback).execute();
+        new RequestTask(getHostUrl() + "/teacher/UpdataTeacherPasswd/" + mToken, METHOD.POST, params, null, callback).execute();
     }
 
     public Map<String, String> refreshExpiration(String token) {
@@ -324,7 +341,7 @@ public class ScopeServer extends ServerRequest {
         params.put("token", token);
         Log.i("refreshExpiration", ": token"+token);
 
-        String response = sendRequest(HOST_URL + "/student/RefreshExpiration", METHOD.POST, params);
+        String response = sendRequest(getHostUrl() + "/student/RefreshExpiration", METHOD.POST, params);
         Map<String, String> map = new HashMap<>();
         if (response != null) {
             JSONObject json;
@@ -348,11 +365,11 @@ public class ScopeServer extends ServerRequest {
         params.put("oldpasswd", oldpasswd);
         params.put("newpasswd", newpasswd);
 
-        new RequestTask(HOST_URL + "/student/UpdataStudentPasswd/" + mToken, METHOD.POST, params, null, callback).execute();
+        new RequestTask(getHostUrl() + "/student/UpdataStudentPasswd/" + mToken, METHOD.POST, params, null, callback).execute();
     }
 
     public List<TeachingMaterialData> QueryTeachingMaterialVersionList() {
-        String response = sendRequest(HOST_URL + "/teachingMaterial/QueryTeachingMaterialVersionList/" + mToken, METHOD.GET, (Map<String, String>) null);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterialVersionList/" + mToken, METHOD.GET, (Map<String, String>) null);
         if (response != null) {
             List<TeachingMaterialData> list = jsonToList(TeachingMaterialData.class.getName(), response);
             return list;
@@ -368,7 +385,7 @@ public class ScopeServer extends ServerRequest {
         params.put("gradecode", String.valueOf(gradecode));
         params.put("subjectcode", String.valueOf(subjectcode));
         params.put("teachingmaterialcode", String.valueOf(teachingmaterialcode));
-        String response = sendRequest(HOST_URL + "/teachingMaterial/QueryTeachingMaterial/1/100/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterial/1/100/" + mToken, METHOD.GET, params);
         if (response != null) {
 
             List<TeachingMaterialData> list = jsonToList(TeachingMaterialData.class.getName(), response);
@@ -408,7 +425,7 @@ public class ScopeServer extends ServerRequest {
     public KnowledgeData QureyKnowledgeByID(String knowledgeID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("knowledgeID", knowledgeID);
-        String response = sendRequest(HOST_URL + "/teachingMaterial/QureyKnowledgeByID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QureyKnowledgeByID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<KnowledgeData> list = jsonToList(KnowledgeData.class.getName(), response);
             if (list != null && list.size() > 0)
@@ -421,7 +438,7 @@ public class ScopeServer extends ServerRequest {
     public List<LessonSampleData> QureyLessonSampleByknowledgeID(String knowledgeID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("knowledgeID", knowledgeID);
-        String response = sendRequest(HOST_URL + "/teachingSample/QureyLessonSampleByknowledgeID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/teachingSample/QureyLessonSampleByknowledgeID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<LessonSampleData> list = jsonToList(LessonSampleData.class.getName(), response);
             return list;
@@ -433,7 +450,7 @@ public class ScopeServer extends ServerRequest {
     public List<MicroCourseData> QureyMicroCourseByknowledgeID(String knowledgeID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("knowledgeID", knowledgeID);
-        String response = sendRequest(HOST_URL + "/microcourse/QureyMicroCourseByknowledgeID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/microcourse/QureyMicroCourseByknowledgeID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
             return list;
@@ -445,7 +462,7 @@ public class ScopeServer extends ServerRequest {
     public List<MicroCourseData> QureyMicroCourseByClassID(String classID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("classID", classID);
-        String response = sendRequest(HOST_URL + "/microcourse/QureyMicroCourseByClassID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/microcourse/QureyMicroCourseByClassID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
             return list;
@@ -458,7 +475,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("subjectcode", ""+subjectcode);
         params.put("token", mToken);
-        String response = sendRequest(HOST_URL + "/microcourse/QureyMicroCourseBySubjectCode/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/microcourse/QureyMicroCourseBySubjectCode/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
             return list;
@@ -470,7 +487,7 @@ public class ScopeServer extends ServerRequest {
     public List<MicroCourseData> QureyMicroCourseByTeacherID(String teacherID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("teacherID", teacherID);
-        String response = sendRequest(HOST_URL + "/microcourse/QureyMicroCourseByTeacherID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/microcourse/QureyMicroCourseByTeacherID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
             return list;
@@ -483,7 +500,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("lessonsampleID", lessonsampleID);
         params.put("token", mToken);
-        String response = sendRequest(HOST_URL + "/question/QureyQuestionByLessonSampleID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/question/QureyQuestionByLessonSampleID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);
             return list;
@@ -495,12 +512,12 @@ public class ScopeServer extends ServerRequest {
     public String uploadResourceFile(String filePath, int type) {
         HashMap<String, String> params = new HashMap<>();
         params.put("type", String.valueOf(type));
-        String url = uploadFile(HOST_URL + "/resource/image/upload/" + mToken, params, filePath);
+        String url = uploadFile(getHostUrl() + "/resource/image/upload/" + mToken, params, filePath);
         return url;
     }
 
     public int InsertAnswerv2(String question) {
-        String response = sendRequest(HOST_URL + "/answer/InsertAnswerv2/" + mToken, METHOD.POST, question);
+        String response = sendRequest(getHostUrl() + "/answer/InsertAnswerv2/" + mToken, METHOD.POST, question);
         if (response != null) {
             JSONObject json;
             try {
@@ -517,7 +534,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("studentID", studentID);
         params.put("questionID", questionID);
-        String response = sendRequest(HOST_URL + "/answer/QureyAnswerv2ByStudentIDAndQuestionID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/answer/QureyAnswerv2ByStudentIDAndQuestionID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<AnswerData> list = jsonToList(AnswerData.class.getName(), response);
             return list;
@@ -540,7 +557,7 @@ public class ScopeServer extends ServerRequest {
         else
             params.put("markurl", "undefine");
 
-        String response = sendRequest(HOST_URL + "/answer/UpdataAnswerv2ByTeacher/" + mToken, METHOD.POST, params);
+        String response = sendRequest(getHostUrl() + "/answer/UpdataAnswerv2ByTeacher/" + mToken, METHOD.POST, params);
         if (response != null) {
             JSONObject json;
             try {
@@ -559,7 +576,7 @@ public class ScopeServer extends ServerRequest {
         params.put("score", score);
         params.put("mark", mark);
         params.put("markurl", markurl);
-        String response = sendRequest(HOST_URL + "/answer/UpdataAnswerv2ByStudent/" + mToken, METHOD.POST, params);
+        String response = sendRequest(getHostUrl() + "/answer/UpdataAnswerv2ByStudent/" + mToken, METHOD.POST, params);
         if (response != null) {
             JSONObject json;
             try {
@@ -573,7 +590,7 @@ public class ScopeServer extends ServerRequest {
     }
 
     public int InsertMicroCourseStatistic(String data) {
-        String response = sendRequest(HOST_URL + "/microCourseStatistic/InsertMicroCourseStatistic/" + mToken, METHOD.POST, data);
+        String response = sendRequest(getHostUrl() + "/microCourseStatistic/InsertMicroCourseStatistic/" + mToken, METHOD.POST, data);
         if (response != null) {
             try {
                 JSONObject json = new JSONObject(response);
@@ -588,7 +605,7 @@ public class ScopeServer extends ServerRequest {
     public List<AnswerData> QureyErrorAnswerv2ByStudentID(String studentID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("studentID", studentID);
-        String response = sendRequest(HOST_URL + "/answer/QureyErrorAnswerv2ByStudentID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/answer/QureyErrorAnswerv2ByStudentID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<AnswerData> list = jsonToList(AnswerData.class.getName(), response);
             return list;
@@ -600,7 +617,7 @@ public class ScopeServer extends ServerRequest {
     public List<QuestionData> QureyQuestionByID(String questionID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("questionID", questionID);
-        String response = sendRequest(HOST_URL + "/question/QureyQuestionByID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/question/QureyQuestionByID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);
             return list;
@@ -617,7 +634,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("teacherID", teacherID);
 
-        String response = sendRequest(HOST_URL + "/teacher/QureyTeacherByTeacherID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/teacher/QureyTeacherByTeacherID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<TeacherData> list = jsonToList(TeacherData.class.getName(), response);
             if (list == null)
@@ -634,7 +651,7 @@ public class ScopeServer extends ServerRequest {
         params.put("classID", classID);
         params.put("lessonsampleID", lessonSampleID);
 
-        String response = sendRequest(HOST_URL + "/question/CountClassLessonSample/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/question/CountClassLessonSample/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<CountClassLessonSampleData> list = jsonToList(CountClassLessonSampleData.class.getName(), response);
             return list;
@@ -648,7 +665,7 @@ public class ScopeServer extends ServerRequest {
         params.put("classID", classID);
         params.put("courseID", courseID);
 
-        String response = sendRequest(HOST_URL + "/microCourseStatistic/CountClassMicorcourseTimes/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/microCourseStatistic/CountClassMicorcourseTimes/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<Integer> list = jsonToList(Integer.class.getName(), response);
             return list;
@@ -662,7 +679,7 @@ public class ScopeServer extends ServerRequest {
         params.put("studentID", studentID);
         params.put("courseID", courseID);
 
-        String response = sendRequest(HOST_URL + "/microCourseStatistic/CountStudentMicorcourseTimes/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/microCourseStatistic/CountStudentMicorcourseTimes/" + mToken, METHOD.GET, params);
         List<Integer> list = new ArrayList<>();
         if (response != null) {
             JSONObject resp = null;
@@ -704,7 +721,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("courseID", courseID);
 
-        String response = sendRequest(HOST_URL + "/microCourseStatistic/QureyMicroCourseStatisticByCoureseID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/microCourseStatistic/QureyMicroCourseStatisticByCoureseID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<CountMicroCourseStudentData> list = jsonToList(CountMicroCourseStudentData.class.getName(), response);
             return list;
@@ -718,7 +735,7 @@ public class ScopeServer extends ServerRequest {
         params.put("studentID", studentID);
         params.put("lessonsampleID", lessonsampleID);
 
-        String response = sendRequest(HOST_URL + "/question/CountStudentLessonSample/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/question/CountStudentLessonSample/" + mToken, METHOD.GET, params);
         if (response != null) {
             try {
                 JSONObject resp = new JSONObject(response);
@@ -765,7 +782,7 @@ public class ScopeServer extends ServerRequest {
     }
 
     public String InsertQuestionSet(String text) {
-        String response = sendRequest(HOST_URL + "/questionset/InsertQuestionSet/" + mToken, METHOD.POST, text);
+        String response = sendRequest(getHostUrl() + "/questionset/InsertQuestionSet/" + mToken, METHOD.POST, text);
         if (response != null) {
             JSONObject json;
             try {
@@ -786,7 +803,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("teacherID", teacherID);
 
-        String response = sendRequest(HOST_URL + "/questionset/QureyQuestionSetByTeacherID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/questionset/QureyQuestionSetByTeacherID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<QuestionSetData> list = jsonToList(QuestionSetData.class.getName(), response);
             if (list == null)
@@ -802,7 +819,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("teacherID", teacherID);
 
-        String response = sendRequest(HOST_URL + "/questionset/QureyQuestionSetByTeacherID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/questionset/QureyQuestionSetByTeacherID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<QuestionSetData> list = jsonToList(QuestionSetData.class.getName(), response);
             if (list == null)
@@ -820,7 +837,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("setID", setID);
 
-        String response = sendRequest(HOST_URL + "/answer/QureyAnswerv2BySetID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/answer/QureyAnswerv2BySetID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<AnswerData> list = jsonToList(AnswerData.class.getName(), response);
             return list;
@@ -830,7 +847,7 @@ public class ScopeServer extends ServerRequest {
     }
 
     public TeachingMaterialData QueryTeachingMaterialById(String teachingmaterialid) {
-        String response = sendRequest(HOST_URL + "/teachingMaterial/QueryTeachingMaterialById/" + teachingmaterialid + "/" + mToken, METHOD.GET, (Map<String, String>) null);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterialById/" + teachingmaterialid + "/" + mToken, METHOD.GET, (Map<String, String>) null);
         if (response != null) {
             List<TeachingMaterialData> list = jsonToList(TeachingMaterialData.class.getName(), response);
             if (list != null && list.size() > 0)
@@ -844,7 +861,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("teacherID", teacherID);
 
-        String response = sendRequest(HOST_URL + "/teachingSample/QureyLessonSampleByTeacherID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/teachingSample/QureyLessonSampleByTeacherID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<LessonSampleData> list = jsonToList(LessonSampleData.class.getName(), response);
             return list;
@@ -859,7 +876,7 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("classID", classID);
 
-        String response = sendRequest(HOST_URL + "/teachingSample/QureyLessonSampleByClassID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/teachingSample/QureyLessonSampleByClassID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<LessonSampleData> list = jsonToList(LessonSampleData.class.getName(), response);
             return list;
@@ -875,7 +892,7 @@ public class ScopeServer extends ServerRequest {
         params.put("subjectcode", String.valueOf(subjectCode));
         params.put("token", mToken);
 
-        String response = sendRequest(HOST_URL + "/teachingSample/QureyLessonSampleBySubject/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/teachingSample/QureyLessonSampleBySubject/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<LessonSampleData> list = jsonToList(LessonSampleData.class.getName(), response);
             return list;
@@ -885,7 +902,7 @@ public class ScopeServer extends ServerRequest {
     }
 
     public SchoolData QureySchool() {
-        String response = sendRequest(HOST_URL + "/school/QureySchool/" + mToken, METHOD.GET, (Map<String, String>) null);
+        String response = sendRequest(getHostUrl() + "/school/QureySchool/" + mToken, METHOD.GET, (Map<String, String>) null);
         if (response != null) {
             JSONObject json;
             try {
@@ -909,7 +926,7 @@ public class ScopeServer extends ServerRequest {
         params.put("teacherID", teacherID);
         params.put("questionID", questionID);
 
-        String response = sendRequest(HOST_URL + "/answer/QureyAnswerv2ByTeacherIDAndQuestionID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/answer/QureyAnswerv2ByTeacherIDAndQuestionID/" + mToken, METHOD.GET, params);
         List<AnswerData> list = null;
         if (response != null) {
             list = jsonToList(AnswerData.class.getName(), response);

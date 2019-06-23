@@ -6,8 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity"
     android:background="@drawable/bg">
-    
+
     <LinearLayout
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="center"
@@ -29,7 +30,65 @@
             android:text="@string/login_title"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ip_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@+id/tab_layout"
+        android:visibility="gone">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:text="请输入ip地址："/>
+
+        <EditText
+            android:id="@+id/ip_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minWidth="300dp"
+            android:layout_marginStart="5dp"
+            android:background="@null"
+            android:inputType="text"
+            android:maxLines="1"
+            android:hint="输入服务器ip"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/ip_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/blue_button_selector"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:text="修改ip地址"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <ImageView
+            android:id="@+id/close_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/close_icon"
+            android:padding="7dp"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="500dp"
         android:layout_height="wrap_content"
@@ -137,29 +196,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/teacher_sign"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/blue_button_selector"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="@string/teacher_sign_button"/>
+            <Button
+                android:id="@+id/teacher_sign"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/blue_button_selector"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:text="@string/teacher_sign_button"/>
 
-        <Button
-            android:id="@+id/student_sign"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/blue_button_selector"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="@string/student_sign_button"/>
+            <Button
+                android:id="@+id/student_sign"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/blue_button_selector"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:text="@string/student_sign_button"/>
         </LinearLayout>
 
     </LinearLayout>

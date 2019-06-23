@@ -1,12 +1,15 @@
 package com.tanhd.rollingclass;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +17,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -42,13 +47,21 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION = 1;
+    private static final int REQUEST_TIME = 1;
     private static final String TAG = "LoginActivity";
     private EditText mUserView;
     private EditText mPasswordView;
     private View mSignButtonView;
     private View mTeacherButtonView;
+    private EditText mIpEditView;
+    private View mIpLayout;
+    private View mIpButton;
     private ProgressBar mProgressBar;
     private CheckBox mCheckBox;
+    private boolean mLongClicked = false;
+
+
+    GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +82,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mSignButtonView = findViewById(R.id.student_sign);
         mTeacherButtonView = findViewById(R.id.teacher_sign);
+        mIpEditView = findViewById(R.id.ip_edittext);
+        mIpButton = findViewById(R.id.ip_button);
+        mIpLayout =this.findViewById(R.id.ip_layout);
         mSignButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,28 +115,79 @@ public class LoginActivity extends AppCompatActivity {
         ExternalParam.getInstance().empty();
         ScopeServer.getInstance();
         requestPermission();
-        UpdateHelper.getInstance().update(new RequestCallback() {
+        gestureDetector = new GestureDetector(LoginActivity.this, new GestureDetector.SimpleOnGestureListener() {
+
+            /**
+             * 发生确定的单击时执行
+             * @param e
+             * @return
+             */
             @Override
-            public void onProgress(boolean b) {
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                return super.onSingleTapConfirmed(e);
             }
 
+            /**
+             * 双击发生时的通知
+             * @param e
+             * @return
+             */
             @Override
-            public void onResponse(String body) {
-                StringBuffer returnBody = new StringBuffer(body);
-                VersionMessage versionMessage = UpdateHelper.getVersion(body);
-                if (versionMessage != null) {
-                    returnBody.append(versionMessage.versionCode + versionMessage.message + versionMessage.versionName);
-                }
-                Toast.makeText(LoginActivity.this, returnBody, Toast.LENGTH_LONG).show();
+            public boolean onDoubleTap(MotionEvent e) {
+                mIpLayout.setVisibility(View.VISIBLE);
+                mIpEditView.setText(ScopeServer.getInstance().getHost());
+                return super.onDoubleTap(e);
             }
 
+            /**
+             * 双击手势过程中发生的事件，包括按下、移动和抬起事件
+             * @param e
+             * @return
+             */
             @Override
-            public void onError(String code, String message) {
-                Toast.makeText(LoginActivity.this, code + message, Toast.LENGTH_LONG).show();
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                return super.onDoubleTapEvent(e);
             }
         });
-    }
 
+        findViewById(R.id.tab_layout).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mLongClicked = true;
+                mHandler.sendEmptyMessageDelayed(REQUEST_TIME, 5000);
+                return false;
+            }
+        });
+        findViewById(R.id.tab_layout).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(mLongClicked) {
+                    return gestureDetector.onTouchEvent(event);
+                }else{
+                    return LoginActivity.super.onTouchEvent(event);
+                }
+            }
+        });
+        findViewById(R.id.close_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIpLayout.setVisibility(View.GONE);
+                mLongClicked = false;
+            }
+        });
+
+        mIpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newIpUrl = mIpEditView.getText().toString();
+                ScopeServer.getInstance().setHost(newIpUrl);
+                mIpLayout.setVisibility(View.GONE);
+                mLongClicked = false;
+
+            }
+        });
+
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -316,5 +383,17 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     }
+
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case REQUEST_TIME:
+                    mLongClicked = false;
+                    break;
+            }
+        }
+    };
 
 }

@@ -98,7 +98,7 @@ public class TeacherFragment extends Fragment {
                             public void onMicroCourseSelected(MicroCourseData microCourseData) {
                                 Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
                                 intent.putExtra("MicroCourseID", microCourseData.MicroCourseID);
-                                intent.putExtra("ResourceAddr", ScopeServer.RESOURCE_URL + microCourseData.VideoUrl);
+                                intent.putExtra("ResourceAddr", ScopeServer.getInstance().getResourceUrl() + microCourseData.VideoUrl);
                                 startActivity(intent);
                             }
                         }));
@@ -262,13 +262,13 @@ public class TeacherFragment extends Fragment {
             beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             beginTransaction.commit();
         } else {
-            fragment.refreshPdf(ScopeServer.RESOURCE_URL + url);
+            fragment.refreshPdf(ScopeServer.getInstance().getResourceUrl() + url);
         }
     }
 
     private ShowDocumentFragment getShowDocumentFragment(String url, ShowDocumentFragment.SYNC_MODE mode) {
         if (mShowDocumentFragment == null) {
-            mShowDocumentFragment = ShowDocumentFragment.newInstance(ScopeServer.RESOURCE_URL + url, mode);
+            mShowDocumentFragment = ShowDocumentFragment.newInstance(ScopeServer.getInstance().getResourceUrl() + url, mode);
         }
         return mShowDocumentFragment;
     }

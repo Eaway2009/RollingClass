@@ -91,7 +91,7 @@ public class ShowAnswerCommentFragment extends Fragment {
             } else {
                 textLayout.setVisibility(View.GONE);
                 imageView.setVisibility(View.VISIBLE);
-                Glide.with(getContext()).load(ScopeServer.RESOURCE_URL + mAnswerData.AnswerUrl).into(imageView);
+                Glide.with(getContext()).load(ScopeServer.getInstance().getResourceUrl() + mAnswerData.AnswerUrl).into(imageView);
             }
         }
 
@@ -101,7 +101,7 @@ public class ShowAnswerCommentFragment extends Fragment {
         if (mAnswerData.Remark.startsWith("/Resources/")) {
             commentTextView.setVisibility(View.GONE);
             commentImageView.setVisibility(View.VISIBLE);
-            Glide.with(getContext()).load(ScopeServer.RESOURCE_URL + mAnswerData.Remark).into(commentImageView);
+            Glide.with(getContext()).load(ScopeServer.getInstance().getResourceUrl() + mAnswerData.Remark).into(commentImageView);
         } else {
             commentTextView.setVisibility(View.VISIBLE);
             commentImageView.setVisibility(View.GONE);

@@ -24,6 +24,7 @@ import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.NetWorkTestFragment;
 import com.tanhd.rollingclass.fragments.ServerTesterFragment;
 import com.tanhd.rollingclass.fragments.UserInfoFragment;
+import com.tanhd.rollingclass.server.UpdateHelper;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.PopMenu;
@@ -117,10 +118,11 @@ public class TopbarView extends CardView {
                     AppCompatActivity activity = (AppCompatActivity) getContext();
                     FrameDialog.show(activity.getSupportFragmentManager(), new NetWorkTestFragment());
                 } else if (menuItem.itemId == R.id.app_update) {
-                    Uri uri = Uri.parse("https://github.com/Eaway2009/GitTest/blob/master/flip-v1.10_20190621.apk?raw=true");
+                    Uri uri = Uri.parse("https://github.com/Eaway2009/GitTest/blob/master/flip-v1.10_20190623.apk?raw=true");
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     Activity activity = (Activity) getContext();
                     activity.startActivity(intent);
+//                    UpdateHelper.getInstance().update(getContext(), false);
                 } else if (menuItem.itemId == R.id.server_test) {
                     AppCompatActivity activity = (AppCompatActivity) getContext();
                     FrameDialog.show(activity.getSupportFragmentManager(), ServerTesterFragment.newInstance());

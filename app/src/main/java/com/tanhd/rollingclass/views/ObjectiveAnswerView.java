@@ -195,7 +195,7 @@ public class ObjectiveAnswerView extends RelativeLayout {
 
         if (mImagePath != null) {
             if (AppUtils.isUrl(mImagePath))
-                Glide.with(getContext()).load(ScopeServer.RESOURCE_URL + mImagePath).into(mSelImageView);
+                Glide.with(getContext()).load(ScopeServer.getInstance().getResourceUrl() + mImagePath).into(mSelImageView);
             else
                 Glide.with(getContext()).load(new File(mImagePath)).into(mSelImageView);
         }

@@ -1,11 +1,20 @@
 package com.tanhd.rollingclass.server;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
+import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.parkingwang.okhttp3.LogInterceptor.LogInterceptor;
+import com.tanhd.rollingclass.BuildConfig;
 import com.tanhd.rollingclass.server.data.VersionMessage;
 
 import java.io.BufferedReader;
@@ -26,8 +35,11 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class UpdateHelper {
 
+    public static final String TAG = "UpdateHelper";
+
     private static final String DOWN_PATH = "/sdcard/rollingclass/";
     private static final String VERSION_FILE_PATH = "version.json";
+    private static final String APK_FILE_PATH = "newest_flat.apk";
     private static final String VERSION_JSON_URL = "https://raw.githubusercontent.com/Eaway2009/GitTest/master/fanzhuan_version.json";
     private static UpdateHelper instance;
     private final Handler mHandler;
@@ -35,8 +47,9 @@ public class UpdateHelper {
     private OkHttpClient okHttpClient;
 
     private boolean mDownloading;
+    private boolean mChecking;
 
-    private DownloadTask mVersionDownloadTask;
+    private AlertDialog mDownDialog;
 
     public static final UpdateHelper getInstance() {
         if (instance == null) {
@@ -60,15 +73,18 @@ public class UpdateHelper {
         mHandler = new Handler();
     }
 
-    public void update(RequestCallback requestCallback) {
-        getVersionTask(requestCallback).execute();
+    public void update(Context context, boolean autoCheck) {
+        if (!mChecking) {
+            new DownloadTask(VERSION_JSON_URL, VERSION_FILE_PATH, new VersionCheckRequestCallback(context, autoCheck)).execute();
+            mChecking = true;
+        }
     }
 
-    private DownloadTask getVersionTask(RequestCallback requestCallback) {
-        if (mVersionDownloadTask == null) {
-            mVersionDownloadTask = new DownloadTask(VERSION_JSON_URL, VERSION_FILE_PATH, requestCallback);
+    public void downloadApk(Context context, String downUrl) {
+        if(!mDownloading){
+            new DownloadTask(downUrl, APK_FILE_PATH, new UpdateRequestCallback(context)).execute();
+            mDownloading = true;
         }
-        return mVersionDownloadTask;
     }
 
     protected class DownloadTask extends AsyncTask<Void, Void, Void> {
@@ -105,7 +121,10 @@ public class UpdateHelper {
                     path.mkdir();
 
                 InputStream is = response.body().byteStream();
-                File file = new File(mFilePath);
+                File file = new File(DOWN_PATH+mFilePath);
+                if(file.exists()) {
+                    file.delete();
+                }
                 long total = response.body().contentLength();
                 FileOutputStream fos = new FileOutputStream(file);
                 long sum = 0;
@@ -117,7 +136,7 @@ public class UpdateHelper {
                     int progress = (int) (sum * 1.0f / total * 100);
                 }
                 fos.flush();
-                call(callback, "onResponse", mFilePath);
+                call(callback, "onResponse", DOWN_PATH+mFilePath);
             } catch (IOException e) {
                 call(callback, "onError", "-1", e.getMessage());
             }
@@ -179,11 +198,130 @@ public class UpdateHelper {
         return content;
     }
 
+    public class VersionCheckRequestCallback implements RequestCallback{
+
+        private Context mContext;
+
+        private boolean mAutoCheck;
+
+        public VersionCheckRequestCallback(Context context, boolean autoCheck) {
+            mContext = context;
+            mAutoCheck = autoCheck;
+        }
+
+        @Override
+        public void onProgress(boolean b) {
+        }
+
+        @Override
+        public void onResponse(String body) {
+            mChecking = false;
+            VersionMessage versionMessage = UpdateHelper.getVersion(body);
+            if (versionMessage == null) {
+                if(!mAutoCheck) {
+                    Toast.makeText(mContext, "检查新版本出错，请稍后重试", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+            if(BuildConfig.VERSION_CODE > Integer.valueOf(versionMessage.versionCode)) {
+                Toast.makeText(mContext, "已安装最新版本", Toast.LENGTH_LONG).show();
+            } else {
+                if(!mAutoCheck) {
+                    warningUpdate(mContext, versionMessage.apkUrl);
+                }
+            }
+        }
+
+        @Override
+        public void onError(String code, String message) {
+            mChecking = false;
+            Toast.makeText(mContext, "检查新版本出错，请稍后重试", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void warningUpdate(final Context context, final String url){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setTitle("版本更新")
+                .setMessage("检查到有新版本，是否下载更新")
+                .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        downloadApk(context, url);
+                    }
+                })
+                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDownDialog.dismiss();
+                    }
+                })
+                .setCancelable(false)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        mDownDialog = null;
+                    }
+                });
+        mDownDialog = builder.create();
+        mDownDialog.show();
+    }
+
+    public class UpdateRequestCallback implements RequestCallback{
+
+        private Context mContext;
+
+        public UpdateRequestCallback(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public void onProgress(boolean b) {
+
+        }
+
+        @Override
+        public void onResponse(String filePath) {
+            mDownloading = false;
+            if(!TextUtils.isEmpty(filePath)&&new File(filePath).exists()) {
+                install(mContext, filePath);
+            }
+        }
+
+        @Override
+        public void onError(String code, String message) {
+            mDownloading = false;
+            Toast.makeText(mContext, "下载新版本出错，请稍后重试", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void install(Context mContext, String filePath) {
+        Log.i(TAG, "开始执行安装: " + filePath);
+        File apkFile = new File(filePath);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Log.w(TAG, "版本大于 N ，开始使用 fileProvider 进行安装");
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(
+                    mContext
+                    , "com.tanhd.rollingclass.fileprovider"
+                    , apkFile);
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        } else {
+            Log.w(TAG, "正常进行安装");
+            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+        }
+        mContext.startActivity(intent);
+    }
+
     public static VersionMessage getVersion(String filePath){
         if(!TextUtils.isEmpty(filePath)){
             VersionMessage versionMessage = new VersionMessage();
-            versionMessage.parse(versionMessage, readTxtFile(filePath));
-            return versionMessage;
+            if (new File(filePath).exists()) {
+                versionMessage.parse(versionMessage, readTxtFile(filePath));
+                return versionMessage;
+            }
         }
         return null;
     }
