@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="@color/topbar_background">
 
     <ImageView
         android:id="@+id/back_button"
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="翻转课堂"
-                android:textColor="#FF3e9df8"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -57,7 +57,7 @@
                 android:id="@+id/datetext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#FF3e9df8"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:textColor="#FF3e9df8"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="我的消息"
-                android:textColor="#FF3e9df8"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
         </LinearLayout>
@@ -119,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:text="个人设置中心"
-                android:textColor="#FF3e9df8"
+                android:textColor="@color/white"
                 android:textSize="20sp" />
 
         </LinearLayout>

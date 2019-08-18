@@ -367,4 +367,17 @@ public class AppUtils {
             e.printStackTrace();
         }
     }
+
+    public static boolean isTeacher(Context context){
+        SharedPreferences sharedPre = context.getSharedPreferences("config", MODE_PRIVATE);
+        boolean isTeacher = sharedPre.getBoolean("isTeacher",false);
+        return isTeacher;
+    }
+
+    public static void changeTeacherOrStudent(Context context, boolean isTeacher){
+        SharedPreferences sharedPre = context.getSharedPreferences("config", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPre.edit();
+        editor.putBoolean("isTeacher",isTeacher);
+        editor.commit();
+    }
 }

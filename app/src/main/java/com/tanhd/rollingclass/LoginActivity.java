@@ -52,7 +52,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mUserView;
     private EditText mPasswordView;
     private View mSignButtonView;
-    private View mTeacherButtonView;
     private EditText mIpEditView;
     private View mIpLayout;
     private View mIpButton;
@@ -71,17 +70,9 @@ public class LoginActivity extends AppCompatActivity {
         mUserView = findViewById(R.id.acc);
         mPasswordView = findViewById(R.id.password);
         mProgressBar = findViewById(R.id.progressbar);
-        TextView versionView = findViewById(R.id.version);
-        try {
-            String title = getString(R.string.login_title);
-            versionView.setText(String.format("%s(v%s)", title, getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
         mCheckBox = findViewById(R.id.save_pwd);
 
-        mSignButtonView = findViewById(R.id.student_sign);
-        mTeacherButtonView = findViewById(R.id.teacher_sign);
+        mSignButtonView = findViewById(R.id.sign_button);
         mIpEditView = findViewById(R.id.ip_edittext);
         mIpButton = findViewById(R.id.ip_button);
         mIpLayout =this.findViewById(R.id.ip_layout);
@@ -95,20 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                new LoginTask(username, password, mCheckBox.isChecked(), false).execute();
-            }
-        });
-        mTeacherButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = mUserView.getText().toString();
-                String password = mPasswordView.getText().toString();
-                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "用户名和密码不能为空!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                new LoginTask(username, password, mCheckBox.isChecked(), true).execute();
+                new LoginTask(username, password, mCheckBox.isChecked(), AppUtils.isTeacher(LoginActivity.this)).execute();
             }
         });
 
@@ -149,25 +127,25 @@ public class LoginActivity extends AppCompatActivity {
                 return super.onDoubleTapEvent(e);
             }
         });
-
-        findViewById(R.id.tab_layout).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mLongClicked = true;
-                mHandler.sendEmptyMessageDelayed(REQUEST_TIME, 5000);
-                return false;
-            }
-        });
-        findViewById(R.id.tab_layout).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(mLongClicked) {
-                    return gestureDetector.onTouchEvent(event);
-                }else{
-                    return LoginActivity.super.onTouchEvent(event);
-                }
-            }
-        });
+//
+//        findViewById(R.id.tab_layout).setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                mLongClicked = true;
+//                mHandler.sendEmptyMessageDelayed(REQUEST_TIME, 5000);
+//                return false;
+//            }
+//        });
+//        findViewById(R.id.tab_layout).setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if(mLongClicked) {
+//                    return gestureDetector.onTouchEvent(event);
+//                }else{
+//                    return LoginActivity.super.onTouchEvent(event);
+//                }
+//            }
+//        });
         findViewById(R.id.close_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

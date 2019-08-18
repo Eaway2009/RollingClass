@@ -2,135 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <LinearLayout
-        android:id="@+id/leftbar"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="100dp"
-        android:paddingTop="80dp">
-
-        <Button
-            android:id="@+id/btn_lesson_sample"
-            style="@style/ColorButton"
-            android:background="@drawable/button_1_teacher_selector"
-            android:text="学案列表"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/btn_class_list"
-            style="@style/ColorButton"
-            android:background="@drawable/button_2_teacher_selector"
-            android:text="微课列表"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/start_lesson"
-            style="@style/ColorButton"
-            android:background="@drawable/button_3_teacher_selector"
-            android:text="@string/class_begin"
-            android:visibility="gone"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/btn_static"
-            style="@style/ColorButton"
-            android:background="@drawable/button_4_teacher_selector"
-            android:text="学情数据"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/btn_student_wrong"
-            style="@style/ColorButton"
-            android:background="@drawable/button_6_teacher_selector"
-            android:text="学生错题集"/>
-
-    </LinearLayout>
+    android:background="@color/white"
+    android:gravity="center">
 
     <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:id="@+id/framelayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btn_bar"
+        <ImageView
+            android:id="@+id/class_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:visibility="gone"
-            android:layout_margin="16dp"
-            app:srcCompat="@drawable/bar_answers_pressed" />
+            android:src="@drawable/class_page"/>
 
+        <ImageView
+            android:id="@+id/resource_page_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/resource_page"
+            android:layout_toRightOf="@+id/class_page_view"
+            android:layout_marginLeft="15dp"/>
+
+        <ImageView
+            android:id="@+id/statics_page_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/statics_page"
+            android:layout_alignBottom="@+id/class_page_view"
+            android:layout_alignRight="@+id/resource_page_view"/>
     </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/rightbar"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="100dp"
-        android:paddingTop="80dp">
-
-        <Button
-            android:id="@+id/ask_btn"
-            style="@style/ColorButton"
-            android:background="@drawable/button_7_teacher_selector"
-            android:enabled="false"
-            android:text="提问学生"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/result_btn"
-            style="@style/ColorButton"
-            android:background="@drawable/button_8_teacher_selector"
-            android:enabled="false"
-            android:text="提问结果"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/review_papers_btn"
-            style="@style/ColorButton"
-            android:background="@drawable/button_9_teacher_selector"
-            android:enabled="false"
-            android:text="评审试卷"
-            android:visibility="gone"/>
-
-    </LinearLayout>
 
 </LinearLayout>
