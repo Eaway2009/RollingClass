@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/chapter_menu_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/chapter_selector"
+        android:drawablePadding="10dp"
+        android:paddingLeft="12dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="10dp"
+        android:textColor="@color/chapter_menu_text"
+        tools:text="人教版——初中数学初一" />
+
+
+    <ExpandableListView
+        android:id="@+id/expandable_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:indicatorStart="15dp"
+        android:indicatorLeft="10dp"
+        android:indicatorRight="20dp"
+        android:scrollbars="none" />
+</LinearLayout>

@@ -9,11 +9,15 @@
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
+    <color name="login_text_color">#888888</color>
     <color name="lesson_text">#3E3E3E</color>
     <color name="group_name">#484848</color>
     <color name="lesson_list_background">#0078FF</color>
     <color name="drop_pop_menu_bg_color">#a0000000</color>
     <color name="menu_background">#FF535353</color>
+    <color name="chapter_menu_background">#384052</color>
+    <color name="chapter_menu_text">#A4A8AE</color>
+    <color name="title_bar_background">#EEEEEE</color>
 
     <color name="count_class_left_background">#1F2837</color>
     <color name="button_blue_item_checked">#2196F3</color>
@@ -46,6 +50,10 @@
     <color name="description">#686868</color>
     <color name="linefill">#FFDEEFE4</color>
     <color name="bar">#6CB0DF</color>
+    <color name="knowledge_text">#3B3B3B</color>
+    <color name="knowledge_add_text">#51C1FF</color>
+    <color name="knowledge_edit_text">#45ADE3</color>
+    <color name="knowledge_add_text_2">#8851C1FF</color>
 
     <color name="online">#FF12FF12</color>
     <color name="offline">#FFFF1212</color>

@@ -1,9 +1,6 @@
 package com.tanhd.rollingclass;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -21,24 +18,18 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tanhd.library.mqtthttp.MQTT;
-import com.tanhd.rollingclass.db.Database;
-import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.UpdateHelper;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
-import com.tanhd.rollingclass.server.data.VersionMessage;
 import com.tanhd.rollingclass.utils.AppUtils;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -56,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private View mIpLayout;
     private View mIpButton;
     private ProgressBar mProgressBar;
+    private CheckBox mSavePwdCheckBox;
     private CheckBox mCheckBox;
     private boolean mLongClicked = false;
 
@@ -70,12 +62,15 @@ public class LoginActivity extends AppCompatActivity {
         mUserView = findViewById(R.id.acc);
         mPasswordView = findViewById(R.id.password);
         mProgressBar = findViewById(R.id.progressbar);
-        mCheckBox = findViewById(R.id.save_pwd);
+        mSavePwdCheckBox = findViewById(R.id.save_pwd);
+        mCheckBox = findViewById(R.id.checkbox);
 
         mSignButtonView = findViewById(R.id.sign_button);
         mIpEditView = findViewById(R.id.ip_edittext);
         mIpButton = findViewById(R.id.ip_button);
         mIpLayout =this.findViewById(R.id.ip_layout);
+        mUserView.setText("syw396490759");
+        mPasswordView.setText("123");
         mSignButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                new LoginTask(username, password, mCheckBox.isChecked(), AppUtils.isTeacher(LoginActivity.this)).execute();
+                new LoginTask(username, password, mSavePwdCheckBox.isChecked(), mCheckBox.isChecked()).execute();
             }
         });
 
@@ -162,6 +157,13 @@ public class LoginActivity extends AppCompatActivity {
                 mIpLayout.setVisibility(View.GONE);
                 mLongClicked = false;
 
+            }
+        });
+
+        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                AppUtils.changeTeacherOrStudent(LoginActivity.this, isChecked);
             }
         });
 

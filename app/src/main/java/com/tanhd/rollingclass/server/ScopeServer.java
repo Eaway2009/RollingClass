@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tanhd.rollingclass.db.ChaptersResponse;
+import com.tanhd.rollingclass.db.Document;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ChapterData;
 import com.tanhd.rollingclass.server.data.ClassData;
@@ -43,7 +45,7 @@ public class ScopeServer extends ServerRequest {
     private static final String HOST_URL_PORT = ":8001/flip";
     public static final String RESOURCE_URL_PORT = ":8002/";
     private String mHostUrl = "www.sea-ai.com";
-//    private String mHostUrl = "10.1.1.123";
+    //    private String mHostUrl = "10.1.1.123";
     private static final String TAG = "ScopeServer";
 
     private String mToken;
@@ -58,19 +60,19 @@ public class ScopeServer extends ServerRequest {
         return mInstance;
     }
 
-    private String getHostUrl(){
-        return HOST_URL_HTTP+mHostUrl+HOST_URL_PORT;
+    private String getHostUrl() {
+        return HOST_URL_HTTP + mHostUrl + HOST_URL_PORT;
     }
 
-    public String getResourceUrl(){
-        return HOST_URL_HTTP+mHostUrl+RESOURCE_URL_PORT;
+    public String getResourceUrl() {
+        return HOST_URL_HTTP + mHostUrl + RESOURCE_URL_PORT;
     }
 
-    public String getHost(){
+    public String getHost() {
         return mHostUrl;
     }
 
-    public void setHost(String hostUrl){
+    public void setHost(String hostUrl) {
         mHostUrl = hostUrl;
     }
 
@@ -339,7 +341,7 @@ public class ScopeServer extends ServerRequest {
     public Map<String, String> refreshExpiration(String token) {
         HashMap<String, String> params = new HashMap<>();
         params.put("token", token);
-        Log.i("refreshExpiration", ": token"+token);
+        Log.i("refreshExpiration", ": token" + token);
 
         String response = sendRequest(getHostUrl() + "/student/RefreshExpiration", METHOD.POST, params);
         Map<String, String> map = new HashMap<>();
@@ -347,8 +349,8 @@ public class ScopeServer extends ServerRequest {
             JSONObject json;
             try {
                 json = new JSONObject(response);
-                Log.i("refreshExpiration", ": errorCode"+json.getInt("errorCode"));
-                Log.i("refreshExpiration", ": errorMessage"+json.getString("errorMessage"));
+                Log.i("refreshExpiration", ": errorCode" + json.getInt("errorCode"));
+                Log.i("refreshExpiration", ": errorMessage" + json.getString("errorMessage"));
                 map.put("errorCode", json.optString("errorCode"));
                 map.put("errorMessage", json.getString("errorMessage"));
                 return map;
@@ -473,9 +475,121 @@ public class ScopeServer extends ServerRequest {
 
     public List<MicroCourseData> QureyMicroCourseBySubjectCode(int subjectcode) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("subjectcode", ""+subjectcode);
+        params.put("subjectcode", "" + subjectcode);
         params.put("token", mToken);
         String response = sendRequest(getHostUrl() + "/microcourse/QureyMicroCourseBySubjectCode/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    public List<Document> QureyDocuments(int teacherId) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teacherId", "" + teacherId);
+        params.put("token", mToken);
+//        String response = sendRequest(getHostUrl() + "/microcourse/QureyDocuments/" + mToken, METHOD.GET, params);
+//        if (response != null) {
+//            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
+        List<Document> documents = new ArrayList<>();
+        for (int i = 0; i < 18; i++) {
+            documents.add(new Document(i, "勾股定理 第" + i + "节", i % 2, i % 2 == 1 ? "上课记录" : "待发布", "2019年6月" + i + "日"));
+        }
+        return documents;
+//        }
+//
+//        return null;
+    }
+
+    public List<ChaptersResponse.Category> QureyChapters(int teacherId) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teacherId", "" + teacherId);
+        params.put("token", mToken);
+//        String response = sendRequest(getHostUrl() + "/microcourse/QureyDocuments/" + mToken, METHOD.GET, params);
+//        if (response != null) {
+//            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
+        List<ChaptersResponse.Category> categories = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            ChaptersResponse.Category category = new ChaptersResponse.Category("第" + i + "章", i);
+            List<ChaptersResponse.Chapter> chapterList = new ArrayList<>();
+            for (int j = 0; i < 2; j++) {
+                ChaptersResponse.Chapter chapter = new ChaptersResponse.Chapter("第" + i + "节", i * 10 + j);
+                chapterList.add(chapter);
+            }
+            category.chapterList = chapterList;
+        }
+        return categories;
+//        }
+//
+//        return null;
+    }
+
+    /**
+     * 删除课时(即删除识点)
+     *
+     * @param teaching_material_id 教材ID
+     * @param knowledgeid          课时信息
+     * @return
+     */
+    public void DeleteKnowledge(String teaching_material_id, String knowledgeid, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teaching_material_id", "" + teaching_material_id);
+        params.put("knowledgeid", "" + knowledgeid);
+        params.put("token", mToken);
+
+        new RequestTask(getHostUrl() + "/teachingMaterial/DeleteKnowledge/" + mToken, METHOD.POST, params, null, callback).execute();
+    }
+
+    /**
+     * 添加课时(即增加知识点)
+     *
+     * @param data 课时信息
+     * @return
+     */
+    public void InsertKnowledge(KnowledgeData data, RequestCallback callback) {
+        new RequestTask(getHostUrl() + "/teachingMaterial/InsertKnowledge/" + mToken, METHOD.POST, null, data.toJSON().toString(), callback).execute();
+    }
+
+    /**
+     * 查询教材列表
+     *
+     * @param schoolid
+     * @param studysectioncode
+     * @param subjectcode
+     * @param page
+     * @param pagesize
+     * @return
+     */
+    public List<MicroCourseData> QueryTeachingMaterial(String schoolid, int studysectioncode, int gradecode, int subjectcode, int page, int pagesize, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("schoolid", schoolid);
+        params.put("studysectioncode", studysectioncode + "");
+        params.put("gradecode", gradecode + "");
+        params.put("subjectcode", subjectcode + "");
+        params.put("page", page + "");
+        params.put("pagesize", pagesize + "");
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterial/" + page+"/"+pagesize+"/"+ mToken, METHOD.GET, params);
+        if (response != null) {
+            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+    /**
+     * 查绚指定学科知识点
+     *
+     * @param knowledgeID
+     * @return
+     */
+    public List<MicroCourseData> QureyKnowledgeByID(String knowledgeID, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("knowledgeID", knowledgeID);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QureyKnowledgeByID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
             return list;
@@ -691,16 +805,16 @@ public class ScopeServer extends ServerRequest {
 
                 JSONObject result = resp.getJSONObject("result");
                 Iterator it = result.keys();
-                while(it.hasNext()){
+                while (it.hasNext()) {
                     String key = (String) it.next();
                     //得到value的值
                     Integer value = (Integer) result.get(key);
                     int index = Integer.valueOf(key);
-                    if(list.size()>index){
+                    if (list.size() > index) {
                         list.set(index, value);
-                    }else {
+                    } else {
                         int add = list.size();
-                        while(add<index){
+                        while (add < index) {
                             list.add(add, 0);
                             add++;
                         }
@@ -931,7 +1045,7 @@ public class ScopeServer extends ServerRequest {
         if (response != null) {
             list = jsonToList(AnswerData.class.getName(), response);
         }
-        if(list==null){
+        if (list == null) {
             list = new ArrayList<>();
         }
         return list;

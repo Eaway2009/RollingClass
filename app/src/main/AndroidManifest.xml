@@ -38,6 +38,10 @@
         <activity android:name=".VideoPlayerActivity"
             android:screenOrientation="landscape"/>
 
+        <activity android:name=".activity.DatasActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

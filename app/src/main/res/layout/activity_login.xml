@@ -96,7 +96,7 @@
             android:drawablePadding="10dp"
             android:drawableLeft="@drawable/login_name_icon"
             android:hint="@string/hint_input_account"
-            android:textColor="@color/white"
+            android:textColor="@color/login_text_color"
             android:textSize="13sp"
             android:singleLine="true" />
 
@@ -113,14 +113,16 @@
             android:drawablePadding="10dp"
             android:drawableLeft="@drawable/login_password_icon"
             android:hint="@string/hint_input_account"
-            android:textColor="@color/white"
+            android:textColor="@color/login_text_color"
             android:textSize="13sp"
             android:singleLine="true" />
 
         <CheckBox
             android:id="@+id/save_pwd"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="保存密码"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/sign_button"
@@ -137,9 +139,11 @@
     </LinearLayout>
 
     <CheckBox
+        android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="切换教师或学生"
+        android:text="老师登录"
+        android:checked="true"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"/>
 

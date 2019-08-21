@@ -20,6 +20,7 @@ import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.VideoPlayerActivity;
+import com.tanhd.rollingclass.activity.DatasActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.MSG_TYPE;
 import com.tanhd.rollingclass.fragments.pages.LearningStaticsFragment;
@@ -65,10 +66,18 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_teacher, container, false);
+        initViews(view);
+        return view;
+    }
+
+    private void initViews(View view){
         mClassPageView = view.findViewById(R.id.class_page_view);
         mResourcePageView = view.findViewById(R.id.resource_page_view);
         mStaticsPageView = view.findViewById(R.id.statics_page_view);
-        return view;
+
+        mClassPageView.setOnClickListener(this);
+        mResourcePageView.setOnClickListener(this);
+        mStaticsPageView.setOnClickListener(this);
     }
 
     @Override
@@ -147,16 +156,18 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.class_page_view:
+                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_DOCUMENTS);
                 break;
             case R.id.resource_page_view:
+                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_RESOURCES);
                 break;
             case R.id.statics_page_view:
+                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_STATISTICS);
                 break;
         }
     }
 
     public interface BackListener {
         void showBack(boolean show);
-        void showFragment(int fragmentId);
     }
 }
