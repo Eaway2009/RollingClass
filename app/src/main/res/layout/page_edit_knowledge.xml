@@ -1,139 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="100dp"
     android:paddingRight="100dp">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingTop="30dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/knowledge_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_centerInParent="true"
-                android:textSize="18sp"
-                android:textColor="@color/knowledge_text"
-                tools:text="@string/enter_knowledge_name" />
-
-            <TextView
-                android:id="@+id/knowledge_name_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:layout_toRightOf="@+id/knowledge_name"
-                android:layout_alignBottom="@+id/knowledge_name"
-                android:drawableLeft="@drawable/title_edit_icon"
-                android:drawablePadding="5dp"
-                android:textSize="14sp"
-                android:textColor="@color/knowledge_edit_text"
-                tools:text="@string/knowledge_name_edit" />
-
-
-            <TextView
-                android:id="@+id/knowledge_publish_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/knowledge_publish_button"
-                android:textColor="@color/knowledge_edit_text"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:text="@string/save"/>
-
-            <TextView
-                android:id="@+id/knowledge_finish_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/knowledge_finish_button"
-                android:layout_toLeftOf="@+id/knowledge_publish_button"
-                android:layout_centerVertical="true"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:text="@string/finish"/>
-        </RelativeLayout>
-
-        <EditText
-            android:id="@+id/knowledge_name_et"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
-            android:background="@drawable/knowledge_name_edit_bg"
-            android:hint="@string/enter_knowledge_name"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/knowledge_add_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/knowledge_add_button"
-            android:gravity="center"
-            android:text="@string/add_knowledge"
-            android:textColor="@color/knowledge_add_text" />
+        android:fadingEdge="none"
+        android:scrollbars="none">
 
         <LinearLayout
-            android:id="@+id/knowledge_add_button_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="30dp">
 
-            <TextView
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/knowledge_name_et"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/knowledge_name_edit_bg"
+                    android:hint="@string/enter_knowledge_name"
+                    android:layout_centerInParent="true"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:visibility="gone"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/knowledge_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/knowledge_text"
+                    android:textSize="18sp"
+                    tools:text="@string/enter_knowledge_name" />
+
+                <TextView
+                    android:id="@+id/knowledge_name_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/knowledge_name"
+                    android:layout_toRightOf="@+id/knowledge_name"
+                    android:drawableLeft="@drawable/title_edit_icon"
+                    android:drawablePadding="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="6dp"
+                    android:textColor="@color/knowledge_edit_text"
+                    android:textSize="14sp"
+                    tools:text="@string/edit" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/knowledge_tasks_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/knowledge_add_button_2"
-                android:gravity="center"
-                android:text="@string/add_knowledge"
-                android:textColor="@color/knowledge_add_text_2" />
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"
+                android:orientation="vertical">
+            </LinearLayout>
+
+            <include layout="@layout/layout_add_task"/>
 
             <TextView
+                android:id="@+id/knowledge_add_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/knowledge_add_button_2"
+                android:background="@drawable/knowledge_add_button"
                 android:gravity="center"
+                android:layout_marginTop="30dp"
                 android:text="@string/add_knowledge"
-                android:textColor="@color/knowledge_add_text_2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/knowledge_add_button_2"
-                android:gravity="center"
-                android:text="@string/add_knowledge"
-                android:textColor="@color/knowledge_add_text_2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/knowledge_add_button_2"
-                android:gravity="center"
-                android:text="@string/add_knowledge"
-                android:textColor="@color/knowledge_add_text_2" />
+                android:textColor="@color/knowledge_add_text" />
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
-</ScrollView>
+    <TextView
+        android:id="@+id/knowledge_publish_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/knowledge_publish_button"
+        android:gravity="center"
+        android:layout_marginTop="50dp"
+        android:text="@string/save"
+        android:textColor="@color/knowledge_edit_text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/knowledge_finish_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:layout_toLeftOf="@+id/knowledge_publish_button"
+        android:background="@drawable/knowledge_finish_button"
+        android:gravity="center"
+        android:text="@string/finish"
+        android:textColor="@color/white"
+        android:textSize="12sp" />
+</RelativeLayout>

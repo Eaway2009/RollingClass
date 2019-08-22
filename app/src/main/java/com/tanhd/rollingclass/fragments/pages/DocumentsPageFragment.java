@@ -12,6 +12,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.Document;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.views.DocumentAdapter;
@@ -59,6 +60,8 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         mGridView = view.findViewById(R.id.grid_view);
         mAdapter = new DocumentAdapter(getActivity());
         mGridView.setAdapter(mAdapter);
+
+        mAddDocumentView.setOnClickListener(this);
     }
 
 
@@ -93,6 +96,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.add_document_view:
+                DocumentEditActivity.startMe(getActivity(), DocumentEditActivity.PAGE_ID_ADD_DOCUMENTS);
                 break;
         }
     }

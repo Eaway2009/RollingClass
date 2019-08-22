@@ -503,29 +503,6 @@ public class ScopeServer extends ServerRequest {
 //        return null;
     }
 
-    public List<ChaptersResponse.Category> QureyChapters(int teacherId) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("teacherId", "" + teacherId);
-        params.put("token", mToken);
-//        String response = sendRequest(getHostUrl() + "/microcourse/QureyDocuments/" + mToken, METHOD.GET, params);
-//        if (response != null) {
-//            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
-        List<ChaptersResponse.Category> categories = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            ChaptersResponse.Category category = new ChaptersResponse.Category("第" + i + "章", i);
-            List<ChaptersResponse.Chapter> chapterList = new ArrayList<>();
-            for (int j = 0; i < 2; j++) {
-                ChaptersResponse.Chapter chapter = new ChaptersResponse.Chapter("第" + i + "节", i * 10 + j);
-                chapterList.add(chapter);
-            }
-            category.chapterList = chapterList;
-        }
-        return categories;
-//        }
-//
-//        return null;
-    }
-
     /**
      * 删除课时(即删除识点)
      *
@@ -555,23 +532,24 @@ public class ScopeServer extends ServerRequest {
     /**
      * 查询教材列表
      *
-     * @param schoolid
-     * @param studysectioncode
-     * @param subjectcode
+     * @param studysectioncode     学段代码 option(1小学 2初中 3高中)
+     * @param gradecode            年级代码 option(1~12年级对应[一年级、二年级…… 高三])
+     * @param subjectcode          学科代码 option(1数学 2语文 ……20道德与法制)
+     * @param teachingmaterialcode 教材代码 option(1人教版 2北师大版)
      * @param page
      * @param pagesize
      * @return
      */
-    public List<MicroCourseData> QueryTeachingMaterial(String schoolid, int studysectioncode, int gradecode, int subjectcode, int page, int pagesize, RequestCallback callback) {
+    public List<MicroCourseData> QueryTeachingMaterial(int studysectioncode, int gradecode, int subjectcode, int teachingmaterialcode, int page, int pagesize) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("schoolid", schoolid);
         params.put("studysectioncode", studysectioncode + "");
         params.put("gradecode", gradecode + "");
         params.put("subjectcode", subjectcode + "");
+        params.put("teachingmaterialcode", teachingmaterialcode + "");
         params.put("page", page + "");
         params.put("pagesize", pagesize + "");
         params.put("token", mToken);
-        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterial/" + page+"/"+pagesize+"/"+ mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterial/" + page + "/" + pagesize + "/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
             return list;
@@ -579,6 +557,56 @@ public class ScopeServer extends ServerRequest {
 
         return null;
     }
+
+    /**
+     * 查询教材列表
+     *
+     * @param studysectioncode     学段代码 option(1小学 2初中 3高中)
+     * @param gradecode            年级代码 option(1~12年级对应[一年级、二年级…… 高三])
+     * @param subjectcode          学科代码 option(1数学 2语文 ……20道德与法制)
+     * @param teachingmaterialcode 教材代码 option(1人教版 2北师大版)
+     * @param page
+     * @param pagesize
+     * @return
+     */
+    public List<MicroCourseData> QueryTeachingMaterialV2(int studysectioncode, int gradecode, int subjectcode, int teachingmaterialcode, int page, int pagesize) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("studysectioncode", studysectioncode + "");
+        params.put("gradecode", gradecode + "");
+        params.put("subjectcode", subjectcode + "");
+        params.put("teachingmaterialcode", teachingmaterialcode + "");
+        params.put("page", page + "");
+        params.put("pagesize", pagesize + "");
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterialV2/" + page + "/" + pagesize + "/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    /**
+     * 查询指定教材数据
+     *
+     * @param teachingmaterialid     学段代码 option(1小学 2初中 3高中)
+     *
+     * @return
+     */
+    public List<MicroCourseData> QueryTeachingMaterialById(int teachingmaterialid) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teachingmaterialid", teachingmaterialid + "");
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterialById/" + teachingmaterialid + "/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
     /**
      * 查绚指定学科知识点
      *

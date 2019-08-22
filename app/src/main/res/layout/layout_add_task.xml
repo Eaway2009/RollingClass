@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_add_task"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/task_light_frame"
+        android:gravity="center_vertical"
+        android:paddingLeft="12dp"
+        android:paddingTop="8dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enter_task_name"
+            android:textColor="@color/knowledge_add_title"
+            android:textSize="12sp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:background="@drawable/task_name_edit_bg"
+            android:paddingLeft="4dp"
+            android:textColor="@color/knowledge_add_title"
+            android:textSize="12sp" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:button="@drawable/task_enter_selector"
+                android:checked="true"
+                android:paddingLeft="4dp"
+                android:text="@string/upload"
+                android:textColor="@color/knowledge_add_title"
+                android:textSize="12sp" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:button="@drawable/task_enter_selector"
+                android:paddingLeft="4dp"
+                android:text="@string/enter"
+                android:textColor="@color/knowledge_add_title"
+                android:textSize="12sp" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/task_dark_frame"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <LinearLayout
+            android:id="@+id/upload_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/upload_ppt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:drawableLeft="@drawable/upload_ppt"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:text="@string/ppt"
+                android:textColor="@color/frame_upload_text" />
+
+            <TextView
+                android:id="@+id/upload_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:drawableLeft="@drawable/upload_video"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:text="@string/micro_course"
+                android:textColor="@color/frame_upload_text" />
+
+            <TextView
+                android:id="@+id/upload_exercises"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:drawableLeft="@drawable/upload_exercises"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:text="@string/exercises"
+                android:textColor="@color/frame_upload_text" />
+
+            <TextView
+                android:id="@+id/upload_documents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:drawableLeft="@drawable/upload_document"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:text="@string/documents"
+                android:textColor="@color/frame_upload_text" />
+
+            <TextView
+                android:id="@+id/upload_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:drawableLeft="@drawable/upload_photo"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:text="@string/photo"
+                android:textColor="@color/frame_upload_text" />
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/enter_upload_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:drawablePadding="8dp"
+            android:padding="8dp"
+            android:src="@drawable/enter_task_upload_photo"
+            android:textColor="@color/frame_upload_text"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/task_desc_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/task_light_frame"
+        android:enabled="false"
+        android:gravity="top|left"
+        android:padding="12dp"
+        android:textColor="@color/frame_upload_text"
+        android:textSize="15sp">
+
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+        <TextView
+            android:id="@+id/task_add_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/task_add_cancel_button"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/frame_cancel_text"/>
+        <TextView
+            android:id="@+id/task_add_save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/task_add_save_button"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:text="@string/save"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+</LinearLayout>

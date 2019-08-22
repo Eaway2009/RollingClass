@@ -50,9 +50,28 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
         return view;
     }
 
-    public void refreshData() {
-        new InitDataTask().execute();
-    }
+//    public void refreshData() {
+//        List<ChaptersResponse.Category> documentList = ScopeServer.getInstance().QueryTeachingMaterial();
+//        mAdapter.setDataList(documentList);
+//
+//        if (mAdapter.getGroupCount() == 0) {
+//            try {
+//                Toast.makeText(getActivity().getApplicationContext(), "没有找到章节!", Toast.LENGTH_LONG).show();
+//            } catch (Exception e) {
+//            }
+//            return;
+//        }
+//
+//        // 将第一项设置成默认展开;
+//        if (mAdapter.getGroupCount() > 0 && mAdapter.getGroup(0) != null) {
+//            mExpandableListView.expandGroup(0);
+//            if(mAdapter.getGroup(0).getChildren().size()>0){
+//                ChaptersResponse.Chapter firstItem = mAdapter.getGroup(0).getChildren().get(0);
+//                firstItem.isChecked = true;
+//            }
+//        }
+//        mAdapter.notifyDataSetChanged();
+//    }
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -66,42 +85,6 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
             }
         }
         return false;
-    }
-
-    private class InitDataTask extends AsyncTask<Void, Void, List<ChaptersResponse.Category>> {
-
-        @Override
-        protected List<ChaptersResponse.Category> doInBackground(Void... voids) {
-            List<ChaptersResponse.Category> documentList = ScopeServer.getInstance().QureyChapters(123);
-            if (documentList == null)
-                return null;
-
-            return documentList;
-        }
-
-        @Override
-        protected void onPostExecute(List<ChaptersResponse.Category> dataList) {
-            mAdapter.setDataList(dataList);
-
-            if (mAdapter.getGroupCount() == 0) {
-                try {
-                    Toast.makeText(getActivity().getApplicationContext(), "没有找到章节!", Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                }
-                return;
-            }
-
-            // 将第一项设置成默认展开;
-            if (mAdapter.getGroupCount() > 0 && mAdapter.getGroup(0) != null) {
-                mExpandableListView.expandGroup(0);
-                if(mAdapter.getGroup(0).getChildren().size()>0){
-                    ChaptersResponse.Chapter firstItem = mAdapter.getGroup(0).getChildren().get(0);
-                    firstItem.isChecked = true;
-                }
-            }
-            mAdapter.notifyDataSetChanged();
-
-        }
     }
 
     public interface ChapterListener {

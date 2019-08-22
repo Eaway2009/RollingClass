@@ -40,6 +40,11 @@
     <color name="button_orange">#FF4200</color>
     <color name="button_gray">#959595</color>
     <color name="button_disable">#A0A0A0</color>
+    <color name="frame_color">#AAAAAA</color>
+    <color name="frame_solid_light_color">#F8F9FB</color>
+    <color name="frame_solid_dark_color">#F5F5F5</color>
+    <color name="frame_upload_text">#4A4A4A</color>
+    <color name="frame_cancel_text">#A6A6A6</color>
 
     <color name="radio_button_checked">#556fb5</color>
     <color name="radio_button_uncheck">#CACACA</color>
@@ -54,6 +59,7 @@
     <color name="knowledge_add_text">#51C1FF</color>
     <color name="knowledge_edit_text">#45ADE3</color>
     <color name="knowledge_add_text_2">#8851C1FF</color>
+    <color name="knowledge_add_title">#858586</color>
 
     <color name="online">#FF12FF12</color>
     <color name="offline">#FFFF1212</color>

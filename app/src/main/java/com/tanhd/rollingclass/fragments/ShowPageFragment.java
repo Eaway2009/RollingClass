@@ -77,7 +77,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
         mChapterFragment = ChaptersFragment.newInstance(this);
         getFragmentManager().beginTransaction().replace(R.id.fragment_chapter_menu, mChapterFragment).commit();
 
-        mChapterFragment.refreshData();
+//        mChapterFragment.refreshData();
     }
 
     @Override

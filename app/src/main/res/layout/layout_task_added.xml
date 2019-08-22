@@ -9,7 +9,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/knowledge_text"
-        android:textSize="22sp"
+        android:drawableLeft="@drawable/task_title_icon"
+        android:drawablePadding="12dp"
+        android:textSize="18sp"
         android:paddingBottom="6dp"
         android:paddingTop="8dp"
         tools:text="预习大纲"/>
@@ -29,17 +31,30 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/knowledge_text"
-            android:textSize="18sp"
+            android:textSize="14sp"
             tools:text="Give yourself a long-term goal, and then deliberately change who you are by the things that you choose to do.给自己制定一个长期目标，然后可以通过去做那些你选择要做的事情来改变自己。"/>
 
         <TextView
             android:id="@+id/task_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/fre_class"
-            android:textColor="@color/knowledge_text"
-            android:textSize="18sp"/>
+            android:layout_gravity="center"
+            android:text="@string/delete"
+            android:textColor="@color/knowledge_edit_text"
+            android:layout_marginLeft="15dp"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/task_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/task_edit_icon"
+            android:drawablePadding="4dp"
+            android:text="@string/edit"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/knowledge_edit_text"
+            android:textSize="12sp"/>
 
     </LinearLayout>
 </LinearLayout>

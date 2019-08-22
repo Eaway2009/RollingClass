@@ -36,8 +36,18 @@ public class DatasActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_DOCUMENTS);
         setContentView(R.layout.activity_datas);
+        initParams();
+        initViews();
+        initFragment();
+    }
+
+    private void initParams(){
+        mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_DOCUMENTS);
+    }
+
+    private void initViews(){
+
         mTopbarView = findViewById(R.id.topbar);
         mBackButton = findViewById(R.id.back_button);
         mBackButton.setOnClickListener(new View.OnClickListener() {
@@ -59,11 +69,7 @@ public class DatasActivity extends AppCompatActivity {
                 }));
             }
         });
-
-        initFragment();
     }
-
-
 
     private void initFragment() {
         mShowPageFragment = ShowPageFragment.newInstance(PAGE_ID_DOCUMENTS, new ShowPageFragment.PagesListener() {

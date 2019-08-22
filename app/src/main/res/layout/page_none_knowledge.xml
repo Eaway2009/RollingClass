@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="30dp">
+
+    <EditText
+        android:id="@+id/knowledge_name_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/knowledge_name_edit_bg"
+        android:hint="@string/enter_knowledge_name"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/knowledge_add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/knowledge_add_button"
+        android:gravity="center"
+        android:text="@string/add_knowledge"
+        android:textColor="@color/knowledge_add_text" />
+
+    <LinearLayout
+        android:id="@+id/knowledge_add_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/knowledge_add_button_2"
+            android:gravity="center"
+            android:text="@string/add_knowledge"
+            android:textColor="@color/knowledge_add_text_2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/knowledge_add_button_2"
+            android:gravity="center"
+            android:text="@string/add_knowledge"
+            android:textColor="@color/knowledge_add_text_2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/knowledge_add_button_2"
+            android:gravity="center"
+            android:text="@string/add_knowledge"
+            android:textColor="@color/knowledge_add_text_2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/knowledge_add_button_2"
+            android:gravity="center"
+            android:text="@string/add_knowledge"
+            android:textColor="@color/knowledge_add_text_2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/knowledge_add_button_2"
+            android:gravity="center"
+            android:text="@string/add_knowledge"
+            android:textColor="@color/knowledge_add_text_2" />
+    </LinearLayout>
+
+</LinearLayout>
