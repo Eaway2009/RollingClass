@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.Document;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.views.DocumentAdapter;
 
@@ -28,7 +29,6 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
     private DocumentListener mListener;
     private GridView mGridView;
     private DocumentAdapter mAdapter;
-    private long mChapterId;
 
     public static DocumentsPageFragment newInstance(DocumentsPageFragment.DocumentListener listener) {
         Bundle args = new Bundle();
@@ -36,6 +36,13 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         page.setArguments(args);
         page.setListener(listener);
         return page;
+    }
+
+    public void resetData(KnowledgeModel model) {
+        Bundle args = new Bundle();
+        args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA, model);
+        setArguments(args);
+
     }
 
     private void setListener(DocumentsPageFragment.DocumentListener listener) {
@@ -47,17 +54,14 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_documents, container, false);
         initViews(view);
+        new InitDataTask().execute();
         return view;
     }
 
-    public void reRequestData(long chapterId){
-        mChapterId = chapterId;
-        new InitDataTask().execute();
-    }
-
-    private void initViews(View view){
+    private void initViews(View view) {
         mAddDocumentView = view.findViewById(R.id.add_document_view);
         mGridView = view.findViewById(R.id.grid_view);
+
         mAdapter = new DocumentAdapter(getActivity());
         mGridView.setAdapter(mAdapter);
 
@@ -65,21 +69,17 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
     }
 
 
-    private class InitDataTask extends AsyncTask<Void, Void, Void> {
+    private class InitDataTask extends AsyncTask<Void, Void, List<Document>> {
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected List<Document> doInBackground(Void... voids) {
             List<Document> documentList = ScopeServer.getInstance().QureyDocuments(123);
-            if (documentList == null)
-                return null;
-
-            mAdapter.setData(documentList);
-
-            return null;
+            return documentList;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(List<Document> documentList) {
+            mAdapter.setData(documentList);
             mAdapter.notifyDataSetChanged();
 
             if (mAdapter.getCount() == 0) {
@@ -94,14 +94,15 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.add_document_view:
-                DocumentEditActivity.startMe(getActivity(), DocumentEditActivity.PAGE_ID_ADD_DOCUMENTS);
+                KnowledgeModel model = (KnowledgeModel) getArguments().getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
+                DocumentEditActivity.startMe(getActivity(), DocumentEditActivity.PAGE_ID_ADD_DOCUMENTS, model);
                 break;
         }
     }
 
-    public interface DocumentListener{
+    public interface DocumentListener {
         void onDocumentClicked(int documentId);
     }
 }

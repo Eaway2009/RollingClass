@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
@@ -46,9 +47,9 @@ public class DocumentAdapter  extends BaseAdapter implements View.OnClickListene
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LinearLayout view = (LinearLayout) convertView;
+        RelativeLayout view = (RelativeLayout) convertView;
         if (view == null) {
-            view = (LinearLayout) mContext.getLayoutInflater().inflate(R.layout.adapter_document, parent, false);
+            view = (RelativeLayout) mContext.getLayoutInflater().inflate(R.layout.adapter_document, parent, false);
         }
         view.setOnClickListener(null);
         final Document data = mDataList.get(position);

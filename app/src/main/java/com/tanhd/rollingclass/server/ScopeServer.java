@@ -1,16 +1,15 @@
 package com.tanhd.rollingclass.server;
 
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tanhd.rollingclass.db.ChaptersResponse;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.server.data.ChaptersResponse;
 import com.tanhd.rollingclass.db.Document;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ChapterData;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.CountClassLessonSampleData;
-import com.tanhd.rollingclass.server.data.CountClassMicorcourseTimeData;
 import com.tanhd.rollingclass.server.data.CountMicroCourseStudentData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.GradeData;
@@ -20,6 +19,7 @@ import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.QuestionData;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
+import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.SchoolData;
 import com.tanhd.rollingclass.server.data.SectionData;
 import com.tanhd.rollingclass.server.data.StudentData;
@@ -525,83 +525,34 @@ public class ScopeServer extends ServerRequest {
      * @param data 课时信息
      * @return
      */
-    public void InsertKnowledge(KnowledgeData data, RequestCallback callback) {
+    public void InsertKnowledge(KnowledgeModel data, RequestCallback callback) {
         new RequestTask(getHostUrl() + "/teachingMaterial/InsertKnowledge/" + mToken, METHOD.POST, null, data.toJSON().toString(), callback).execute();
     }
 
     /**
      * 查询教材列表
      *
-     * @param studysectioncode     学段代码 option(1小学 2初中 3高中)
-     * @param gradecode            年级代码 option(1~12年级对应[一年级、二年级…… 高三])
-     * @param subjectcode          学科代码 option(1数学 2语文 ……20道德与法制)
-     * @param teachingmaterialcode 教材代码 option(1人教版 2北师大版)
+     * @param schoolid         学校ID option(1小学 2初中 3高中)
+     * @param studysectioncode 学段代码 option(1小学 2初中 3高中)
+     * @param gradecode        年级代码 option(1~12年级对应[一年级、二年级…… 高三])
+     * @param subjectcode      学科代码 option(1数学 2语文 ……20道德与法制)
      * @param page
      * @param pagesize
      * @return
      */
-    public List<MicroCourseData> QueryTeachingMaterial(int studysectioncode, int gradecode, int subjectcode, int teachingmaterialcode, int page, int pagesize) {
+    public ChaptersResponse QueryTeachingMaterial(String schoolid, int studysectioncode, int gradecode, int subjectcode, int page, int pagesize) {
         HashMap<String, String> params = new HashMap<>();
+        params.put("schoolid", schoolid + "");
         params.put("studysectioncode", studysectioncode + "");
         params.put("gradecode", gradecode + "");
         params.put("subjectcode", subjectcode + "");
-        params.put("teachingmaterialcode", teachingmaterialcode + "");
         params.put("page", page + "");
         params.put("pagesize", pagesize + "");
         params.put("token", mToken);
         String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterial/" + page + "/" + pagesize + "/" + mToken, METHOD.GET, params);
         if (response != null) {
-            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
-            return list;
-        }
-
-        return null;
-    }
-
-    /**
-     * 查询教材列表
-     *
-     * @param studysectioncode     学段代码 option(1小学 2初中 3高中)
-     * @param gradecode            年级代码 option(1~12年级对应[一年级、二年级…… 高三])
-     * @param subjectcode          学科代码 option(1数学 2语文 ……20道德与法制)
-     * @param teachingmaterialcode 教材代码 option(1人教版 2北师大版)
-     * @param page
-     * @param pagesize
-     * @return
-     */
-    public List<MicroCourseData> QueryTeachingMaterialV2(int studysectioncode, int gradecode, int subjectcode, int teachingmaterialcode, int page, int pagesize) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("studysectioncode", studysectioncode + "");
-        params.put("gradecode", gradecode + "");
-        params.put("subjectcode", subjectcode + "");
-        params.put("teachingmaterialcode", teachingmaterialcode + "");
-        params.put("page", page + "");
-        params.put("pagesize", pagesize + "");
-        params.put("token", mToken);
-        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterialV2/" + page + "/" + pagesize + "/" + mToken, METHOD.GET, params);
-        if (response != null) {
-            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
-            return list;
-        }
-
-        return null;
-    }
-
-    /**
-     * 查询指定教材数据
-     *
-     * @param teachingmaterialid     学段代码 option(1小学 2初中 3高中)
-     *
-     * @return
-     */
-    public List<MicroCourseData> QueryTeachingMaterialById(int teachingmaterialid) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("teachingmaterialid", teachingmaterialid + "");
-        params.put("token", mToken);
-        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterialById/" + teachingmaterialid + "/" + mToken, METHOD.GET, params);
-        if (response != null) {
-            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
-            return list;
+            ChaptersResponse model = (ChaptersResponse) jsonToModel(ChaptersResponse.class.getName(), response);
+            return model;
         }
 
         return null;
@@ -655,6 +606,13 @@ public class ScopeServer extends ServerRequest {
         HashMap<String, String> params = new HashMap<>();
         params.put("type", String.valueOf(type));
         String url = uploadFile(getHostUrl() + "/resource/image/upload/" + mToken, params, filePath);
+        return url;
+    }
+
+    public String resourceUpload(String filePath, ResourceModel model) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("resource", model.toJSON().toString());
+        String url = uploadFile(getHostUrl() + "/resource/upload/" + mToken, params, filePath);
         return url;
     }
 

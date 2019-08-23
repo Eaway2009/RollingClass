@@ -77,6 +77,11 @@ public class DatasActivity extends AppCompatActivity {
             public void onPageChange(int id) {
 
             }
+
+            @Override
+            public void onBack() {
+                finish();
+            }
         });
         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mShowPageFragment).commit();
     }

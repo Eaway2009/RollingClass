@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DatasActivity;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.fragments.pages.ChaptersFragment;
 import com.tanhd.rollingclass.fragments.pages.DocumentsPageFragment;
 import com.tanhd.rollingclass.fragments.pages.ResourcesPageFragment;
@@ -56,11 +57,11 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
         return view;
     }
 
-    private void initParams(){
+    private void initParams() {
         mPageId = getArguments().getInt(DatasActivity.PAGE_ID, DatasActivity.PAGE_ID_DOCUMENTS);
     }
 
-    private void initViews(View view){
+    private void initViews(View view) {
         mDocumentView = view.findViewById(R.id.document_textview);
         mResourceView = view.findViewById(R.id.resource_textview);
         mStatisticsView = view.findViewById(R.id.statistics_textview);
@@ -70,10 +71,6 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
         mResourceView.setOnClickListener(this);
         mStatisticsView.setOnClickListener(this);
 
-        mDocumentsFragment = new DocumentsPageFragment();
-        mResourcesFragment = new ResourcesPageFragment();
-        mStatisticsFragment = new StatisticsPageFragment();
-
         mChapterFragment = ChaptersFragment.newInstance(this);
         getFragmentManager().beginTransaction().replace(R.id.fragment_chapter_menu, mChapterFragment).commit();
 
@@ -82,7 +79,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.document_textview:
                 showModulePage(MODULE_ID_DOCUMENTS);
                 break;
@@ -93,6 +90,9 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
                 showModulePage(MODULE_ID_STATISTICS);
                 break;
             case R.id.back_button:
+                if (mListener != null) {
+                    mListener.onBack();
+                }
                 break;
         }
     }
@@ -108,7 +108,12 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
         Fragment moduleFragment = null;
         if (moduleId == MODULE_ID_DOCUMENTS) {
             if (mDocumentsFragment == null) {
-                mDocumentsFragment = new DocumentsPageFragment();
+                mDocumentsFragment = DocumentsPageFragment.newInstance(new DocumentsPageFragment.DocumentListener() {
+                    @Override
+                    public void onDocumentClicked(int documentId) {
+
+                    }
+                });
                 transaction.add(ROOT_LAYOUT_ID, mDocumentsFragment);
             }
             moduleFragment = mDocumentsFragment;
@@ -118,7 +123,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
             if (mStatisticsFragment != null) {
                 transaction.hide(mStatisticsFragment);
             }
-        } else if(moduleId == MODULE_ID_RESOURCES) {
+        } else if (moduleId == MODULE_ID_RESOURCES) {
             if (mResourcesFragment == null) {
                 mResourcesFragment = new ResourcesPageFragment();
                 transaction.add(ROOT_LAYOUT_ID, mResourcesFragment);
@@ -130,7 +135,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
             if (mStatisticsFragment != null) {
                 transaction.hide(mStatisticsFragment);
             }
-        }else if(moduleId == MODULE_ID_STATISTICS) {
+        } else if (moduleId == MODULE_ID_STATISTICS) {
             if (mStatisticsFragment == null) {
                 mStatisticsFragment = new StatisticsPageFragment();
                 transaction.add(ROOT_LAYOUT_ID, mStatisticsFragment);
@@ -151,14 +156,18 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
 
 
     @Override
-    public void onCheckChapter(long chapterId) {
-        mDocumentsFragment.reRequestData(chapterId);
+    public void onCheckChapter(String school_id, String teacher_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
+        KnowledgeModel knowledgeModel = new KnowledgeModel();
+        mDocumentsFragment.resetData(knowledgeModel);
+//        mDocumentsFragment.reRequestData(chapterId);
 //        mResourcesFragment.reRequestData(chapterId);
 //        mStatisticsFragment.reRequestData(chapterId);
     }
 
-    public interface PagesListener{
+    public interface PagesListener {
         void onPageChange(int id);
+
+        void onBack();
     }
 
 }

@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         mIpEditView = findViewById(R.id.ip_edittext);
         mIpButton = findViewById(R.id.ip_button);
         mIpLayout =this.findViewById(R.id.ip_layout);
-        mUserView.setText("syw396490759");
+        mUserView.setText("syw386490759");
         mPasswordView.setText("123");
         mSignButtonView.setOnClickListener(new View.OnClickListener() {
             @Override

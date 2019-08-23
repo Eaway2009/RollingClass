@@ -40,6 +40,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class ServerRequest {
     private final static String TAG = "HTTP";
+
     public static enum METHOD {
         GET,
         POST
@@ -64,7 +65,7 @@ public class ServerRequest {
 
     protected void call(final Object var1, String methodName, final Object... objects) {
         Method[] methods = var1.getClass().getMethods();
-        for (final Method method: methods) {
+        for (final Method method : methods) {
             if (method.getName().equals(methodName)) {
                 mHandler.post(new Runnable() {
                     @Override
@@ -96,7 +97,7 @@ public class ServerRequest {
             FormBody.Builder builder = new FormBody.Builder();
 
             if (keys != null) {
-                for (String k: keys) {
+                for (String k : keys) {
                     String value = params.get(k);
                     if (value == null)
                         continue;
@@ -113,7 +114,7 @@ public class ServerRequest {
             StringBuilder builder = new StringBuilder();
             if (keys != null) {
                 int pos = 0;
-                for (String k: keys) {
+                for (String k : keys) {
                     if (pos > 0) {
                         builder.append("&");
                     }
@@ -312,7 +313,7 @@ public class ServerRequest {
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
         multipartBodyBuilder.setType(MultipartBody.FORM);
         //遍历map中所有参数到builder
-        if (params != null){
+        if (params != null) {
             for (String key : params.keySet()) {
                 multipartBodyBuilder.addFormDataPart(key, params.get(key));
             }
@@ -374,7 +375,7 @@ public class ServerRequest {
                 return null;
 
             ArrayList list = new ArrayList();
-            for (int i=0; i<array.length(); i++) {
+            for (int i = 0; i < array.length(); i++) {
                 if (className.equals(Integer.class.getName())) {
                     list.add(array.getInt(i));
                 } else {
@@ -399,6 +400,36 @@ public class ServerRequest {
             return list;
         } catch (JSONException e) {
 
+        }
+
+        return null;
+    }
+
+    public Object jsonToModel(String className, String response) {
+        try {
+            JSONObject json = new JSONObject(response);
+            String errorCode = json.optString("errorCode");
+            if (TextUtils.isEmpty(errorCode) || !errorCode.equals("0"))
+                return null;
+
+            JSONObject obj = json.optJSONObject("result");
+            if (obj == null)
+                return null;
+
+            Object o = Class.forName(className).newInstance();
+            if (o instanceof BaseJsonClass) {
+                BaseJsonClass bjc = (BaseJsonClass) o;
+                bjc.parse(bjc, obj);
+                return bjc;
+            }
+        } catch (JSONException e) {
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
         return null;

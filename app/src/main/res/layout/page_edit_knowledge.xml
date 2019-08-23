@@ -97,7 +97,7 @@
         android:background="@drawable/knowledge_publish_button"
         android:gravity="center"
         android:layout_marginTop="50dp"
-        android:text="@string/save"
+        android:text="@string/publish"
         android:textColor="@color/knowledge_edit_text"
         android:textSize="12sp" />
 

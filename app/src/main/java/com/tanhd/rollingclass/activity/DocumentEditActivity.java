@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.db.Message;
 import com.tanhd.rollingclass.fragments.ChatFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
@@ -16,33 +17,23 @@ import com.tanhd.rollingclass.views.TopbarView;
 
 public class DocumentEditActivity extends AppCompatActivity implements KnowledgeControllerFragment.Callback {
 
-
-    private String KnowledgeID;
-    private String KnowledgePointName;
-    private String ChapterName;
-    private String SectionName;
-    private String TeachingMaterialID;
-    private String Remark;
-
-    public static final String PARAM_KNOWLEDGE_ID = "KnowledgeID";
-    public static final String PARAM_KNOWLEDGE_POINT_NAME = "KnowledgePointName";
-    public static final String PARAM_CHAPTER_NAME = "ChapterName";
-    public static final String PARAM_SECTION_NAME = "SectionName";
-    public static final String PARAM_TEACHING_MATERIAL_ID = "TeachingMaterialID";
-    public static final String PARAM_REMARK = "Remark";
-
     private static final String TAG = "DocumentEditActivity";
+
+    public static final String PARAM_KNOWLEDGE_DATA = "PARAM_KNOWLEDGE_DATA";
+    public static final String PAGE_ID = "PAGE_ID";
+    public static final int PAGE_ID_ADD_DOCUMENTS = 0;
+    public static final int PAGE_ID_EDIT_DOCUMENTS = 1;
+
+    private KnowledgeModel mKnowledgeModel;
+    private int mPageId;
+
     private TopbarView mTopbarView;
     private View mBackButton;
     private KnowledgeControllerFragment mKnowledgeControllerFragment;
 
-    public static final String PAGE_ID = "PAGE_ID";
-    public static final int PAGE_ID_ADD_DOCUMENTS = 0;
-    public static final int PAGE_ID_EDIT_DOCUMENTS = 1;
-    private int mPageId;
-
-    public static void startMe(Activity context, int pageId) {
+    public static void startMe(Activity context, int pageId, KnowledgeModel knowledgeModel) {
         Intent intent = new Intent(context, DocumentEditActivity.class);
+        intent.putExtra(PARAM_KNOWLEDGE_DATA, knowledgeModel);
         intent.putExtra(PAGE_ID, pageId);
         context.startActivity(intent);
     }
@@ -50,19 +41,14 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_ADD_DOCUMENTS);
         initParams();
         initViews();
         initFragment();
     }
 
     private void initParams() {
-
-        KnowledgeID = getIntent().getStringExtra(DocumentEditActivity.PARAM_KNOWLEDGE_ID);
-        ChapterName = getIntent().getStringExtra(DocumentEditActivity.PARAM_CHAPTER_NAME);
-        SectionName = getIntent().getStringExtra(DocumentEditActivity.PARAM_SECTION_NAME);
-        TeachingMaterialID = getIntent().getStringExtra(DocumentEditActivity.PARAM_TEACHING_MATERIAL_ID);
-        Remark = getIntent().getStringExtra(DocumentEditActivity.PARAM_REMARK);
+        mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_ADD_DOCUMENTS);
+        mKnowledgeModel = (KnowledgeModel) getIntent().getSerializableExtra(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
     }
 
     private void initViews() {
@@ -92,7 +78,7 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
     }
 
     private void initFragment() {
-        mKnowledgeControllerFragment = KnowledgeControllerFragment.newInstance(KnowledgeID, ChapterName, SectionName, TeachingMaterialID, Remark, this);
+        mKnowledgeControllerFragment = KnowledgeControllerFragment.newInstance(mKnowledgeModel,this);
         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mKnowledgeControllerFragment).commit();
     }
 

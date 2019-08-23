@@ -11,17 +11,14 @@ import android.view.ViewGroup;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 
 public class KnowledgeControllerFragment extends Fragment implements View.OnClickListener, KnowledgeNoneFragment.Callback, KnowledgeEditingFragment.Callback {
 
     private static final int MODULE_ID_NEW_KNOWLEDGE = 1;
     private static final int MODULE_ID_EDIT_TASKS = 2;
 
-    private String KnowledgeID;
-    private String ChapterName;
-    private String SectionName;
-    private String TeachingMaterialID;
-    private String Remark;
+    private KnowledgeModel mKnowledgeModel;
 
     private int mCurrentShowModuleId = -1;
     private KnowledgeNoneFragment mKnowledgeNoneFragment;
@@ -33,13 +30,9 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     private View mAfterClassItemView;
     private Callback mCallback;
 
-    public static KnowledgeControllerFragment newInstance(String KnowledgeID, String ChapterName, String SectionName, String TeachingMaterialID, String Remark, Callback callback) {
+    public static KnowledgeControllerFragment newInstance(KnowledgeModel knowledgeModel, Callback callback) {
         Bundle args = new Bundle();
-        args.putString(DocumentEditActivity.PARAM_KNOWLEDGE_ID, KnowledgeID);
-        args.putString(DocumentEditActivity.PARAM_CHAPTER_NAME, ChapterName);
-        args.putString(DocumentEditActivity.PARAM_SECTION_NAME, SectionName);
-        args.putString(DocumentEditActivity.PARAM_TEACHING_MATERIAL_ID, TeachingMaterialID);
-        args.putString(DocumentEditActivity.PARAM_REMARK, Remark);
+        args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA, knowledgeModel);
         KnowledgeControllerFragment page = new KnowledgeControllerFragment();
         page.setArguments(args);
         page.setCallback(callback);
@@ -62,11 +55,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
 
     private void initParams() {
         Bundle args = getArguments();
-        KnowledgeID = args.getString(DocumentEditActivity.PARAM_KNOWLEDGE_ID);
-        ChapterName = args.getString(DocumentEditActivity.PARAM_CHAPTER_NAME);
-        SectionName = args.getString(DocumentEditActivity.PARAM_SECTION_NAME);
-        TeachingMaterialID = args.getString(DocumentEditActivity.PARAM_TEACHING_MATERIAL_ID);
-        Remark = args.getString(DocumentEditActivity.PARAM_REMARK);
+        mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
     }
 
     private void initViews(View view) {
@@ -87,7 +76,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         if (mKnowledgeNoneFragment == null) {
-            mKnowledgeNoneFragment = KnowledgeNoneFragment.newInstance(KnowledgeID, ChapterName, SectionName, TeachingMaterialID, Remark, this);
+            mKnowledgeNoneFragment = KnowledgeNoneFragment.newInstance(mKnowledgeModel, this);
             transaction.add(R.id.content_layout, mKnowledgeNoneFragment);
         }
         if (mKnowledgeEditingFragment != null) {
@@ -101,13 +90,13 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     /**
      * [展示指定Id的页面]<BR>
      */
-    public void showEditingFragment(String KnowledgePointName) {
+    public void showEditingFragment(KnowledgeModel knowledgeModel) {
         if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS) {
             return;
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         if (mKnowledgeEditingFragment == null) {
-            mKnowledgeEditingFragment = KnowledgeEditingFragment.newInstance(KnowledgePointName, this);
+            mKnowledgeEditingFragment = KnowledgeEditingFragment.newInstance(knowledgeModel, this);
             transaction.add(R.id.content_layout, mKnowledgeEditingFragment);
         }
         if (mKnowledgeNoneFragment != null) {
@@ -120,8 +109,8 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     }
 
     @Override
-    public void onAddSuccess(String KnowledgePointName) {
-        showEditingFragment(KnowledgePointName);
+    public void onAddSuccess(KnowledgeModel model) {
+        showEditingFragment(model);
     }
 
     @Override

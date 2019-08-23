@@ -3,7 +3,6 @@ package com.tanhd.rollingclass.fragments.kowledge;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,30 +14,22 @@ import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.KnowledgeData;
 
 public class KnowledgeNoneFragment extends Fragment implements View.OnClickListener {
 
-    private String KnowledgeID;
-    private String ChapterName;
-    private String SectionName;
-    private String TeachingMaterialID;
-    private String Remark;
+    private KnowledgeModel mKnowledgeModel;
 
     private KnowledgeNoneFragment.Callback mListener;
     private EditText mKnowledgeNameEditText;
     private TextView mKnowledgeAddButton;
     private View mAddButtonsLayout;
 
-    public static KnowledgeNoneFragment newInstance(String KnowledgeID, String ChapterName, String SectionName, String TeachingMaterialID, String Remark, KnowledgeNoneFragment.Callback callback) {
+    public static KnowledgeNoneFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeNoneFragment.Callback callback) {
         Bundle args = new Bundle();
-        args.putString(DocumentEditActivity.PARAM_KNOWLEDGE_ID, KnowledgeID);
-        args.putString(DocumentEditActivity.PARAM_CHAPTER_NAME, ChapterName);
-        args.putString(DocumentEditActivity.PARAM_SECTION_NAME, SectionName);
-        args.putString(DocumentEditActivity.PARAM_TEACHING_MATERIAL_ID, TeachingMaterialID);
-        args.putString(DocumentEditActivity.PARAM_REMARK, Remark);
+        args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA, knowledgeModel);
         KnowledgeNoneFragment page = new KnowledgeNoneFragment();
         page.setArguments(args);
         page.setListener(callback);
@@ -60,11 +51,7 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
 
     private void initParams() {
         Bundle args = getArguments();
-        KnowledgeID = args.getString(DocumentEditActivity.PARAM_KNOWLEDGE_ID);
-        ChapterName = args.getString(DocumentEditActivity.PARAM_CHAPTER_NAME);
-        SectionName = args.getString(DocumentEditActivity.PARAM_SECTION_NAME);
-        TeachingMaterialID = args.getString(DocumentEditActivity.PARAM_TEACHING_MATERIAL_ID);
-        Remark = args.getString(DocumentEditActivity.PARAM_REMARK);
+        mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
     }
 
     private void initViews(View view) {
@@ -77,7 +64,7 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.knowledge_add_button:
                 onClickAddTask();
                 break;
@@ -85,40 +72,35 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
 
     }
 
-    private void onClickAddTask(){
+    private void onClickAddTask() {
         if (TextUtils.isEmpty(mKnowledgeNameEditText.getText().toString().trim())) {
             Toast.makeText(getActivity(), "请先输入课时名称再添加任务，谢谢", Toast.LENGTH_LONG).show();
         } else {
-            KnowledgeData knowledgeData = new KnowledgeData();
-            knowledgeData.KnowledgeID = KnowledgeID;
-            knowledgeData.KnowledgePointName = mKnowledgeNameEditText.getText().toString();
-            knowledgeData.ChapterName = ChapterName;
-            knowledgeData.SectionName = SectionName;
-            knowledgeData.TeachingMaterialID = TeachingMaterialID;
-            knowledgeData.Remark = Remark;
+            final KnowledgeModel knowledgeData = new KnowledgeModel();
+            knowledgeData.knowledge_point_name = mKnowledgeNameEditText.getText().toString();
 
-//            ScopeServer.getInstance().InsertKnowledge(knowledgeData, new RequestCallback() {
-//                @Override
-//                public void onProgress(boolean b) {
-//
-//                }
-//
-//                @Override
-//                public void onResponse(String body) {
-            if (mListener != null) {
-                mListener.onAddSuccess(mKnowledgeNameEditText.getText().toString());
-            }
-//                }
-//
-//                @Override
-//                public void onError(String code, String message) {
-//                    Toast.makeText(getActivity().getApplicationContext(), "课时名称添加失败，请稍候重试 " + message, Toast.LENGTH_LONG).show();
-//                }
-//            });
+            ScopeServer.getInstance().InsertKnowledge(knowledgeData, new RequestCallback() {
+                @Override
+                public void onProgress(boolean b) {
+
+                }
+
+                @Override
+                public void onResponse(String body) {
+                    if (mListener != null) {
+                        mListener.onAddSuccess(knowledgeData);
+                    }
+                }
+
+                @Override
+                public void onError(String code, String message) {
+                    Toast.makeText(getActivity().getApplicationContext(), "课时名称添加失败，请稍候重试 " + message, Toast.LENGTH_LONG).show();
+                }
+            });
         }
     }
 
     public interface Callback {
-        void onAddSuccess(String KnowledgePointName);
+        void onAddSuccess(KnowledgeModel model);
     }
 }

@@ -30,6 +30,7 @@
     <string name="enter_knowledge_name">输入课时名称</string>
     <string name="enter_task_name">请输入任务名称</string>
     <string name="edit">编辑</string>
+    <string name="publish">发布</string>
     <string name="save">保存</string>
     <string name="finish">完成</string>
     <string name="delete">删除</string>
@@ -44,6 +45,7 @@
     <string name="add_knowledge">+任务</string>
     <string name="toast_crash">程序出错了, 错误报告提交, 我们将尽快修复该问题, 谢谢合作!</string>
     <string name="update_prompt">发现新版本，是否需要更新？</string>
+    <string name="select_pic_again">图片有误，请重选</string>
     <string name="no_update_prompt">当前已经是最新版本, 无需更新!</string>
     <string name="into_class">进入课堂</string>
     <string name="statics_result">统计结果：</string>

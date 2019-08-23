@@ -2,14 +2,13 @@ package com.tanhd.rollingclass.views;
 
 import android.content.Context;
 import android.util.SparseArray;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.db.ChaptersResponse;
+import com.tanhd.rollingclass.server.data.ChaptersResponse;
 
-public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Category, ChaptersResponse.Chapter> {
+public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter, ChaptersResponse.Section> {
 
     //                用于存放Indicator的集合
     private SparseArray<ImageView> mIndicators;
@@ -19,16 +18,37 @@ public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Category
     }
 
     @Override
-    protected void convertGroup(ViewHolder viewHolder, ChaptersResponse.Category item, int groupPosition, boolean isExpanded) {
+    protected void convertGroup(ViewHolder viewHolder, ChaptersResponse.Chapter item, int groupPosition, boolean isExpanded) {
+        ImageView iconView = viewHolder.getView(R.id.expand_imageview);
         TextView chapterName = viewHolder.getView(R.id.chapter_name);
-        chapterName.setEnabled(!isExpanded);
-        chapterName.setText(item.categoryName);
+        chapterName.setText(item.ChapterName);
+        //      把位置和图标添加到Map
+        mIndicators.put(groupPosition, iconView);
+        setIndicatorState(groupPosition, isExpanded);
     }
 
     @Override
-    protected void convertChild(ViewHolder viewHolder, ChaptersResponse.Chapter item, int groupPosition, int childPosition, boolean isLastChild) {
+    protected void convertChild(ViewHolder viewHolder, ChaptersResponse.Section item, int groupPosition, int childPosition, boolean isLastChild) {
         TextView chapterName = viewHolder.getView(R.id.chapter_name);
         chapterName.setEnabled(!item.isChecked);
-        chapterName.setText(item.chapterName);
+        chapterName.setText(item.SectionName);
+    }
+
+    //            根据分组的展开闭合状态设置指示器
+    public void setIndicatorState(int groupPosition, boolean isExpanded) {
+        if (isExpanded) {
+            mIndicators.get(groupPosition).setImageResource(R.drawable.chapter_icon_checked);
+        } else {
+            mIndicators.get(groupPosition).setImageResource(R.drawable.chapter_icon_uncheck);
+        }
+    }
+
+    public void resetCheckItem(int group){
+        ChaptersResponse.Chapter groupItem = getGroup(group);
+        if(groupItem!=null&&groupItem.Sections!=null){
+            for (ChaptersResponse.Section section:groupItem.Sections) {
+                section.isChecked = false;
+            }
+        }
     }
 }
