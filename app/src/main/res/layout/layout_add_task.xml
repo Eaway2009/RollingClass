@@ -36,7 +36,8 @@
             android:id="@+id/edit_type_rg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <RadioButton
                 android:id="@+id/upload_file_rb"
@@ -98,7 +99,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
-            android:enabled="false"
             android:gravity="top|left"
             android:minHeight="100dp"
             android:padding="12dp"
@@ -201,13 +201,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/task_light_frame"
-        android:enabled="false"
         android:gravity="top|left"
         android:minHeight="100dp"
         android:orientation="vertical"
-        android:padding="12dp"
-        android:textColor="@color/frame_upload_text"
-        android:textSize="15sp" />
+        android:padding="36dp" >
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

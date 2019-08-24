@@ -27,9 +27,11 @@ import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
@@ -37,6 +39,7 @@ import com.tanhd.rollingclass.utils.BitmapUtils;
 import com.tanhd.rollingclass.utils.GetFileHelper;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
@@ -58,6 +61,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     private LinearLayout mUploadFilesLayout;
     private LinearLayout mUploadLayout;
     private EditText mTaskDescEditText;
+    private EditText mTaskNameEditText;
     private View mTaskEditLayout;
     private LinearLayout mEnterDisplayPhotosLayout;
     private HorizontalScrollView mEnterDisplayPhotosScrollView;
@@ -68,7 +72,12 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
      * 1. ppt 2. doc 3. image 4. 微课 5. 习题
      */
     private int mResourceCode;
-    private List<ResourceUpload> mResourceList;
+    private List<ResourceUpload> mResourceList = new ArrayList<>();
+    private List<String> mExercisesList = new ArrayList<>();
+    private List<String> mPPTList = new ArrayList<>();
+    private List<String> mWordList = new ArrayList<>();
+    private List<String> mImageList = new ArrayList<>();
+    private List<String> mVideoList = new ArrayList<>();
 
     public static KnowledgeAddTaskFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeAddTaskFragment.Callback callback) {
         KnowledgeAddTaskFragment page = new KnowledgeAddTaskFragment();
@@ -108,6 +117,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         mEnterUploadPhotoLayout = view.findViewById(R.id.enter_upload_photo_layout);
         mUploadFilesLayout = view.findViewById(R.id.upload_file_layout);
         mTaskDescEditText = view.findViewById(R.id.task_desc_edittext);
+        mTaskNameEditText = view.findViewById(R.id.task_name_et);
         mTaskEditLayout = view.findViewById(R.id.task_edit_layout);
         mUploadPptView = view.findViewById(R.id.upload_ppt);
         mUploadVideoView = view.findViewById(R.id.upload_video);
@@ -134,11 +144,44 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.task_add_cancel_button:
+                mListener.onBack();
                 break;
             case R.id.task_add_save_button:
+                if (mTaskNameEditText.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(getActivity(), "请输入任务名称再点保存", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (mResourceList.size() == 0) {
+                    Toast.makeText(getActivity(), "请先上传文件再点保存", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                LessonSampleModel lessonSampleModel = new LessonSampleModel();
+                lessonSampleModel.doc_set = mWordList;
+                lessonSampleModel.ppt_set = mPPTList;
+                lessonSampleModel.question_set = mExercisesList;
+                lessonSampleModel.image_set = mImageList;
+                lessonSampleModel.video_set = mVideoList;
+                lessonSampleModel.lesson_sample_name = mTaskNameEditText.getText().toString();
+                ScopeServer.getInstance().InsertLessonSample(lessonSampleModel, new RequestCallback() {
+                    @Override
+                    public void onProgress(boolean b) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String body) {
+
+                    }
+
+                    @Override
+                    public void onError(String code, String message) {
+
+                    }
+                });
                 break;
             case R.id.enter_upload_photo:
                 uploadFile(3, true);
+                break;
             case R.id.upload_ppt:
                 uploadFile(1, false);
                 break;
@@ -164,22 +207,6 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         } else {
             GetFileHelper.fileSelector(getActivity(), this, false, false);
         }
-    }
-
-    private void showDialog(String message) {
-        final Dialog[] mNetworkDialog = new Dialog[1];
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setMessage(message)
-                .setPositiveButton("关闭", null)
-                .setCancelable(false)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mNetworkDialog[0] = null;
-                    }
-                });
-        mNetworkDialog[0] = builder.create();
-        mNetworkDialog[0].show();
     }
 
     @Override
@@ -248,6 +275,13 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         }
 
         @Override
+        protected ResourceUpload doInBackground(Void... strings) {
+            UserData userData = ExternalParam.getInstance().getUserData();
+            TeacherData teacherData = (TeacherData) userData.getUserData();
+            return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID, fileName, resourceType, level);
+        }
+
+        @Override
         protected void onPostExecute(ResourceUpload result) {
             if (result == null) {
                 Toast.makeText(getActivity(), "上传失败，请重试", Toast.LENGTH_SHORT).show();
@@ -267,15 +301,37 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                         showPictureLayout.setTag(result);
                         mEnterDisplayPhotosLayout.addView(showPictureLayout);
                     }
+                } else {
+                    LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
+                    ImageView iconView = resourceLayout.findViewById(R.id.resource_icon);
+                    TextView nameView = resourceLayout.findViewById(R.id.resource_name_view);
+                    nameView.setText(result.name);
+                    switch (result.resource_type) {
+                        case 1:
+                            mPPTList.add(result.resource_id);
+                            iconView.setImageResource(R.drawable.ppt_icon);
+                            break;
+                        case 2:
+                            mWordList.add(result.resource_id);
+                            iconView.setImageResource(R.drawable.word_icon);
+                            break;
+                        case 3:
+                            mImageList.add(result.resource_id);
+                            iconView.setImageResource(R.drawable.image_icon);
+                            break;
+                        case 4:
+                            mVideoList.add(result.resource_id);
+                            iconView.setImageResource(R.drawable.video_icon);
+                            break;
+                        case 5:
+                            mExercisesList.add(result.resource_id);
+                            iconView.setImageResource(R.drawable.pdf_icon);
+                            break;
+                    }
+                    mUploadFilesLayout.addView(resourceLayout);
                 }
-            }
-        }
 
-        @Override
-        protected ResourceUpload doInBackground(Void... strings) {
-            UserData userData = ExternalParam.getInstance().getUserData();
-            TeacherData teacherData = (TeacherData) userData.getUserData();
-            return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID, fileName, resourceType, level);
+            }
         }
     }
 

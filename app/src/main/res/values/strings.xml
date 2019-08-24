@@ -45,7 +45,7 @@
     <string name="add_knowledge">+任务</string>
     <string name="toast_crash">程序出错了, 错误报告提交, 我们将尽快修复该问题, 谢谢合作!</string>
     <string name="update_prompt">发现新版本，是否需要更新？</string>
-    <string name="select_pic_again">图片有误，请重选</string>
+    <string name="select_pic_again">文件有误，请重选</string>
     <string name="no_update_prompt">当前已经是最新版本, 无需更新!</string>
     <string name="sync_in_class">同步至课中</string>
     <string name="sync_after_class">同步至课后</string>

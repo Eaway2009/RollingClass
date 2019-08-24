@@ -28,12 +28,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/knowledge_name_edit_bg"
+                    android:background="@drawable/edittext_bg"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
                     android:hint="@string/enter_knowledge_name"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:textSize="15sp"
-                    android:visibility="gone" />
+                    android:textSize="18sp"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:id="@+id/knowledge_name"
@@ -52,8 +54,8 @@
                     android:id="@+id/knowledge_name_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/knowledge_name"
-                    android:layout_toRightOf="@+id/knowledge_name"
+                    android:layout_alignBottom="@+id/knowledge_name_et"
+                    android:layout_toRightOf="@+id/knowledge_name_et"
                     android:drawableLeft="@drawable/title_edit_icon"
                     android:drawablePadding="5dp"
                     android:paddingLeft="10dp"
@@ -62,7 +64,7 @@
                     android:paddingBottom="6dp"
                     android:textColor="@color/knowledge_edit_text"
                     android:textSize="14sp"
-                    tools:text="@string/edit" />
+                    android:text="@string/edit" />
             </RelativeLayout>
 
             <LinearLayout

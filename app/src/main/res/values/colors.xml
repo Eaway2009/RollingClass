@@ -61,6 +61,7 @@
     <color name="knowledge_edit_text">#45ADE3</color>
     <color name="knowledge_add_text_2">#8851C1FF</color>
     <color name="knowledge_add_title">#858586</color>
+    <color name="resource_name">#A1A1A1</color>
 
     <color name="online">#FF12FF12</color>
     <color name="offline">#FFFF1212</color>

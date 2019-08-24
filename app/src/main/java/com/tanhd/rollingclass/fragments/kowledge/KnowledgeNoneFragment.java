@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -78,28 +79,16 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
         } else {
             mKnowledgeModel.knowledge_point_name = mKnowledgeNameEditText.getText().toString();
 
-            ScopeServer.getInstance().InsertKnowledge(mKnowledgeModel, new RequestCallback() {
-                @Override
-                public void onProgress(boolean b) {
-
-                }
-
-                @Override
-                public void onResponse(String body) {
-                    if (mListener != null) {
-                        mListener.onAddSuccess(mKnowledgeModel);
-                    }
-                }
-
-                @Override
-                public void onError(String code, String message) {
-                    Toast.makeText(getActivity().getApplicationContext(), "课时名称添加失败，请稍候重试 " + message, Toast.LENGTH_LONG).show();
-                }
-            });
+            InsertKnowledgeResponse response = ScopeServer.getInstance().InsertKnowledge(mKnowledgeModel);
+            if (response == null) {
+                Toast.makeText(getActivity().getApplicationContext(), "课时名称添加失败，请稍候重试 ", Toast.LENGTH_LONG).show();
+            } else {
+                mListener.onAddSuccess(mKnowledgeModel, response);
+            }
         }
     }
 
     public interface Callback {
-        void onAddSuccess(KnowledgeModel model);
+        void onAddSuccess(KnowledgeModel model, InsertKnowledgeResponse response);
     }
 }

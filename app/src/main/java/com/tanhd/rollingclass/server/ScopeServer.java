@@ -3,6 +3,7 @@ package com.tanhd.rollingclass.server;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.ChaptersResponse;
 import com.tanhd.rollingclass.db.Document;
@@ -16,6 +17,7 @@ import com.tanhd.rollingclass.server.data.GradeData;
 import com.tanhd.rollingclass.server.data.GroupData;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
+import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.QuestionData;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
@@ -525,8 +527,23 @@ public class ScopeServer extends ServerRequest {
      * @param data 课时信息
      * @return
      */
-    public void InsertKnowledge(KnowledgeModel data, RequestCallback callback) {
-        new RequestTask(getHostUrl() + "/teachingMaterial/InsertKnowledge/" + mToken, METHOD.POST, null, data.toJSON().toString(), callback).execute();
+    public InsertKnowledgeResponse InsertKnowledge(KnowledgeModel data) {
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/InsertKnowledge/" + mToken, METHOD.POST, data.toJSON().toString());
+        if (response != null) {
+            InsertKnowledgeResponse list = (InsertKnowledgeResponse) jsonToModel(MicroCourseData.class.getName(), response);
+            return list;
+        }
+        return null;
+    }
+
+    /**
+     * 添加任务
+     *
+     * @param data 课时信息
+     * @return
+     */
+    public void InsertLessonSample(LessonSampleModel data, RequestCallback callback) {
+        new RequestTask(getHostUrl() + "/teachingSample/InsertLessonSample/" + mToken, METHOD.POST, null, data.toJSON().toString(), callback).execute();
     }
 
     /**
@@ -623,6 +640,7 @@ public class ScopeServer extends ServerRequest {
         params.put("name", fileName);
         params.put("resource_type", resource_type + "");
         params.put("level", level + "");
+        params.put("teacher_id", teahcerID);
         params.put("token", mToken);
         String response = uploadFile(getHostUrl() + "/resource/resource/upload/" + mToken, params, filePath);
         if (response != null) {

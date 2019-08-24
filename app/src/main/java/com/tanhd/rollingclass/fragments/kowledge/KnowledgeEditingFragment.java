@@ -116,15 +116,6 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    private void uploadFile(int resourceCode, boolean isImage) {
-        mResourceCode = resourceCode;
-        if (isImage) {
-            GetFileHelper.imageSelector(getActivity(), this, false, true);
-        } else {
-            GetFileHelper.fileSelector(getActivity(), this, false, false);
-        }
-    }
-
     private void showDialog(String message) {
         final Dialog[] mNetworkDialog = new Dialog[1];
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
