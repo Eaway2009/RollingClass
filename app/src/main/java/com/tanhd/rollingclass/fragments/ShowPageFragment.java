@@ -157,7 +157,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void onCheckChapter(String school_id, String teacher_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
-        KnowledgeModel knowledgeModel = new KnowledgeModel();
+        KnowledgeModel knowledgeModel = new KnowledgeModel(school_id, teacher_id, chapter_id, chapter_name, section_id, section_name, subject_code, subject_name, teaching_material_id);
         mDocumentsFragment.resetData(knowledgeModel);
 //        mDocumentsFragment.reRequestData(chapterId);
 //        mResourcesFragment.reRequestData(chapterId);

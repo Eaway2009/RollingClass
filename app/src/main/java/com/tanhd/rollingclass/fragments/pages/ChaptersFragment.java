@@ -21,6 +21,8 @@ import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.ChaptersAdapter;
 
+import java.util.List;
+
 public class ChaptersFragment extends Fragment implements ExpandableListView.OnChildClickListener {
     private ExpandableListView mExpandableListView;
     private TextView mTeachingMaterialNameView;
@@ -68,16 +70,16 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
     }
 
 
-    private class InitDataTask extends AsyncTask<Void, Void, ChaptersResponse> {
+    private class InitDataTask extends AsyncTask<Void, Void, List<ChaptersResponse>> {
 
         @Override
-        protected ChaptersResponse doInBackground(Void... voids) {
+        protected List<ChaptersResponse> doInBackground(Void... voids) {
             userData = ExternalParam.getInstance().getUserData();
             if (userData.isTeacher()) {
                 teacherData = (TeacherData) userData.getUserData();
-                ChaptersResponse chaptersResponse =
+                List<ChaptersResponse> responseList =
                         ScopeServer.getInstance().QueryTeachingMaterial(teacherData.SchoolID, teacherData.StudysectionCode, 7, teacherData.SubjectCode, 1, 20);
-                return chaptersResponse;
+                return responseList;
             } else {
 //                SubjectData subjectData = ExternalParam.getInstance().getSubject();
 //                List<TeachingMaterialData> materialDataList =
@@ -88,11 +90,11 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
         }
 
         @Override
-        protected void onPostExecute(ChaptersResponse response) {
-            mChapterData = response;
+        protected void onPostExecute(List<ChaptersResponse> response) {
+            mChapterData = response.get(0);
             if (response != null) {
-                mTeachingMaterialNameView.setText(response.TeachingMaterialName);
-                mAdapter.setDataList(response.Chapters);
+                mTeachingMaterialNameView.setText(mChapterData.TeachingMaterialName);
+                mAdapter.setDataList(mChapterData.Chapters);
                 mAdapter.notifyDataSetChanged();
             }
             if (mAdapter.getGroupCount() == 0) {
@@ -114,7 +116,7 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
                     ChaptersResponse.Section section = chapter.getChildren().get(0);
                     section.isChecked = true;
                     if (mListener != null) {
-                        mListener.onCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, mChapterData.SubjectCode, mChapterData.SubjectName, mChapterData.TeachingMaterialID);
+                        mListener.onCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, mChapterData.SubjectCode, mChapterData.SubjectName, section.TeachingMaterialID);
                     }
                 }
                 mAdapter.notifyDataSetChanged();
@@ -131,7 +133,7 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
                 ChaptersResponse.Section section = mAdapter.getGroup(groupPosition).getChildren().get(childPosition);
                 section.isChecked = true;
                 if (mListener != null) {
-                    mListener.onCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, mChapterData.SubjectCode, mChapterData.SubjectName, mChapterData.TeachingMaterialID);
+                    mListener.onCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, mChapterData.SubjectCode, mChapterData.SubjectName, section.TeachingMaterialID);
                 }
             }
         }

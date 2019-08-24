@@ -27,13 +27,13 @@
                     android:id="@+id/knowledge_name_et"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
                     android:background="@drawable/knowledge_name_edit_bg"
                     android:hint="@string/enter_knowledge_name"
-                    android:layout_centerInParent="true"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:visibility="gone"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/knowledge_name"
@@ -69,22 +69,50 @@
                 android:id="@+id/knowledge_tasks_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:paddingTop="25dp"
-                android:paddingBottom="25dp"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:paddingBottom="25dp"></LinearLayout>
 
-            <include layout="@layout/layout_add_task"/>
+            <FrameLayout
+                android:id="@+id/fragment_add_task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></FrameLayout>
 
             <TextView
                 android:id="@+id/knowledge_add_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
                 android:background="@drawable/knowledge_add_button"
                 android:gravity="center"
-                android:layout_marginTop="30dp"
                 android:text="@string/add_knowledge"
                 android:textColor="@color/knowledge_add_text" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="30dp">
+
+                <CheckBox
+                    android:id="@+id/sync_in_class_cb"
+                    android:layout_marginLeft="200dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/check_selector"
+                    android:text="@string/sync_in_class"
+                    android:textColor="@color/knowledge_add_text"
+                    android:textSize="14sp" />
+
+                <CheckBox
+                    android:id="@+id/sync_after_class_cb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/check_selector"
+                    android:text="@string/sync_after_class"
+                    android:layout_marginLeft="50dp"
+                    android:textColor="@color/knowledge_add_text"
+                    android:textSize="14sp" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -92,11 +120,11 @@
         android:id="@+id/knowledge_publish_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="50dp"
         android:background="@drawable/knowledge_publish_button"
         android:gravity="center"
-        android:layout_marginTop="50dp"
         android:text="@string/publish"
         android:textColor="@color/knowledge_edit_text"
         android:textSize="12sp" />

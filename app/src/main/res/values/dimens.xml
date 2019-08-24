@@ -9,4 +9,6 @@
     <dimen name="drop_pop_menu_icon_text_margin">20dp</dimen>
     <dimen name="drop_pop_menu_icon_width">22dp</dimen>
     <dimen name="drop_pop_menu_margin">20dp</dimen>
+    <dimen name="display_image_width">60dp</dimen>
+    <dimen name="display_image_height">80dp</dimen>
 </resources>

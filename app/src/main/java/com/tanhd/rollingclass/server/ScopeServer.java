@@ -19,7 +19,7 @@ import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.QuestionData;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
-import com.tanhd.rollingclass.server.data.ResourceModel;
+import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.SchoolData;
 import com.tanhd.rollingclass.server.data.SectionData;
 import com.tanhd.rollingclass.server.data.StudentData;
@@ -44,7 +44,7 @@ public class ScopeServer extends ServerRequest {
     private static final String HOST_URL_HTTP = "http://";
     private static final String HOST_URL_PORT = ":8001/flip";
     public static final String RESOURCE_URL_PORT = ":8002/";
-    private String mHostUrl = "www.sea-ai.com";
+    private String mHostUrl = "sea-ai.com";
     //    private String mHostUrl = "10.1.1.123";
     private static final String TAG = "ScopeServer";
 
@@ -540,7 +540,7 @@ public class ScopeServer extends ServerRequest {
      * @param pagesize
      * @return
      */
-    public ChaptersResponse QueryTeachingMaterial(String schoolid, int studysectioncode, int gradecode, int subjectcode, int page, int pagesize) {
+    public List<ChaptersResponse> QueryTeachingMaterial(String schoolid, int studysectioncode, int gradecode, int subjectcode, int page, int pagesize) {
         HashMap<String, String> params = new HashMap<>();
         params.put("schoolid", schoolid + "");
         params.put("studysectioncode", studysectioncode + "");
@@ -551,8 +551,8 @@ public class ScopeServer extends ServerRequest {
         params.put("token", mToken);
         String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterial/" + page + "/" + pagesize + "/" + mToken, METHOD.GET, params);
         if (response != null) {
-            ChaptersResponse model = (ChaptersResponse) jsonToModel(ChaptersResponse.class.getName(), response);
-            return model;
+            List<ChaptersResponse> responseList =  jsonToList(ChaptersResponse.class.getName(), response);
+            return responseList;
         }
 
         return null;
@@ -609,11 +609,28 @@ public class ScopeServer extends ServerRequest {
         return url;
     }
 
-    public String resourceUpload(String filePath, ResourceModel model) {
+    /**
+     * @param filePath
+     * @param teahcerID
+     * @param fileName
+     * @param resource_type 1. ppt 2. doc 3. image 4. 微课 5. 习题
+     * @param level         资源类别: 1 公共资源 2 校本资源 3 私藏资源
+     * @return
+     */
+    public ResourceUpload resourceUpload(String filePath, String teahcerID, String fileName, int resource_type, int level) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("resource", model.toJSON().toString());
-        String url = uploadFile(getHostUrl() + "/resource/upload/" + mToken, params, filePath);
-        return url;
+        params.put("teahcerID", teahcerID);
+        params.put("name", fileName);
+        params.put("resource_type", resource_type + "");
+        params.put("level", level + "");
+        params.put("token", mToken);
+        String response = uploadFile(getHostUrl() + "/resource/resource/upload/" + mToken, params, filePath);
+        if (response != null) {
+            ResourceUpload model = new ResourceUpload();
+            model.parse(model, response);
+            return model;
+        }
+        return null;
     }
 
     public int InsertAnswerv2(String question) {

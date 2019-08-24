@@ -76,10 +76,9 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
         if (TextUtils.isEmpty(mKnowledgeNameEditText.getText().toString().trim())) {
             Toast.makeText(getActivity(), "请先输入课时名称再添加任务，谢谢", Toast.LENGTH_LONG).show();
         } else {
-            final KnowledgeModel knowledgeData = new KnowledgeModel();
-            knowledgeData.knowledge_point_name = mKnowledgeNameEditText.getText().toString();
+            mKnowledgeModel.knowledge_point_name = mKnowledgeNameEditText.getText().toString();
 
-            ScopeServer.getInstance().InsertKnowledge(knowledgeData, new RequestCallback() {
+            ScopeServer.getInstance().InsertKnowledge(mKnowledgeModel, new RequestCallback() {
                 @Override
                 public void onProgress(boolean b) {
 
@@ -88,7 +87,7 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
                 @Override
                 public void onResponse(String body) {
                     if (mListener != null) {
-                        mListener.onAddSuccess(knowledgeData);
+                        mListener.onAddSuccess(mKnowledgeModel);
                     }
                 }
 

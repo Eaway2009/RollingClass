@@ -15,6 +15,7 @@ import android.os.storage.StorageManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
@@ -35,15 +36,15 @@ public class GetFileHelper {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE};
 
-    public static String imageSelector(Activity mActivity, boolean isMultiMode, boolean showCamera){
-        return openFileSelector(mActivity, "image/*", isMultiMode, showCamera);
+    public static String imageSelector(Activity mActivity, Fragment fragment, boolean isMultiMode, boolean showCamera) {
+        return openFileSelector(mActivity, fragment, "image/*", isMultiMode, showCamera);
     }
 
-    public static String fileSelector(Activity mActivity, boolean isMultiMode, boolean showCamera){
-        return openFileSelector(mActivity, "*/*", isMultiMode, showCamera);
+    public static String fileSelector(Activity mActivity, Fragment fragment, boolean isMultiMode, boolean showCamera) {
+        return openFileSelector(mActivity, fragment, "*/*", isMultiMode, showCamera);
     }
 
-    public static String openFileSelector(Activity activity, String fileType, boolean isMultiMode, boolean showCamera){
+    public static String openFileSelector(Activity activity, Fragment fragment, String fileType, boolean isMultiMode, boolean showCamera) {
         String cameraFilePath = null;
         if (showCamera) {
             final List<String> permissionsList = new ArrayList<String>();
@@ -113,12 +114,13 @@ public class GetFileHelper {
             }
             chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{cameraIntent});
         }
-        activity.startActivityForResult(chooser, FILE_CHOOSER_REQUEST);
+        fragment.startActivityForResult(chooser, FILE_CHOOSER_REQUEST);
         return cameraFilePath;
     }
 
     /**
      * 根据URI获取文件真实路径（兼容多张机型）
+     *
      * @param context
      * @param uri
      * @return
@@ -137,6 +139,7 @@ public class GetFileHelper {
         }
         return null;
     }
+
     /**
      * 适配api19及以上,根据uri获取图片的绝对路径
      *
@@ -172,7 +175,7 @@ public class GetFileHelper {
             } else if (isDownloadsDocument(uri)) { // DownloadsProvider
                 Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(documentId));
                 filePath = getDataColumn(context, contentUri, null, null);
-            }else if (isExternalStorageDocument(uri)) {
+            } else if (isExternalStorageDocument(uri)) {
                 // ExternalStorageProvider
                 final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
@@ -180,7 +183,7 @@ public class GetFileHelper {
                 if ("primary".equalsIgnoreCase(type)) {
                     filePath = Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
-            }else {
+            } else {
                 //Log.e("路径错误");
             }
         } else if ("content".equalsIgnoreCase(uri.getScheme())) {
@@ -290,7 +293,6 @@ public class GetFileHelper {
             return null;
         }
     }
-
 
 
     /**

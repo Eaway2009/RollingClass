@@ -64,73 +64,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/enter_upload_photo_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/task_dark_frame"
         android:paddingLeft="10dp"
-        android:paddingRight="10dp">
-
-        <LinearLayout
-            android:id="@+id/upload_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/upload_ppt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:drawableLeft="@drawable/upload_ppt"
-                android:drawablePadding="8dp"
-                android:padding="8dp"
-                android:text="@string/ppt"
-                android:textColor="@color/frame_upload_text" />
-
-            <TextView
-                android:id="@+id/upload_video"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:drawableLeft="@drawable/upload_video"
-                android:drawablePadding="8dp"
-                android:padding="8dp"
-                android:text="@string/micro_course"
-                android:textColor="@color/frame_upload_text" />
-
-            <TextView
-                android:id="@+id/upload_exercises"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:drawableLeft="@drawable/upload_exercises"
-                android:drawablePadding="8dp"
-                android:padding="8dp"
-                android:text="@string/exercises"
-                android:textColor="@color/frame_upload_text" />
-
-            <TextView
-                android:id="@+id/upload_documents"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:drawableLeft="@drawable/upload_document"
-                android:drawablePadding="8dp"
-                android:padding="8dp"
-                android:text="@string/documents"
-                android:textColor="@color/frame_upload_text" />
-
-            <TextView
-                android:id="@+id/upload_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:drawableLeft="@drawable/upload_photo"
-                android:drawablePadding="8dp"
-                android:padding="8dp"
-                android:text="@string/photo"
-                android:textColor="@color/frame_upload_text" />
-        </LinearLayout>
-
+        android:paddingRight="10dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/enter_upload_photo"
@@ -141,30 +81,144 @@
             android:padding="8dp"
             android:src="@drawable/enter_task_upload_photo"
             android:textColor="@color/frame_upload_text"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/task_desc_edittext"
+    <LinearLayout
+        android:id="@+id/task_edit_layout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/task_light_frame"
+        android:orientation="vertical"
+        android:padding="36dp"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/task_desc_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:enabled="false"
+            android:gravity="top|left"
+            android:minHeight="100dp"
+            android:padding="12dp"
+            android:textColor="@color/frame_upload_text"
+            android:textSize="15sp" />
+
+        <HorizontalScrollView
+            android:id="@+id/enter_display_photos_scrollview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/enter_display_photos_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/first_image_dis_view"
+                    android:layout_width="60dp"
+                    android:layout_height="80dp"
+                    android:layout_marginRight="20dp"
+                    android:visibility="visible" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/upload_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/task_dark_frame"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/upload_ppt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:drawableLeft="@drawable/upload_ppt"
+            android:drawablePadding="12dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/ppt"
+            android:textColor="@color/frame_upload_text" />
+
+        <TextView
+            android:id="@+id/upload_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:drawableLeft="@drawable/upload_video"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/micro_course"
+            android:textColor="@color/frame_upload_text" />
+
+        <TextView
+            android:id="@+id/upload_exercises"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:drawableLeft="@drawable/upload_exercises"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/exercises"
+            android:textColor="@color/frame_upload_text" />
+
+        <TextView
+            android:id="@+id/upload_documents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:drawableLeft="@drawable/upload_document"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/documents"
+            android:textColor="@color/frame_upload_text" />
+
+        <TextView
+            android:id="@+id/upload_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:drawableLeft="@drawable/upload_photo"
+            android:drawablePadding="8dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/photo"
+            android:textColor="@color/frame_upload_text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/upload_file_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/task_light_frame"
         android:enabled="false"
         android:gravity="top|left"
+        android:minHeight="100dp"
+        android:orientation="vertical"
         android:padding="12dp"
         android:textColor="@color/frame_upload_text"
-        android:textSize="15sp">
-
-    </EditText>
+        android:textSize="15sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp">
+
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
+
         <TextView
             android:id="@+id/task_add_cancel_button"
             android:layout_width="wrap_content"
@@ -172,17 +226,18 @@
             android:background="@drawable/task_add_cancel_button"
             android:gravity="center"
             android:text="@string/cancel"
-            android:textColor="@color/frame_cancel_text"/>
+            android:textColor="@color/frame_cancel_text" />
+
         <TextView
             android:id="@+id/task_add_save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/task_add_save_button"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="30dp"
+            android:background="@drawable/task_add_save_button"
             android:gravity="center"
             android:text="@string/save"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </LinearLayout>
