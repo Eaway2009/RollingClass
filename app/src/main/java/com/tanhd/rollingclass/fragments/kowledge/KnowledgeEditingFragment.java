@@ -2,31 +2,37 @@ package com.tanhd.rollingclass.fragments.kowledge;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
-import com.tanhd.rollingclass.fragments.ShowPageFragment;
+import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.server.RequestCallback;
+import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
+import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
-import com.tanhd.rollingclass.server.data.ResourceUpload;
-import com.tanhd.rollingclass.utils.GetFileHelper;
+import com.tanhd.rollingclass.views.TaskDisplayView;
 
-import java.io.File;
+import java.util.List;
 
-public class KnowledgeEditingFragment extends Fragment implements View.OnClickListener {
+public class KnowledgeEditingFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, RequestCallback {
 
     public static final String PARAM_KNOWLEDGE_DETAIL_DATA = "PARAM_KNOWLEDGE_DETAIL_DATA";
     public static final String PARAM_KNOWLEDGE_DETAIL_STATUS = "PARAM_KNOWLEDGE_DETAIL_STATUS";
@@ -54,12 +60,13 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private CheckBox mSyncAfterClassCheckBox;
     private CheckBox mSyncInClassCheckBox;
     private CheckBox mSyncFreClassCheckBox;
+    private ProgressBar mProgressBar;
+    private RequestListDataTask mRequestListDataTask;
 
     /**
-     *
-     * @param knowledgeModel 所属教材章节的参数
+     * @param knowledgeModel          所属教材章节的参数
      * @param insertKnowledgeResponse 所属课时的参数
-     * @param status 1.课前；2.课时；3.课后
+     * @param status                  1.课前；2.课时；3.课后
      * @param callback
      * @return
      */
@@ -97,13 +104,25 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
     private void addEditingFragment() {
         mIsEditing = true;
-        mAddTaskFragment = KnowledgeAddTaskFragment.newInstance(mKnowledgeModel, mInsertKnowledgeResponse,mStatus,new KnowledgeAddTaskFragment.Callback() {
+        mAddTaskFragment = KnowledgeAddTaskFragment.newInstance(mKnowledgeModel, mInsertKnowledgeResponse, mStatus, new KnowledgeAddTaskFragment.Callback() {
             @Override
             public void onBack() {
                 mIsEditing = false;
                 getFragmentManager().beginTransaction().remove(mAddTaskFragment);
                 mAddFragmentView.setVisibility(View.GONE);
+            }
 
+            @Override
+            public void onAddSuccess(String lessonSampleId) {
+                mIsEditing = false;
+                getFragmentManager().beginTransaction().remove(mAddTaskFragment);
+                mAddFragmentView.setVisibility(View.GONE);
+                requestData();
+            }
+
+            @Override
+            public void onLoading(boolean loading) {
+                changeLoading(loading);
             }
         });
         getFragmentManager().beginTransaction().replace(R.id.fragment_add_task, mAddTaskFragment).commit();
@@ -119,10 +138,23 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mKnowledgeTasksLayout = view.findViewById(R.id.knowledge_tasks_layout);
         mKnowledgeAddButton = view.findViewById(R.id.knowledge_add_button);
         mAddFragmentView = view.findViewById(R.id.fragment_add_task);
+        mProgressBar = view.findViewById(R.id.progressbar);
 
         mSyncFreClassCheckBox = view.findViewById(R.id.sync_fre_class_cb);
         mSyncInClassCheckBox = view.findViewById(R.id.sync_in_class_cb);
         mSyncAfterClassCheckBox = view.findViewById(R.id.sync_after_class_cb);
+        if (mStatus == KeyConstants.KnowledgeStatus.FRE_CLASS) {
+            mSyncFreClassCheckBox.setVisibility(View.GONE);
+        }
+        if (mStatus == KeyConstants.KnowledgeStatus.AT_CLASS) {
+            mSyncInClassCheckBox.setVisibility(View.GONE);
+        }
+        if (mStatus == KeyConstants.KnowledgeStatus.AFTER_CLASS) {
+            mSyncAfterClassCheckBox.setVisibility(View.GONE);
+        }
+        mSyncFreClassCheckBox.setOnCheckedChangeListener(this);
+        mSyncInClassCheckBox.setOnCheckedChangeListener(this);
+        mSyncAfterClassCheckBox.setOnCheckedChangeListener(this);
 
         mPublishButton.setOnClickListener(this);
         mFinishButton.setOnClickListener(this);
@@ -133,24 +165,27 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mKnowledgeNameTextView.setText(mKnowledgeModel.knowledge_point_name);
     }
 
-    private void requestData(){
-
+    private void requestData() {
+        if (mRequestListDataTask == null) {
+            mRequestListDataTask = new RequestListDataTask();
+        }
+        mRequestListDataTask.execute();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.knowledge_publish_button:
-                if(mAddFragmentView.getVisibility()==View.VISIBLE){
+                if (mAddFragmentView.getVisibility() == View.VISIBLE) {
                     showDialog(getString(R.string.adding_task_warning));
                 } else {
-
+                    initFilterDialog();
                 }
                 break;
             case R.id.knowledge_finish_button:
-                if(mAddFragmentView.getVisibility()==View.VISIBLE){
+                if (mAddFragmentView.getVisibility() == View.VISIBLE) {
                     showDialog(getString(R.string.adding_task_warning));
-                }else{
+                } else {
                     mListener.onBack();
                 }
                 break;
@@ -162,7 +197,75 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    public boolean isEditing(){
+    private void initFilterDialog() {
+        String[] items = new String[2];
+        final int[] releaseFre = {0};
+        final int[] releasePro = {0};
+        final int[] releaseAfter = {0};
+        switch (mStatus) {
+            case KeyConstants.KnowledgeStatus.FRE_CLASS:
+                items[0] = getString(R.string.publish_sync_in_class);
+                items[1] = getString(R.string.publish_sync_after_class);
+                releaseFre[0] = 1;
+                break;
+            case KeyConstants.KnowledgeStatus.AT_CLASS:
+                items[0] = getString(R.string.publish_sync_fre_class);
+                items[1] = getString(R.string.publish_sync_after_class);
+                releasePro[0] = 1;
+                break;
+            case KeyConstants.KnowledgeStatus.AFTER_CLASS:
+                items[0] = getString(R.string.publish_sync_fre_class);
+                items[1] = getString(R.string.publish_sync_in_class);
+                releaseAfter[0] = 1;
+                break;
+        }
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.publish_warning)
+                .setMultiChoiceItems(items, new boolean[]{true, true}, new DialogInterface.OnMultiChoiceClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        switch (mStatus) {
+                            case KeyConstants.KnowledgeStatus.FRE_CLASS:
+                                if (which == 0) {
+                                    releasePro[0] = isChecked ? 1 : 0;
+                                } else if (which == 1) {
+                                    releaseAfter[0] = isChecked ? 1 : 0;
+                                }
+                                break;
+                            case KeyConstants.KnowledgeStatus.AT_CLASS:
+                                if (which == 0) {
+                                    releaseFre[0] = isChecked ? 1 : 0;
+                                } else if (which == 1) {
+                                    releaseAfter[0] = isChecked ? 1 : 0;
+                                }
+                                break;
+                            case KeyConstants.KnowledgeStatus.AFTER_CLASS:
+                                if (which == 0) {
+                                    releaseFre[0] = isChecked ? 1 : 0;
+                                } else if (which == 1) {
+                                    releasePro[0] = isChecked ? 1 : 0;
+                                }
+                                break;
+                        }
+
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ScopeServer.getInstance().ReleaseKnowledgeToClass(mInsertKnowledgeResponse.knowledge_id, mInsertKnowledgeResponse.teacher_id, releaseFre[0], releasePro[0], releaseAfter[0], KnowledgeEditingFragment.this);
+                    }
+                }).show();
+    }
+
+    public boolean isEditing() {
         return mIsEditing;
     }
 
@@ -180,6 +283,68 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                 });
         mNetworkDialog[0] = builder.create();
         mNetworkDialog[0].show();
+    }
+
+    private void changeLoading(boolean show) {
+        if (show) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            mProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            if (mAddFragmentView.getVisibility() == View.VISIBLE) {
+                showDialog(getString(R.string.adding_task_warning));
+            } else {
+
+            }
+        }
+    }
+
+    @Override
+    public void onProgress(boolean b) {
+
+    }
+
+    @Override
+    public void onResponse(String body) {
+        mListener.onBack();
+    }
+
+    @Override
+    public void onError(String code, String message) {
+        if (!"0".equals(code)) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private class RequestListDataTask extends AsyncTask<Void, Void, List<KnowledgeLessonSample>> {
+
+        @Override
+        protected void onPreExecute() {
+            changeLoading(true);
+        }
+
+        @Override
+        protected List<KnowledgeLessonSample> doInBackground(Void... strings) {
+            return ScopeServer.getInstance().QuerySampleByKnowledge(mInsertKnowledgeResponse.knowledge_id, mStatus);
+        }
+
+        @Override
+        protected void onPostExecute(List<KnowledgeLessonSample> dataList) {
+            changeLoading(false);
+            if (dataList != null) {
+                for (KnowledgeLessonSample lessonSample : dataList) {
+                    TaskDisplayView taskDiplayView = new TaskDisplayView(getActivity(), (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_task_added, null));
+                    LinearLayout taskDisplayView = taskDiplayView.setData(lessonSample);
+                    mKnowledgeTasksLayout.addView(taskDisplayView);
+                }
+            }
+        }
     }
 
     public interface Callback {

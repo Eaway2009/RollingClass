@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,9 @@ import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.BitmapUtils;
 import com.tanhd.rollingclass.utils.GetFileHelper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -101,6 +105,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         Bundle args = new Bundle();
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         args.putSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_DATA, insertKnowledgeResponse);
+        args.putSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_STATUS, status);
         page.setArguments(args);
         return page;
     }
@@ -192,10 +197,19 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                     }
 
                     @Override
-                    public void onResponse(String body) {
-                        InsertLessonSampleResponse response = (InsertLessonSampleResponse) ScopeServer.getInstance().jsonToModel(InsertLessonSampleResponse.class.getName(),body);
-                        Toast.makeText(getActivity(), body, Toast.LENGTH_SHORT).show();
-                        mListener.onBack();
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            String errorCode = json.optString("errorCode");
+                            if (TextUtils.isEmpty(errorCode) || !errorCode.equals("0"))
+                                return;
+
+                            String sampleId = json.optString("result");
+
+                            mListener.onAddSuccess(sampleId);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -302,14 +316,20 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         }
 
         @Override
+        protected void onPreExecute() {
+            mListener.onLoading(true);
+        }
+
+        @Override
         protected ResourceUpload doInBackground(Void... strings) {
             UserData userData = ExternalParam.getInstance().getUserData();
             TeacherData teacherData = (TeacherData) userData.getUserData();
-            return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID, fileName,mKnowledgeModel.teaching_material_id, resourceType, level);
+            return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID,mKnowledgeModel.teaching_material_id, fileName,resourceType, level);
         }
 
         @Override
         protected void onPostExecute(ResourceUpload result) {
+            mListener.onLoading(false);
             if (result == null) {
                 Toast.makeText(getActivity(), "上传失败，请重试", Toast.LENGTH_SHORT).show();
             } else {
@@ -364,5 +384,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
     public interface Callback {
         void onBack();
+        void onAddSuccess(String lessonSampleId);
+        void onLoading(boolean loading);
     }
 }

@@ -4,6 +4,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
+import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.ChaptersResponse;
 import com.tanhd.rollingclass.db.Document;
@@ -488,21 +490,18 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
-    public List<Document> QureyDocuments(int teacherId) {
+    public List<KnowledgeDetailMessage> QureyKnowledgeByChapterAndTeacherID(String teacherId, String teaching_material_id) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("teacherId", "" + teacherId);
+        params.put("teaching_material_id", "" + teaching_material_id);
+        params.put("teacherID", "" + teacherId);
         params.put("token", mToken);
-//        String response = sendRequest(getHostUrl() + "/microcourse/QureyDocuments/" + mToken, METHOD.GET, params);
-//        if (response != null) {
-//            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
-        List<Document> documents = new ArrayList<>();
-        for (int i = 0; i < 18; i++) {
-            documents.add(new Document(i, "勾股定理 第" + i + "节", i % 2, i % 2 == 1 ? "上课记录" : "待发布", "2019年6月" + i + "日"));
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QureyKnowledgeByChapterAndTeacherID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<KnowledgeDetailMessage> list = jsonToList(KnowledgeDetailMessage.class.getName(), response);
+            return list;
         }
-        return documents;
-//        }
-//
-//        return null;
+
+        return null;
     }
 
     /**
@@ -522,13 +521,35 @@ public class ScopeServer extends ServerRequest {
     }
 
     /**
+     * 课时发布
+     *
+     * @param teacherID      老师ID
+     * @param knowledgeID    课时IO
+     * @param releasebefore  课前发布
+     * @param releaseafter   课后发布
+     * @param releaseprocess 课中发布
+     * @return
+     */
+    public void ReleaseKnowledgeToClass(String knowledgeID, String teacherID, int releasebefore, int releaseprocess, int releaseafter, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("knowledgeID", "" + knowledgeID);
+        params.put("teacherID", "" + teacherID);
+        params.put("releasebefore", "" + releasebefore);
+        params.put("releaseprocess", "" + releaseprocess);
+        params.put("releaseafter", "" + releaseafter);
+        params.put("token", mToken);
+
+        new RequestTask(getHostUrl() + "/teachingMaterial/ReleaseKnowledgeToClass/" + mToken, METHOD.POST, params, null, callback).execute();
+    }
+
+    /**
      * 添加课时(即增加知识点)
      *
      * @param data 课时信息
      * @return
      */
     public void InsertKnowledge(KnowledgeModel data, RequestCallback callback) {
-        new RequestTask(getHostUrl() + "/teachingMaterial/InsertKnowledge/" + mToken, METHOD.POST,null, data.toJSON().toString(), callback).execute();
+        new RequestTask(getHostUrl() + "/teachingMaterial/InsertKnowledge/" + mToken, METHOD.POST, null, data.toJSON().toString(), callback).execute();
     }
 
     /**
@@ -547,7 +568,6 @@ public class ScopeServer extends ServerRequest {
      * @param schoolid         学校ID option(1小学 2初中 3高中)
      * @param studysectioncode 学段代码 option(1小学 2初中 3高中)
      * @param subjectcode      学科代码 option(1数学 2语文 ……20道德与法制)
-     *
      * @return
      */
     public List<ChaptersResponse> QueryTeachingMaterial(String schoolid, int studysectioncode, int subjectcode) {
@@ -557,7 +577,7 @@ public class ScopeServer extends ServerRequest {
         params.put("subjectcode", subjectcode + "");
         String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterial/" + mToken, METHOD.GET, params);
         if (response != null) {
-            List<ChaptersResponse> responseList =  jsonToList(ChaptersResponse.class.getName(), response);
+            List<ChaptersResponse> responseList = jsonToList(ChaptersResponse.class.getName(), response);
             return responseList;
         }
 
@@ -565,18 +585,19 @@ public class ScopeServer extends ServerRequest {
     }
 
     /**
-     * 查绚指定学科知识点
+     * 查绚指定课时
      *
      * @param knowledgeID
      * @return
      */
-    public List<MicroCourseData> QuerySampleByKnowledge(String knowledgeID, RequestCallback callback) {
+    public List<KnowledgeLessonSample> QuerySampleByKnowledge(String knowledgeID, int class_type) {
         HashMap<String, String> params = new HashMap<>();
         params.put("knowledgeID", knowledgeID);
+        params.put("class_type", class_type + "");
         params.put("token", mToken);
         String response = sendRequest(getHostUrl() + "/teachingSample/QuerySampleByKnowledge/" + mToken, METHOD.GET, params);
         if (response != null) {
-            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
+            List<KnowledgeLessonSample> list = jsonToList(KnowledgeLessonSample.class.getName(), response);
             return list;
         }
 

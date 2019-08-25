@@ -132,7 +132,12 @@
         </LinearLayout>
     </ScrollView>
 
-
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@+id/knowledge_publish_button"

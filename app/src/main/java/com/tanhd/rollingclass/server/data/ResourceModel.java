@@ -7,7 +7,9 @@ public class ResourceModel extends BaseJsonClass {
     public String pdf_url;
     public String remark;
     public String resource_id;
-    public long resource_type;
+    public String teaching_material_id;
+    public String teacher_id;
+    public int resource_type;
     public long size;
     public long update_time;
     public String url;

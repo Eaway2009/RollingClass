@@ -12,8 +12,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
-import com.tanhd.rollingclass.db.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +21,20 @@ import java.util.List;
 public class DocumentAdapter  extends BaseAdapter implements View.OnClickListener {
 
     private Activity mContext;
-    private List<Document> mDataList = new ArrayList<>();
+    private List<KnowledgeDetailMessage> mDataList = new ArrayList<>();
 
     public DocumentAdapter(Activity context){
         mContext =context;
     }
 
-    public void setData(List<Document> datas){
+    public void setData(List<KnowledgeDetailMessage> datas){
         mDataList = datas;
+        notifyDataSetChanged();
+    }
+
+    public void clearData(){
+        mDataList.clear();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -48,22 +54,22 @@ public class DocumentAdapter  extends BaseAdapter implements View.OnClickListene
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        RelativeLayout view = (RelativeLayout) convertView;
+        LinearLayout view = (LinearLayout) convertView;
         if (view == null) {
-            view = (RelativeLayout) mContext.getLayoutInflater().inflate(R.layout.adapter_document, parent, false);
+            view = (LinearLayout) mContext.getLayoutInflater().inflate(R.layout.adapter_document, parent, false);
         }
         view.setOnClickListener(this);
-        final Document data = mDataList.get(position);
+        final KnowledgeDetailMessage data = mDataList.get(position);
 
         TextView statusView = view.findViewById(R.id.document_status_tv);
         TextView titleView = view.findViewById(R.id.document_title_tv);
         TextView editTimeView = view.findViewById(R.id.edit_time_tv);
         ImageView moreView = view.findViewById(R.id.document_more_ib);
 
-        statusView.setText(data.statusText);
+        statusView.setText(data.section_name);
         statusView.setEnabled(data.status==1);
-        titleView.setText(data.documentName);
-        editTimeView.setText(data.editTime);
+        titleView.setText(data.knowledge_point_name);
+        editTimeView.setText(data.chapter_name);
         moreView.setOnClickListener(this);
         return view;
     }

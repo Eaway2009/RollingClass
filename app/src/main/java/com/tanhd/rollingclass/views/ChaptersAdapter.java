@@ -45,7 +45,7 @@ public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter,
 
     //            根据分组的展开闭合状态设置指示器
     public void setIndicatorState(int groupPosition, boolean isExpanded) {
-        if (isExpanded) {
+        if (!isExpanded) {
             mIndicators.get(groupPosition).setImageResource(R.drawable.chapter_icon_checked);
         } else {
             mIndicators.get(groupPosition).setImageResource(R.drawable.chapter_icon_uncheck);

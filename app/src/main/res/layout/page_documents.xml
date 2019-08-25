@@ -29,9 +29,11 @@
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="25dp"
         android:layout_weight="1"
         android:fadingEdge="none"
+        android:columnWidth="250dp"
+        android:verticalSpacing="30dp"
         android:numColumns="4"
         android:scrollbars="none" />
 </LinearLayout>

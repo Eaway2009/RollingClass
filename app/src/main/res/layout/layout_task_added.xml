@@ -25,21 +25,27 @@
         android:layout_height="wrap_content"
         android:paddingLeft="100dp"
         android:paddingRight="100dp">
-        <TextView
-            android:id="@+id/task_desc"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:id="@+id/upload_file_layout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/knowledge_text"
-            android:textSize="14sp"
-            tools:text="Give yourself a long-term goal, and then deliberately change who you are by the things that you choose to do.给自己制定一个长期目标，然后可以通过去做那些你选择要做的事情来改变自己。"/>
+            android:gravity="top|left"
+            android:minHeight="100dp"
+            android:orientation="vertical"
+            android:padding="36dp" >
+        </LinearLayout>
 
         <TextView
             android:id="@+id/task_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:padding="8dp"
             android:text="@string/delete"
+            android:drawableLeft="@drawable/task_delete"
+            android:drawablePadding="6dp"
             android:textColor="@color/knowledge_edit_text"
             android:layout_marginLeft="15dp"
             android:textSize="12sp"/>
@@ -49,8 +55,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:padding="8dp"
             android:drawableLeft="@drawable/task_edit_icon"
-            android:drawablePadding="4dp"
+            android:drawablePadding="6dp"
             android:text="@string/edit"
             android:layout_marginLeft="15dp"
             android:textColor="@color/knowledge_edit_text"

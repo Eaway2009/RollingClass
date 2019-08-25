@@ -140,6 +140,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
             case R.id.fre_class_item:
                 if(mCurrentShowModuleId == MODULE_ID_EDIT_TASKS&&mKnowledgeEditingFragment.isEditing()){
                     Toast.makeText(getActivity(),R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 mStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
                 mFreClassItemView.setEnabled(false);
@@ -149,6 +150,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
             case R.id.at_class_item:
                 if(mCurrentShowModuleId == MODULE_ID_EDIT_TASKS&&mKnowledgeEditingFragment.isEditing()){
                     Toast.makeText(getActivity(),R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 mStatus = KeyConstants.KnowledgeStatus.AT_CLASS;
                 mFreClassItemView.setEnabled(true);
@@ -158,6 +160,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
             case R.id.after_class_item:
                 if(mCurrentShowModuleId == MODULE_ID_EDIT_TASKS&&mKnowledgeEditingFragment.isEditing()){
                     Toast.makeText(getActivity(),R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 mStatus = KeyConstants.KnowledgeStatus.AFTER_CLASS;
                 mFreClassItemView.setEnabled(true);
