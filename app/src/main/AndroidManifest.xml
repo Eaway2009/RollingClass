@@ -48,6 +48,11 @@
             android:screenOrientation="landscape">
         </activity>
 
+        <activity android:name=".activity.LearnCasesActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape">
+        </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"

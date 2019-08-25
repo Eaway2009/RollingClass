@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.Document;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class DocumentAdapter  extends BaseAdapter implements View.OnClickListene
         if (view == null) {
             view = (RelativeLayout) mContext.getLayoutInflater().inflate(R.layout.adapter_document, parent, false);
         }
-        view.setOnClickListener(null);
+        view.setOnClickListener(this);
         final Document data = mDataList.get(position);
 
         TextView statusView = view.findViewById(R.id.document_status_tv);
@@ -69,6 +70,8 @@ public class DocumentAdapter  extends BaseAdapter implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-
+        if (v.getId() == R.id.layout_content) {
+            LearnCasesActivity.startMe(mContext);
+        }
     }
 }

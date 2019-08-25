@@ -65,4 +65,7 @@
 
     <color name="online">#FF12FF12</color>
     <color name="offline">#FFFF1212</color>
+
+    <color name="learn_menu_bg1">#EEF9FF</color>
+    <color name="learn_menu_bg2">#E7F2F9</color>
 </resources>
