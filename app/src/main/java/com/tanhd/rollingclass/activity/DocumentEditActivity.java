@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.db.Message;
 import com.tanhd.rollingclass.fragments.ChatFragment;
@@ -19,7 +20,8 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
 
     private static final String TAG = "DocumentEditActivity";
 
-    public static final String PARAM_KNOWLEDGE_DATA = "PARAM_KNOWLEDGE_DATA";
+    public static final String PARAM_TEACHING_MATERIAL_DATA = "PARAM_TEACHING_MATERIAL_DATA";
+    public static final String PARAM_KNOWLEDGE_DETAIL_DATA = "PARAM_KNOWLEDGE_DETAIL_DATA";
     public static final String PAGE_ID = "PAGE_ID";
     public static final int PAGE_ID_ADD_DOCUMENTS = 0;
     public static final int PAGE_ID_EDIT_DOCUMENTS = 1;
@@ -30,10 +32,19 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
     private TopbarView mTopbarView;
     private View mBackButton;
     private KnowledgeControllerFragment mKnowledgeControllerFragment;
+    private InsertKnowledgeResponse insertKnowledgeResponse;
 
     public static void startMe(Activity context, int pageId, KnowledgeModel knowledgeModel) {
         Intent intent = new Intent(context, DocumentEditActivity.class);
-        intent.putExtra(PARAM_KNOWLEDGE_DATA, knowledgeModel);
+        intent.putExtra(PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
+        intent.putExtra(PAGE_ID, pageId);
+        context.startActivity(intent);
+    }
+
+    public static void startMe(Activity context, int pageId, KnowledgeModel knowledgeModel, InsertKnowledgeResponse insertKnowledgeResponse) {
+        Intent intent = new Intent(context, DocumentEditActivity.class);
+        intent.putExtra(PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
+        intent.putExtra(PARAM_KNOWLEDGE_DETAIL_DATA, insertKnowledgeResponse);
         intent.putExtra(PAGE_ID, pageId);
         context.startActivity(intent);
     }
@@ -48,7 +59,10 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
 
     private void initParams() {
         mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_ADD_DOCUMENTS);
-        mKnowledgeModel = (KnowledgeModel) getIntent().getSerializableExtra(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
+        mKnowledgeModel = (KnowledgeModel) getIntent().getSerializableExtra(PARAM_TEACHING_MATERIAL_DATA);
+        if(mPageId == PAGE_ID_EDIT_DOCUMENTS){
+            insertKnowledgeResponse = (InsertKnowledgeResponse)getIntent().getSerializableExtra(PARAM_KNOWLEDGE_DETAIL_DATA);
+        }
     }
 
     private void initViews() {
@@ -78,7 +92,11 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
     }
 
     private void initFragment() {
-        mKnowledgeControllerFragment = KnowledgeControllerFragment.newInstance(mKnowledgeModel,this);
+        if(insertKnowledgeResponse!=null){
+            mKnowledgeControllerFragment = KnowledgeControllerFragment.newInstance(mKnowledgeModel,insertKnowledgeResponse,this);
+        }else {
+            mKnowledgeControllerFragment = KnowledgeControllerFragment.newInstance(mKnowledgeModel, this);
+        }
         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mKnowledgeControllerFragment).commit();
     }
 

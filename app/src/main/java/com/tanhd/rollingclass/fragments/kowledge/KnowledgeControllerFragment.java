@@ -8,9 +8,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 
@@ -30,10 +32,21 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     private View mAtClassItemView;
     private View mAfterClassItemView;
     private Callback mCallback;
+    private int mStatus = 1;
 
     public static KnowledgeControllerFragment newInstance(KnowledgeModel knowledgeModel, Callback callback) {
         Bundle args = new Bundle();
-        args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA, knowledgeModel);
+        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
+        KnowledgeControllerFragment page = new KnowledgeControllerFragment();
+        page.setArguments(args);
+        page.setCallback(callback);
+        return page;
+    }
+
+    public static KnowledgeControllerFragment newInstance(KnowledgeModel knowledgeModel, InsertKnowledgeResponse insertKnowledgeResponse,Callback callback) {
+        Bundle args = new Bundle();
+        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
+        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         KnowledgeControllerFragment page = new KnowledgeControllerFragment();
         page.setArguments(args);
         page.setCallback(callback);
@@ -56,7 +69,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
 
     private void initParams() {
         Bundle args = getArguments();
-        mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
+        mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
     }
 
     private void initViews(View view) {
@@ -97,7 +110,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         if (mKnowledgeEditingFragment == null) {
-            mKnowledgeEditingFragment = KnowledgeEditingFragment.newInstance(knowledgeModel, insertKnowledgeResponse,this);
+            mKnowledgeEditingFragment = KnowledgeEditingFragment.newInstance(knowledgeModel, insertKnowledgeResponse,mStatus, this);
             transaction.add(R.id.content_layout, mKnowledgeEditingFragment);
         }
         if (mKnowledgeNoneFragment != null) {
@@ -125,10 +138,31 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                 }
                 break;
             case R.id.fre_class_item:
+                if(mCurrentShowModuleId == MODULE_ID_EDIT_TASKS&&mKnowledgeEditingFragment.isEditing()){
+                    Toast.makeText(getActivity(),R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                }
+                mStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
+                mFreClassItemView.setEnabled(false);
+                mAtClassItemView.setEnabled(true);
+                mAfterClassItemView.setEnabled(true);
                 break;
             case R.id.at_class_item:
+                if(mCurrentShowModuleId == MODULE_ID_EDIT_TASKS&&mKnowledgeEditingFragment.isEditing()){
+                    Toast.makeText(getActivity(),R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                }
+                mStatus = KeyConstants.KnowledgeStatus.AT_CLASS;
+                mFreClassItemView.setEnabled(true);
+                mAtClassItemView.setEnabled(false);
+                mAfterClassItemView.setEnabled(true);
                 break;
             case R.id.after_class_item:
+                if(mCurrentShowModuleId == MODULE_ID_EDIT_TASKS&&mKnowledgeEditingFragment.isEditing()){
+                    Toast.makeText(getActivity(),R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                }
+                mStatus = KeyConstants.KnowledgeStatus.AFTER_CLASS;
+                mFreClassItemView.setEnabled(true);
+                mAtClassItemView.setEnabled(true);
+                mAfterClassItemView.setEnabled(false);
                 break;
         }
     }

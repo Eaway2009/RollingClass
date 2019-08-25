@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,19 +41,19 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private EditText mKnowledgeNameEditText;
     private TextView mKnowledgeAddButton;
     private LinearLayout mKnowledgeTasksLayout;
+    private View mAddFragmentView;
 
     private KnowledgeModel mKnowledgeModel;
     private InsertKnowledgeResponse mInsertKnowledgeResponse;
-    /**
-     * 1. ppt 2. doc 3. image 4. 微课 5. 习题
-     */
-    private int mResourceCode;
-    private ResourceUpload mResourceModel;
 
     /**
      * 1.课前；2.课时；3.课后
      */
     private int mStatus;
+    private boolean mIsEditing = false;
+    private CheckBox mSyncAfterClassCheckBox;
+    private CheckBox mSyncInClassCheckBox;
+    private CheckBox mSyncFreClassCheckBox;
 
     /**
      *
@@ -62,12 +63,11 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
      * @param callback
      * @return
      */
-
     public static KnowledgeEditingFragment newInstance(KnowledgeModel knowledgeModel, InsertKnowledgeResponse insertKnowledgeResponse, int status, KnowledgeEditingFragment.Callback callback) {
         KnowledgeEditingFragment page = new KnowledgeEditingFragment();
         page.setListener(callback);
         Bundle args = new Bundle();
-        args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA, knowledgeModel);
+        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         args.putSerializable(PARAM_KNOWLEDGE_DETAIL_DATA, insertKnowledgeResponse);
         args.putSerializable(PARAM_KNOWLEDGE_DETAIL_STATUS, status);
         page.setArguments(args);
@@ -84,25 +84,30 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.page_edit_knowledge, container, false);
         initParams();
         initViews(view);
-        initFragment();
+        addEditingFragment();
         return view;
     }
 
     private void initParams() {
         Bundle args = getArguments();
-        mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
+        mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
         mInsertKnowledgeResponse = (InsertKnowledgeResponse) args.getSerializable(PARAM_KNOWLEDGE_DETAIL_DATA);
         mStatus = args.getInt(PARAM_KNOWLEDGE_DETAIL_STATUS);
     }
 
-    private void initFragment() {
+    private void addEditingFragment() {
+        mIsEditing = true;
         mAddTaskFragment = KnowledgeAddTaskFragment.newInstance(mKnowledgeModel, mInsertKnowledgeResponse,mStatus,new KnowledgeAddTaskFragment.Callback() {
             @Override
             public void onBack() {
-                getFragmentManager().beginTransaction().hide(mAddTaskFragment).commit();
+                mIsEditing = false;
+                getFragmentManager().beginTransaction().remove(mAddTaskFragment);
+                mAddFragmentView.setVisibility(View.GONE);
+
             }
         });
         getFragmentManager().beginTransaction().replace(R.id.fragment_add_task, mAddTaskFragment).commit();
+        mAddFragmentView.setVisibility(View.VISIBLE);
     }
 
     private void initViews(View view) {
@@ -113,6 +118,11 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mKnowledgeNameEditView = view.findViewById(R.id.knowledge_name_edit);
         mKnowledgeTasksLayout = view.findViewById(R.id.knowledge_tasks_layout);
         mKnowledgeAddButton = view.findViewById(R.id.knowledge_add_button);
+        mAddFragmentView = view.findViewById(R.id.fragment_add_task);
+
+        mSyncFreClassCheckBox = view.findViewById(R.id.sync_fre_class_cb);
+        mSyncInClassCheckBox = view.findViewById(R.id.sync_in_class_cb);
+        mSyncAfterClassCheckBox = view.findViewById(R.id.sync_after_class_cb);
 
         mPublishButton.setOnClickListener(this);
         mFinishButton.setOnClickListener(this);
@@ -131,9 +141,18 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.knowledge_publish_button:
+                if(mAddFragmentView.getVisibility()==View.VISIBLE){
+                    showDialog(getString(R.string.adding_task_warning));
+                } else {
 
+                }
                 break;
             case R.id.knowledge_finish_button:
+                if(mAddFragmentView.getVisibility()==View.VISIBLE){
+                    showDialog(getString(R.string.adding_task_warning));
+                }else{
+                    mListener.onBack();
+                }
                 break;
             case R.id.knowledge_name_edit:
                 mKnowledgeNameTextView.setVisibility(View.GONE);
@@ -141,6 +160,10 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                 mKnowledgeNameEditText.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    public boolean isEditing(){
+        return mIsEditing;
     }
 
     private void showDialog(String message) {

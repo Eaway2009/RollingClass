@@ -527,13 +527,8 @@ public class ScopeServer extends ServerRequest {
      * @param data 课时信息
      * @return
      */
-    public InsertKnowledgeResponse InsertKnowledge(KnowledgeModel data) {
-        String response = sendRequest(getHostUrl() + "/teachingMaterial/InsertKnowledge/" + mToken, METHOD.POST, data.toJSON().toString());
-        if (response != null) {
-            InsertKnowledgeResponse list = (InsertKnowledgeResponse) jsonToModel(MicroCourseData.class.getName(), response);
-            return list;
-        }
-        return null;
+    public void InsertKnowledge(KnowledgeModel data, RequestCallback callback) {
+        new RequestTask(getHostUrl() + "/teachingMaterial/InsertKnowledge/" + mToken, METHOD.POST,null, data.toJSON().toString(), callback).execute();
     }
 
     /**
@@ -564,6 +559,25 @@ public class ScopeServer extends ServerRequest {
         if (response != null) {
             List<ChaptersResponse> responseList =  jsonToList(ChaptersResponse.class.getName(), response);
             return responseList;
+        }
+
+        return null;
+    }
+
+    /**
+     * 查绚指定学科知识点
+     *
+     * @param knowledgeID
+     * @return
+     */
+    public List<MicroCourseData> QuerySampleByKnowledge(String knowledgeID, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("knowledgeID", knowledgeID);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/teachingSample/QuerySampleByKnowledge/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<MicroCourseData> list = jsonToList(MicroCourseData.class.getName(), response);
+            return list;
         }
 
         return null;
@@ -628,13 +642,14 @@ public class ScopeServer extends ServerRequest {
      * @param level         资源类别: 1 公共资源 2 校本资源 3 私藏资源
      * @return
      */
-    public ResourceUpload resourceUpload(String filePath, String teahcerID, String fileName, int resource_type, int level) {
+    public ResourceUpload resourceUpload(String filePath, String teahcerID, String teaching_material_id, String fileName, int resource_type, int level) {
         HashMap<String, String> params = new HashMap<>();
         params.put("teahcerID", teahcerID);
         params.put("name", fileName);
         params.put("resource_type", resource_type + "");
         params.put("level", level + "");
         params.put("teacher_id", teahcerID);
+        params.put("teaching_material_id", teaching_material_id);
         params.put("token", mToken);
         String response = uploadFile(getHostUrl() + "/resource/resource/upload/" + mToken, params, filePath);
         if (response != null) {

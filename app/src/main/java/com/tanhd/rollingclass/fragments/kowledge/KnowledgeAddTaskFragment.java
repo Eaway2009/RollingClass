@@ -31,6 +31,7 @@ import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
+import com.tanhd.rollingclass.server.data.InsertLessonSampleResponse;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
@@ -98,7 +99,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         KnowledgeAddTaskFragment page = new KnowledgeAddTaskFragment();
         page.setListener(callback);
         Bundle args = new Bundle();
-        args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA, knowledgeModel);
+        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         args.putSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_DATA, insertKnowledgeResponse);
         page.setArguments(args);
         return page;
@@ -119,7 +120,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
     private void initParams() {
         Bundle args = getArguments();
-        mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
+        mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
         mInsertKnowledgeResponse = (InsertKnowledgeResponse) args.getSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_DATA);
         mStatus = args.getInt(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_STATUS);
     }
@@ -192,6 +193,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
                     @Override
                     public void onResponse(String body) {
+                        InsertLessonSampleResponse response = (InsertLessonSampleResponse) ScopeServer.getInstance().jsonToModel(InsertLessonSampleResponse.class.getName(),body);
                         Toast.makeText(getActivity(), body, Toast.LENGTH_SHORT).show();
                         mListener.onBack();
                     }
@@ -303,7 +305,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         protected ResourceUpload doInBackground(Void... strings) {
             UserData userData = ExternalParam.getInstance().getUserData();
             TeacherData teacherData = (TeacherData) userData.getUserData();
-            return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID, fileName, resourceType, level);
+            return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID, fileName,mKnowledgeModel.teaching_material_id, resourceType, level);
         }
 
         @Override

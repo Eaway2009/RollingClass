@@ -40,7 +40,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
 
     public void resetData(KnowledgeModel model) {
         Bundle args = new Bundle();
-        args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA, model);
+        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, model);
         setArguments(args);
 
     }
@@ -96,7 +96,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_document_view:
-                KnowledgeModel model = (KnowledgeModel) getArguments().getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
+                KnowledgeModel model = (KnowledgeModel) getArguments().getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
                 DocumentEditActivity.startMe(getActivity(), DocumentEditActivity.PAGE_ID_ADD_DOCUMENTS, model);
                 break;
         }
