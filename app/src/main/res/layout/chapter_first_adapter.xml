@@ -3,26 +3,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingLeft="25dp"
-    android:paddingTop="5dp"
-    android:paddingRight="10dp"
-    android:paddingBottom="5dp">
-
-    <ImageView
-        android:id="@+id/expand_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:layout_gravity="center"
-        android:src="@drawable/chapter_selector" />
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/chapter_name"
+        android:id="@+id/teaching_material_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:drawableLeft="@drawable/chapter_selector"
+        android:drawablePadding="10dp"
+        android:paddingLeft="12dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="10dp"
         android:textColor="@color/chapter_menu_text"
-        tools:text="第一章" />
+        android:visibility="gone"
+        tools:text="人教版——初中数学初一" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="25dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="5dp">
+
+        <ImageView
+            android:id="@+id/expand_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:src="@drawable/chapter_selector" />
+
+        <TextView
+            android:id="@+id/chapter_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/chapter_menu_text"
+            tools:text="第一章" />
+    </LinearLayout>
 </LinearLayout>

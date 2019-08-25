@@ -551,22 +551,16 @@ public class ScopeServer extends ServerRequest {
      *
      * @param schoolid         学校ID option(1小学 2初中 3高中)
      * @param studysectioncode 学段代码 option(1小学 2初中 3高中)
-     * @param gradecode        年级代码 option(1~12年级对应[一年级、二年级…… 高三])
      * @param subjectcode      学科代码 option(1数学 2语文 ……20道德与法制)
-     * @param page
-     * @param pagesize
+     *
      * @return
      */
-    public List<ChaptersResponse> QueryTeachingMaterial(String schoolid, int studysectioncode, int gradecode, int subjectcode, int page, int pagesize) {
+    public List<ChaptersResponse> QueryTeachingMaterial(String schoolid, int studysectioncode, int subjectcode) {
         HashMap<String, String> params = new HashMap<>();
         params.put("schoolid", schoolid + "");
         params.put("studysectioncode", studysectioncode + "");
-        params.put("gradecode", gradecode + "");
         params.put("subjectcode", subjectcode + "");
-        params.put("page", page + "");
-        params.put("pagesize", pagesize + "");
-        params.put("token", mToken);
-        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterial/" + page + "/" + pagesize + "/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterial/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<ChaptersResponse> responseList =  jsonToList(ChaptersResponse.class.getName(), response);
             return responseList;

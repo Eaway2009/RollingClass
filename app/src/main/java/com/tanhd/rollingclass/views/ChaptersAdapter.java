@@ -2,6 +2,7 @@ package com.tanhd.rollingclass.views;
 
 import android.content.Context;
 import android.util.SparseArray;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,12 +20,20 @@ public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter,
 
     @Override
     protected void convertGroup(ViewHolder viewHolder, ChaptersResponse.Chapter item, int groupPosition, boolean isExpanded) {
+        TextView teachingMaterialNameView = viewHolder.getView(R.id.teaching_material_name);
         ImageView iconView = viewHolder.getView(R.id.expand_imageview);
         TextView chapterName = viewHolder.getView(R.id.chapter_name);
         chapterName.setText(item.ChapterName);
         //      把位置和图标添加到Map
         mIndicators.put(groupPosition, iconView);
         setIndicatorState(groupPosition, isExpanded);
+
+        if(item.teachingMaterial!=null&&item.teachingMaterial.isFirstItem){
+            teachingMaterialNameView.setText(item.teachingMaterial.TeachingMaterialName);
+            teachingMaterialNameView.setVisibility(View.VISIBLE);
+        }else {
+            teachingMaterialNameView.setVisibility(View.GONE);
+        }
     }
 
     @Override

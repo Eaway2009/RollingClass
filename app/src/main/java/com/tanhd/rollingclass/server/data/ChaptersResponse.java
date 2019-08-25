@@ -20,10 +20,48 @@ public class ChaptersResponse extends BaseJsonClass {
     public String TeachingMaterialID;
     public String TeachingMaterialName;
 
+    public static class TeachingMaterial {
+
+        public boolean isFirstItem;
+        public int GradeCode;
+        public String GradeName;
+        public int StudySectionCode;
+        public String StudySectionName;
+        public int SubjectCode;
+        public String SubjectName;
+        public int TeachingMaterialCode;
+        public String TeachingMaterialID;
+        public String TeachingMaterialName;
+
+        public TeachingMaterial(boolean isFirstItem,
+                 int GradeCode,
+                 String GradeName,
+                 int StudySectionCode,
+                 String StudySectionName,
+                 int SubjectCode,
+                 String SubjectName,
+                 int TeachingMaterialCode,
+                 String TeachingMaterialID,
+                 String TeachingMaterialName){
+             this.isFirstItem =isFirstItem ;
+             this.GradeCode = GradeCode;
+             this.GradeName = GradeName;
+             this.StudySectionCode = StudySectionCode;
+             this.StudySectionName = StudySectionName;
+             this.SubjectCode = SubjectCode;
+             this.SubjectName = SubjectName;
+             this.TeachingMaterialCode = TeachingMaterialCode;
+             this.TeachingMaterialID = TeachingMaterialID;
+             this.TeachingMaterialName = TeachingMaterialName;
+        }
+    }
+
     public static class Chapter extends BaseJsonClass implements MultiLevelModel<Section>{
         public String ChapterID;
         public String ChapterName;
         public List<Section> Sections;
+
+        public TeachingMaterial teachingMaterial;
 
         @Override
         public List<Section> getChildren() {

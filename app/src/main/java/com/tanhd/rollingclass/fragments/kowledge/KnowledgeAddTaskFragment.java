@@ -30,6 +30,7 @@ import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
+import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
@@ -68,6 +69,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     private ImageView mFirstDisplayPhotoView;
 
     private KnowledgeModel mKnowledgeModel;
+    private InsertKnowledgeResponse mInsertKnowledgeResponse;
     /**
      * 1. ppt 2. doc 3. image 4. 微课 5. 习题
      */
@@ -79,11 +81,25 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     private List<String> mImageList = new ArrayList<>();
     private List<String> mVideoList = new ArrayList<>();
 
-    public static KnowledgeAddTaskFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeAddTaskFragment.Callback callback) {
+    /**
+     * 1.课前；2.课时；3.课后
+     */
+    private int mStatus;
+
+    /**
+     *
+     * @param knowledgeModel 所属教材章节的参数
+     * @param insertKnowledgeResponse 所属课时的参数
+     * @param status 1.课前；2.课时；3.课后
+     * @param callback
+     * @return
+     */
+    public static KnowledgeAddTaskFragment newInstance(KnowledgeModel knowledgeModel, InsertKnowledgeResponse insertKnowledgeResponse, int status,KnowledgeAddTaskFragment.Callback callback) {
         KnowledgeAddTaskFragment page = new KnowledgeAddTaskFragment();
         page.setListener(callback);
         Bundle args = new Bundle();
         args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA, knowledgeModel);
+        args.putSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_DATA, insertKnowledgeResponse);
         page.setArguments(args);
         return page;
     }
@@ -104,6 +120,8 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     private void initParams() {
         Bundle args = getArguments();
         mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
+        mInsertKnowledgeResponse = (InsertKnowledgeResponse) args.getSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_DATA);
+        mStatus = args.getInt(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_STATUS);
     }
 
     private void initViews(View view) {
@@ -161,7 +179,11 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 lessonSampleModel.question_set = mExercisesList;
                 lessonSampleModel.image_set = mImageList;
                 lessonSampleModel.video_set = mVideoList;
+                lessonSampleModel.knowledge_id = mInsertKnowledgeResponse.knowledge_id;
+                lessonSampleModel.lesson_type = 1;
+                lessonSampleModel.number = 0;
                 lessonSampleModel.lesson_sample_name = mTaskNameEditText.getText().toString();
+                lessonSampleModel.status = mStatus;
                 ScopeServer.getInstance().InsertLessonSample(lessonSampleModel, new RequestCallback() {
                     @Override
                     public void onProgress(boolean b) {
@@ -170,12 +192,15 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
                     @Override
                     public void onResponse(String body) {
-
+                        Toast.makeText(getActivity(), body, Toast.LENGTH_SHORT).show();
+                        mListener.onBack();
                     }
 
                     @Override
                     public void onError(String code, String message) {
-
+                        if(code!=null){
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
                 break;

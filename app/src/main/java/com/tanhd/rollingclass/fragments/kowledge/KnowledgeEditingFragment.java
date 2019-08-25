@@ -13,10 +13,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.fragments.ShowPageFragment;
+import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.utils.GetFileHelper;
@@ -25,6 +27,8 @@ import java.io.File;
 
 public class KnowledgeEditingFragment extends Fragment implements View.OnClickListener {
 
+    public static final String PARAM_KNOWLEDGE_DETAIL_DATA = "PARAM_KNOWLEDGE_DETAIL_DATA";
+    public static final String PARAM_KNOWLEDGE_DETAIL_STATUS = "PARAM_KNOWLEDGE_DETAIL_STATUS";
     private KnowledgeEditingFragment.Callback mListener;
 
     private KnowledgeAddTaskFragment mAddTaskFragment;
@@ -38,17 +42,34 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private LinearLayout mKnowledgeTasksLayout;
 
     private KnowledgeModel mKnowledgeModel;
+    private InsertKnowledgeResponse mInsertKnowledgeResponse;
     /**
      * 1. ppt 2. doc 3. image 4. 微课 5. 习题
      */
     private int mResourceCode;
     private ResourceUpload mResourceModel;
 
-    public static KnowledgeEditingFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeEditingFragment.Callback callback) {
+    /**
+     * 1.课前；2.课时；3.课后
+     */
+    private int mStatus;
+
+    /**
+     *
+     * @param knowledgeModel 所属教材章节的参数
+     * @param insertKnowledgeResponse 所属课时的参数
+     * @param status 1.课前；2.课时；3.课后
+     * @param callback
+     * @return
+     */
+
+    public static KnowledgeEditingFragment newInstance(KnowledgeModel knowledgeModel, InsertKnowledgeResponse insertKnowledgeResponse, int status, KnowledgeEditingFragment.Callback callback) {
         KnowledgeEditingFragment page = new KnowledgeEditingFragment();
         page.setListener(callback);
         Bundle args = new Bundle();
         args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA, knowledgeModel);
+        args.putSerializable(PARAM_KNOWLEDGE_DETAIL_DATA, insertKnowledgeResponse);
+        args.putSerializable(PARAM_KNOWLEDGE_DETAIL_STATUS, status);
         page.setArguments(args);
         return page;
     }
@@ -70,13 +91,15 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private void initParams() {
         Bundle args = getArguments();
         mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DATA);
+        mInsertKnowledgeResponse = (InsertKnowledgeResponse) args.getSerializable(PARAM_KNOWLEDGE_DETAIL_DATA);
+        mStatus = args.getInt(PARAM_KNOWLEDGE_DETAIL_STATUS);
     }
 
     private void initFragment() {
-        mAddTaskFragment = KnowledgeAddTaskFragment.newInstance(mKnowledgeModel, new KnowledgeAddTaskFragment.Callback() {
+        mAddTaskFragment = KnowledgeAddTaskFragment.newInstance(mKnowledgeModel, mInsertKnowledgeResponse,mStatus,new KnowledgeAddTaskFragment.Callback() {
             @Override
             public void onBack() {
-
+                getFragmentManager().beginTransaction().hide(mAddTaskFragment).commit();
             }
         });
         getFragmentManager().beginTransaction().replace(R.id.fragment_add_task, mAddTaskFragment).commit();
@@ -98,6 +121,10 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
         mKnowledgeNameEditText.setText(mKnowledgeModel.knowledge_point_name);
         mKnowledgeNameTextView.setText(mKnowledgeModel.knowledge_point_name);
+    }
+
+    private void requestData(){
+
     }
 
     @Override

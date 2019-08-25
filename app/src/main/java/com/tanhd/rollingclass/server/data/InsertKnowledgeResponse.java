@@ -1,8 +1,9 @@
 package com.tanhd.rollingclass.server.data;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class InsertKnowledgeResponse {
+public class InsertKnowledgeResponse implements Serializable {
     public String knowledge_id;
     public String knowledge_point_name;
     public String subject_name;

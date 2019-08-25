@@ -21,16 +21,15 @@ import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.ChaptersAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChaptersFragment extends Fragment implements ExpandableListView.OnChildClickListener {
     private ExpandableListView mExpandableListView;
-    private TextView mTeachingMaterialNameView;
     private ChaptersAdapter mAdapter;
     private ChapterListener mListener;
     private UserData userData;
     private TeacherData teacherData;
-    private ChaptersResponse mChapterData;
 
     public static ChaptersFragment newInstance(ChaptersFragment.ChapterListener listener) {
         Bundle args = new Bundle();
@@ -55,7 +54,6 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
 
     private void iniViews(View view) {
         mExpandableListView = view.findViewById(R.id.expandable_listview);
-        mTeachingMaterialNameView = view.findViewById(R.id.teaching_material_name);
         mAdapter = new ChaptersAdapter(getActivity());
         mExpandableListView.setVerticalScrollBarEnabled(false);
         mExpandableListView.setGroupIndicator(null);
@@ -70,16 +68,31 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
     }
 
 
-    private class InitDataTask extends AsyncTask<Void, Void, List<ChaptersResponse>> {
+    private class InitDataTask extends AsyncTask<Void, Void, List<ChaptersResponse.Chapter>> {
 
         @Override
-        protected List<ChaptersResponse> doInBackground(Void... voids) {
+        protected List<ChaptersResponse.Chapter> doInBackground(Void... voids) {
             userData = ExternalParam.getInstance().getUserData();
             if (userData.isTeacher()) {
                 teacherData = (TeacherData) userData.getUserData();
                 List<ChaptersResponse> responseList =
-                        ScopeServer.getInstance().QueryTeachingMaterial(teacherData.SchoolID, teacherData.StudysectionCode, 7, teacherData.SubjectCode, 1, 20);
-                return responseList;
+                        ScopeServer.getInstance().QueryTeachingMaterial(teacherData.SchoolID, teacherData.StudysectionCode, teacherData.SubjectCode);
+                List<ChaptersResponse.Chapter> lastChapters = new ArrayList<>();
+                if(responseList!=null) {
+                    for (ChaptersResponse chaptersResponse : responseList) {
+                        if (chaptersResponse.Chapters != null && chaptersResponse.Chapters.size() > 0) {
+                            for (int i = 0; i < chaptersResponse.Chapters.size(); i++){
+                                ChaptersResponse.TeachingMaterial teachingMaterial = new ChaptersResponse.TeachingMaterial(i==0,chaptersResponse.GradeCode,
+                                        chaptersResponse.GradeName,chaptersResponse.StudySectionCode,chaptersResponse.StudySectionName,chaptersResponse.SubjectCode,
+                                chaptersResponse.SubjectName,chaptersResponse.TeachingMaterialCode,chaptersResponse.TeachingMaterialID,chaptersResponse.TeachingMaterialName);
+                                ChaptersResponse.Chapter chapter = chaptersResponse.Chapters.get(i);
+                                chapter.teachingMaterial = teachingMaterial;
+                                lastChapters.add(chapter);
+                            }
+                        }
+                    }
+                }
+                return lastChapters;
             } else {
 //                SubjectData subjectData = ExternalParam.getInstance().getSubject();
 //                List<TeachingMaterialData> materialDataList =
@@ -90,13 +103,9 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
         }
 
         @Override
-        protected void onPostExecute(List<ChaptersResponse> response) {
-            mChapterData = response.get(0);
-            if (response != null) {
-                mTeachingMaterialNameView.setText(mChapterData.TeachingMaterialName);
-                mAdapter.setDataList(mChapterData.Chapters);
-                mAdapter.notifyDataSetChanged();
-            }
+        protected void onPostExecute(List<ChaptersResponse.Chapter> chapterList) {
+            mAdapter.setDataList(chapterList);
+            mAdapter.notifyDataSetChanged();
             if (mAdapter.getGroupCount() == 0) {
                 try {
                     Toast.makeText(getActivity().getApplicationContext(), "没有找到章节!", Toast.LENGTH_LONG).show();
@@ -116,7 +125,7 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
                     ChaptersResponse.Section section = chapter.getChildren().get(0);
                     section.isChecked = true;
                     if (mListener != null) {
-                        mListener.onCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, mChapterData.SubjectCode, mChapterData.SubjectName, section.TeachingMaterialID);
+                        mListener.onCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chapter.teachingMaterial.SubjectCode, chapter.teachingMaterial.SubjectName, section.TeachingMaterialID);
                     }
                 }
                 mAdapter.notifyDataSetChanged();
@@ -133,7 +142,7 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
                 ChaptersResponse.Section section = mAdapter.getGroup(groupPosition).getChildren().get(childPosition);
                 section.isChecked = true;
                 if (mListener != null) {
-                    mListener.onCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, mChapterData.SubjectCode, mChapterData.SubjectName, section.TeachingMaterialID);
+                    mListener.onCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chapter.teachingMaterial.SubjectCode, chapter.teachingMaterial.SubjectName, section.TeachingMaterialID);
                 }
             }
         }

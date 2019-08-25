@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 
 public class KnowledgeControllerFragment extends Fragment implements View.OnClickListener, KnowledgeNoneFragment.Callback, KnowledgeEditingFragment.Callback {
@@ -90,13 +91,13 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     /**
      * [展示指定Id的页面]<BR>
      */
-    public void showEditingFragment(KnowledgeModel knowledgeModel) {
+    public void showEditingFragment(KnowledgeModel knowledgeModel,InsertKnowledgeResponse insertKnowledgeResponse) {
         if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS) {
             return;
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         if (mKnowledgeEditingFragment == null) {
-            mKnowledgeEditingFragment = KnowledgeEditingFragment.newInstance(knowledgeModel, this);
+            mKnowledgeEditingFragment = KnowledgeEditingFragment.newInstance(knowledgeModel, insertKnowledgeResponse,this);
             transaction.add(R.id.content_layout, mKnowledgeEditingFragment);
         }
         if (mKnowledgeNoneFragment != null) {
@@ -109,8 +110,8 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     }
 
     @Override
-    public void onAddSuccess(KnowledgeModel model) {
-        showEditingFragment(model);
+    public void onAddSuccess(KnowledgeModel model, InsertKnowledgeResponse response) {
+        showEditingFragment(model,response);
     }
 
     @Override

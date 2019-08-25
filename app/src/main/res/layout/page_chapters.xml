@@ -6,19 +6,6 @@
     android:background="@color/chapter_menu_background"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/teaching_material_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/chapter_selector"
-        android:drawablePadding="10dp"
-        android:paddingLeft="12dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="10dp"
-        android:textColor="@color/chapter_menu_text"
-        tools:text="人教版——初中数学初一" />
-
-
     <ExpandableListView
         android:id="@+id/expandable_listview"
         android:layout_width="match_parent"
