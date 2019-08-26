@@ -15,8 +15,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tanhd.rollingclass.MainActivity;
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.server.RequestCallback;
+import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.ResourceModel;
@@ -35,9 +39,11 @@ public class TaskDisplayView implements View.OnClickListener {
     private KnowledgeLessonSample mData;
     private LinearLayout mFilesLayout;
     private Activity mContext;
+    private TaskDisplayEditListener mListener;
 
-    public TaskDisplayView(Activity activity, LinearLayout linearLayout){
+    public TaskDisplayView(Activity activity, LinearLayout linearLayout,TaskDisplayEditListener listener){
         mLinearLayout = linearLayout;
+        mListener = listener;
         mContext = activity;
         init(mLinearLayout);
     }
@@ -54,7 +60,9 @@ public class TaskDisplayView implements View.OnClickListener {
         mData = data;
 
         mTitleView.setText(mData.lesson_sample_name);
+        mDeleteView.setTag(data);
         mDeleteView.setOnClickListener(this);
+        mEditView.setTag(data);
         mEditView.setOnClickListener(this);
         if(mData.doc_set!=null) {
             addFileView(mData.doc_set);
@@ -105,22 +113,39 @@ public class TaskDisplayView implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.task_delete:
-                showDeleteDialog();
+                showDeleteDialog(v);
                 break;
             case R.id.task_edit:
-
+                mListener.onEditTask();
                 break;
         }
     }
 
-    private void showDeleteDialog() {
+    private void showDeleteDialog(View v) {
         final Dialog[] mNetworkDialog = new Dialog[1];
+        final KnowledgeLessonSample data = (KnowledgeLessonSample) v.getTag();
+        final RequestCallback requestCallback = new RequestCallback() {
+            @Override
+            public void onProgress(boolean b) {
 
+            }
+
+            @Override
+            public void onResponse(String body) {
+                mListener.onDeleteSuccess();
+            }
+
+            @Override
+            public void onError(String code, String message) {
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            }
+        };
         DialogInterface.OnClickListener onDialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case BUTTON_POSITIVE:
+                        ScopeServer.getInstance().DeleteLessonSample(data.lesson_sample_id, requestCallback);
                         break;
                     case BUTTON_NEGATIVE:
                         mNetworkDialog[0].dismiss();
@@ -145,4 +170,9 @@ public class TaskDisplayView implements View.OnClickListener {
         mNetworkDialog[0].show();
     }
 
+
+    public interface TaskDisplayEditListener{
+        void onEditTask();
+        void onDeleteSuccess();
+    }
 }

@@ -29,6 +29,7 @@ import com.tanhd.rollingclass.server.data.SectionData;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.StudySectionData;
 import com.tanhd.rollingclass.server.data.SubjectData;
+import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
 import com.tanhd.rollingclass.server.data.UserData;
@@ -521,6 +522,40 @@ public class ScopeServer extends ServerRequest {
     }
 
     /**
+     * 修改课时名称(即删除识点)
+     *
+     * @param name        新教材名称
+     * @param knowledgeID 课时信息
+     * @return
+     */
+    public void UpdateKnowledgeName(String name, String knowledgeID, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("name", "" + name);
+        params.put("knowledgeID", "" + knowledgeID);
+        params.put("token", mToken);
+
+        new RequestTask(getHostUrl() + "/teachingMaterial/UpdateKnowledgeName/" + mToken, METHOD.POST, params, null, callback).execute();
+    }
+
+    /**
+     * 修改课时状态  status
+     *
+     * @param status      0 未上课 1: 上课中 2: 上课结束
+     * @param classID     对应班级
+     * @param knowledgeID 课时信息
+     * @return
+     */
+    public void UpdateKnowledgeStatus(String status, String classID, String knowledgeID, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("status", "" + status);
+        params.put("classID", "" + classID);
+        params.put("knowledgeID", "" + knowledgeID);
+        params.put("token", mToken);
+
+        new RequestTask(getHostUrl() + "/teachingMaterial/UpdateKnowledgeStatus/" + mToken, METHOD.POST, params, null, callback).execute();
+    }
+
+    /**
      * 课时发布
      *
      * @param teacherID      老师ID
@@ -530,7 +565,7 @@ public class ScopeServer extends ServerRequest {
      * @param releaseprocess 课中发布
      * @return
      */
-    public void ReleaseKnowledgeToClass(String knowledgeID, String teacherID, int releasebefore, int releaseprocess, int releaseafter, RequestCallback callback) {
+    public String ReleaseKnowledgeToClass(String knowledgeID, String teacherID, int releasebefore, int releaseprocess, int releaseafter) {
         HashMap<String, String> params = new HashMap<>();
         params.put("knowledgeID", "" + knowledgeID);
         params.put("teacherID", "" + teacherID);
@@ -539,7 +574,47 @@ public class ScopeServer extends ServerRequest {
         params.put("releaseafter", "" + releaseafter);
         params.put("token", mToken);
 
-        new RequestTask(getHostUrl() + "/teachingMaterial/ReleaseKnowledgeToClass/" + mToken, METHOD.POST, params, null, callback).execute();
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/ReleaseKnowledgeToClass/" + mToken, METHOD.POST, params);
+        if (response != null) {
+            JSONObject json;
+            try {
+                json = new JSONObject(response);
+                int result = json.getInt("errorCode");
+                if (result == 0) {
+                    return null;
+                } else {
+                    return json.getString("errorMessage");
+                }
+            } catch (JSONException e) {
+            }
+        }
+
+        return "发布失败，请重试";
+    }
+
+    /**
+     * 任务同步
+     *
+     * @param request
+     * @return
+     */
+    public String SyncSampleToClass(SyncSampleToClassRequest request) {
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/SyncSampleToClass/" + mToken, METHOD.POST, request.toJSON().toString());
+        if (response != null) {
+            JSONObject json;
+            try {
+                json = new JSONObject(response);
+                int result = json.getInt("errorCode");
+                if (result == 0) {
+                    return null;
+                } else {
+                    return json.getString("errorMessage");
+                }
+            } catch (JSONException e) {
+            }
+        }
+
+        return "同步失败，请重试";
     }
 
     /**
@@ -560,6 +635,30 @@ public class ScopeServer extends ServerRequest {
      */
     public void InsertLessonSample(LessonSampleModel data, RequestCallback callback) {
         new RequestTask(getHostUrl() + "/teachingSample/InsertLessonSample/" + mToken, METHOD.POST, null, data.toJSON().toString(), callback).execute();
+    }
+
+    /**
+     * 修改任务
+     *
+     * @param data 任务信息
+     * @return
+     */
+    public void EditLessonSample(LessonSampleModel data, RequestCallback callback) {
+        new RequestTask(getHostUrl() + "/teachingSample/EditLessonSample/" + mToken, METHOD.POST, null, data.toJSON().toString(), callback).execute();
+    }
+
+    /**
+     * 删除任务 （删除指定教材数据 ）
+     *
+     * @param sampleID 任务信息
+     * @return
+     */
+    public void DeleteLessonSample(String sampleID, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("sampleID", "" + sampleID);
+        params.put("token", mToken);
+
+        new RequestTask(getHostUrl() + "/teachingSample/DeleteLessonSample/" + mToken, METHOD.POST, params, null, callback).execute();
     }
 
     /**

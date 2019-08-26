@@ -5,6 +5,7 @@ import java.util.List;
 public class LessonSampleModel extends BaseJsonClass {
     public String lesson_sample_name;
     public String knowledge_id;
+    public String lesson_sample_id;
     public int lesson_type;
     public int number;
     public int status;
