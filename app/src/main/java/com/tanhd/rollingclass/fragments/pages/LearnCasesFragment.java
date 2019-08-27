@@ -9,12 +9,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.tanhd.rollingclass.R;
 
 public class LearnCasesFragment extends Fragment implements OnClickListener {
 
+    private RelativeLayout mRlInnerTitle;
+    private RelativeLayout mRlMenuLayout;
     private LinearLayout mLlMenuContainer;
     private TextView mTvInsertResource;
     private TextView mTvExerciseResult;
@@ -45,6 +47,8 @@ public class LearnCasesFragment extends Fragment implements OnClickListener {
     }
 
     private void initViews(View view) {
+        mRlMenuLayout = view.findViewById(R.id.rl_cases_menu);
+        mRlInnerTitle = view.findViewById(R.id.rl_inner_title);
         mLlMenuContainer = view.findViewById(R.id.ll_menu_container);
         mTvInsertResource = view.findViewById(R.id.tv_insert_resource);
         mTvExerciseResult = view.findViewById(R.id.tv_exercise_result);
@@ -55,9 +59,21 @@ public class LearnCasesFragment extends Fragment implements OnClickListener {
         mTvClassBegin.setOnClickListener(this);
         view.findViewById(R.id.back_button).setOnClickListener(this);
 
-        mLearnCasesContainerFragment = LearnCasesContainerFragment.newInstance(1);
+        mLearnCasesContainerFragment = LearnCasesContainerFragment.newInstance(1, mPagesListener);
         getFragmentManager().beginTransaction().replace(R.id.content_layout, mLearnCasesContainerFragment).commit();
     }
+
+    LearnCasesContainerFragment.PagesListener mPagesListener = new LearnCasesContainerFragment.PagesListener() {
+
+        @Override
+        public void onFullScreen(boolean isFull) {
+            if (mListener != null) {
+                mListener.onFullScreen(isFull);
+                mRlMenuLayout.setVisibility(isFull == true ? View.GONE : View.VISIBLE);
+                mRlInnerTitle.setVisibility(isFull == true ? View.GONE : View.VISIBLE);
+            }
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -78,6 +94,8 @@ public class LearnCasesFragment extends Fragment implements OnClickListener {
 
 
     public interface PagesListener {
+
+        void onFullScreen(boolean isFull);
 
         void onPageChange(int id);
 

@@ -39,6 +39,11 @@ public class LearnCasesActivity extends AppCompatActivity {
     private void initFragment() {
         mLearnCasesActivity = LearnCasesFragment.newInstance(new LearnCasesFragment.PagesListener() {
             @Override
+            public void onFullScreen(boolean isFull) {
+                mTopbarView.setVisibility(isFull == true ? View.GONE : View.VISIBLE);
+            }
+
+            @Override
             public void onPageChange(int id) {
 
             }

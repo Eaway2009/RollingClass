@@ -12,6 +12,15 @@
         android:layout_above="@+id/rl_setting"
         android:background="@drawable/shape_bg_gray_round" />
 
+    <ImageView
+        android:id="@+id/iv_full_screen"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_margin="5dp"
+        android:background="@mipmap/icon_fullscreen_enable"
+        android:layout_alignRight="@+id/container_layout"
+        android:layout_alignBottom="@+id/container_layout"/>
+
     <RelativeLayout
         android:id="@+id/rl_setting"
         android:layout_width="match_parent"
@@ -31,7 +40,7 @@
             android:layout_marginRight="15dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/v_line"
-            android:background="@color/bar" />
+            android:background="@mipmap/icon_interaction" />
 
         <ImageView
             android:id="@+id/iv_set2"
@@ -40,6 +49,6 @@
             android:layout_marginLeft="15dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/v_line"
-            android:background="@color/bar" />
+            android:background="@mipmap/icon_setting" />
     </RelativeLayout>
 </RelativeLayout>
