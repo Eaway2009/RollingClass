@@ -14,8 +14,35 @@
         android:id="@+id/resource_name_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:textSize="16sp"
         android:layout_marginLeft="15dp"
         android:textColor="@color/resource_name"
         android:text="@string/sync_after_class"/>
+
+    <TextView
+        android:id="@+id/task_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="8dp"
+        android:text="@string/delete"
+        android:drawableLeft="@drawable/task_delete"
+        android:drawablePadding="6dp"
+        android:textColor="@color/knowledge_edit_text"
+        android:layout_marginLeft="15dp"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/task_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="8dp"
+        android:drawableLeft="@drawable/task_edit_icon"
+        android:drawablePadding="6dp"
+        android:text="@string/edit"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/knowledge_edit_text"
+        android:textSize="12sp"/>
 </LinearLayout>

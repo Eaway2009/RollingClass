@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,7 +24,7 @@ import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
@@ -52,7 +51,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private View mAddFragmentView;
 
     private KnowledgeModel mKnowledgeModel;
-    private InsertKnowledgeResponse mInsertKnowledgeResponse;
+    private KnowledgeDetailMessage mKnowledgeDetailMessage;
 
     /**
      * 1.课前；2.课时；3.课后
@@ -68,17 +67,17 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
     /**
      * @param knowledgeModel          所属教材章节的参数
-     * @param insertKnowledgeResponse 所属课时的参数
+     * @param knowledgeDetailMessage 所属课时的参数
      * @param status                  1.课前；2.课时；3.课后
      * @param callback
      * @return
      */
-    public static KnowledgeEditingFragment newInstance(KnowledgeModel knowledgeModel, InsertKnowledgeResponse insertKnowledgeResponse, int status, KnowledgeEditingFragment.Callback callback) {
+    public static KnowledgeEditingFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeDetailMessage knowledgeDetailMessage, int status, KnowledgeEditingFragment.Callback callback) {
         KnowledgeEditingFragment page = new KnowledgeEditingFragment();
         page.setListener(callback);
         Bundle args = new Bundle();
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
-        args.putSerializable(PARAM_KNOWLEDGE_DETAIL_DATA, insertKnowledgeResponse);
+        args.putSerializable(PARAM_KNOWLEDGE_DETAIL_DATA, knowledgeDetailMessage);
         args.putSerializable(PARAM_KNOWLEDGE_DETAIL_STATUS, status);
         page.setArguments(args);
         return page;
@@ -95,19 +94,20 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         initParams();
         initViews(view);
         addEditingFragment();
+        initData();
         return view;
     }
 
     private void initParams() {
         Bundle args = getArguments();
         mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
-        mInsertKnowledgeResponse = (InsertKnowledgeResponse) args.getSerializable(PARAM_KNOWLEDGE_DETAIL_DATA);
+        mKnowledgeDetailMessage = (KnowledgeDetailMessage) args.getSerializable(PARAM_KNOWLEDGE_DETAIL_DATA);
         mStatus = args.getInt(PARAM_KNOWLEDGE_DETAIL_STATUS);
     }
 
     private void addEditingFragment() {
         mIsEditing = true;
-        mAddTaskFragment = KnowledgeAddTaskFragment.newInstance(mKnowledgeModel, mInsertKnowledgeResponse, mStatus, this);
+        mAddTaskFragment = KnowledgeAddTaskFragment.newInstance(mKnowledgeModel, mKnowledgeDetailMessage, mStatus, this);
         getFragmentManager().beginTransaction().replace(R.id.fragment_add_task, mAddTaskFragment).commit();
         mAddFragmentView.setVisibility(View.VISIBLE);
     }
@@ -143,9 +143,27 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mFinishButton.setOnClickListener(this);
         mKnowledgeNameEditView.setOnClickListener(this);
         mKnowledgeAddButton.setOnClickListener(this);
+    }
 
-        mKnowledgeNameEditText.setText(mKnowledgeModel.knowledge_point_name);
-        mKnowledgeNameTextView.setText(mKnowledgeModel.knowledge_point_name);
+    private void initData(){
+        if(mKnowledgeDetailMessage !=null) {
+            mKnowledgeNameEditText.setText(mKnowledgeDetailMessage.knowledge_point_name);
+            mKnowledgeNameTextView.setText(mKnowledgeDetailMessage.knowledge_point_name);
+            if(!TextUtils.isEmpty(mKnowledgeDetailMessage.knowledge_id)) {
+                requestData();
+            }
+        }
+    }
+
+    public void resetData(KnowledgeModel knowledgeModel, KnowledgeDetailMessage insertKnowledgeResponse, int status) {
+        Bundle args = new Bundle();
+        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
+        args.putSerializable(PARAM_KNOWLEDGE_DETAIL_DATA, insertKnowledgeResponse);
+        args.putSerializable(PARAM_KNOWLEDGE_DETAIL_STATUS, status);
+        setArguments(args);
+
+        initParams();
+        initData();
     }
 
     private void requestData() {
@@ -186,6 +204,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                 }
                 break;
             case R.id.sync_fre_class_cb:
+                mSyncFreClassCheckBox.setChecked(true);
                 if (mAddFragmentView.getVisibility() == View.VISIBLE) {
                     showDialog(getString(R.string.adding_task_warning));
                 } else {
@@ -193,6 +212,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                 }
                 break;
             case R.id.sync_in_class_cb:
+                mSyncInClassCheckBox.setChecked(true);
                 if (mAddFragmentView.getVisibility() == View.VISIBLE) {
                     showDialog(getString(R.string.adding_task_warning));
                 } else {
@@ -200,6 +220,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                 }
                 break;
             case R.id.sync_after_class_cb:
+                mSyncAfterClassCheckBox.setChecked(true);
                 if (mAddFragmentView.getVisibility() == View.VISIBLE) {
                     showDialog(getString(R.string.adding_task_warning));
                 } else {
@@ -334,7 +355,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     }
 
     private void editTitle() {
-        ScopeServer.getInstance().UpdateKnowledgeName(mKnowledgeNameEditText.getText().toString(), mInsertKnowledgeResponse.knowledge_id, new RequestCallback() {
+        ScopeServer.getInstance().UpdateKnowledgeName(mKnowledgeNameEditText.getText().toString(), mKnowledgeDetailMessage.knowledge_id, new RequestCallback() {
             @Override
             public void onProgress(boolean b) {
 
@@ -365,9 +386,6 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onAddSuccess(String lessonSampleId) {
-        mIsEditing = false;
-        getFragmentManager().beginTransaction().remove(mAddTaskFragment);
-        mAddFragmentView.setVisibility(View.GONE);
         requestData();
     }
 
@@ -418,7 +436,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
         @Override
         protected String doInBackground(Void... strings) {
-            return ScopeServer.getInstance().ReleaseKnowledgeToClass(mInsertKnowledgeResponse.knowledge_id, mInsertKnowledgeResponse.teacher_id, releaseFre, releasePro, releaseAfter);
+            return ScopeServer.getInstance().ReleaseKnowledgeToClass(mKnowledgeDetailMessage.knowledge_id, mKnowledgeDetailMessage.teacher_id, releaseFre, releasePro, releaseAfter);
         }
 
         @Override
@@ -481,7 +499,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
         @Override
         protected List<KnowledgeLessonSample> doInBackground(Void... strings) {
-            return ScopeServer.getInstance().QuerySampleByKnowledge(mInsertKnowledgeResponse.knowledge_id, mStatus);
+            return ScopeServer.getInstance().QuerySampleByKnowledge(mKnowledgeDetailMessage.knowledge_id, mStatus);
         }
 
         @Override
@@ -491,6 +509,10 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             mDataList = dataList;
 
             if (mDataList != null) {
+
+                mIsEditing = false;
+                getFragmentManager().beginTransaction().remove(mAddTaskFragment);
+                mAddFragmentView.setVisibility(View.GONE);
                 for (KnowledgeLessonSample lessonSample : mDataList) {
                     TaskDisplayView taskDiplayView = new TaskDisplayView(getActivity(), (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_task_added, null), KnowledgeEditingFragment.this);
                     LinearLayout taskDisplayView = taskDiplayView.setData(lessonSample);

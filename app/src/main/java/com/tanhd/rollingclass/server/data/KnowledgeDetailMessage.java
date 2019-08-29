@@ -14,6 +14,43 @@ public class KnowledgeDetailMessage extends BaseJsonClass {
      */
     public String knowledge_id;
     /**
+     * 知识点
+     */
+    public String knowledge_point_name;
+    /**
+     * 科目Id
+     */
+    public int subject_code;
+    /**
+     * 科目名
+     */
+    public String subject_name;
+    /**
+     * 记录
+     */
+    public List<String> class_ids;
+    /**
+     * 教案id
+     */
+    public String teaching_material_id;
+    /**
+     * 章的名称
+     */
+    public String chapter_name;
+    /**
+     * 章的Id
+     */
+    public String chapter_id;
+    /**
+     * 节的名称
+     */
+    public String section_name;
+
+    /**
+     * 节的id
+     */
+    public String section_id;
+    /**
      * 学校id
      */
     public String school_id;
@@ -22,34 +59,9 @@ public class KnowledgeDetailMessage extends BaseJsonClass {
      */
     public String teacher_id;
     /**
-     * 章的Id
+     *
      */
-    public String chapter_id;
-    /**
-     * 章的名称
-     */
-    public String chapter_name;
-    /**
-     * 知识点
-     */
-    public String knowledge_point_name;
-
-    /**
-     * 节的id
-     */
-    public String section_id;
-    /**
-     * 节的名称
-     */
-    public String section_name;
-    /**
-     * 科目Id
-     */
-    public int subject_code;
-    /**
-     * 课后发布
-     */
-    public int class_after;
+    public int status;
     /**
      * 课前发布
      */
@@ -59,29 +71,17 @@ public class KnowledgeDetailMessage extends BaseJsonClass {
      */
     public int class_process;
     /**
-     *
+     * 课后发布
      */
-    public int status;
-    /**
-     * 科目名
-     */
-    public String subject_name;
-    /**
-     * 教案id
-     */
-    public String teaching_material_id;
-    /**
-     *
-     */
-    public String remark;
+    public int class_after;
     /**
      * 记录
      */
     public List<Record> records;
     /**
-     * 记录
+     *
      */
-    public List<String> class_ids;
+    public long create_time;
 
     public class Record extends BaseJsonClass{
         public String class_id;
@@ -94,14 +94,16 @@ public class KnowledgeDetailMessage extends BaseJsonClass {
         if (key.equals("records")) {
             try {
                 JSONArray array = json.optJSONArray(key);
-                ArrayList<Record> list = new ArrayList<>();
-                for (int i=0; i<array.length(); i++) {
-                    JSONObject obj = array.optJSONObject(i);
-                    Record record = new Record();
-                    record.parse(record, obj);
-                    list.add(record);
+                if(array!=null) {
+                    ArrayList<Record> list = new ArrayList<>();
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.optJSONObject(i);
+                        Record record = new Record();
+                        record.parse(record, obj);
+                        list.add(record);
+                    }
+                    field.set(object, list);
                 }
-                field.set(object, list);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }

@@ -24,9 +24,11 @@
     <string name="load_doc_failed">学案记载失败，请点击这里重新加载!</string>
     <string name="class_begin">开始上课</string>
     <string name="class_end">下课</string>
+    <string name="comma">,</string>
     <string name="fre_class">课前</string>
     <string name="at_class">课中</string>
     <string name="after_class">课后</string>
+    <string name="to_publish">待发布</string>
     <string name="enter_knowledge_name">输入课时名称</string>
     <string name="enter_task_name">请输入任务名称</string>
     <string name="edit">编辑</string>
@@ -46,6 +48,8 @@
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="add_knowledge">+任务</string>
+    <string name="not_publish">未发布</string>
+    <string name="class_record">上课记录</string>
     <string name="toast_crash">程序出错了, 错误报告提交, 我们将尽快修复该问题, 谢谢合作!</string>
     <string name="update_prompt">发现新版本，是否需要更新？</string>
     <string name="select_pic_again">文件有误，请重选</string>

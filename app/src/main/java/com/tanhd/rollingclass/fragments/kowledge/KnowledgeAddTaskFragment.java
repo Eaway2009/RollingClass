@@ -1,8 +1,6 @@
 package com.tanhd.rollingclass.fragments.kowledge;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -12,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +28,7 @@ import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
-import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
-import com.tanhd.rollingclass.server.data.InsertLessonSampleResponse;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
@@ -74,7 +70,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     private ImageView mFirstDisplayPhotoView;
 
     private KnowledgeModel mKnowledgeModel;
-    private InsertKnowledgeResponse mInsertKnowledgeResponse;
+    private KnowledgeDetailMessage mKnowledgeDetailMessage;
     /**
      * 1. ppt 2. doc 3. image 4. 微课 5. 习题
      */
@@ -94,17 +90,17 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     /**
      *
      * @param knowledgeModel 所属教材章节的参数
-     * @param insertKnowledgeResponse 所属课时的参数
+     * @param knowledgeDetailMessage 所属课时的参数
      * @param status 1.课前；2.课时；3.课后
      * @param callback
      * @return
      */
-    public static KnowledgeAddTaskFragment newInstance(KnowledgeModel knowledgeModel, InsertKnowledgeResponse insertKnowledgeResponse, int status,KnowledgeAddTaskFragment.Callback callback) {
+    public static KnowledgeAddTaskFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeDetailMessage knowledgeDetailMessage, int status,KnowledgeAddTaskFragment.Callback callback) {
         KnowledgeAddTaskFragment page = new KnowledgeAddTaskFragment();
         page.setListener(callback);
         Bundle args = new Bundle();
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
-        args.putSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_DATA, insertKnowledgeResponse);
+        args.putSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_DATA, knowledgeDetailMessage);
         args.putSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_STATUS, status);
         page.setArguments(args);
         return page;
@@ -126,7 +122,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     private void initParams() {
         Bundle args = getArguments();
         mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
-        mInsertKnowledgeResponse = (InsertKnowledgeResponse) args.getSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_DATA);
+        mKnowledgeDetailMessage = (KnowledgeDetailMessage) args.getSerializable(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_DATA);
         mStatus = args.getInt(KnowledgeEditingFragment.PARAM_KNOWLEDGE_DETAIL_STATUS);
     }
 
@@ -185,7 +181,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 lessonSampleModel.question_set = mExercisesList;
                 lessonSampleModel.image_set = mImageList;
                 lessonSampleModel.video_set = mVideoList;
-                lessonSampleModel.knowledge_id = mInsertKnowledgeResponse.knowledge_id;
+                lessonSampleModel.knowledge_id = mKnowledgeDetailMessage.knowledge_id;
                 lessonSampleModel.lesson_type = 1;
                 lessonSampleModel.number = 0;
                 lessonSampleModel.lesson_sample_name = mTaskNameEditText.getText().toString();

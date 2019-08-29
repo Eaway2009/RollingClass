@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
-import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 
 public class KnowledgeControllerFragment extends Fragment implements View.OnClickListener, KnowledgeNoneFragment.Callback, KnowledgeEditingFragment.Callback {
@@ -33,6 +33,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     private View mAfterClassItemView;
     private Callback mCallback;
     private int mStatus = 1;
+    private KnowledgeDetailMessage mKnowledgeDetailMessage;
 
     public static KnowledgeControllerFragment newInstance(KnowledgeModel knowledgeModel, Callback callback) {
         Bundle args = new Bundle();
@@ -43,10 +44,10 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
         return page;
     }
 
-    public static KnowledgeControllerFragment newInstance(KnowledgeModel knowledgeModel, InsertKnowledgeResponse insertKnowledgeResponse,Callback callback) {
+    public static KnowledgeControllerFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeDetailMessage knowledgeDetailMessage, Callback callback) {
         Bundle args = new Bundle();
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
-        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
+        args.putSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DETAIL_DATA, knowledgeDetailMessage);
         KnowledgeControllerFragment page = new KnowledgeControllerFragment();
         page.setArguments(args);
         page.setCallback(callback);
@@ -62,7 +63,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_knowledge_controller, container, false);
         initParams();
-        showKnowledgeNoneFragment();
+        showFragment();
         initViews(view);
         return view;
     }
@@ -70,6 +71,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     private void initParams() {
         Bundle args = getArguments();
         mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
+        mKnowledgeDetailMessage = (KnowledgeDetailMessage) args.getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DETAIL_DATA);
     }
 
     private void initViews(View view) {
@@ -82,6 +84,14 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
         mFreClassItemView.setOnClickListener(this);
         mAtClassItemView.setOnClickListener(this);
         mAfterClassItemView.setOnClickListener(this);
+    }
+
+    private void showFragment() {
+        if (mKnowledgeDetailMessage != null) {
+            showEditingFragment(mKnowledgeModel, mKnowledgeDetailMessage);
+        } else {
+            showKnowledgeNoneFragment();
+        }
     }
 
     public void showKnowledgeNoneFragment() {
@@ -104,13 +114,13 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     /**
      * [展示指定Id的页面]<BR>
      */
-    public void showEditingFragment(KnowledgeModel knowledgeModel,InsertKnowledgeResponse insertKnowledgeResponse) {
+    public void showEditingFragment(KnowledgeModel knowledgeModel, KnowledgeDetailMessage insertKnowledgeResponse) {
         if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS) {
             return;
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         if (mKnowledgeEditingFragment == null) {
-            mKnowledgeEditingFragment = KnowledgeEditingFragment.newInstance(knowledgeModel, insertKnowledgeResponse,mStatus, this);
+            mKnowledgeEditingFragment = KnowledgeEditingFragment.newInstance(knowledgeModel, insertKnowledgeResponse, mStatus, this);
             transaction.add(R.id.content_layout, mKnowledgeEditingFragment);
         }
         if (mKnowledgeNoneFragment != null) {
@@ -122,9 +132,14 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
         mCurrentShowModuleId = MODULE_ID_EDIT_TASKS;
     }
 
+    private void resetStatus() {
+        mKnowledgeEditingFragment.resetData(mKnowledgeModel, mKnowledgeDetailMessage, mStatus);
+    }
+
     @Override
-    public void onAddSuccess(KnowledgeModel model, InsertKnowledgeResponse response) {
-        showEditingFragment(model,response);
+    public void onAddSuccess(KnowledgeModel model, KnowledgeDetailMessage response) {
+        mKnowledgeDetailMessage = response;
+        showEditingFragment(model, response);
     }
 
     @Override
@@ -138,34 +153,37 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                 }
                 break;
             case R.id.fre_class_item:
-                if(mCurrentShowModuleId == MODULE_ID_EDIT_TASKS&&mKnowledgeEditingFragment.isEditing()){
-                    Toast.makeText(getActivity(),R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS && mKnowledgeEditingFragment.isEditing()) {
+                    Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 mStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
                 mFreClassItemView.setEnabled(false);
                 mAtClassItemView.setEnabled(true);
                 mAfterClassItemView.setEnabled(true);
+                resetStatus();
                 break;
             case R.id.at_class_item:
-                if(mCurrentShowModuleId == MODULE_ID_EDIT_TASKS&&mKnowledgeEditingFragment.isEditing()){
-                    Toast.makeText(getActivity(),R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS && mKnowledgeEditingFragment.isEditing()) {
+                    Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 mStatus = KeyConstants.KnowledgeStatus.AT_CLASS;
                 mFreClassItemView.setEnabled(true);
                 mAtClassItemView.setEnabled(false);
                 mAfterClassItemView.setEnabled(true);
+                resetStatus();
                 break;
             case R.id.after_class_item:
-                if(mCurrentShowModuleId == MODULE_ID_EDIT_TASKS&&mKnowledgeEditingFragment.isEditing()){
-                    Toast.makeText(getActivity(),R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS && mKnowledgeEditingFragment.isEditing()) {
+                    Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 mStatus = KeyConstants.KnowledgeStatus.AFTER_CLASS;
                 mFreClassItemView.setEnabled(true);
                 mAtClassItemView.setEnabled(true);
                 mAfterClassItemView.setEnabled(false);
+                resetStatus();
                 break;
         }
     }

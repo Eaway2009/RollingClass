@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
-import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -87,7 +87,7 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
 
                 @Override
                 public void onResponse(String body) {
-                    InsertKnowledgeResponse response = (InsertKnowledgeResponse) ScopeServer.getInstance().jsonToModel(InsertKnowledgeResponse.class.getName(),body);
+                    KnowledgeDetailMessage response = (KnowledgeDetailMessage) ScopeServer.getInstance().jsonToModel(KnowledgeDetailMessage.class.getName(),body);
                     mListener.onAddSuccess(mKnowledgeModel, response);
                 }
 
@@ -100,6 +100,6 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
     }
 
     public interface Callback {
-        void onAddSuccess(KnowledgeModel model, InsertKnowledgeResponse response);
+        void onAddSuccess(KnowledgeModel model, KnowledgeDetailMessage response);
     }
 }

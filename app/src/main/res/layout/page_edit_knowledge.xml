@@ -42,12 +42,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="5dp"
                     android:paddingTop="8dp"
-                    android:paddingRight="10dp"
+                    android:paddingRight="5dp"
+                    android:gravity="center"
                     android:paddingBottom="8dp"
                     android:textColor="@color/knowledge_text"
                     android:textSize="18sp"
+                    android:background="@drawable/knowledge_name_bg"
                     tools:text="@string/enter_knowledge_name" />
 
                 <TextView
@@ -105,6 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@drawable/check_selector"
+
                     android:text="@string/sync_in_class"
                     android:textColor="@color/knowledge_add_text"
                     android:textSize="14sp" />

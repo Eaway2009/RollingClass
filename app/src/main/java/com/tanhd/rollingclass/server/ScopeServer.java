@@ -3,12 +3,10 @@ package com.tanhd.rollingclass.server;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tanhd.rollingclass.server.data.InsertKnowledgeResponse;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.ChaptersResponse;
-import com.tanhd.rollingclass.db.Document;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ChapterData;
 import com.tanhd.rollingclass.server.data.ClassData;
@@ -643,7 +641,7 @@ public class ScopeServer extends ServerRequest {
      * @param data 任务信息
      * @return
      */
-    public void EditLessonSample(LessonSampleModel data, RequestCallback callback) {
+    public void EditLessonSample(KnowledgeLessonSample data, RequestCallback callback) {
         new RequestTask(getHostUrl() + "/teachingSample/EditLessonSample/" + mToken, METHOD.POST, null, data.toJSON().toString(), callback).execute();
     }
 

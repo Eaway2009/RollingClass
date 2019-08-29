@@ -5,54 +5,99 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
     android:layout_marginTop="10dp"
+    android:layout_marginRight="20dp"
     android:layout_marginBottom="10dp"
-    android:orientation="vertical"
-    android:background="@drawable/document_bg">
+    android:background="@drawable/document_bg"
+    android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/document_status_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/document_status_selector"
-            android:gravity="center"
-            android:layout_gravity="right"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            tools:text="上课记录"/>
+    <TextView
+        android:id="@+id/document_status_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="right"
+        android:background="@drawable/document_status_selector"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        tools:text="上课记录" />
+
     <TextView
         android:id="@+id/document_title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center"
         android:layout_centerInParent="true"
-        tools:text="勾股定理"
+        android:layout_gravity="center"
+        android:layout_weight="1"
         android:textColor="@color/white"
-        android:textSize="14sp"/>
-    <LinearLayout
+        android:textSize="14sp"
+        tools:text="勾股定理" />
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_vertical"
-        android:paddingLeft="5dp">
-        <TextView
-            android:id="@+id/edit_time_tv"
-            android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="8dp"
-            android:textColor="@color/white"
-            android:gravity="center"
-            tools:text="2019年7月28日"/>
-        <ImageView
-            android:id="@+id/document_more_ib"
-            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="5dp">
+
+            <TextView
+                android:id="@+id/edit_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="8dp"
+                tools:text="2019年7月28日" />
+
+            <ImageView
+                android:id="@+id/document_more_ib"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:src="@drawable/document_more_icon" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/more_bottom"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:src="@drawable/document_more_icon"/>
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical|right"
+            android:background="@drawable/document_adapter_bottom"
+            android:paddingRight="10dp"
+            android:visibility="gone">
+            <ImageView
+                android:id="@+id/more_copy_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:src="@drawable/copy"/>
+            <ImageView
+                android:id="@+id/more_share_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:src="@drawable/share"/>
+            <ImageView
+                android:id="@+id/more_edit_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:src="@drawable/edit"/>
+            <ImageView
+                android:id="@+id/more_delete_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:src="@drawable/delete"/>
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>
