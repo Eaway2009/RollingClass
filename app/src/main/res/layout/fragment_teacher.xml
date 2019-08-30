@@ -13,7 +13,7 @@
             android:id="@+id/class_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/class_page"/>
+            android:src="@drawable/teacher_class_page"/>
 
         <ImageView
             android:id="@+id/resource_page_view"
@@ -27,7 +27,7 @@
             android:id="@+id/statics_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/statics_page"
+            android:src="@drawable/statistics_page"
             android:layout_alignBottom="@+id/class_page_view"
             android:layout_alignRight="@+id/resource_page_view"/>
     </RelativeLayout>

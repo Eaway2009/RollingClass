@@ -1,4 +1,4 @@
-package com.tanhd.rollingclass.activity;
+package com.tanhd.rollingclass.fragments.statistics;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,26 +9,25 @@ import android.view.View;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.Message;
 import com.tanhd.rollingclass.fragments.ChatFragment;
+import com.tanhd.rollingclass.fragments.CountClassFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.InBoxFragment;
-import com.tanhd.rollingclass.fragments.ShowPageFragment;
 import com.tanhd.rollingclass.views.TopbarView;
 
-public class DatasActivity extends AppCompatActivity {
+public class StatisticsActivity extends AppCompatActivity {
 
-    private static final String TAG = "DatasActivity";
+    private static final String TAG = "StatisticsActivity";
     private TopbarView mTopbarView;
     private View mBackButton;
-    private ShowPageFragment mShowPageFragment;
+    private CountClassFragment mCountClassFragment;
 
     public static final String PAGE_ID = "PAGE_ID";
-    public static final int PAGE_ID_DOCUMENTS = 0;
-    public static final int PAGE_ID_RESOURCES = 1;
-    public static final int PAGE_ID_STATISTICS = 2;
+    public static final int PAGE_ID_MICRO_COURSE = 0;
+    public static final int PAGE_ID_QUESTION = 1;
     private int mPageId;
 
     public static void startMe(Activity context, int pageId){
-        Intent intent = new Intent(context, DatasActivity.class);
+        Intent intent = new Intent(context, StatisticsActivity.class);
         intent.putExtra(PAGE_ID, pageId);
         context.startActivity(intent);
     }
@@ -43,7 +42,7 @@ public class DatasActivity extends AppCompatActivity {
     }
 
     private void initParams(){
-        mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_DOCUMENTS);
+        mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_MICRO_COURSE);
     }
 
     private void initViews(){
@@ -72,7 +71,7 @@ public class DatasActivity extends AppCompatActivity {
     }
 
     private void initFragment() {
-        mShowPageFragment = ShowPageFragment.newInstance(mPageId, new ShowPageFragment.PagesListener() {
+        mCountClassFragment = CountClassFragment.newInstance(mPageId, new CountClassFragment.PagesListener() {
             @Override
             public void onPageChange(int id) {
 
@@ -83,7 +82,7 @@ public class DatasActivity extends AppCompatActivity {
                 finish();
             }
         });
-        getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mShowPageFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mCountClassFragment).commit();
     }
 
     private void openMessage(Message message) {

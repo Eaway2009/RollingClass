@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ClassData extends BaseJsonClass {
+public class ClassData extends BaseJsonClass implements MultiLevelModel<StudentData>{
     public String ClassID;
     public String ClassName;
     public long CreateTime;
@@ -20,6 +20,18 @@ public class ClassData extends BaseJsonClass {
     public int StudysectionCode;
     public long UpdateTime;
     public List<GroupData> Groups;
+
+    @Override
+    public List<StudentData> getChildren() {
+        if(Groups!=null){
+            List<StudentData> studentDataList = new ArrayList<>();
+            for(GroupData groupData:Groups){
+                if(groupData.StudentList!=null)
+                studentDataList.addAll(groupData.StudentList);
+            }
+        }
+        return null;
+    }
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {

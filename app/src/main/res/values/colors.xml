@@ -12,12 +12,15 @@
     <color name="login_text_color">#888888</color>
     <color name="lesson_text">#3E3E3E</color>
     <color name="group_name">#484848</color>
+    <color name="group_name_checked">#46B0E6</color>
+    <color name="file_group_name_checked">#A0EDE8</color>
     <color name="lesson_list_background">#0078FF</color>
     <color name="drop_pop_menu_bg_color">#a0000000</color>
     <color name="menu_background">#FF535353</color>
     <color name="chapter_menu_background">#384052</color>
     <color name="chapter_menu_text">#A4A8AE</color>
     <color name="title_bar_background">#EEEEEE</color>
+    <color name="micro_course_selector_title">#D6F5FF</color>
 
     <color name="count_class_left_background">#1F2837</color>
     <color name="button_blue_item_checked">#2196F3</color>
@@ -51,6 +54,7 @@
     <color name="progress_background">#D2D2D2</color>
     <color name="count_class_background">#E0E8F5</color>
     <color name="progress_size">#00A0E9</color>
+    <color name="count_class_title_color">#2DB7F5</color>
 
     <color name="transparent">#00FFFFFF</color>
     <color name="description">#686868</color>

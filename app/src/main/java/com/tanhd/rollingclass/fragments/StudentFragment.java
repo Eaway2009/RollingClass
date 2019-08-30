@@ -2,10 +2,7 @@ package com.tanhd.rollingclass.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,206 +11,138 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.VideoPlayerActivity;
+import com.tanhd.rollingclass.activity.DatasActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.MSG_TYPE;
-import com.tanhd.rollingclass.fragments.pages.CommentAnswerPage;
-import com.tanhd.rollingclass.server.ConnectionStatus;
+import com.tanhd.rollingclass.fragments.pages.LearningStaticsFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.QuestionData;
-import com.tanhd.rollingclass.server.data.SubjectData;
+import com.tanhd.rollingclass.server.data.StudentData;
+import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
-public class StudentFragment extends Fragment {
-    private View mLeftToolbar;
-    private View mRightToolbar;
-    private ConnectionStatus mConnectionStatus;
+public class StudentFragment extends Fragment implements View.OnClickListener {
+    private BackListener mListener;
+    private ImageView mClassPageView;
+    private ImageView mResourcePageView;
+    private ImageView mStaticsPageView;
 
+    public static StudentFragment newInstance(BackListener listener) {
+        StudentFragment fragment = new StudentFragment();
+        fragment.setListener(listener);
+        return fragment;
+    }
+
+    public void setListener(BackListener listener) {
+        this.mListener = listener;
+    }
+
+    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_student, container, false);
-        mLeftToolbar = view.findViewById(R.id.leftbar);
-        mRightToolbar = view.findViewById(R.id.rightbar);
-
-        view.findViewById(R.id.btn_learning).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(
-                        LessonSampleSelectorFragment.newInstance(new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
-                            @Override
-                            public void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData) {
-                                ExternalParam.getInstance().setLessonSample(lessonSampleData);
-                                ExternalParam.getInstance().setKnowledge(knowledgeData);
-                                showLessonSample(lessonSampleData.UrlContent, ShowDocumentFragment.SYNC_MODE.NONE);
-                                view.findViewById(R.id.chat).setEnabled(true);
-
-                                if (getParentFragment() instanceof FrameDialog) {
-                                    FrameDialog dialog = (FrameDialog) getParentFragment();
-                                    dialog.dismiss();
-                                }
-                            }
-                        })
-                ));
-            }
-        });
-
-        view.findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String chatID = ExternalParam.getInstance().getLessonSample().TeacherID;
-                FrameDialog.show(getChildFragmentManager(), ChatFragment.newInstance(chatID));
-            }
-        });
-
-        view.findViewById(R.id.micro_course).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(MicroCourseSelectorFragment.newInstance(
-                        new MicroCourseSelectorFragment.SelectorMicroCourseListener() {
-                            @Override
-                            public void onMicroCourseSelected(MicroCourseData microCourseData) {
-                                Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
-                                intent.putExtra("MicroCourseID", microCourseData.MicroCourseID);
-                                intent.putExtra("ResourceAddr", ScopeServer.getInstance().getResourceUrl() + microCourseData.VideoUrl);
-                                startActivity(intent);
-                            }
-                        })));
-            }
-        });
-
-        view.findViewById(R.id.exam).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(
-                        LessonSampleSelectorFragment.newInstance(new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
-                                                                     @Override
-                                                                     public void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData) {
-                                                                         FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(lessonSampleData.LessonSampleID, null));
-                                                                     }
-                                                                 }
-                        )));
-            }
-        });
-
-        view.findViewById(R.id.btn_wrong_question).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FrameDialog.show(getChildFragmentManager(), SubjectSelectorFragment.newInstance(
-                        LessonSampleSelectorFragment.newInstance(new LessonSampleSelectorFragment.OnSelectorLessonSampleListener() {
-                                                                     @Override
-                                                                     public void onLessonSampleSelected(KnowledgeData knowledgeData, LessonSampleData lessonSampleData) {
-                                                                         UserData userData = ExternalParam.getInstance().getUserData();
-                                                                         FrameDialog.fullShow(getChildFragmentManager(), WrongQuestionShowFragment.newInstance(userData.getOwnerID()));
-                                                                     }
-                                                                 }
-                        )));
-            }
-        });
-
+        initViews(view);
         return view;
+    }
+
+    private void initViews(View view){
+        mClassPageView = view.findViewById(R.id.class_page_view);
+        mResourcePageView = view.findViewById(R.id.resource_page_view);
+        mStaticsPageView = view.findViewById(R.id.statics_page_view);
+
+        mClassPageView.setOnClickListener(this);
+        mResourcePageView.setOnClickListener(this);
+        mStaticsPageView.setOnClickListener(this);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try {
-            MQTT.register(mqttListener);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    MQTT.publishMessage(PushMessage.COMMAND.QUERY_CLASS, (List<String>) null, null);
-                }
-            }, 2000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        MQTT.register(mqttListener);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        MQTT.publishMessage(PushMessage.COMMAND.OFFLINE, (List<String>) null, null);
         MQTT.unregister(mqttListener);
     }
 
-    private void enableToolbar(boolean b) {
-        if (b) {
-            mLeftToolbar.setVisibility(View.VISIBLE);
-            mRightToolbar.setVisibility(View.VISIBLE);
-        } else {
-            mLeftToolbar.setVisibility(View.GONE);
-            mRightToolbar.setVisibility(View.GONE);
-        }
+    private void notifyEnterClass(String studentID) {
+        ClassData classData = ExternalParam.getInstance().getClassData();
+
+        //通知学生端打开学案
+        TeacherData teacherData = (TeacherData) ExternalParam.getInstance().getUserData().getUserData();
+        KnowledgeData knowledgeData = ExternalParam.getInstance().getKnowledge();
+        LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
+        HashMap<String, String> params = new HashMap<>();
+        params.put("EnterClass", "1");
+        params.put("ClassName", classData.ClassName);
+        params.put("SubjectName", AppUtils.getSubjectNameByCode(teacherData.SubjectCode));
+        params.put("TeacherName", teacherData.Username);
+        params.put("KnowledgePointName", knowledgeData.KnowledgePointName);
+        params.put("LessonSampleName", lessonSampleData.LessonSampleName);
+        params.put("UrlContent", lessonSampleData.UrlContent);
+        MQTT.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
     }
 
     private MqttListener mqttListener = new MqttListener() {
-
         @Override
-        public void messageArrived(final PushMessage message) {
+        public void messageArrived(PushMessage message) {
             switch (message.command) {
-                case CLASS_BEGIN: {
-                    if (ExternalParam.getInstance().getStatus() == 0) {
-                        ClassPromptFragment dialog = ClassPromptFragment.newInstance(message.parameters, new ClassPromptFragment.ClassPromptListener() {
-                            @Override
-                            public void onEnter(String url) {
-                                AppUtils.clearFragments(getChildFragmentManager());
-                                enableToolbar(false);
-                                showLessonSample(url, ShowDocumentFragment.SYNC_MODE.SLAVE);
-                                MQTT.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
-                                ExternalParam.getInstance().setStatus(2);
-                            }
-                        });
-                        dialog.setCancelable(false);
-                        dialog.show(getChildFragmentManager(), null);
-                        ExternalParam.getInstance().setStatus(1);
+                case OFFLINE:
+                case ONLINE:
+                    if (ExternalParam.getInstance().getStatus() == 0)
+                        return;
+
+                    ClassData classData = ExternalParam.getInstance().getClassData();
+                    if (classData == null)
+                        return;
+
+                    classData.setStudentState(message.from, (message.command == PushMessage.COMMAND.ONLINE ? 1 : 0));
+                    break;
+                case QUERY_CLASS:
+                    if (ExternalParam.getInstance().getStatus() == 0)
+                        return;
+
+                    notifyEnterClass(message.from);
+                    break;
+                case ANSWER_COMPLETED:
+                    String content = message.parameters.get("content");
+                    try {
+                        JSONObject json = new JSONObject(content);
+                        String examID = json.optString("examID");
+                        Database.getInstance().setQuestioning(examID);
+                        FrameDialog.show(getChildFragmentManager(), WaitAnswerFragment.newInstance(examID));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
                     break;
-                }
-                case CLASS_END: {
-                    classEnd(message.from);
-                    break;
-                }
-                case QUESTIONING: {
-                    String examID = message.parameters.get("examID");
-                    final String teacherID = message.parameters.get("teacherID");
-                    FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
-                        @Override
-                        public void onFinished() {
-                            MQTT.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
-                        }
-                    }));
-                    break;
-                }
-                case OPEN_DOCUMENT: {
-                    if (ExternalParam.getInstance().getStatus() == 2) {
-                        String url = message.parameters.get("UrlContent");
-                        showLessonSample(url, ShowDocumentFragment.SYNC_MODE.SLAVE);
-                    }
-                    break;
-                }
-                case SERVER_PING: {
-                    FrameDialog.show(getChildFragmentManager(), ServerTesterFragment.newInstance());
-                    break;
-                }
-                case QUERY_STATUS: {
-                    if (ExternalParam.getInstance().getStatus() == 2)
-                        MQTT.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
-                    else
-                        MQTT.publishMessage(PushMessage.COMMAND.OFFLINE, (List<String>) null, null);
-                    break;
-                }
             }
         }
 
@@ -223,26 +152,22 @@ public class StudentFragment extends Fragment {
         }
     };
 
-    private void classEnd(String targetID) {
-        enableToolbar(true);
-        ExternalParam.getInstance().setStatus(0);
-        AppUtils.clearFragments(getChildFragmentManager());
-        MQTT.publishMessage(PushMessage.COMMAND.OFFLINE, targetID, null);
-        if (mConnectionStatus != null) {
-            mConnectionStatus.stop();
-            mConnectionStatus = null;
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.class_page_view:
+                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_DOCUMENTS);
+                break;
+            case R.id.resource_page_view:
+                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_RESOURCES);
+                break;
+            case R.id.statics_page_view:
+                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_STATISTICS);
+                break;
         }
     }
 
-    private void showLessonSample(String url, ShowDocumentFragment.SYNC_MODE mode) {
-        String fragmentTag = "lessonSample";
-        ShowDocumentFragment fragment = ShowDocumentFragment.newInstance(ScopeServer.getInstance().getResourceUrl() + url, mode);
-        FragmentManager fragmentManager = getChildFragmentManager();
-        FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
-        beginTransaction.replace(R.id.framelayout, fragment);
-        beginTransaction.addToBackStack(fragmentTag);
-        beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        beginTransaction.commit();
+    public interface BackListener {
+        void showBack(boolean show);
     }
-
 }

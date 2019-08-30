@@ -63,7 +63,7 @@
                     android:drawableLeft="@drawable/resource_selector"
                     android:drawablePadding="5dp"
                     android:gravity="center"
-                    android:text="@string/document_title"
+                    android:text="@string/resource_title"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
 
@@ -76,7 +76,7 @@
                     android:drawableLeft="@drawable/statistics_selector"
                     android:drawablePadding="5dp"
                     android:gravity="center"
-                    android:text="@string/document_title"
+                    android:text="@string/statistics_title"
                     android:textColor="@color/white"
                     android:textSize="10sp" />
             </LinearLayout>

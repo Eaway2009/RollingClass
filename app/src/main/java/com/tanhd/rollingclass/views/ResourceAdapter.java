@@ -1,33 +1,28 @@
 package com.tanhd.rollingclass.views;
 
 import android.app.Activity;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
-import com.tanhd.rollingclass.server.RequestCallback;
-import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DocumentAdapter extends BaseAdapter implements RequestCallback {
+public class ResourceAdapter extends BaseAdapter {
 
     private Activity mContext;
     private List<KnowledgeDetailMessage> mDataList = new ArrayList<>();
 
-    public DocumentAdapter(Activity context) {
+    public ResourceAdapter(Activity context) {
         mContext = context;
     }
 
@@ -89,21 +84,17 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                         moreBottomView.setVisibility(View.VISIBLE);
                         break;
                     case R.id.more_copy_iv:
-                        moreBottomView.setVisibility(View.GONE);
 
                         break;
                     case R.id.more_share_iv:
-                        moreBottomView.setVisibility(View.GONE);
 
                         break;
                     case R.id.more_edit_iv:
-                        moreBottomView.setVisibility(View.GONE);
                         KnowledgeModel knowledgeModel = new KnowledgeModel(data.school_id, data.teacher_id, data.chapter_id, data.chapter_name, data.section_id, data.section_name, data.subject_code, data.subject_name, data.teaching_material_id);
                         DocumentEditActivity.startMe(mContext, DocumentEditActivity.PAGE_ID_EDIT_DOCUMENTS, knowledgeModel, data);
                         break;
                     case R.id.more_delete_iv:
-                        moreBottomView.setVisibility(View.GONE);
-                        showDeleteDialog(data);
+
                         break;
                 }
             }
@@ -150,37 +141,5 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         titleView.setText(data.knowledge_point_name);
         editTimeView.setText(data.create_time + "");
         return view;
-    }
-
-    private void showDeleteDialog(final KnowledgeDetailMessage data) {
-        new AlertDialog.Builder(mContext)
-                .setMessage(R.string.delete_knowledge_warning)
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ScopeServer.getInstance().DeleteKnowledge(data.teaching_material_id, data.knowledge_id, DocumentAdapter.this);
-                    }
-                }).show();
-    }
-
-    @Override
-    public void onProgress(boolean b) {
-
-    }
-
-    @Override
-    public void onResponse(String body) {
-        Toast.makeText(mContext, R.string.delete_success, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onError(String code, String message) {
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
     }
 }
