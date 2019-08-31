@@ -83,7 +83,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.layout_content:
-                        LearnCasesActivity.startMe(mContext);
+                        LearnCasesActivity.startMe(mContext, data);
                         break;
                     case R.id.more_bottom:
                         moreBottomView.setVisibility(View.GONE);

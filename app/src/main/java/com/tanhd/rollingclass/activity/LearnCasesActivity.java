@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.Message;
 import com.tanhd.rollingclass.fragments.ChatFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.InBoxFragment;
 import com.tanhd.rollingclass.fragments.pages.LearnCasesFragment;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.views.TopbarView;
 
 /**
@@ -18,26 +20,34 @@ import com.tanhd.rollingclass.views.TopbarView;
  */
 public class LearnCasesActivity extends AppCompatActivity {
 
+    public static final String PARAM_KNOWLEDGE_DETAIL_MESSAGE = "PARAM_KNOWLEDGE_DETAIL_MESSAGE";
+
     private LearnCasesFragment mLearnCasesActivity;
 
     private TopbarView mTopbarView;
     private View mBackButton;
+    private KnowledgeDetailMessage mKnowledgeDetailMessage;
 
-    public static void startMe(Activity context) {
+    public static void startMe(Activity context, KnowledgeDetailMessage data) {
         Intent intent = new Intent(context, LearnCasesActivity.class);
+        intent.putExtra(PARAM_KNOWLEDGE_DETAIL_MESSAGE, data);
         context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        initParams();
+        initParams();
         initViews();
         initFragment();
     }
 
+    private void initParams() {
+        mKnowledgeDetailMessage = (KnowledgeDetailMessage) getIntent().getSerializableExtra(PARAM_KNOWLEDGE_DETAIL_MESSAGE);
+    }
+
     private void initFragment() {
-        mLearnCasesActivity = LearnCasesFragment.newInstance(new LearnCasesFragment.PagesListener() {
+        mLearnCasesActivity = LearnCasesFragment.newInstance(mKnowledgeDetailMessage, new LearnCasesFragment.PagesListener() {
             @Override
             public void onFullScreen(boolean isFull) {
                 mTopbarView.setVisibility(isFull == true ? View.GONE : View.VISIBLE);

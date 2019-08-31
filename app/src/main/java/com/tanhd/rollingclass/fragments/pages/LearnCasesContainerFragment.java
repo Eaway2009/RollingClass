@@ -9,17 +9,30 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
+import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.views.PointPopupWindow;
 import com.tanhd.rollingclass.views.PointPopupWindow.PopupClickCallBack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LearnCasesContainerFragment extends Fragment implements OnClickListener {
+    //1. ppt 2. doc 3. image 4. 微课 5. 习题
+    private static final int MODULE_ID_SHOW_DOCUMENT = 1;
+    private static final int MODULE_ID_SHOW_DOC = 2;
+    private static final int MODULE_ID_SHOW_IMAGE = 3;
+    private static final int MODULE_ID_SHOW_VIDEO = 4;
+    private static final int MODULE_ID_SHOW_QUESTION = 5;
 
     PagesListener mListener;
     private ImageView mIvSetting1;
@@ -30,6 +43,11 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 
     private PointPopupWindow mPopupWindow1;
     private PointPopupWindow mPopupWindow2;
+
+    private int mCurrentShowModuleId = -1;
+    private ShowDocumentFragment mDocumentPageFragment;
+    private List<Fragment> mFragments = new ArrayList<>();
+
     public static LearnCasesContainerFragment newInstance(int typeId, PagesListener listener) {
         Bundle args = new Bundle();
         args.putInt("typeId", typeId);
@@ -111,6 +129,56 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                     mPopupWindow2.dimissPopup();
                 }
                 break;
+        }
+    }
+
+    public void showResource(ResourceModel resourceModel) {
+        showFragment(resourceModel.resource_type, resourceModel);
+    }
+
+    /**
+     * [展示指定Id的页面]<BR>
+     */
+    public void showFragment(int moduleId, ResourceModel resourceModel) {
+        if (mCurrentShowModuleId == moduleId) {
+            return;
+        }
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        Fragment fragment = getFragment(moduleId, resourceModel);
+        if (fragment == null) {
+            return;
+        }
+        if (!fragment.isAdded()) {
+            transaction.add(R.id.content_layout, fragment);
+        }
+        hideFragments(transaction, moduleId);
+        transaction.show(fragment);
+        transaction.commitAllowingStateLoss();
+
+        mCurrentShowModuleId = moduleId;
+    }
+
+    private Fragment getFragment(int moduleId, ResourceModel resourceModel) {
+        switch (moduleId) {
+            case MODULE_ID_SHOW_DOCUMENT:
+                if (mDocumentPageFragment == null) {
+                    mDocumentPageFragment = ShowDocumentFragment.newInstance(resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+                }
+                mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                return mDocumentPageFragment;
+            case MODULE_ID_SHOW_VIDEO:
+                if (mDocumentPageFragment == null) {
+                    mDocumentPageFragment = ShowDocumentFragment.newInstance(resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+                }
+                mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                return mDocumentPageFragment;
+        }
+        return null;
+    }
+
+    private void hideFragments(FragmentTransaction transaction, int moduleId) {
+        if (moduleId != MODULE_ID_SHOW_DOCUMENT) {
+            transaction.hide(mDocumentPageFragment);
         }
     }
 

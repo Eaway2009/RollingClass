@@ -97,7 +97,7 @@ public class ShowDocumentFragment extends Fragment {
 
     private void downloadPDF() {
         String fileName = AppUtils.md5(mUrl);
-        mPdfFilePath = getActivity().getApplicationContext().getFilesDir().getAbsolutePath()
+        mPdfFilePath = getActivity().getFilesDir().getAbsolutePath()
                 + "/" + fileName;
         File file = new File(mPdfFilePath);
         if (file.exists()) {

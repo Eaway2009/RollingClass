@@ -9,231 +9,44 @@
         android:id="@+id/rl_cases_menu"
         android:layout_width="160dp"
         android:layout_height="match_parent">
-        <ScrollView
+
+        <LinearLayout
+            android:id="@+id/ll_menu_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/ll_bottom_view"
-            android:background="@color/learn_menu_bg1"
-            android:scrollbars="vertical">
-            <LinearLayout
-                android:id="@+id/ll_menu_container"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/knowledge_name_tv"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:textColor="@color/knowledge_add_title"
+                android:textSize="16sp"
+                tools:text="标题" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/progress_background" />
+
+
+            <ExpandableListView
+                android:id="@+id/expandable_listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_above="@+id/ll_bottom_view"
+                android:background="@color/learn_menu_bg1"
+                android:divider="@null"
+                android:indicatorStart="15dp"
+                android:indicatorLeft="10dp"
+                android:indicatorRight="20dp"
+                android:scrollbars="none" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:gravity="center"
-                    android:textColor="@color/knowledge_add_title"
-                    android:textSize="16sp"
-                    tools:text="标题" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@color/progress_background" />
+        </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/ll_ppt"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/shape_bg_blue_round"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/learn_case_ppt"
-                        android:textColor="@color/knowledge_add_title"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_target_guidance"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/shape_bg_blue_round"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/target_guidance"
-                        android:textColor="@color/knowledge_add_title"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_self_study"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/shape_bg_blue_round"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/self_study"
-                        android:textColor="@color/knowledge_add_title"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_assist_study"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/shape_bg_blue_round"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/assist_study"
-                        android:textColor="@color/knowledge_add_title"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_coopera_study"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/shape_bg_blue_round"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/coopera_study"
-                        android:textColor="@color/knowledge_add_title"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_class_exercises"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/shape_bg_blue_round"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/class_exercises"
-                        android:textColor="@color/knowledge_add_title"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_difficult_break"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/shape_bg_blue_round"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/difficult_break"
-                        android:textColor="@color/knowledge_add_title"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_class_summary"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/shape_bg_blue_round"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/class_summary"
-                        android:textColor="@color/knowledge_add_title"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_relevant_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@drawable/shape_bg_blue_round"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/relevant_info"
-                        android:textColor="@color/knowledge_add_title"
-                        android:textSize="14sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
         <LinearLayout
             android:id="@+id/ll_bottom_view"
             android:layout_width="match_parent"
@@ -246,11 +59,11 @@
                 android:id="@+id/tv_insert_resource"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:background="@drawable/shape_bg_blue_round"
+                android:paddingLeft="20dp"
+                android:paddingTop="5dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="5dp"
                 android:text="@string/insert_resources"
                 android:textColor="@color/white" />
         </LinearLayout>
@@ -265,16 +78,16 @@
             android:id="@+id/rl_inner_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/title_bar_background"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:background="@color/title_bar_background">
+            android:paddingBottom="10dp">
 
             <TextView
                 android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
                 android:drawableLeft="@drawable/back_icon"
                 android:drawablePadding="8dp"
                 android:text="@string/back" />
@@ -284,13 +97,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:background="@drawable/add_document_button_bg"
                 android:backgroundTint="@color/button_blue"
                 android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingTop="5dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="5dp"
                 android:text="@string/class_exercise_result"
                 android:textColor="@color/knowledge_text"
                 android:visibility="invisible" />
@@ -299,9 +112,9 @@
                 android:id="@+id/tv_class_begin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="18dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="18dp"
                 android:text="@string/class_begin" />
         </RelativeLayout>
 
