@@ -21,6 +21,7 @@ import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.QuestionData;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
+import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.SchoolData;
 import com.tanhd.rollingclass.server.data.SectionData;
@@ -497,6 +498,20 @@ public class ScopeServer extends ServerRequest {
         String response = sendRequest(getHostUrl() + "/teachingMaterial/QureyKnowledgeByChapterAndTeacherID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<KnowledgeDetailMessage> list = jsonToList(KnowledgeDetailMessage.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    public List<ResourceModel> QureyResourceByTeacherID(String teacherId, String teaching_material_id) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teaching_material_id", "" + teaching_material_id);
+        params.put("teacherID", "" + teacherId);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/resource/QureyResourceByTeacherID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<ResourceModel> list = jsonToList(KnowledgeDetailMessage.class.getName(), response);
             return list;
         }
 
