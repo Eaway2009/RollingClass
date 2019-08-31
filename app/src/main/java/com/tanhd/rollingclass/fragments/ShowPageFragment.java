@@ -152,7 +152,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
             }
         } else if (moduleId == MODULE_ID_RESOURCES) {
             if (mResourcesFragment == null) {
-                mResourcesFragment = ResourcesPageFragment.newInstance();
+                mResourcesFragment = ResourcesPageFragment.newInstance(mKnowledgeModel);
                 transaction.add(ROOT_LAYOUT_ID, mResourcesFragment);
             }
             moduleFragment = mResourcesFragment;

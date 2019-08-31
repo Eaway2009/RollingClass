@@ -13,4 +13,11 @@ public class KeyConstants {
         public static final int VIDEO_TYPE = 4;
         public static final int QUESTION_TYPE = 5;
     }
+
+    public static class LevelType {
+        public static final int ALL_LEVEL = 0;
+        public static final int SCHOOL_LEVEL = 1;
+        public static final int PRIVATE_LEVEL = 2;
+        public static final int PUBLIC_LEVEL = 3;
+    }
 }

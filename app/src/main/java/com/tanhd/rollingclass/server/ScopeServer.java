@@ -504,18 +504,27 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
-    public List<ResourceModel> QureyResourceByTeacherID(String teacherId, String teaching_material_id) {
+    public List<ResourceModel> QureyResourceByTeacherID(String teacherId, String teaching_material_id,
+            int level, int resourceType, int page, int pagesize) {
         HashMap<String, String> params = new HashMap<>();
-        params.put("teaching_material_id", "" + teaching_material_id);
         params.put("teacherID", "" + teacherId);
+        params.put("teaching_material_id", "" + teaching_material_id);
+        params.put("level", "" + level);
+        params.put("resourceType", "" + resourceType);
+        params.put("page", "" + page);
+        params.put("pagesize", "" + pagesize);
         params.put("token", mToken);
-        String response = sendRequest(getHostUrl() + "/resource/QureyResourceByTeacherID/" + mToken, METHOD.GET, params);
+        String response = sendRequest(getHostUrl() + "/resource/QureyResourceByTeacherID" +
+                appenUrl(page+"") + appenUrl(pagesize+"") + appenUrl(mToken), METHOD.GET, params);
         if (response != null) {
             List<ResourceModel> list = jsonToList(KnowledgeDetailMessage.class.getName(), response);
             return list;
         }
-
         return null;
+    }
+
+    private String appenUrl(String data) {
+        return "/" + data;
     }
 
     /**
