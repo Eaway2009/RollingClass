@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/from_local"
+        android:icon="@drawable/upload_local_icon"
+        android:title="本地导入"/>
+
+    <item
+        android:id="@+id/from_resource"
+        android:icon="@drawable/upload_local_icon"
+        android:title="资源库导入"/>
+
+</menu>

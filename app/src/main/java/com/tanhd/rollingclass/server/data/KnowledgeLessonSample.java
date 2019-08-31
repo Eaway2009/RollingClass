@@ -14,6 +14,7 @@ public class KnowledgeLessonSample extends BaseJsonClass{
     public String lesson_sample_name;
     public int status;
     public int lesson_type;
+    public int number;
     public String knowledge_id;
     public List<ResourceModel> ppt_set;
     public List<ResourceModel> video_set;
@@ -21,6 +22,7 @@ public class KnowledgeLessonSample extends BaseJsonClass{
     public List<ResourceModel> question_set;
     public List<ResourceModel> image_set;
     public String create_time;
+    public String update_time;
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {

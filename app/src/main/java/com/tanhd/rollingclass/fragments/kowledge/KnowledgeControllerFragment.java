@@ -150,6 +150,14 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                     if (mCallback != null) {
                         mCallback.onBack();
                     }
+                } else {
+                    if (mKnowledgeEditingFragment.isEditing()) {
+                        Toast.makeText(getActivity(), getString(R.string.adding_task_warning), Toast.LENGTH_SHORT).show();
+                    }else {
+                        if (mCallback != null) {
+                            mCallback.onBack();
+                        }
+                    }
                 }
                 break;
             case R.id.fre_class_item:

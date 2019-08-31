@@ -27,8 +27,11 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
     private Activity mContext;
     private List<KnowledgeDetailMessage> mDataList = new ArrayList<>();
 
-    public DocumentAdapter(Activity context) {
+    private Callback mListener;
+
+    public DocumentAdapter(Activity context, Callback callback) {
         mContext = context;
+        mListener = callback;
     }
 
     public void setData(List<KnowledgeDetailMessage> datas) {
@@ -177,10 +180,15 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
     @Override
     public void onResponse(String body) {
         Toast.makeText(mContext, R.string.delete_success, Toast.LENGTH_SHORT).show();
+        mListener.refreshData();
     }
 
     @Override
     public void onError(String code, String message) {
         Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public interface Callback {
+        void refreshData();
     }
 }

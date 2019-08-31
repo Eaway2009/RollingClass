@@ -1,15 +1,22 @@
 package com.tanhd.rollingclass.fragments.kowledge;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.menu.MenuPopupHelper;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -24,12 +31,20 @@ import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.server.data.ResourceModel;
+import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
+import com.tanhd.rollingclass.server.data.TeacherData;
+import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.GetFileHelper;
 import com.tanhd.rollingclass.views.TaskDisplayView;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,11 +79,13 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private ProgressBar mProgressBar;
     private RequestListDataTask mRequestListDataTask;
     private List<KnowledgeLessonSample> mDataList;
+    private TaskDisplayView mEditingView;
+    private ResourceModel mEditingResourceModel;
 
     /**
-     * @param knowledgeModel          所属教材章节的参数
+     * @param knowledgeModel         所属教材章节的参数
      * @param knowledgeDetailMessage 所属课时的参数
-     * @param status                  1.课前；2.课时；3.课后
+     * @param status                 1.课前；2.课时；3.课后
      * @param callback
      * @return
      */
@@ -145,11 +162,11 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mKnowledgeAddButton.setOnClickListener(this);
     }
 
-    private void initData(){
-        if(mKnowledgeDetailMessage !=null) {
+    private void initData() {
+        if (mKnowledgeDetailMessage != null) {
             mKnowledgeNameEditText.setText(mKnowledgeDetailMessage.knowledge_point_name);
             mKnowledgeNameTextView.setText(mKnowledgeDetailMessage.knowledge_point_name);
-            if(!TextUtils.isEmpty(mKnowledgeDetailMessage.knowledge_id)) {
+            if (!TextUtils.isEmpty(mKnowledgeDetailMessage.knowledge_id)) {
                 requestData();
             }
         }
@@ -481,8 +498,10 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     }
 
     @Override
-    public void onEditTask() {
-
+    public void onEditTask(TaskDisplayView taskDisplayView, ResourceModel resourceModel, View editView) {
+        mEditingView = taskDisplayView;
+        mEditingResourceModel = resourceModel;
+        showPopupMenu(editView);
     }
 
     @Override
@@ -519,6 +538,112 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                     mKnowledgeTasksLayout.addView(taskDisplayView);
                 }
             }
+        }
+    }
+
+    private void showPopupMenu(View view) {
+        // 这里的view代表popupMenu需要依附的view
+        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        try {
+            Field field = popupMenu.getClass().getDeclaredField("mPopup");
+            field.setAccessible(true);
+            MenuPopupHelper mHelper = (MenuPopupHelper) field.get(popupMenu);
+            mHelper.setForceShowIcon(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 获取布局文件
+        popupMenu.getMenuInflater().inflate(R.menu.upload_file, popupMenu.getMenu());
+
+        // 通过上面这几行代码，就可以把控件显示出来了
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.from_local:
+                        GetFileHelper.fileSelector(getActivity(), KnowledgeEditingFragment.this, false, false);
+                        break;
+                    case R.id.from_resource:
+                        break;
+                }
+                return true;
+            }
+        });
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                // 控件消失时的事件
+            }
+        });
+        popupMenu.show();
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (requestCode == GetFileHelper.FILE_CHOOSER_REQUEST) {
+            Uri result = intent == null || resultCode != Activity.RESULT_OK ? null : intent.getData();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                //Check if response is positive
+                if (resultCode == Activity.RESULT_OK) {
+                    if (intent != null) {
+                        String dataString = intent.getDataString();
+                        if (dataString != null) {
+                            receiveFilePathCallback(GetFileHelper.getFilePathByUri(getActivity(), Uri.parse(dataString)));
+                        }
+                    }
+                }
+            } else {
+                receiveFilePathCallback(GetFileHelper.getFilePathByUri(getActivity(), result));
+            }
+        }
+        return;
+    }
+
+    private void receiveFilePathCallback(String imagePath) {
+        File file = new File(imagePath);
+
+        if (file.exists()) {
+            new UploadMarkTask(imagePath, file.getName(), mEditingResourceModel.resource_type, 1).execute();
+        } else {
+            Toast.makeText(getActivity(), R.string.select_pic_again, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private class UploadMarkTask extends AsyncTask<Void, Void, ResourceModel> {
+        private final int resourceType;
+        private final int level;
+        private final String filePath;
+        private final String fileName;
+
+        UploadMarkTask(String filePath, String fileName, int resourceType, int level) {
+            this.filePath = filePath;
+            this.fileName = fileName;
+            this.resourceType = resourceType;
+            this.level = level;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            onLoading(true);
+        }
+
+
+        @Override
+        protected ResourceModel doInBackground(Void... strings) {
+            UserData userData = ExternalParam.getInstance().getUserData();
+            TeacherData teacherData = (TeacherData) userData.getUserData();
+            return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
+        }
+
+        @Override
+        protected void onPostExecute(ResourceModel resourceUpload) {
+            super.onPostExecute(resourceUpload);
+            onLoading(false);
+            mEditingView.editFile(mEditingResourceModel, resourceUpload);
         }
     }
 

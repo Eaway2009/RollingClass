@@ -656,7 +656,7 @@ public class ScopeServer extends ServerRequest {
      * @param data 任务信息
      * @return
      */
-    public void EditLessonSample(KnowledgeLessonSample data, RequestCallback callback) {
+    public void EditLessonSample(LessonSampleModel data, RequestCallback callback) {
         new RequestTask(getHostUrl() + "/teachingSample/EditLessonSample/" + mToken, METHOD.POST, null, data.toJSON().toString(), callback).execute();
     }
 
@@ -775,7 +775,7 @@ public class ScopeServer extends ServerRequest {
      * @param level         资源类别: 1 公共资源 2 校本资源 3 私藏资源
      * @return
      */
-    public ResourceUpload resourceUpload(String filePath, String teahcerID, String teaching_material_id, String fileName, int resource_type, int level) {
+    public ResourceModel resourceUpload(String filePath, String teahcerID, String teaching_material_id, String fileName, int resource_type, int level) {
         HashMap<String, String> params = new HashMap<>();
         params.put("teahcerID", teahcerID);
         params.put("name", fileName);
@@ -786,7 +786,7 @@ public class ScopeServer extends ServerRequest {
         params.put("token", mToken);
         String response = uploadFile(getHostUrl() + "/resource/resource/upload/" + mToken, params, filePath);
         if (response != null) {
-            ResourceUpload model = new ResourceUpload();
+            ResourceModel model = new ResourceModel();
             model.parse(model, response);
             return model;
         }

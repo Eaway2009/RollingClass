@@ -31,6 +31,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
+import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
@@ -75,7 +76,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
      * 1. ppt 2. doc 3. image 4. 微课 5. 习题
      */
     private int mResourceCode;
-    private List<ResourceUpload> mResourceList = new ArrayList<>();
+    private List<ResourceModel> mResourceList = new ArrayList<>();
     private List<String> mExercisesList = new ArrayList<>();
     private List<String> mPPTList = new ArrayList<>();
     private List<String> mWordList = new ArrayList<>();
@@ -298,7 +299,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    private class UploadMarkTask extends AsyncTask<Void, Void, ResourceUpload> {
+    private class UploadMarkTask extends AsyncTask<Void, Void, ResourceModel> {
         private final int resourceType;
         private final int level;
         private final String filePath;
@@ -317,14 +318,14 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         }
 
         @Override
-        protected ResourceUpload doInBackground(Void... strings) {
+        protected ResourceModel doInBackground(Void... strings) {
             UserData userData = ExternalParam.getInstance().getUserData();
             TeacherData teacherData = (TeacherData) userData.getUserData();
             return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID,mKnowledgeModel.teaching_material_id, fileName,resourceType, level);
         }
 
         @Override
-        protected void onPostExecute(ResourceUpload result) {
+        protected void onPostExecute(ResourceModel result) {
             mListener.onLoading(false);
             if (result == null) {
                 Toast.makeText(getActivity(), "上传失败，请重试", Toast.LENGTH_SHORT).show();
