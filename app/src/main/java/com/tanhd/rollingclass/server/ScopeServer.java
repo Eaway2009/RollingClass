@@ -3,6 +3,7 @@ package com.tanhd.rollingclass.server;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
@@ -20,6 +21,7 @@ import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
@@ -518,6 +520,25 @@ public class ScopeServer extends ServerRequest {
                 appenUrl(page+"") + appenUrl(pagesize+"") + appenUrl(mToken), METHOD.GET, params);
         if (response != null) {
             List<ResourceModel> list = jsonToList(ResourceModel.class.getName(), response);
+            return list;
+        }
+        return null;
+    }
+
+    public List<QuestionModel> QureyQuestionResourceByTeacherID(String teacherId, String teaching_material_id,
+                                                                int level, int page, int pagesize) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teacherID", "" + teacherId);
+        params.put("teaching_material_id", "" + teaching_material_id);
+        params.put("level", "" + level);
+        params.put("resourceType", "" + KeyConstants.ResourceType.QUESTION_TYPE);
+        params.put("page", "" + page);
+        params.put("pagesize", "" + pagesize);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/resource/QureyResourceByTeacherID" +
+                appenUrl(page+"") + appenUrl(pagesize+"") + appenUrl(mToken), METHOD.GET, params);
+        if (response != null) {
+            List<QuestionModel> list = jsonToList(QuestionModel.class.getName(), response);
             return list;
         }
         return null;

@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ResourceBaseFragment extends Fragment {
 
-    void setListData(List<ResourceModel> resourceList) {
+    void setListData(List resourceList) {
 
     }
 

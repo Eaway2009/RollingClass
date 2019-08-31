@@ -39,7 +39,7 @@ public class ResourceGrideFragment extends ResourceBaseFragment {
         mGridView.setAdapter(mAdapter);
     }
 
-    public void setListData(List<ResourceModel> resourceList) {
+    public void setListData(List resourceList) {
         if (resourceList != null && !resourceList.isEmpty() && mAdapter != null) {
             mAdapter.setData(resourceList);
         }

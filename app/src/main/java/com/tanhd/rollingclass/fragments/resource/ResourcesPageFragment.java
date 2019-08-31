@@ -20,12 +20,14 @@ import android.widget.Spinner;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.KeyConstants.LevelType;
 import com.tanhd.rollingclass.db.KeyConstants.ResourceType;
 import com.tanhd.rollingclass.fragments.pages.DocumentsPageFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.ResourceAdapter;
@@ -74,7 +76,11 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             return;
         }
         mIsRequesting = true;
-        new InitDataTask(page, level, type).execute();
+        if(type == ResourceType.QUESTION_TYPE){
+            new InitQuestionDataTask(page,level).execute();
+        }else {
+            new InitDataTask(page, level, type).execute();
+        }
     }
 
     @Nullable
@@ -212,10 +218,46 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         }
     }
 
+    private class InitQuestionDataTask extends AsyncTask<Void, Void, List<QuestionModel>> {
+
+        private int currentPage;
+        private int level;
+
+        public InitQuestionDataTask(int page, int level) {
+            this.currentPage = page;
+            this.level = level;
+        }
+
+        @Override
+        protected List<QuestionModel> doInBackground(Void... voids) {
+            UserData userData = ExternalParam.getInstance().getUserData();
+            if (userData.isTeacher()) {
+                if (mKnowledgeModel != null) {
+                    return ScopeServer.getInstance().QureyQuestionResourceByTeacherID(
+                            mKnowledgeModel.teacher_id, mKnowledgeModel.teaching_material_id,
+                            level, currentPage, mPageSize);
+                }
+            } else {
+                return null;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<QuestionModel> questionDataList) {
+            if (questionDataList != null && questionDataList.size() > 0 && mCurrentFragment != null) {
+                mQuestionFragment.setListData(questionDataList);
+            } else {
+                return;
+            }
+        }
+    }
+
     private ResourceGrideFragment mPPTFragment;
     private ResourceGrideFragment mVideoFragment;
     private ResourceGrideFragment mWordFragment;
     private ResourceGrideFragment mImageFragment;
+    private QuestionResourceFragment mQuestionFragment;
     private ResourceBaseFragment mCurrentFragment;
     /**
      * [展示指定Id的页面]<BR>
@@ -255,6 +297,13 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.IMAGE_TYPE);
             }
             moduleFragment = mImageFragment;
+        } else if (type == ResourceType.QUESTION_TYPE) {
+            if (mQuestionFragment == null) {
+                mQuestionFragment = QuestionResourceFragment.newInstance();
+                transaction.add(ROOT_LAYOUT_ID, mQuestionFragment);
+                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.QUESTION_TYPE);
+            }
+            moduleFragment = mQuestionFragment;
         } else {
             return;
         }
@@ -282,8 +331,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
                 showModulePage(ResourceType.VIDEO_TYPE, v);
                 break;
             case R.id.question_resource_view:
-//                showModulePage(ResourceType.QUESTION_TYPE, v);
-                v.setSelected(true);
+                showModulePage(ResourceType.QUESTION_TYPE, v);
                 break;
             case R.id.word_resource_view:
                 showModulePage(ResourceType.WORD_TYPE, v);
