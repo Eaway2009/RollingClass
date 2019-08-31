@@ -59,6 +59,16 @@ public class LearnCasesFragment extends Fragment implements OnClickListener {
         mTvClassBegin.setOnClickListener(this);
         view.findViewById(R.id.back_button).setOnClickListener(this);
 
+        view.findViewById(R.id.ll_ppt).setOnClickListener(this);
+        view.findViewById(R.id.ll_target_guidance).setOnClickListener(this);
+        view.findViewById(R.id.ll_self_study).setOnClickListener(this);
+        view.findViewById(R.id.ll_assist_study).setOnClickListener(this);
+        view.findViewById(R.id.ll_coopera_study).setOnClickListener(this);
+        view.findViewById(R.id.ll_class_exercises).setOnClickListener(this);
+        view.findViewById(R.id.ll_difficult_break).setOnClickListener(this);
+        view.findViewById(R.id.ll_class_summary).setOnClickListener(this);
+        view.findViewById(R.id.ll_relevant_info).setOnClickListener(this);
+
         mLearnCasesContainerFragment = LearnCasesContainerFragment.newInstance(1, mPagesListener);
         getFragmentManager().beginTransaction().replace(R.id.content_layout, mLearnCasesContainerFragment).commit();
     }
@@ -91,7 +101,6 @@ public class LearnCasesFragment extends Fragment implements OnClickListener {
                 break;
         }
     }
-
 
     public interface PagesListener {
 

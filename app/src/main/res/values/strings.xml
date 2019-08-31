@@ -89,4 +89,14 @@
     <string name="mute_enable">禁言</string>
     <string name="mute_unable">取消禁言</string>
     <string name="delete_success">删除成功</string>
+    <string name="learn_case_ppt">教案PPT</string>
+    <string name="target_guidance">目标导学</string>
+    <string name="self_study">教材自学</string>
+    <string name="assist_study">微课助学</string>
+    <string name="coopera_study">合作互学</string>
+    <string name="class_exercises">课堂练习</string>
+    <string name="difficult_break">疑难突破</string>
+    <string name="class_summary">课堂总结</string>
+    <string name="relevant_info">相关资料</string>
+
 </resources>

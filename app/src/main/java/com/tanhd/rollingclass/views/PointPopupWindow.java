@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.utils.AppUtils;
 import java.util.ArrayList;
 import java.util.List;
 
