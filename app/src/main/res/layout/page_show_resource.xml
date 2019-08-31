@@ -21,7 +21,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/ppt_u"
-            android:clickable="false"
             android:textColor="@color/resource_title_selector"
             android:textSize="18sp" />
         <TextView

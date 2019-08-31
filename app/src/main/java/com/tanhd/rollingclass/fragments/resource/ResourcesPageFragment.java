@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,14 +40,13 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     private View mMicroCourseTitleView;
     private View mQuestionTitleView;
     private View mUploadFileTitleView;
-//    private GridView mGridView;
-//    private ResourceAdapter mAdapter;
     private KnowledgeModel mKnowledgeModel;
     private Spinner mSpinnerSimple;
     Animation myAnimation;
+    private boolean mIsRequesting;
 
     private int mLevel = LevelType.ALL_LEVEL; //1 公共资源 2 校本资源 3 私藏资源
-    private int mResourceType = ResourceType.PPT_TYPE;//1. ppt 2 doc 3 image 4 微课 5 习题
+    private int mResourceType = ResourceType.PPT_TYPE;//初始值
     private int mCurrentPage = 1;
     private final int mDefaultPage = 1;
     private final int mPageSize = 30;
@@ -69,6 +69,11 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     }
 
     private void request(int page, int level, int type) {
+        Log.e("mmc", mIsRequesting + "  mIsRequesting");
+        if (mIsRequesting) {
+            return;
+        }
+        mIsRequesting = true;
         new InitDataTask(page, level, type).execute();
     }
 
@@ -79,7 +84,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         initParams();
         initViews(view);
         initSpinner();
-        showModulePage(ResourceType.PPT_TYPE);
+        showModulePage(ResourceType.PPT_TYPE, mPptTitleView);
         return view;
     }
 
@@ -105,6 +110,15 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         mQuestionTitleView.setOnClickListener(this);
         mImageTitleView.setOnClickListener(this);
         mUploadFileTitleView.setOnClickListener(this);
+
+    }
+
+    private void resetButtomStatus() {
+        mPptTitleView.setSelected(false);
+        mMicroCourseTitleView.setSelected(false);
+        mWordTitleView.setSelected(false);
+        mQuestionTitleView.setSelected(false);
+        mImageTitleView.setSelected(false);
     }
 
     private void initSpinner() {
@@ -124,13 +138,18 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_resource_dropdown);
         //这个在不同的Theme下，显示的效果是不同的
         //spinnerAdapter.setDropDownViewTheme(Theme.LIGHT);
-        mSpinnerSimple.setAdapter(spinnerAdapter);
 
         mSpinnerSimple.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                     int arg2, long arg3) {
+                /**
+                 * 1.初始化会执行一次
+                 * 2.两次点一样会取消重复次
+                 */
                 mSpinnerSimple.setPrompt(spinnerItems[arg2]);
-                request(mDefaultPage, arg2, mCurrentPage);
+                if (mCurrentFragment != null) {
+                    request(mDefaultPage, arg2, mResourceType);
+                }
             }
 
             public void onNothingSelected(AdapterView<?> arg0) {
@@ -144,6 +163,8 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
                 return false;
             }
         });
+
+        mSpinnerSimple.setAdapter(spinnerAdapter);
     }
 
     private class InitDataTask extends AsyncTask<Void, Void, List<ResourceModel>> {
@@ -174,31 +195,38 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
 
         @Override
         protected void onPostExecute(List<ResourceModel> documentList) {
-            if (documentList != null && documentList.size() > 0 && mCurrentFragment != null) {
-                if (mResourceType != ResourceType.QUESTION_TYPE) {
-                    ((ResourceGrideFragment) mCurrentFragment).setListData(documentList);
-                } else {
-                    // TODO: 2019/8/31 习题的fragment，其余类别用上面那个fragment
-                }
-            } else {
+            if (mCurrentFragment == null) {
+                mIsRequesting = false;
                 return;
             }
+            if (documentList != null && documentList.size() > 0) {
+                //todo 习题的fragment继承ResourceBaseFragment 重写setListData方法即可
+                if (currentPage == mDefaultPage) {
+                    mCurrentFragment.clearListData();
+                }
+                mCurrentFragment.setListData(documentList);
+            } else {
+                mCurrentFragment.clearListData();
+            }
+            mIsRequesting = false;
         }
     }
 
     private ResourceGrideFragment mPPTFragment;
+    private ResourceGrideFragment mVideoFragment;
     private ResourceGrideFragment mWordFragment;
-    private Fragment mCurrentFragment;
+    private ResourceGrideFragment mImageFragment;
+    private ResourceBaseFragment mCurrentFragment;
     /**
      * [展示指定Id的页面]<BR>
      */
-    public void showModulePage(int type) {
-        if (mResourceType == type) {
+    public void showModulePage(int type, View view) {
+        if (mCurrentFragment != null && mResourceType == type) {
             return;
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        Fragment moduleFragment = null;
-        if (mResourceType == ResourceType.PPT_TYPE) {
+        ResourceBaseFragment moduleFragment = null;
+        if (type == ResourceType.PPT_TYPE) {
             if (mPPTFragment == null) {
                 mPPTFragment = ResourceGrideFragment.newInstance();
                 transaction.add(ROOT_LAYOUT_ID, mPPTFragment);
@@ -206,19 +234,37 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             }
             moduleFragment = mPPTFragment;
 
-        } else if (mResourceType == ResourceType.WORD_TYPE) {
+        } else if (type == ResourceType.VIDEO_TYPE) {
+            if (mVideoFragment == null) {
+                mVideoFragment = ResourceGrideFragment.newInstance();
+                transaction.add(ROOT_LAYOUT_ID, mVideoFragment);
+                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.VIDEO_TYPE);
+            }
+            moduleFragment = mVideoFragment;
+        } else if (type == ResourceType.WORD_TYPE) {
             if (mWordFragment == null) {
                 mWordFragment = ResourceGrideFragment.newInstance();
                 transaction.add(ROOT_LAYOUT_ID, mWordFragment);
-                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
+                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.WORD_TYPE);
             }
             moduleFragment = mWordFragment;
+        } else if (type == ResourceType.IMAGE_TYPE) {
+            if (mImageFragment == null) {
+                mImageFragment = ResourceGrideFragment.newInstance();
+                transaction.add(ROOT_LAYOUT_ID, mImageFragment);
+                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.IMAGE_TYPE);
+            }
+            moduleFragment = mImageFragment;
+        } else {
+            return;
         }
 
         if (mCurrentFragment != null) {
             transaction.hide(mCurrentFragment);
         }
 
+        resetButtomStatus();
+        view.setSelected(true);
         transaction.show(moduleFragment);
         transaction.commitAllowingStateLoss();
         mCurrentFragment = moduleFragment;
@@ -230,20 +276,20 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ppt_resource_view:
-                mResourceType = ResourceType.PPT_TYPE;
-                showModulePage(mResourceType);
-                break;
-            case R.id.word_resource_view:
-                mResourceType = ResourceType.WORD_TYPE;
-                showModulePage(mResourceType);
-                break;
-            case R.id.image_resource_view:
-                mResourceType = ResourceType.IMAGE_TYPE;
-                showModulePage(mResourceType);
-                break;
-            case R.id.question_resource_view:
+                showModulePage(ResourceType.PPT_TYPE, v);
                 break;
             case R.id.micro_course_resource_view:
+                showModulePage(ResourceType.VIDEO_TYPE, v);
+                break;
+            case R.id.question_resource_view:
+//                showModulePage(ResourceType.QUESTION_TYPE, v);
+                v.setSelected(true);
+                break;
+            case R.id.word_resource_view:
+                showModulePage(ResourceType.WORD_TYPE, v);
+                break;
+            case R.id.image_resource_view:
+                showModulePage(ResourceType.IMAGE_TYPE, v);
                 break;
             case R.id.upload_file_resource_view:
                 break;

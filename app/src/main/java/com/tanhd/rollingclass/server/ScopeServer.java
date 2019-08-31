@@ -517,7 +517,7 @@ public class ScopeServer extends ServerRequest {
         String response = sendRequest(getHostUrl() + "/resource/QureyResourceByTeacherID" +
                 appenUrl(page+"") + appenUrl(pagesize+"") + appenUrl(mToken), METHOD.GET, params);
         if (response != null) {
-            List<ResourceModel> list = jsonToList(KnowledgeDetailMessage.class.getName(), response);
+            List<ResourceModel> list = jsonToList(ResourceModel.class.getName(), response);
             return list;
         }
         return null;

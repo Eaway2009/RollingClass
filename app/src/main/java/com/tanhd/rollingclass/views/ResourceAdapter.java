@@ -2,6 +2,7 @@ package com.tanhd.rollingclass.views;
 
 import android.app.Activity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -56,21 +57,24 @@ public class ResourceAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LinearLayout view = (LinearLayout) convertView;
         if (view == null) {
-            view = (LinearLayout) mContext.getLayoutInflater().inflate(R.layout.adapter_document, parent, false);
+            view = (LinearLayout) mContext.getLayoutInflater().inflate(R.layout.adapter_resource, parent, false);
         }
 
         final ResourceModel data = mDataList.get(position);
 
-        TextView statusView = view.findViewById(R.id.document_status_tv);
-        TextView titleView = view.findViewById(R.id.document_title_tv);
-        TextView editTimeView = view.findViewById(R.id.edit_time_tv);
-        ImageView moreView = view.findViewById(R.id.document_more_ib);
-        final LinearLayout moreBottomView = view.findViewById(R.id.more_bottom);
-        ImageView moreCopyView = view.findViewById(R.id.more_copy_iv);
-        ImageView moreShareView = view.findViewById(R.id.more_share_iv);
-        ImageView moreEditView = view.findViewById(R.id.more_edit_iv);
-        ImageView moreDeleteView = view.findViewById(R.id.more_delete_iv);
+        TextView nameView = view.findViewById(R.id.tv_name);
+        ImageView thumbView = view.findViewById(R.id.iv_thumb);
+        ImageView likeView = view.findViewById(R.id.iv_like);
+        LinearLayout collect = view.findViewById(R.id.ll_collect);
 
+        nameView.setText(data.name);
+
+        collect.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 2019/8/31 收藏请求
+            }
+        });
         return view;
     }
 }
