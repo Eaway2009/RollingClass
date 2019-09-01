@@ -206,7 +206,6 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
                 return;
             }
             if (documentList != null && documentList.size() > 0) {
-                //todo 习题的fragment继承ResourceBaseFragment 重写setListData方法即可
                 if (currentPage == mDefaultPage) {
                     mCurrentFragment.clearListData();
                 }
@@ -245,11 +244,19 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
 
         @Override
         protected void onPostExecute(List<QuestionModel> questionDataList) {
-            if (questionDataList != null && questionDataList.size() > 0 && mCurrentFragment != null) {
-                mQuestionFragment.setListData(questionDataList);
-            } else {
+            if (mCurrentFragment == null) {
+                mIsRequesting = false;
                 return;
             }
+            if (questionDataList != null && questionDataList.size() > 0) {
+                if (currentPage == mDefaultPage) {
+                    mCurrentFragment.clearListData();
+                }
+                mCurrentFragment.setListData(questionDataList);
+            } else {
+                mCurrentFragment.clearListData();
+            }
+            mIsRequesting = false;
         }
     }
 

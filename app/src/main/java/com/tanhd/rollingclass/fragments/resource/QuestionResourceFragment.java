@@ -58,8 +58,16 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
     }
 
     public void setListData(List resourceList) {
-        if (resourceList != null && !resourceList.isEmpty()) {
+        if (resourceList != null && !resourceList.isEmpty() && mAdapter != null) {
             mQuestionList = resourceList;
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void clearListData() {
+        if (mAdapter != null) {
+            mListView.smoothScrollToPosition(0);
+            mQuestionList.clear();
             mAdapter.notifyDataSetChanged();
         }
     }
