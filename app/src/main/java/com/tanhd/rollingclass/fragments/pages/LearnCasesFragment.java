@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
 import com.tanhd.rollingclass.fragments.kowledge.KnowledgeEditingFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -145,7 +146,13 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        mLearnCasesContainerFragment.showResource(mAdapter.getGroup(groupPosition).getChildren().get(childPosition));
+        if(groupPosition<mAdapter.getGroupCount()&&mAdapter.getGroup(groupPosition)!=null){
+            KnowledgeLessonSample group = mAdapter.getGroup(groupPosition);
+            if(childPosition<group.getChildren().size()&&group.getChildren().get(childPosition)!=null){
+                ResourceModel item = group.getChildren().get(childPosition);
+                mLearnCasesContainerFragment.showResource(item);
+            }
+        }
         return false;
     }
 
