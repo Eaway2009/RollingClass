@@ -2,7 +2,9 @@ package com.tanhd.rollingclass.views;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,9 +17,13 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.server.data.RequestShareKnowledge;
+import com.tanhd.rollingclass.server.data.SchoolData;
+import com.tanhd.rollingclass.server.data.TeacherData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,11 +99,11 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                         break;
                     case R.id.more_copy_iv:
                         moreBottomView.setVisibility(View.GONE);
-
+                        ScopeServer.getInstance().DumpKnowledge(data.knowledge_id, DocumentAdapter.this);
                         break;
                     case R.id.more_share_iv:
                         moreBottomView.setVisibility(View.GONE);
-
+                        new TeacherListTask(data.knowledge_id).execute();
                         break;
                     case R.id.more_edit_iv:
                         moreBottomView.setVisibility(View.GONE);
@@ -172,6 +178,99 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                 }).show();
     }
 
+    private class TeacherListTask extends AsyncTask<Void, Void, List<TeacherData>> {
+        String knowledge_id;
+
+        TeacherListTask(String knowledge_id) {
+            this.knowledge_id = knowledge_id;
+        }
+
+        @Override
+        protected List<TeacherData> doInBackground(Void... voids) {
+            SchoolData schoolData = ExternalParam.getInstance().getSchoolData();
+            if (schoolData != null) {
+                return ScopeServer.getInstance().QureyTeacherBySchoolID(schoolData.SchoolID);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<TeacherData> teacherDataList) {
+            super.onPostExecute(teacherDataList);
+            if (teacherDataList != null && teacherDataList.size() > 0) {
+                showTeacherListDialog(knowledge_id, teacherDataList);
+            } else {
+                Toast.makeText(mContext, R.string.check_teacher_list_fail, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void showTeacherListDialog(final String knowledge_id, final List<TeacherData> teacherDataList) {
+        final RequestCallback shareCallback = new RequestCallback() {
+            @Override
+            public void onProgress(boolean b) {
+
+            }
+
+            @Override
+            public void onResponse(String body) {
+                Toast.makeText(mContext, "分享成功", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(String code, String message) {
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        if (teacherDataList == null) {
+            return;
+        }
+        String[] teacherNameItems = new String[teacherDataList.size()];
+        final String[] teacherIdItems = new String[teacherDataList.size()];
+        boolean[] checkedItems = new boolean[teacherDataList.size()];
+        final List<String> checkedIdList = new ArrayList<>();
+        for (int i = 0; i < teacherDataList.size(); i++) {
+            teacherNameItems[i] = teacherDataList.get(i).Username;
+            teacherIdItems[i] = teacherDataList.get(i).TeacherID;
+            checkedItems[i] = false;
+        }
+        new AlertDialog.Builder(mContext)
+                .setTitle(R.string.please_check_knowledge)
+                .setMultiChoiceItems(teacherNameItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        if (isChecked) {
+                            teacherIdItems[which] = teacherDataList.get(which).TeacherID;
+                        } else {
+                            teacherIdItems[which] = "";
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (int i = 0; i < teacherIdItems.length; i++) {
+                            if (!TextUtils.isEmpty(teacherIdItems[i])) {
+                                checkedIdList.add(teacherIdItems[i]);
+                            }
+                        }
+                        RequestShareKnowledge request = new RequestShareKnowledge();
+                        request.knowledge_id = knowledge_id;
+                        request.teachers = checkedIdList;
+                        if (checkedIdList.size() > 0) {
+                            ScopeServer.getInstance().ShareKnowledgeToTeachers(request, shareCallback);
+                        }
+                    }
+                }).show();
+    }
+
     @Override
     public void onProgress(boolean b) {
 
@@ -179,7 +278,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
     @Override
     public void onResponse(String body) {
-        Toast.makeText(mContext, R.string.delete_success, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, R.string.operate_success, Toast.LENGTH_SHORT).show();
         mListener.refreshData();
     }
 

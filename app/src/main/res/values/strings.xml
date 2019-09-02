@@ -57,6 +57,7 @@
     <string name="class_record">上课记录</string>
     <string name="toast_crash">程序出错了, 错误报告提交, 我们将尽快修复该问题, 谢谢合作!</string>
     <string name="update_prompt">发现新版本，是否需要更新？</string>
+    <string name="check_teacher_list_fail">获取教师列表失败，请重试</string>
     <string name="select_pic_again">文件有误，请重选</string>
     <string name="no_update_prompt">当前已经是最新版本, 无需更新!</string>
     <string name="adding_task_warning">当前正在添加任务,请先保存!</string>
@@ -69,6 +70,7 @@
     <string name="publish_sync_in_class">课中同时发布</string>
     <string name="publish_sync_after_class">课后同时发布</string>
     <string name="publish_warning">发布后将不可再次修改是否确定发布此学案？</string>
+    <string name="please_check_knowledge">请选择要同步的知识点</string>
     <string name="delete_knowledge_warning">是否确定删除此备课？</string>
     <string name="into_class">进入课堂</string>
     <string name="statics_result">统计结果：</string>
@@ -89,6 +91,7 @@
     <string name="mute_enable">禁言</string>
     <string name="mute_unable">取消禁言</string>
     <string name="delete_success">删除成功</string>
+    <string name="operate_success">操作已完成</string>
     <string name="learn_case_ppt">教案PPT</string>
     <string name="target_guidance">目标导学</string>
     <string name="self_study">教材自学</string>

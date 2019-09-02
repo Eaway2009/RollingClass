@@ -324,7 +324,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             checkedItems[i] = true;
         }
         new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.publish_warning)
+                .setTitle(R.string.please_check_knowledge)
                 .setMultiChoiceItems(sampleNameItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -335,13 +335,13 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                         }
                     }
                 })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
                 })
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         for (int i = 0; i < sampleIdItems.length; i++) {

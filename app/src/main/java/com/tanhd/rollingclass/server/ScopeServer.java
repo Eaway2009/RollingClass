@@ -23,6 +23,7 @@ import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.QuestionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
+import com.tanhd.rollingclass.server.data.RequestShareKnowledge;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.SchoolData;
@@ -507,7 +508,7 @@ public class ScopeServer extends ServerRequest {
     }
 
     public List<ResourceModel> QureyResourceByTeacherID(String teacherId, String teaching_material_id,
-            int level, int resourceType, int page, int pagesize) {
+                                                        int level, int resourceType, int page, int pagesize) {
         HashMap<String, String> params = new HashMap<>();
         params.put("teacherID", "" + teacherId);
         params.put("teaching_material_id", "" + teaching_material_id);
@@ -517,7 +518,7 @@ public class ScopeServer extends ServerRequest {
         params.put("pagesize", "" + pagesize);
         params.put("token", mToken);
         String response = sendRequest(getHostUrl() + "/resource/QureyResourceByTeacherID" +
-                appenUrl(page+"") + appenUrl(pagesize+"") + appenUrl(mToken), METHOD.GET, params);
+                appenUrl(page + "") + appenUrl(pagesize + "") + appenUrl(mToken), METHOD.GET, params);
         if (response != null) {
             List<ResourceModel> list = jsonToList(ResourceModel.class.getName(), response);
             return list;
@@ -536,7 +537,7 @@ public class ScopeServer extends ServerRequest {
         params.put("pagesize", "" + pagesize);
         params.put("token", mToken);
         String response = sendRequest(getHostUrl() + "/resource/QureyResourceByTeacherID" +
-                appenUrl(page+"") + appenUrl(pagesize+"") + appenUrl(mToken), METHOD.GET, params);
+                appenUrl(page + "") + appenUrl(pagesize + "") + appenUrl(mToken), METHOD.GET, params);
         if (response != null) {
             List<QuestionModel> list = jsonToList(QuestionModel.class.getName(), response);
             return list;
@@ -562,6 +563,28 @@ public class ScopeServer extends ServerRequest {
         params.put("token", mToken);
 
         new RequestTask(getHostUrl() + "/teachingMaterial/DeleteKnowledge/" + mToken, METHOD.POST, params, null, callback).execute();
+    }
+
+    /**
+     * 复制课时
+     *
+     * @return
+     */
+    public void DumpKnowledge(String knowledgeID, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("knowledgeID", "" + knowledgeID);
+        params.put("token", mToken);
+
+        new RequestTask(getHostUrl() + "/teachingMaterial/DumpKnowledge/" + mToken, METHOD.POST, params, null, callback).execute();
+    }
+
+    /**
+     * 分享课时
+     *
+     * @return
+     */
+    public void ShareKnowledgeToTeachers(RequestShareKnowledge request, RequestCallback callback) {
+        new RequestTask(getHostUrl() + "/teachingMaterial/ShareKnowledgeToTeachers/" + mToken, METHOD.POST, null, request.toJSON().toString(), callback).execute();
     }
 
     /**
@@ -948,6 +971,22 @@ public class ScopeServer extends ServerRequest {
                 return null;
 
             return list.get(0);
+        }
+
+        return null;
+    }
+
+    public List<TeacherData> QureyTeacherBySchoolID(String schoolID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("schoolID", schoolID);
+
+        String response = sendRequest(getHostUrl() + "/teacher/QureyTeacherBySchoolID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<TeacherData> list = jsonToList(TeacherData.class.getName(), response);
+            if (list == null)
+                return null;
+
+            return list;
         }
 
         return null;
