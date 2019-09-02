@@ -24,6 +24,7 @@
 
     <color name="count_class_left_background">#1F2837</color>
     <color name="button_blue_item_checked">#2196F3</color>
+    <color name="button_blue_item_checked_transparent">#552196F3</color>
     <color name="button_blue_item">#80BFF4</color>
     <color name="button_orange_item_checked">#FF9800</color>
     <color name="button_orange_item">#F0C07A</color>

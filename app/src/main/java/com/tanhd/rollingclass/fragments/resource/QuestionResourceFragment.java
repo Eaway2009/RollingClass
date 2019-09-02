@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -34,9 +36,16 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
 
     private ListView mListView;
     private QuestionAdapter mAdapter;
+    private Callback mListener;
 
     public static QuestionResourceFragment newInstance() {
         QuestionResourceFragment page = new QuestionResourceFragment();
+        return page;
+    }
+
+    public static QuestionResourceFragment newInstance(ResourceBaseFragment.Callback callback) {
+        QuestionResourceFragment page = new QuestionResourceFragment();
+        page.setListener(callback);
         return page;
     }
     
@@ -55,6 +64,10 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
         mListView = view.findViewById(R.id.list);
         mAdapter = new QuestionAdapter();
         mListView.setAdapter(mAdapter);
+    }
+
+    public void setListener(ResourceBaseFragment.Callback callback){
+        mListener = callback;
     }
 
     public void setListData(List resourceList) {
@@ -94,13 +107,19 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
             final QuestionModel question = mQuestionList.get(position);
             View view = convertView;
             if (view == null) {
-                view = getLayoutInflater().inflate(R.layout.item_question_selector, parent, false);
+                view = getLayoutInflater().inflate(R.layout.item_question_resource, parent, false);
             }
 
             TextView typeView = view.findViewById(R.id.type);
             TextView noView = view.findViewById(R.id.no);
             WebView stemView = view.findViewById(R.id.stem);
             View overView = view.findViewById(R.id.over);
+            CheckBox itemCheckBox = view.findViewById(R.id.check_item_cb);
+            if(mListener!=null){
+                itemCheckBox.setVisibility(View.VISIBLE);
+            }else{
+                itemCheckBox.setVisibility(View.GONE);
+            }
 
             if(question.context!=null) {
                 typeView.setText(String.format("[%s]", question.context.QuestionCategoryName));
@@ -146,6 +165,14 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
 
                     } else {
                         overView.setVisibility(View.GONE);
+                    }
+                }
+            });
+            itemCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(mListener!=null){
+                        mListener.itemChecked(null, question);
                     }
                 }
             });

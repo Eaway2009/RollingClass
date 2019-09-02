@@ -218,10 +218,12 @@ public class ScopeServer extends ServerRequest {
         for (ClassData classData : list) {
             for (GroupData groupData : classData.Groups) {
                 ArrayList<StudentData> studentList = new ArrayList<>();
-                for (String studentID : groupData.Students) {
-                    StudentData studentData = getStudentData(studentID);
-                    if (studentData != null)
-                        studentList.add(studentData);
+                if (groupData != null && groupData.Students != null) {
+                    for (String studentID : groupData.Students) {
+                        StudentData studentData = getStudentData(studentID);
+                        if (studentData != null)
+                            studentList.add(studentData);
+                    }
                 }
                 groupData.StudentList = studentList;
             }
@@ -957,7 +959,8 @@ public class ScopeServer extends ServerRequest {
     }
 
     public void downloadFile(String url, String filePath, RequestCallback callback) {
-        new DownloadTask(url, filePath, callback).execute();
+        String allUrl = ScopeServer.getInstance().getResourceUrl() + url;
+        new DownloadTask(allUrl, filePath, callback).execute();
     }
 
     public TeacherData QureyTeacherByTeacherID(String teacherID) {

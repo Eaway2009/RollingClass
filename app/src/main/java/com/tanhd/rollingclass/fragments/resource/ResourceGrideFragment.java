@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.ResourceModel;
@@ -16,12 +17,22 @@ import java.util.List;
 /**
  * 资源下Grid适配的容器
  */
-public class ResourceGrideFragment extends ResourceBaseFragment {
+public class ResourceGrideFragment extends ResourceBaseFragment implements AdapterView.OnItemClickListener {
 
     private GridView mGridView;
     private ResourceAdapter mAdapter;
+    private Callback mListener;
+
+    private ResourceModel mCheckModel;
+
     public static ResourceGrideFragment newInstance() {
         ResourceGrideFragment page = new ResourceGrideFragment();
+        return page;
+    }
+    
+    public static ResourceGrideFragment newInstance(ResourceBaseFragment.Callback callback) {
+        ResourceGrideFragment page = new ResourceGrideFragment();
+        page.setListener(callback);
         return page;
     }
 
@@ -33,10 +44,15 @@ public class ResourceGrideFragment extends ResourceBaseFragment {
         return view;
     }
 
+    public void setListener(ResourceBaseFragment.Callback callback){
+        mListener = callback;
+    }
+
     private void iniViews(View view) {
         mGridView = view.findViewById(R.id.grid_view);
         mAdapter = new ResourceAdapter(getActivity());
         mGridView.setAdapter(mAdapter);
+        mGridView.setOnItemClickListener(this);
     }
 
     public void setListData(List resourceList) {
@@ -53,4 +69,11 @@ public class ResourceGrideFragment extends ResourceBaseFragment {
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mAdapter.checkItem(position);
+        if(mListener!=null){
+            mListener.itemChecked((ResourceModel) mAdapter.getItem(position), null);
+        }
+    }
 }

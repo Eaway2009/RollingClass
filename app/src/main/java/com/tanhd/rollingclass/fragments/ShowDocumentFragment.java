@@ -1,6 +1,7 @@
 package com.tanhd.rollingclass.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ShowDocumentFragment extends Fragment {
+    private Activity mActivity;
+
     public static enum SYNC_MODE {
         NONE,
         MASTER,
@@ -50,12 +53,13 @@ public class ShowDocumentFragment extends Fragment {
     private boolean downLoadFinish = true;
     private static final String TAG = "ShowDocumentFragment";
 
-    public static ShowDocumentFragment newInstance(String url, SYNC_MODE mode) {
+    public static ShowDocumentFragment newInstance(Activity activity, String url, SYNC_MODE mode) {
         Bundle args = new Bundle();
         args.putString("url", url);
         args.putInt("mode", mode.ordinal());
         ShowDocumentFragment fragment = new ShowDocumentFragment();
         fragment.setArguments(args);
+        fragment.setActivity(activity);
         return fragment;
     }
 
@@ -80,6 +84,10 @@ public class ShowDocumentFragment extends Fragment {
         return view;
     }
 
+    public void setActivity(Activity activity){
+        mActivity = activity;
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -97,7 +105,7 @@ public class ShowDocumentFragment extends Fragment {
 
     private void downloadPDF() {
         String fileName = AppUtils.md5(mUrl);
-        mPdfFilePath = getActivity().getFilesDir().getAbsolutePath()
+        mPdfFilePath = mActivity.getApplicationContext().getFilesDir().getAbsolutePath()
                 + "/" + fileName;
         File file = new File(mPdfFilePath);
         if (file.exists()) {

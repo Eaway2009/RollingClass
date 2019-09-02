@@ -21,6 +21,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.utils.StringUtils;
 import com.tanhd.rollingclass.server.data.RequestShareKnowledge;
 import com.tanhd.rollingclass.server.data.SchoolData;
 import com.tanhd.rollingclass.server.data.TeacherData;
@@ -157,7 +158,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         moreCopyView.setVisibility(data.class_before == 1 && data.class_process == 1 && data.class_after == 1 ? View.VISIBLE : View.GONE);
         moreEditView.setVisibility(data.class_before == 0 || data.class_process == 0 || data.class_after == 0 ? View.VISIBLE : View.GONE);
         titleView.setText(data.knowledge_point_name);
-        editTimeView.setText(data.create_time + "");
+        editTimeView.setText(StringUtils.secondToDate(data.create_time));
         return view;
     }
 

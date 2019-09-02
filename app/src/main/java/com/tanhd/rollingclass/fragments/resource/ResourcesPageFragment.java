@@ -53,6 +53,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     private final int mDefaultPage = 1;
     private final int mPageSize = 30;
     private static final int ROOT_LAYOUT_ID = R.id.fragment_container;
+    private ResourceBaseFragment.Callback mListener;
 
     public static ResourcesPageFragment newInstance(KnowledgeModel knowledgeModel) {
         Bundle args = new Bundle();
@@ -60,6 +61,19 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         page.setArguments(args);
         return page;
+    }
+
+    public static ResourcesPageFragment newInstance(KnowledgeModel knowledgeModel, ResourceBaseFragment.Callback callback) {
+        Bundle args = new Bundle();
+        ResourcesPageFragment page = new ResourcesPageFragment();
+        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
+        page.setListener(callback);
+        page.setArguments(args);
+        return page;
+    }
+
+    public void setListener(ResourceBaseFragment.Callback callback) {
+        mListener = callback;
     }
 
     public void resetData(KnowledgeModel model) {
@@ -277,7 +291,11 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         ResourceBaseFragment moduleFragment = null;
         if (type == ResourceType.PPT_TYPE) {
             if (mPPTFragment == null) {
-                mPPTFragment = ResourceGrideFragment.newInstance();
+                if(mListener!=null){
+                    mPPTFragment = ResourceGrideFragment.newInstance(mListener);
+                }else {
+                    mPPTFragment = ResourceGrideFragment.newInstance();
+                }
                 transaction.add(ROOT_LAYOUT_ID, mPPTFragment);
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
             }
@@ -285,28 +303,44 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
 
         } else if (type == ResourceType.VIDEO_TYPE) {
             if (mVideoFragment == null) {
-                mVideoFragment = ResourceGrideFragment.newInstance();
+                if(mListener!=null){
+                    mVideoFragment = ResourceGrideFragment.newInstance(mListener);
+                }else {
+                    mVideoFragment = ResourceGrideFragment.newInstance();
+                }
                 transaction.add(ROOT_LAYOUT_ID, mVideoFragment);
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.VIDEO_TYPE);
             }
             moduleFragment = mVideoFragment;
         } else if (type == ResourceType.WORD_TYPE) {
             if (mWordFragment == null) {
-                mWordFragment = ResourceGrideFragment.newInstance();
+                if(mListener!=null){
+                    mWordFragment = ResourceGrideFragment.newInstance(mListener);
+                }else {
+                    mWordFragment = ResourceGrideFragment.newInstance();
+                }
                 transaction.add(ROOT_LAYOUT_ID, mWordFragment);
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.WORD_TYPE);
             }
             moduleFragment = mWordFragment;
         } else if (type == ResourceType.IMAGE_TYPE) {
             if (mImageFragment == null) {
-                mImageFragment = ResourceGrideFragment.newInstance();
+                if(mListener!=null){
+                    mImageFragment = ResourceGrideFragment.newInstance(mListener);
+                }else {
+                    mImageFragment = ResourceGrideFragment.newInstance();
+                }
                 transaction.add(ROOT_LAYOUT_ID, mImageFragment);
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.IMAGE_TYPE);
             }
             moduleFragment = mImageFragment;
         } else if (type == ResourceType.QUESTION_TYPE) {
             if (mQuestionFragment == null) {
-                mQuestionFragment = QuestionResourceFragment.newInstance();
+                if(mListener!=null){
+                    mQuestionFragment = QuestionResourceFragment.newInstance(mListener);
+                }else {
+                    mQuestionFragment = QuestionResourceFragment.newInstance();
+                }
                 transaction.add(ROOT_LAYOUT_ID, mQuestionFragment);
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.QUESTION_TYPE);
             }

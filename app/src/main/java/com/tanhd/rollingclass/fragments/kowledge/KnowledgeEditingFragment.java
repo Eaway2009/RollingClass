@@ -29,12 +29,16 @@ import android.widget.Toast;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.fragments.FrameDialog;
+import com.tanhd.rollingclass.fragments.NewSetFragment;
+import com.tanhd.rollingclass.fragments.pages.ResourceSelectorFragment;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
@@ -564,6 +568,17 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                         GetFileHelper.fileSelector(getActivity(), KnowledgeEditingFragment.this, false, false);
                         break;
                     case R.id.from_resource:
+                        FrameDialog.show(getChildFragmentManager(), ResourceSelectorFragment.newInstance(new ResourceSelectorFragment.Callback() {
+                            @Override
+                            public void cancel() {
+
+                            }
+
+                            @Override
+                            public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
+                                mEditingView.editFile(mEditingResourceModel, resourceModel);
+                            }
+                        }));
                         break;
                 }
                 return true;

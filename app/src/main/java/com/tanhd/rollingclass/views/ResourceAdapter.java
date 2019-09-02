@@ -45,7 +45,7 @@ public class ResourceAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return mDataList.get(position);
     }
 
     @Override
@@ -68,7 +68,11 @@ public class ResourceAdapter extends BaseAdapter {
         LinearLayout collect = view.findViewById(R.id.ll_collect);
 
         nameView.setText(data.name);
-
+        if(data.isChecked){
+            view.setBackgroundColor(mContext.getResources().getColor(R.color.button_blue_item_checked_transparent));
+        }else{
+            view.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
+        }
         collect.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,5 +80,14 @@ public class ResourceAdapter extends BaseAdapter {
             }
         });
         return view;
+    }
+
+    public void checkItem(int position){
+        for(ResourceModel model: mDataList){
+            model.isChecked = false;
+        }
+        ResourceModel checkItem = mDataList.get(position);
+        checkItem.isChecked = true;
+        notifyDataSetChanged();
     }
 }

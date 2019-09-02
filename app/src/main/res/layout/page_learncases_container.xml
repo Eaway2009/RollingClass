@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,20 +12,11 @@
         android:layout_above="@+id/rl_setting"
         android:background="@drawable/shape_bg_gray_round" />
 
-    <ImageView
-        android:id="@+id/iv_full_screen"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_margin="5dp"
-        android:background="@mipmap/icon_fullscreen_enable"
-        android:layout_alignRight="@+id/container_layout"
-        android:layout_alignBottom="@+id/container_layout"/>
-
     <RelativeLayout
         android:id="@+id/rl_setting"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
+        android:layout_gravity="bottom">
 
         <View
             android:id="@+id/v_line"
@@ -51,4 +42,14 @@
             android:layout_toRightOf="@+id/v_line"
             android:background="@mipmap/icon_setting" />
     </RelativeLayout>
-</RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_full_screen"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_margin="5dp"
+        android:background="@mipmap/icon_fullscreen_enable"
+        android:padding="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_gravity="bottom|right"/>
+</FrameLayout>

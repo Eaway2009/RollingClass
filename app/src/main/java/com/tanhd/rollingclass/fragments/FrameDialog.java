@@ -114,5 +114,4 @@ public class FrameDialog extends DialogFragment {
         dialog.setFragment(fragment);
         dialog.show(manager, (String) null);
     }
-
 }

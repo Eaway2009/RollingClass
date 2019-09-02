@@ -1,6 +1,9 @@
 package com.tanhd.rollingclass.utils;
 
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class StringUtils {
 
@@ -44,5 +47,19 @@ public class StringUtils {
         }
 
         return double2String(d, num);
+    }
+
+    public static String secondToDate(long second) {
+        return secondToDate(second, "yyyy年MM月dd日");
+    }
+
+    public static String secondToDate(long second,String patten) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(second * 1000);//转换为毫秒
+        Date date = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat(patten);
+        String dateString = format.format(date);
+        return dateString;
     }
 }

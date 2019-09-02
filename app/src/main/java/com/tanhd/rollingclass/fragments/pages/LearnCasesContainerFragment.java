@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
+import com.tanhd.rollingclass.fragments.VideoPlayerFragment;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.views.PointPopupWindow;
 import com.tanhd.rollingclass.views.PointPopupWindow.PopupClickCallBack;
@@ -47,6 +48,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private int mCurrentShowModuleId = -1;
     private ShowDocumentFragment mDocumentPageFragment;
     private List<Fragment> mFragments = new ArrayList<>();
+    private VideoPlayerFragment mVideoPlayerFragment;
 
     public static LearnCasesContainerFragment newInstance(int typeId, PagesListener listener) {
         Bundle args = new Bundle();
@@ -140,21 +142,10 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
      * [展示指定Id的页面]<BR>
      */
     public void showFragment(int moduleId, ResourceModel resourceModel) {
-        if (mCurrentShowModuleId == moduleId) {
-            return;
-        }
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         Fragment fragment = getFragment(moduleId, resourceModel);
-        if (fragment == null) {
-            return;
+        if(mCurrentShowModuleId !=moduleId) {
+            getFragmentManager().beginTransaction().replace(R.id.content_layout, fragment).commit();
         }
-        if (!fragment.isAdded()) {
-            transaction.add(R.id.content_layout, fragment);
-        }
-        hideFragments(transaction, moduleId);
-        transaction.show(fragment);
-        transaction.commitAllowingStateLoss();
-
         mCurrentShowModuleId = moduleId;
     }
 
@@ -162,15 +153,36 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         switch (moduleId) {
             case MODULE_ID_SHOW_DOCUMENT:
                 if (mDocumentPageFragment == null) {
-                    mDocumentPageFragment = ShowDocumentFragment.newInstance(resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+                    mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+                }else {
+                    mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
                 }
-                mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
                 return mDocumentPageFragment;
             case MODULE_ID_SHOW_VIDEO:
-                if (mDocumentPageFragment == null) {
-                    mDocumentPageFragment = ShowDocumentFragment.newInstance(resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+                if (mVideoPlayerFragment == null) {
+                    mVideoPlayerFragment = VideoPlayerFragment.newInstance(resourceModel.resource_id, resourceModel.url);
                 }
-                mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                return mDocumentPageFragment;
+            case MODULE_ID_SHOW_DOC:
+                if (mDocumentPageFragment == null) {
+                    mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+                }else {
+                    mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                }
+                return mDocumentPageFragment;
+            case MODULE_ID_SHOW_IMAGE:
+                if (mDocumentPageFragment == null) {
+                    mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+                }else {
+                    mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                }
+                return mDocumentPageFragment;
+            case MODULE_ID_SHOW_QUESTION:
+                if (mDocumentPageFragment == null) {
+                    mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+                }else {
+                    mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                }
                 return mDocumentPageFragment;
         }
         return null;

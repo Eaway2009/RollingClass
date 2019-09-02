@@ -13,4 +13,5 @@ public class ResourceModel extends BaseJsonClass {
     public long size;
     public long update_time;
     public String url;
+    public boolean isChecked;
 }

@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.view.menu.MenuPopupHelper;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -25,12 +28,15 @@ import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.fragments.FrameDialog;
+import com.tanhd.rollingclass.fragments.pages.ResourceSelectorFragment;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.TeacherData;
@@ -42,7 +48,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
@@ -89,14 +99,13 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     private int mStatus;
 
     /**
-     *
-     * @param knowledgeModel 所属教材章节的参数
+     * @param knowledgeModel         所属教材章节的参数
      * @param knowledgeDetailMessage 所属课时的参数
-     * @param status 1.课前；2.课时；3.课后
+     * @param status                 1.课前；2.课时；3.课后
      * @param callback
      * @return
      */
-    public static KnowledgeAddTaskFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeDetailMessage knowledgeDetailMessage, int status,KnowledgeAddTaskFragment.Callback callback) {
+    public static KnowledgeAddTaskFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeDetailMessage knowledgeDetailMessage, int status, KnowledgeAddTaskFragment.Callback callback) {
         KnowledgeAddTaskFragment page = new KnowledgeAddTaskFragment();
         page.setListener(callback);
         Bundle args = new Bundle();
@@ -211,29 +220,29 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
                     @Override
                     public void onError(String code, String message) {
-                        if(code!=null){
+                        if (code != null) {
                             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
                 break;
             case R.id.enter_upload_photo:
-                uploadFile(3, true);
+                showPopupMenu(v, 3, true);
                 break;
             case R.id.upload_ppt:
-                uploadFile(1, false);
+                showPopupMenu(v, 1, false);
                 break;
             case R.id.upload_video:
-                uploadFile(4, false);
+                showPopupMenu(v, 4, false);
                 break;
             case R.id.upload_exercises:
-                uploadFile(5, false);
+                showPopupMenu(v, 5, false);
                 break;
             case R.id.upload_documents:
-                uploadFile(2, false);
+                showPopupMenu(v, 2, false);
                 break;
             case R.id.upload_photo:
-                uploadFile(3, false);
+                showPopupMenu(v, 3, false);
                 break;
         }
     }
@@ -321,21 +330,31 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         protected ResourceModel doInBackground(Void... strings) {
             UserData userData = ExternalParam.getInstance().getUserData();
             TeacherData teacherData = (TeacherData) userData.getUserData();
-            return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID,mKnowledgeModel.teaching_material_id, fileName,resourceType, level);
+                File file = new File(filePath);
+                String newFileName = new Date().toString();
+                file.renameTo(new File(file.getParent()+"/"+newFileName));
+                return ScopeServer.getInstance().resourceUpload(file.getParent()+"/"+newFileName, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
+
         }
 
         @Override
         protected void onPostExecute(ResourceModel result) {
             mListener.onLoading(false);
-            if (result == null) {
-                Toast.makeText(getActivity(), "上传失败，请重试", Toast.LENGTH_SHORT).show();
-            } else {
-                mEnterTypeRadioGroup.setEnabled(false);
-                mResourceList.add(result);
-                if (mEnterRadioButton.isChecked()) {
-                    mEnterDisplayPhotosLayout.setVisibility(View.VISIBLE);
-                    mEnterDisplayPhotosScrollView.setVisibility(View.VISIBLE);
-                    mFirstDisplayPhotoView.setVisibility(View.VISIBLE);
+            onCheckFile(result, filePath);
+        }
+    }
+
+    private void onCheckFile(ResourceModel result, String filePath) {
+        if (result == null) {
+            Toast.makeText(getActivity(), "上传失败，请重试", Toast.LENGTH_SHORT).show();
+        } else {
+            mEnterTypeRadioGroup.setEnabled(false);
+            mResourceList.add(result);
+            if (mEnterRadioButton.isChecked()) {
+                mEnterDisplayPhotosLayout.setVisibility(View.VISIBLE);
+                mEnterDisplayPhotosScrollView.setVisibility(View.VISIBLE);
+                mFirstDisplayPhotoView.setVisibility(View.VISIBLE);
+                if (filePath != null) {
                     Bitmap bitmap = BitmapUtils.decodeSampledBitmapFromFd(filePath, getResources().getDimensionPixelSize(R.dimen.display_image_width), getResources().getDimensionPixelSize(R.dimen.display_image_height));
                     if (mResourceList.size() == 1) {
                         mFirstDisplayPhotoView.setImageBitmap(bitmap);
@@ -345,43 +364,94 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                         showPictureLayout.setTag(result);
                         mEnterDisplayPhotosLayout.addView(showPictureLayout);
                     }
-                } else {
-                    LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
-                    ImageView iconView = resourceLayout.findViewById(R.id.resource_icon);
-                    TextView nameView = resourceLayout.findViewById(R.id.resource_name_view);
-                    nameView.setText(result.name);
-                    switch (result.resource_type) {
-                        case 1:
-                            mPPTList.add(result.resource_id);
-                            iconView.setImageResource(R.drawable.ppt_icon);
-                            break;
-                        case 2:
-                            mWordList.add(result.resource_id);
-                            iconView.setImageResource(R.drawable.word_icon);
-                            break;
-                        case 3:
-                            mImageList.add(result.resource_id);
-                            iconView.setImageResource(R.drawable.image_icon);
-                            break;
-                        case 4:
-                            mVideoList.add(result.resource_id);
-                            iconView.setImageResource(R.drawable.video_icon);
-                            break;
-                        case 5:
-                            mExercisesList.add(result.resource_id);
-                            iconView.setImageResource(R.drawable.pdf_icon);
-                            break;
-                    }
-                    mUploadFilesLayout.addView(resourceLayout);
                 }
-
+            } else {
+                LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
+                ImageView iconView = resourceLayout.findViewById(R.id.resource_icon);
+                TextView nameView = resourceLayout.findViewById(R.id.resource_name_view);
+                nameView.setText(result.name);
+                switch (result.resource_type) {
+                    case 1:
+                        mPPTList.add(result.resource_id);
+                        iconView.setImageResource(R.drawable.ppt_icon);
+                        break;
+                    case 2:
+                        mWordList.add(result.resource_id);
+                        iconView.setImageResource(R.drawable.word_icon);
+                        break;
+                    case 3:
+                        mImageList.add(result.resource_id);
+                        iconView.setImageResource(R.drawable.image_icon);
+                        break;
+                    case 4:
+                        mVideoList.add(result.resource_id);
+                        iconView.setImageResource(R.drawable.video_icon);
+                        break;
+                    case 5:
+                        mExercisesList.add(result.resource_id);
+                        iconView.setImageResource(R.drawable.pdf_icon);
+                        break;
+                }
+                mUploadFilesLayout.addView(resourceLayout);
             }
+
         }
+    }
+
+    private void showPopupMenu(View view, final int resourceCode, final boolean isImage) {
+        // 这里的view代表popupMenu需要依附的view
+        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        try {
+            Field field = popupMenu.getClass().getDeclaredField("mPopup");
+            field.setAccessible(true);
+            MenuPopupHelper mHelper = (MenuPopupHelper) field.get(popupMenu);
+            mHelper.setForceShowIcon(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 获取布局文件
+        popupMenu.getMenuInflater().inflate(R.menu.upload_file, popupMenu.getMenu());
+
+        // 通过上面这几行代码，就可以把控件显示出来了
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.from_local:
+                        uploadFile(resourceCode, isImage);
+                        break;
+                    case R.id.from_resource:
+                        FrameDialog.show(getChildFragmentManager(), ResourceSelectorFragment.newInstance(new ResourceSelectorFragment.Callback() {
+                            @Override
+                            public void cancel() {
+
+                            }
+
+                            @Override
+                            public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
+                                onCheckFile(resourceModel, null);
+                            }
+                        }));
+                        break;
+                }
+                return true;
+            }
+        });
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                // 控件消失时的事件
+            }
+        });
+        popupMenu.show();
+
     }
 
     public interface Callback {
         void onBack();
+
         void onAddSuccess(String lessonSampleId);
+
         void onLoading(boolean loading);
     }
 }

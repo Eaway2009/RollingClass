@@ -53,7 +53,7 @@
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="add_knowledge">+任务</string>
-    <string name="not_publish">未发布</string>
+    <string name="not_publish">dai发布</string>
     <string name="class_record">上课记录</string>
     <string name="toast_crash">程序出错了, 错误报告提交, 我们将尽快修复该问题, 谢谢合作!</string>
     <string name="update_prompt">发现新版本，是否需要更新？</string>
@@ -102,5 +102,6 @@
     <string name="class_summary">课堂总结</string>
     <string name="relevant_info">相关资料</string>
     <string name="collect">收藏</string>
+    <string name="check">选用</string>
 
 </resources>

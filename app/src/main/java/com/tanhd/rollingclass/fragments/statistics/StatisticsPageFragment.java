@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.fragments.statistics;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,11 +11,18 @@ import android.view.ViewGroup;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.CountClassFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.TeacherMicroCourseSelectorFragment;
+import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
+import com.tanhd.rollingclass.server.data.ResourceModel;
+import com.tanhd.rollingclass.server.data.UserData;
+
+import java.util.List;
 
 public class StatisticsPageFragment extends Fragment implements View.OnClickListener {
 
@@ -75,6 +83,34 @@ public class StatisticsPageFragment extends Fragment implements View.OnClickList
             case R.id.xiti_view:
                 StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_QUESTION);
                 break;
+        }
+    }
+
+    private class InitDataTask extends AsyncTask<Void, Void, List<ResourceModel>> {
+
+        private int level;
+
+        public InitDataTask(int level) {
+            this.level = level;
+        }
+        @Override
+        protected List<ResourceModel> doInBackground(Void... voids) {
+            UserData userData = ExternalParam.getInstance().getUserData();
+            if (userData.isTeacher()) {
+                if(mKnowledgeModel!=null){
+                    return ScopeServer.getInstance().QureyResourceByTeacherID(
+                            mKnowledgeModel.teacher_id, mKnowledgeModel.teaching_material_id,
+                            level, KeyConstants.ResourceType.VIDEO_TYPE, 1, 40);
+                }
+            } else {
+                return null;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<ResourceModel> documentList) {
+
         }
     }
 }
