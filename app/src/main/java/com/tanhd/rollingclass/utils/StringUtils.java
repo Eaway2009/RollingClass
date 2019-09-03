@@ -62,4 +62,12 @@ public class StringUtils {
         String dateString = format.format(date);
         return dateString;
     }
+
+    public static String getFormatDate(Date resourse) {
+        if (resourse != null) {
+            SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
+            return time.format(resourse);
+        }
+        return "";
+    }
 }

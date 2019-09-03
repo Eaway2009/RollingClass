@@ -18,8 +18,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
 import com.tanhd.rollingclass.fragments.VideoPlayerFragment;
+import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
+import com.tanhd.rollingclass.fragments.resource.ResourceBaseFragment;
+import com.tanhd.rollingclass.fragments.resource.ResourceGrideFragment;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.views.PointPopupWindow;
 import com.tanhd.rollingclass.views.PointPopupWindow.PopupClickCallBack;
@@ -47,8 +51,9 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 
     private int mCurrentShowModuleId = -1;
     private ShowDocumentFragment mDocumentPageFragment;
-    private List<Fragment> mFragments = new ArrayList<>();
     private VideoPlayerFragment mVideoPlayerFragment;
+    private Fragment mCurrentFragment;
+    private int mResourceType;
 
     public static LearnCasesContainerFragment newInstance(int typeId, PagesListener listener) {
         Bundle args = new Bundle();
@@ -144,10 +149,92 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     public void showFragment(int moduleId, ResourceModel resourceModel) {
         Fragment fragment = getFragment(moduleId, resourceModel);
         if(mCurrentShowModuleId !=moduleId) {
-            getFragmentManager().beginTransaction().replace(R.id.content_layout, fragment).commit();
+            getChildFragmentManager().beginTransaction().replace(R.id.container_layout, fragment).commit();
         }
         mCurrentShowModuleId = moduleId;
     }
+
+
+//    /**
+//     * [展示指定Id的页面]<BR>
+//     */
+//    public void showModulePage(int moduleId, ResourceModel resourceModel) {
+//        if (mCurrentFragment != null && mResourceType == moduleId) {
+//            return;
+//        }
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        ResourceBaseFragment moduleFragment = null;
+//        if (type == KeyConstants.ResourceType.PPT_TYPE) {
+//            if (mPPTFragment == null) {
+//                if(mListener!=null){
+//                    mPPTFragment = ResourceGrideFragment.newInstance(mListener);
+//                }else {
+//                    mPPTFragment = ResourceGrideFragment.newInstance();
+//                }
+//                transaction.add(ROOT_LAYOUT_ID, mPPTFragment);
+//                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
+//            }
+//            moduleFragment = mPPTFragment;
+//
+//        } else if (type == ResourceType.VIDEO_TYPE) {
+//            if (mVideoFragment == null) {
+//                if(mListener!=null){
+//                    mVideoFragment = ResourceGrideFragment.newInstance(mListener);
+//                }else {
+//                    mVideoFragment = ResourceGrideFragment.newInstance();
+//                }
+//                transaction.add(ROOT_LAYOUT_ID, mVideoFragment);
+//                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.VIDEO_TYPE);
+//            }
+//            moduleFragment = mVideoFragment;
+//        } else if (type == ResourceType.WORD_TYPE) {
+//            if (mWordFragment == null) {
+//                if(mListener!=null){
+//                    mWordFragment = ResourceGrideFragment.newInstance(mListener);
+//                }else {
+//                    mWordFragment = ResourceGrideFragment.newInstance();
+//                }
+//                transaction.add(ROOT_LAYOUT_ID, mWordFragment);
+//                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.WORD_TYPE);
+//            }
+//            moduleFragment = mWordFragment;
+//        } else if (type == ResourceType.IMAGE_TYPE) {
+//            if (mImageFragment == null) {
+//                if(mListener!=null){
+//                    mImageFragment = ResourceGrideFragment.newInstance(mListener);
+//                }else {
+//                    mImageFragment = ResourceGrideFragment.newInstance();
+//                }
+//                transaction.add(ROOT_LAYOUT_ID, mImageFragment);
+//                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.IMAGE_TYPE);
+//            }
+//            moduleFragment = mImageFragment;
+//        } else if (type == ResourceType.QUESTION_TYPE) {
+//            if (mQuestionFragment == null) {
+//                if(mListener!=null){
+//                    mQuestionFragment = QuestionResourceFragment.newInstance(mListener);
+//                }else {
+//                    mQuestionFragment = QuestionResourceFragment.newInstance();
+//                }
+//                transaction.add(ROOT_LAYOUT_ID, mQuestionFragment);
+//                request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.QUESTION_TYPE);
+//            }
+//            moduleFragment = mQuestionFragment;
+//        } else {
+//            return;
+//        }
+//
+//        if (mCurrentFragment != null) {
+//            transaction.hide(mCurrentFragment);
+//        }
+//
+//        resetButtomStatus();
+//        view.setSelected(true);
+//        transaction.show(moduleFragment);
+//        transaction.commitAllowingStateLoss();
+//        mCurrentFragment = moduleFragment;
+//        mResourceType = type;
+//    }
 
     private Fragment getFragment(int moduleId, ResourceModel resourceModel) {
         switch (moduleId) {

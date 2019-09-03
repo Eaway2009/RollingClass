@@ -45,11 +45,13 @@ import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.GetFileHelper;
+import com.tanhd.rollingclass.utils.StringUtils;
 import com.tanhd.rollingclass.views.TaskDisplayView;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class KnowledgeEditingFragment extends Fragment implements View.OnClickListener, TaskDisplayView.TaskDisplayEditListener, KnowledgeAddTaskFragment.Callback {
@@ -651,7 +653,10 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         protected ResourceModel doInBackground(Void... strings) {
             UserData userData = ExternalParam.getInstance().getUserData();
             TeacherData teacherData = (TeacherData) userData.getUserData();
-            return ScopeServer.getInstance().resourceUpload(filePath, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
+            File file = new File(filePath);
+            String newFileName = StringUtils.getFormatDate(new Date());
+            file.renameTo(new File(file.getParent() + "/" + newFileName));
+            return ScopeServer.getInstance().resourceUpload(file.getParent() + "/" + newFileName, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
         }
 
         @Override

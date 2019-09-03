@@ -43,6 +43,7 @@ import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.BitmapUtils;
 import com.tanhd.rollingclass.utils.GetFileHelper;
+import com.tanhd.rollingclass.utils.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -244,7 +245,62 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
             case R.id.upload_photo:
                 showPopupMenu(v, 3, false);
                 break;
+            case R.id.task_delete:
+                deleteFile(v);
+                break;
+            case R.id.task_edit:
+                editFile(v);
+                break;
         }
+    }
+
+    private void deleteFile(View v) {
+        ResourceModel resourceModel = (ResourceModel) v.getTag();
+        switch (resourceModel.resource_type) {
+            case 1:
+                mPPTList.remove(resourceModel.resource_id);
+                break;
+            case 2:
+                mWordList.remove(resourceModel.resource_id);
+                break;
+            case 3:
+                mImageList.remove(resourceModel.resource_id);
+                break;
+            case 4:
+                mVideoList.remove(resourceModel.resource_id);
+                break;
+            case 5:
+                mExercisesList.remove(resourceModel.resource_id);
+                break;
+        }
+        mResourceList.remove(resourceModel);
+        LinearLayout resourceLayout = (LinearLayout) v.getParent();
+        mUploadFilesLayout.removeView(resourceLayout);
+    }
+
+    private void editFile(View v) {
+        ResourceModel resourceModel = (ResourceModel) v.getTag();
+        showPopupMenu(v, resourceModel.resource_type, false);
+        switch (resourceModel.resource_type) {
+            case 1:
+                mPPTList.remove(resourceModel.resource_id);
+                break;
+            case 2:
+                mWordList.remove(resourceModel.resource_id);
+                break;
+            case 3:
+                mImageList.remove(resourceModel.resource_id);
+                break;
+            case 4:
+                mVideoList.remove(resourceModel.resource_id);
+                break;
+            case 5:
+                mExercisesList.remove(resourceModel.resource_id);
+                break;
+        }
+        mResourceList.remove(resourceModel);
+        LinearLayout resourceLayout = (LinearLayout) v.getParent();
+        mUploadFilesLayout.removeView(resourceLayout);
     }
 
     private void uploadFile(int resourceCode, boolean isImage) {
@@ -330,10 +386,10 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         protected ResourceModel doInBackground(Void... strings) {
             UserData userData = ExternalParam.getInstance().getUserData();
             TeacherData teacherData = (TeacherData) userData.getUserData();
-                File file = new File(filePath);
-                String newFileName = new Date().toString();
-                file.renameTo(new File(file.getParent()+"/"+newFileName));
-                return ScopeServer.getInstance().resourceUpload(file.getParent()+"/"+newFileName, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
+            File file = new File(filePath);
+            String newFileName = StringUtils.getFormatDate(new Date());
+            file.renameTo(new File(file.getParent() + "/" + newFileName));
+            return ScopeServer.getInstance().resourceUpload(file.getParent() + "/" + newFileName, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
 
         }
 
@@ -369,6 +425,11 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
                 ImageView iconView = resourceLayout.findViewById(R.id.resource_icon);
                 TextView nameView = resourceLayout.findViewById(R.id.resource_name_view);
+                TextView deleteView = resourceLayout.findViewById(R.id.task_delete);
+                TextView editView = resourceLayout.findViewById(R.id.task_edit);
+                deleteView.setTag(result);
+                deleteView.setOnClickListener(this);
+                editView.setVisibility(View.GONE);
                 nameView.setText(result.name);
                 switch (result.resource_type) {
                     case 1:

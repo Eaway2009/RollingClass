@@ -21,6 +21,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.StringUtils;
 import com.tanhd.rollingclass.server.data.RequestShareKnowledge;
 import com.tanhd.rollingclass.server.data.SchoolData;
@@ -199,7 +200,23 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         protected void onPostExecute(List<TeacherData> teacherDataList) {
             super.onPostExecute(teacherDataList);
             if (teacherDataList != null && teacherDataList.size() > 0) {
-                showTeacherListDialog(knowledge_id, teacherDataList);
+
+                UserData userData = ExternalParam.getInstance().getUserData();
+                TeacherData teacherData = null;
+                if (userData.isTeacher()) {
+                    teacherData = (TeacherData) userData.getUserData();
+                }
+                if (teacherData != null) {
+                    List<TeacherData> newTeacherList = new ArrayList<>();
+                    for (TeacherData teacherDataItem : teacherDataList) {
+                        if (!teacherData.TeacherID.equals(teacherDataItem.TeacherID)) {
+                            newTeacherList.add(teacherDataItem);
+                        }
+                    }
+                    showTeacherListDialog(knowledge_id, newTeacherList);
+                }else{
+                    showTeacherListDialog(knowledge_id, teacherDataList);
+                }
             } else {
                 Toast.makeText(mContext, R.string.check_teacher_list_fail, Toast.LENGTH_SHORT).show();
             }
@@ -231,6 +248,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         final String[] teacherIdItems = new String[teacherDataList.size()];
         boolean[] checkedItems = new boolean[teacherDataList.size()];
         final List<String> checkedIdList = new ArrayList<>();
+
         for (int i = 0; i < teacherDataList.size(); i++) {
             teacherNameItems[i] = teacherDataList.get(i).Username;
             teacherIdItems[i] = teacherDataList.get(i).TeacherID;
