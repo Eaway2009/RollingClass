@@ -54,6 +54,9 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, model);
         setArguments(args);
         initParams();
+        if(mKnowledgeModel!=null){
+            mAddDocumentView.setEnabled(true);
+        }
         new InitDataTask().execute();
     }
 
@@ -67,7 +70,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         View view = inflater.inflate(R.layout.page_documents, container, false);
         initParams();
         initViews(view);
-        new InitDataTask().execute();
+        refreshData();
 
 
         return view;
@@ -85,6 +88,9 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         mAdapter = new DocumentAdapter(getActivity(), this);
         mGridView.setAdapter(mAdapter);
         mAddDocumentView.setOnClickListener(this);
+        if(mKnowledgeModel==null){
+            mAddDocumentView.setEnabled(false);
+        }
     }
 
     @Override

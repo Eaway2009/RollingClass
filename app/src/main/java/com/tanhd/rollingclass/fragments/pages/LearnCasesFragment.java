@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.fragments.pages;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,27 +12,45 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tanhd.library.mqtthttp.MQTT;
+import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
+import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.fragments.ClassBeginFragment;
+import com.tanhd.rollingclass.fragments.ClassSelectorFragment;
+import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
+import com.tanhd.rollingclass.fragments.WaitAnswerFragment;
 import com.tanhd.rollingclass.fragments.kowledge.KnowledgeEditingFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
+import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.ResourceModel;
+import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.views.ClassStudentsAdapter;
 import com.tanhd.rollingclass.views.LessonItemAdapter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class LearnCasesFragment extends Fragment implements OnClickListener, ExpandableListView.OnChildClickListener {
@@ -135,6 +154,15 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
             case R.id.tv_exercise_result:
                 break;
             case R.id.tv_class_begin:
+                FrameDialog.showLittleDialog(getChildFragmentManager(), ClassSelectorFragment.newInstance(new ClassSelectorFragment.OnClassListener() {
+                    @Override
+                    public void onClassSelected(ClassData classData) {
+                        MQTT.getInstance().subscribe(classData.ClassID);
+                        ExternalParam.getInstance().setStatus(2);
+                        classData.resetStudentState(0);
+                        notifyEnterClass(null);
+                    }
+                }));
                 break;
             case R.id.back_button:
                 if (mListener != null) {
@@ -142,6 +170,78 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 }
                 break;
         }
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        MQTT.register(mqttListener);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        MQTT.unregister(mqttListener);
+    }
+
+    private MqttListener mqttListener = new MqttListener() {
+        @Override
+        public void messageArrived(PushMessage message) {
+            switch (message.command) {
+                case OFFLINE:
+                case ONLINE:
+                    if (ExternalParam.getInstance().getStatus() == 0)
+                        return;
+
+                    ClassData classData = ExternalParam.getInstance().getClassData();
+                    if (classData == null)
+                        return;
+
+                    classData.setStudentState(message.from, (message.command == PushMessage.COMMAND.ONLINE ? 1 : 0));
+                    break;
+                case QUERY_CLASS:
+                    if (ExternalParam.getInstance().getStatus() == 0)
+                        return;
+
+                    notifyEnterClass(message.from);
+                    break;
+                case ANSWER_COMPLETED:
+                    String content = message.parameters.get("content");
+                    try {
+                        JSONObject json = new JSONObject(content);
+                        String examID = json.optString("examID");
+                        Database.getInstance().setQuestioning(examID);
+                        FrameDialog.show(getChildFragmentManager(), WaitAnswerFragment.newInstance(examID));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+            }
+        }
+
+        @Override
+        public void networkTimeout(boolean flag) {
+
+        }
+    };
+
+    private void notifyEnterClass(String studentID) {
+        ClassData classData = ExternalParam.getInstance().getClassData();
+
+        //通知学生端打开学案
+        TeacherData teacherData = (TeacherData) ExternalParam.getInstance().getUserData().getUserData();
+        LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
+        HashMap<String, String> params = new HashMap<>();
+        params.put("EnterClass", "1");
+        params.put("ClassName", classData.ClassName);
+        params.put("SubjectName", AppUtils.getSubjectNameByCode(teacherData.SubjectCode));
+        params.put("TeacherName", teacherData.Username);
+        params.put("KnowledgePointName", mKnowledgeDetailMessage.knowledge_point_name);
+        params.put("LessonSampleName", lessonSampleData.LessonSampleName);
+        params.put("UrlContent", lessonSampleData.UrlContent);
+        MQTT.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
     }
 
     @Override

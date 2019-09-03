@@ -10,6 +10,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="login_text_color">#888888</color>
+    <color name="class_title">#212121</color>
+    <color name="class_item">#747474</color>
     <color name="lesson_text">#3E3E3E</color>
     <color name="group_name">#484848</color>
     <color name="group_name_checked">#46B0E6</color>

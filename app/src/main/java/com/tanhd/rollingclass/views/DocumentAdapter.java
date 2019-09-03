@@ -255,7 +255,6 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
             checkedItems[i] = false;
         }
         new AlertDialog.Builder(mContext)
-                .setTitle(R.string.please_check_knowledge)
                 .setMultiChoiceItems(teacherNameItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {

@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progressbar);
         mSavePwdCheckBox = findViewById(R.id.save_pwd);
         mCheckBox = findViewById(R.id.checkbox);
+//        mCheckBox.setVisibility(View.GONE);
 
         mSignButtonView = findViewById(R.id.sign_button);
         mIpEditView = findViewById(R.id.ip_edittext);

@@ -97,14 +97,27 @@ public class MainActivity extends AppCompatActivity {
             new RefreshDataTask(userData).execute();
 //            new ConnectMqttTask(userData).execute();
         }
-//        mTopbarView.setCallback(new TopbarView.Callback() {
-//            @Override
-//            public void connect_again() {
-//                if(ExternalParam.getInstance().getUserData()!=null) {
-//                    new ConnectMqttTask(ExternalParam.getInstance().getUserData()).execute();
-//                }
-//            }
-//        });
+        mTopbarView.setCallback(new TopbarView.Callback() {
+            @Override
+            public void connect_again() {
+                if(ExternalParam.getInstance().getUserData()!=null) {
+                    new ConnectMqttTask(ExternalParam.getInstance().getUserData()).execute();
+                }
+            }
+        });
+        if (MQTT.getInstance() == null) {
+            MQTT.getInstance(userData.getOwnerID(), 8080);
+        }
+        boolean flag = MQTT.getInstance().connect();
+        MQTT.register(mqttListener);
+        MQTT.getInstance().subscribe();
+
+        if (!userData.isTeacher()) {
+            StudentData studentData = (StudentData) userData.getUserData();
+            MQTT.getInstance().subscribe(studentData.ClassID);
+        } else {
+            MQTT.getInstance().subscribe();
+        }
         initUserUI();
         SmartPenService.getInstance().init(getApplicationContext());
         SmartPenService.getInstance().tryToConnect();
@@ -113,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        MQTT.unregister(mqttListener);
-//        MQTT.getInstance().unsubscribe();
-//        MQTT.getInstance().disconnect();
+        MQTT.unregister(mqttListener);
+        MQTT.getInstance().unsubscribe();
+        MQTT.getInstance().disconnect();
     }
 
     @Override
@@ -193,9 +206,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initUserUI() {
-//        if (MQTT.getInstance() == null) {
-//            return;
-//        }
+        if (MQTT.getInstance() == null) {
+            return;
+        }
 
         if (ExternalParam.getInstance().getUserData().isTeacher()) {
             fragment = TeacherFragment.newInstance(new TeacherFragment.BackListener() {

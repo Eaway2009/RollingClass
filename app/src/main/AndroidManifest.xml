@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".MainApp"
@@ -58,6 +59,9 @@
             android:launchMode="singleTop"
             android:screenOrientation="landscape">
         </activity>
+
+        <service android:name="org.eclipse.paho.android.service.MqttService" /> <!--MqttService-->
+        <service android:name="com.dongyk.service.MyMqttService"/> <!--MyMqttService-->
 
         <provider
             android:name="android.support.v4.content.FileProvider"

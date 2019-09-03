@@ -26,10 +26,21 @@ public class FrameDialog extends DialogFragment {
     private static String mTopName;
     private Fragment mFragment;
     private boolean mIsFullMode;
+    private boolean mIsLittleMode;
 
     private static FrameDialog newInstance(boolean fullMode) {
         Bundle bundle = new Bundle();
         bundle.putBoolean("fullMode", fullMode);
+
+        FrameDialog dialog = new FrameDialog();
+        dialog.setArguments(bundle);
+        return dialog;
+    }
+
+    private static FrameDialog newInstance(boolean fullMode, boolean little) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("fullMode", fullMode);
+        bundle.putBoolean("littleMode", little);
 
         FrameDialog dialog = new FrameDialog();
         dialog.setArguments(bundle);
@@ -47,21 +58,26 @@ public class FrameDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mIsFullMode = getArguments().getBoolean("fullMode");
+        mIsLittleMode = getArguments().getBoolean("littleMode");
 
         View view;
         if (!mIsFullMode) {
-            view = inflater.inflate(R.layout.dialog_frame, container, false);
-            getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.dialog_background)));
-            view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        dismiss();
-                    } catch (Exception e) {
+            if (!mIsLittleMode) {
+                view = inflater.inflate(R.layout.dialog_frame, container, false);
+                getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.dialog_background)));
+                view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            dismiss();
+                        } catch (Exception e) {
 
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                view = inflater.inflate(R.layout.little_dialog_frame, container, false);
+            }
         } else {
             view = inflater.inflate(R.layout.dialog_frame_full, container, false);
         }
@@ -81,13 +97,15 @@ public class FrameDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            Window window = dialog.getWindow();
-            if (window != null) {
-                int width = ViewGroup.LayoutParams.MATCH_PARENT;
-                int height = ViewGroup.LayoutParams.MATCH_PARENT;
-                window.setLayout(width, height);
+        if(!mIsLittleMode) {
+            Dialog dialog = getDialog();
+            if (dialog != null) {
+                Window window = dialog.getWindow();
+                if (window != null) {
+                    int width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    int height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    window.setLayout(width, height);
+                }
             }
         }
 
@@ -105,6 +123,12 @@ public class FrameDialog extends DialogFragment {
 
     public static void show(FragmentManager manager, Fragment fragment) {
         FrameDialog dialog = FrameDialog.newInstance(false);
+        dialog.setFragment(fragment);
+        dialog.show(manager, (String) null);
+    }
+
+    public static void showLittleDialog(FragmentManager manager, Fragment fragment) {
+        FrameDialog dialog = FrameDialog.newInstance(false, true);
         dialog.setFragment(fragment);
         dialog.show(manager, (String) null);
     }

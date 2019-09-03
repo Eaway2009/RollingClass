@@ -135,7 +135,7 @@ public class ClassSelectorFragment extends Fragment {
             if (view == null) {
                 view = getActivity().getLayoutInflater().inflate(R.layout.item_class_selector, parent, false);
             }
-
+            view.setBackgroundColor(getResources().getColor(R.color.class_item_bg_selector));
             final ItemData itemData = (ItemData) getItem(position);
             TextView nameView = view.findViewById(R.id.class_name);
             nameView.setText(itemData.title);
