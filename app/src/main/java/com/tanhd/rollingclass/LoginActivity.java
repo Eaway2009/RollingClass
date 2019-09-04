@@ -206,6 +206,10 @@ public class LoginActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED)
             permissionsList.add(Manifest.permission.READ_PHONE_STATE);
 
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission_group.PHONE)
+//                != PackageManager.PERMISSION_GRANTED)
+//            permissionsList.add(Manifest.permission_group.PHONE);
+
         if (permissionsList.size() == 0) {
             check();
 

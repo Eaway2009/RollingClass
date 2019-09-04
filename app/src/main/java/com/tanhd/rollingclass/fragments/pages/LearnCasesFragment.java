@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
@@ -157,9 +158,11 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 FrameDialog.showLittleDialog(getChildFragmentManager(), ClassSelectorFragment.newInstance(new ClassSelectorFragment.OnClassListener() {
                     @Override
                     public void onClassSelected(ClassData classData) {
-                        MQTT.getInstance().subscribe(classData.ClassID);
+//                        MQTT.getInstance().subscribe(classData.ClassID);
+                        MyMqttService.subscribe(classData.ClassID);
                         ExternalParam.getInstance().setStatus(2);
                         classData.resetStudentState(0);
+                        ExternalParam.getInstance().setClassData(classData);
                         notifyEnterClass(null);
                     }
                 }));
@@ -232,16 +235,16 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
 
         //通知学生端打开学案
         TeacherData teacherData = (TeacherData) ExternalParam.getInstance().getUserData().getUserData();
-        LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
         HashMap<String, String> params = new HashMap<>();
         params.put("EnterClass", "1");
         params.put("ClassName", classData.ClassName);
         params.put("SubjectName", AppUtils.getSubjectNameByCode(teacherData.SubjectCode));
         params.put("TeacherName", teacherData.Username);
         params.put("KnowledgePointName", mKnowledgeDetailMessage.knowledge_point_name);
-        params.put("LessonSampleName", lessonSampleData.LessonSampleName);
-        params.put("UrlContent", lessonSampleData.UrlContent);
-        MQTT.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
+        params.put("knowledge_id", mKnowledgeDetailMessage.knowledge_id);
+//        params.put("LessonSampleName", mKnowledgeDetailMessage.knowledge_point_name);
+//        params.put("UrlContent", mKnowledgeDetailMessage.UrlContent);
+        MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
     }
 
     @Override

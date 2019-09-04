@@ -45,8 +45,12 @@ public class KnowledgeModel extends BaseJsonClass {
      * 教案id
      */
     public String teaching_material_id;
+    /**
+     * 教案id
+     */
+    public String classID;
 
-    public KnowledgeModel(String school_id, String teacher_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
+    public KnowledgeModel(String school_id, String teacher_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id, String classID) {
         this.school_id = school_id;
         this.teacher_id = teacher_id;
         this.chapter_id = chapter_id;
@@ -56,5 +60,6 @@ public class KnowledgeModel extends BaseJsonClass {
         this.subject_code = subject_code;
         this.subject_name = subject_name;
         this.teaching_material_id = teaching_material_id;
+        this.classID = classID;
     }
 }

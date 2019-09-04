@@ -46,7 +46,7 @@ public class ResourceSelectorFragment extends Fragment implements View.OnClickLi
         return view;
     }
 
-    public void setListener(Callback callback){
+    public void setListener(Callback callback) {
         mListener = callback;
     }
 
@@ -58,27 +58,32 @@ public class ResourceSelectorFragment extends Fragment implements View.OnClickLi
         mSureButton.setOnClickListener(this);
     }
 
-    private void initFragments(){
+    private void initFragments() {
         mChapterFragment = ChaptersFragment.newInstance(this);
         getFragmentManager().beginTransaction().replace(R.id.chapters_layout, mChapterFragment).commit();
 
-        mResourceFragment = ResourcesPageFragment.newInstance(mKnowledgeFragment,this);
+        mResourceFragment = ResourcesPageFragment.newInstance(mKnowledgeFragment, this);
         getFragmentManager().beginTransaction().replace(R.id.framelayout, mResourceFragment).commit();
     }
 
     @Override
-    public void onCheckChapter(String school_id, String teacher_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
-        mKnowledgeModel = new KnowledgeModel(school_id, teacher_id, chapter_id, chapter_name, section_id, section_name, subject_code, subject_name, teaching_material_id);
-        if(mResourceFragment!=null){
+    public void onTeacherCheckChapter(String school_id, String teacher_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
+        mKnowledgeModel = new KnowledgeModel(school_id, teacher_id, chapter_id, chapter_name, section_id, section_name, subject_code, subject_name, teaching_material_id, null);
+        if (mResourceFragment != null) {
             mResourceFragment.resetData(mKnowledgeModel);
         }
     }
 
     @Override
+    public void onStudentCheckChapter(String school_id, String class_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
+
+    }
+
+    @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.cancel_button:
-                if(mListener!=null){
+                if (mListener != null) {
                     mListener.cancel();
 
                     if (getParentFragment() instanceof FrameDialog) {
@@ -88,9 +93,9 @@ public class ResourceSelectorFragment extends Fragment implements View.OnClickLi
                 }
                 break;
             case R.id.commit_button:
-                if(mListener!=null){
-                    if(mResourceModel!=null||mQuestionModel!=null) {
-                        mListener.resourceChecked(mResourceModel,mQuestionModel);
+                if (mListener != null) {
+                    if (mResourceModel != null || mQuestionModel != null) {
+                        mListener.resourceChecked(mResourceModel, mQuestionModel);
 
                         if (getParentFragment() instanceof FrameDialog) {
                             FrameDialog dialog = (FrameDialog) getParentFragment();
@@ -108,8 +113,9 @@ public class ResourceSelectorFragment extends Fragment implements View.OnClickLi
         mQuestionModel = questionModel;
     }
 
-    public interface Callback{
+    public interface Callback {
         public void cancel();
+
         public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel);
     }
 }

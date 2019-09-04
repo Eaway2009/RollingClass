@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DatasActivity;
@@ -20,9 +22,9 @@ import com.tanhd.rollingclass.fragments.statistics.StatisticsPageFragment;
 public class ShowPageFragment extends Fragment implements View.OnClickListener, ChaptersFragment.ChapterListener {
 
     private PagesListener mListener;
-    private View mDocumentView;
-    private View mResourceView;
-    private View mStatisticsView;
+    private TextView mDocumentView;
+    private TextView mResourceView;
+    private TextView mStatisticsView;
     private ChaptersFragment mChapterFragment;
     private int mCurrentShowModuleId = -1;
     private static final int MODULE_ID_DOCUMENTS = 0;
@@ -33,11 +35,13 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
     private ResourcesPageFragment mResourcesFragment;
     private StatisticsPageFragment mStatisticsFragment;
     private int mPageId;
+    private boolean mIsStudentPage;
     private KnowledgeModel mKnowledgeModel;
 
-    public static ShowPageFragment newInstance(int pageId, ShowPageFragment.PagesListener listener) {
+    public static ShowPageFragment newInstance(int pageId, boolean student, ShowPageFragment.PagesListener listener) {
         Bundle args = new Bundle();
         args.putInt(DatasActivity.PAGE_ID, pageId);
+        args.putBoolean(DatasActivity.PAGE_TYPE, student);
         ShowPageFragment page = new ShowPageFragment();
         page.setArguments(args);
         page.setListener(listener);
@@ -60,12 +64,25 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
 
     private void initParams() {
         mPageId = getArguments().getInt(DatasActivity.PAGE_ID, DatasActivity.PAGE_ID_DOCUMENTS);
+        mIsStudentPage = getArguments().getBoolean(DatasActivity.PAGE_TYPE, false);
     }
 
     private void initViews(View view) {
         mDocumentView = view.findViewById(R.id.document_textview);
         mResourceView = view.findViewById(R.id.resource_textview);
         mStatisticsView = view.findViewById(R.id.statistics_textview);
+        if (mIsStudentPage) {
+            mDocumentView.setText(R.string.learning_seft);
+            mResourceView.setVisibility(View.GONE);
+            LinearLayout.LayoutParams mDocumentViewLayoutParams = (LinearLayout.LayoutParams) mDocumentView.getLayoutParams();
+            mDocumentViewLayoutParams.setMargins(getResources().getDimensionPixelSize(R.dimen.page_title_padding), mDocumentViewLayoutParams.topMargin,
+                    getResources().getDimensionPixelSize(R.dimen.page_title_padding), mDocumentViewLayoutParams.bottomMargin);
+            mDocumentView.setLayoutParams(mDocumentViewLayoutParams);
+            LinearLayout.LayoutParams mStatisticsViewLayoutParams = (LinearLayout.LayoutParams) mStatisticsView.getLayoutParams();
+            mStatisticsViewLayoutParams.setMargins(getResources().getDimensionPixelSize(R.dimen.page_title_padding), mStatisticsViewLayoutParams.topMargin,
+                    getResources().getDimensionPixelSize(R.dimen.page_title_padding), mStatisticsViewLayoutParams.bottomMargin);
+            mStatisticsView.setLayoutParams(mStatisticsViewLayoutParams);
+        }
 
         view.findViewById(R.id.back_button).setOnClickListener(this);
         mDocumentView.setOnClickListener(this);
@@ -81,7 +98,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
+        if (isVisibleToUser) {
             resetData();
         }
     }
@@ -106,12 +123,12 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    private void changeToFragment(int pageId){
+    private void changeToFragment(int pageId) {
         showModulePage(pageId);
         mDocumentView.setEnabled(true);
         mResourceView.setEnabled(true);
         mStatisticsView.setEnabled(true);
-        switch (pageId){
+        switch (pageId) {
             case MODULE_ID_DOCUMENTS:
                 mDocumentView.setEnabled(false);
                 break;
@@ -183,19 +200,25 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
 
 
     @Override
-    public void onCheckChapter(String school_id, String teacher_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
-        mKnowledgeModel = new KnowledgeModel(school_id, teacher_id, chapter_id, chapter_name, section_id, section_name, subject_code, subject_name, teaching_material_id);
+    public void onTeacherCheckChapter(String school_id, String teacher_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
+        mKnowledgeModel = new KnowledgeModel(school_id, teacher_id, chapter_id, chapter_name, section_id, section_name, subject_code, subject_name, teaching_material_id, null);
         resetData();
     }
 
-    private void resetData(){
-        if(mDocumentsFragment!=null) {
+    @Override
+    public void onStudentCheckChapter(String school_id, String class_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
+        mKnowledgeModel = new KnowledgeModel(school_id, null, chapter_id, chapter_name, section_id, section_name, subject_code, subject_name, teaching_material_id, class_id);
+        resetData();
+    }
+
+    private void resetData() {
+        if (mDocumentsFragment != null) {
             mDocumentsFragment.resetData(mKnowledgeModel);
         }
-        if(mResourcesFragment!=null) {
+        if (mResourcesFragment != null) {
             mResourcesFragment.resetData(mKnowledgeModel);
         }
-        if(mStatisticsFragment!=null) {
+        if (mStatisticsFragment != null) {
             mStatisticsFragment.resetData(mKnowledgeModel);
         }
     }

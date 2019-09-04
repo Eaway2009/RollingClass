@@ -509,6 +509,27 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
+    /**
+     * 学生查询已经发布的课时
+     *
+     * @param classID
+     * @param teaching_material_id
+     * @return
+     */
+    public List<KnowledgeDetailMessage> QureyKnowledgeByClassID(String classID, String teaching_material_id) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teaching_material_id", "" + teaching_material_id);
+        params.put("classID", "" + classID);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QureyKnowledgeByClassID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<KnowledgeDetailMessage> list = jsonToList(KnowledgeDetailMessage.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
     public List<ResourceModel> QureyResourceByTeacherID(String teacherId, String teaching_material_id,
                                                         int level, int resourceType, int page, int pagesize) {
         HashMap<String, String> params = new HashMap<>();
@@ -746,6 +767,27 @@ public class ScopeServer extends ServerRequest {
         if (response != null) {
             List<ChaptersResponse> responseList = jsonToList(ChaptersResponse.class.getName(), response);
             return responseList;
+        }
+
+        return null;
+    }
+
+    /**
+     * 学生查询教材列表通过年级ID
+     *
+     * @param schoolid  学校id
+     * @param gradecode 年级代码
+     * @return
+     */
+    public List<ChaptersResponse> QueryTeachingMaterialByGradeID(String schoolid, String gradecode) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("schoolid", "" + schoolid);
+        params.put("gradecode", gradecode);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QueryTeachingMaterialByGradeID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<ChaptersResponse> list = jsonToList(ChaptersResponse.class.getName(), response);
+            return list;
         }
 
         return null;

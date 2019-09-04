@@ -1,55 +1,36 @@
 package com.tanhd.rollingclass.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.VideoPlayerActivity;
 import com.tanhd.rollingclass.activity.DatasActivity;
 import com.tanhd.rollingclass.db.Database;
-import com.tanhd.rollingclass.db.MSG_TYPE;
-import com.tanhd.rollingclass.fragments.pages.LearningStaticsFragment;
-import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
-import com.tanhd.rollingclass.server.data.MicroCourseData;
-import com.tanhd.rollingclass.server.data.QuestionData;
-import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
-import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
 
 public class StudentFragment extends Fragment implements View.OnClickListener {
     private BackListener mListener;
     private View mClassPageView;
-    private View mResourcePageView;
+    private View mKnowledgePageView;
     private View mStaticsPageView;
 
     public static StudentFragment newInstance(BackListener listener) {
@@ -72,11 +53,11 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
 
     private void initViews(View view){
         mClassPageView = view.findViewById(R.id.class_page_view);
-        mResourcePageView = view.findViewById(R.id.resource_page_view);
+        mKnowledgePageView = view.findViewById(R.id.knowledge_page_view);
         mStaticsPageView = view.findViewById(R.id.statics_page_view);
 
         mClassPageView.setOnClickListener(this);
-        mResourcePageView.setOnClickListener(this);
+        mKnowledgePageView.setOnClickListener(this);
         mStaticsPageView.setOnClickListener(this);
     }
 
@@ -156,13 +137,13 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.class_page_view:
-                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_DOCUMENTS);
+//                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_DOCUMENTS, true);
                 break;
-            case R.id.resource_page_view:
-                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_RESOURCES);
+            case R.id.knowledge_page_view:
+                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_DOCUMENTS, true);
                 break;
             case R.id.statics_page_view:
-                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_STATISTICS);
+                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_STATISTICS, true);
                 break;
         }
     }

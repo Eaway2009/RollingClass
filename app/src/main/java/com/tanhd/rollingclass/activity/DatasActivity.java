@@ -22,14 +22,23 @@ public class DatasActivity extends AppCompatActivity {
     private ShowPageFragment mShowPageFragment;
 
     public static final String PAGE_ID = "PAGE_ID";
+    public static final String PAGE_TYPE = "PAGE_TYPE";
     public static final int PAGE_ID_DOCUMENTS = 0;
     public static final int PAGE_ID_RESOURCES = 1;
     public static final int PAGE_ID_STATISTICS = 2;
     private int mPageId;
+    private boolean mIsStudentPage;
 
-    public static void startMe(Activity context, int pageId){
+    public static void startMe(Activity context, int pageId) {
         Intent intent = new Intent(context, DatasActivity.class);
         intent.putExtra(PAGE_ID, pageId);
+        context.startActivity(intent);
+    }
+
+    public static void startMe(Activity context, int pageId, boolean studentPage) {
+        Intent intent = new Intent(context, DatasActivity.class);
+        intent.putExtra(PAGE_ID, pageId);
+        intent.putExtra(PAGE_TYPE, studentPage);
         context.startActivity(intent);
     }
 
@@ -42,11 +51,12 @@ public class DatasActivity extends AppCompatActivity {
         initFragment();
     }
 
-    private void initParams(){
+    private void initParams() {
         mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_DOCUMENTS);
+        mIsStudentPage = getIntent().getBooleanExtra(PAGE_TYPE, false);
     }
 
-    private void initViews(){
+    private void initViews() {
 
         mTopbarView = findViewById(R.id.topbar);
         mBackButton = findViewById(R.id.back_button);
@@ -72,7 +82,7 @@ public class DatasActivity extends AppCompatActivity {
     }
 
     private void initFragment() {
-        mShowPageFragment = ShowPageFragment.newInstance(mPageId, new ShowPageFragment.PagesListener() {
+        mShowPageFragment = ShowPageFragment.newInstance(mPageId, mIsStudentPage, new ShowPageFragment.PagesListener() {
             @Override
             public void onPageChange(int id) {
 

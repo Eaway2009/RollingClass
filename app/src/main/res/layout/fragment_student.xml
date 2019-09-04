@@ -14,8 +14,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/class_page"
-            android:paddingLeft="20dp"
-            android:paddingTop="3dp">
+            android:paddingLeft="36dp"
+            android:paddingTop="6dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -26,14 +26,14 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/resource_page_view"
+            android:id="@+id/knowledge_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/class_page_view"
             android:background="@drawable/learning_page"
-            android:paddingLeft="20dp"
-            android:paddingTop="3dp"
+            android:paddingLeft="36dp"
+            android:paddingTop="6dp"
             android:text="@string/learning_seft"
             android:textColor="@color/white"
             android:textSize="18sp" />
@@ -42,11 +42,11 @@
             android:id="@+id/statics_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/resource_page_view"
+            android:layout_alignRight="@+id/knowledge_page_view"
             android:layout_alignBottom="@+id/class_page_view"
             android:background="@drawable/statics_page"
-            android:paddingLeft="20dp"
-            android:paddingTop="3dp"
+            android:paddingLeft="36dp"
+            android:paddingTop="6dp"
             android:text="@string/statistics_title"
             android:textColor="@color/white"
             android:textSize="18sp" />

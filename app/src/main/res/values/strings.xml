@@ -22,7 +22,7 @@
     <string name="add_document">新建学案</string>
     <string name="resource_title">资源</string>
     <string name="statistics_title">学情</string>
-    <string name="learning_seft">学情</string>
+    <string name="learning_seft">自学</string>
     <string name="menu_server_test">服务器检测</string>
     <string name="write_answer_here">在此填写答案</string>
     <string name="load_doc_failed">学案记载失败，请点击这里重新加载!</string>

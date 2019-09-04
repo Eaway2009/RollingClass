@@ -29,7 +29,7 @@ public class BaseJsonClass implements Serializable {
             String key = iter.next();
 
             try {
-                Field field = cls.getField(key);
+                Field field = cls.getField(getKey(key));
                 if (field.getType() == String.class) {
                     field.set(object, json.optString(key));
                 } else if (field.getType() == boolean.class) {
@@ -161,5 +161,9 @@ public class BaseJsonClass implements Serializable {
         }
 
         return map;
+    }
+
+    public String getKey(String key){
+        return key;
     }
 }

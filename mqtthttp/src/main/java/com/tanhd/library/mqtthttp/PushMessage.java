@@ -17,7 +17,7 @@ public class PushMessage {
         QUERY_CLASS,
         ONLINE,
         OFFLINE,
-        CLASS_BEGIN,
+        CLASS_BEGIN,//开始上课
         CLASS_END,
         SCROLL_TO,
         SCROLL_CUR,

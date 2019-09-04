@@ -54,7 +54,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, model);
         setArguments(args);
         initParams();
-        if(mKnowledgeModel!=null){
+        if (mKnowledgeModel != null) {
             mAddDocumentView.setEnabled(true);
         }
         new InitDataTask().execute();
@@ -88,7 +88,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         mAdapter = new DocumentAdapter(getActivity(), this);
         mGridView.setAdapter(mAdapter);
         mAddDocumentView.setOnClickListener(this);
-        if(mKnowledgeModel==null){
+        if (mKnowledgeModel == null) {
             mAddDocumentView.setEnabled(false);
         }
     }
@@ -103,12 +103,12 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         @Override
         protected List<KnowledgeDetailMessage> doInBackground(Void... voids) {
             UserData userData = ExternalParam.getInstance().getUserData();
-            if (userData.isTeacher()) {
-                if (mKnowledgeModel != null) {
+            if (mKnowledgeModel != null) {
+                if (userData.isTeacher()) {
                     return ScopeServer.getInstance().QureyKnowledgeByChapterAndTeacherID(mKnowledgeModel.teacher_id, mKnowledgeModel.teaching_material_id);
+                } else {
+                    return ScopeServer.getInstance().QureyKnowledgeByClassID(mKnowledgeModel.classID, mKnowledgeModel.teaching_material_id);
                 }
-            } else {
-                return null;
             }
             return null;
         }

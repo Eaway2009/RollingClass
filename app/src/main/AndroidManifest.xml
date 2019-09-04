@@ -60,9 +60,6 @@
             android:screenOrientation="landscape">
         </activity>
 
-        <service android:name="org.eclipse.paho.android.service.MqttService" /> <!--MqttService-->
-        <service android:name="com.dongyk.service.MyMqttService"/> <!--MyMqttService-->
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
