@@ -388,8 +388,9 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
             TeacherData teacherData = (TeacherData) userData.getUserData();
             File file = new File(filePath);
             String newFileName = StringUtils.getFormatDate(new Date());
-            file.renameTo(new File(file.getParent() + "/" + newFileName));
-            return ScopeServer.getInstance().resourceUpload(file.getParent() + "/" + newFileName, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
+            String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+            file.renameTo(new File(file.getParent() + "/" + newFileName+"."+suffix));
+            return ScopeServer.getInstance().resourceUpload(file.getParent() + "/" + newFileName+"."+suffix, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
 
         }
 
