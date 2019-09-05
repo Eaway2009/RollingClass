@@ -242,7 +242,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         params.put("TeacherName", teacherData.Username);
         params.put("KnowledgePointName", mKnowledgeDetailMessage.knowledge_point_name);
         params.put("knowledge_id", mKnowledgeDetailMessage.knowledge_id);
-//        params.put("LessonSampleName", mKnowledgeDetailMessage.knowledge_point_name);
+        params.put("LessonSampleName", mKnowledgeDetailMessage.knowledge_point_name);
 //        params.put("UrlContent", mKnowledgeDetailMessage.UrlContent);
         MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
     }

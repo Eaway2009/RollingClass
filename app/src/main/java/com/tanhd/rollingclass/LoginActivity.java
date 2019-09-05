@@ -70,6 +70,8 @@ public class LoginActivity extends AppCompatActivity {
         mIpEditView = findViewById(R.id.ip_edittext);
         mIpButton = findViewById(R.id.ip_button);
         mIpLayout =this.findViewById(R.id.ip_layout);
+        mUserView.setText("1002");
+        mPasswordView.setText("123");
         mSignButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,9 +206,9 @@ public class LoginActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED)
             permissionsList.add(Manifest.permission.READ_PHONE_STATE);
 
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission_group.PHONE)
-//                != PackageManager.PERMISSION_GRANTED)
-//            permissionsList.add(Manifest.permission_group.PHONE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WAKE_LOCK)
+                != PackageManager.PERMISSION_GRANTED)
+            permissionsList.add(Manifest.permission.WAKE_LOCK);
 
         if (permissionsList.size() == 0) {
             check();

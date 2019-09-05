@@ -37,8 +37,8 @@ import java.util.Map;
  */
 
 public class MyMqttService extends Service {
-    private static final String PARAM_CLIENT_ID = "PARAM_CLIENT_ID";
-    private static final String PARAM_TOPIC = "PARAM_TOPIC";
+    public static final String PARAM_CLIENT_ID = "PARAM_CLIENT_ID";
+    public static final String PARAM_TOPIC = "PARAM_TOPIC";
 
     public static final String TAG = MyMqttService.class.getSimpleName();
     private static MqttAndroidClient mqttAndroidClient;
@@ -70,27 +70,6 @@ public class MyMqttService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    /**
-     * 开启服务
-     */
-    public static void startService(Context mContext, String clientId) {
-        Log.i(TAG, "startService:" + clientId);
-        Intent intent = new Intent(mContext, MyMqttService.class);
-        intent.putExtra(PARAM_CLIENT_ID, clientId);
-        mContext.startService(intent);
-    }
-
-    /**
-     * 开启服务
-     */
-    public static void startService(Context mContext, String clientId, String topic) {
-        Log.i(TAG, "startService:" + clientId + "  " + topic);
-        Intent intent = new Intent(mContext, MyMqttService.class);
-        intent.putExtra(PARAM_CLIENT_ID, clientId);
-        intent.putExtra(PARAM_TOPIC, topic);
-        mContext.startService(intent);
     }
 
     public static void publishMessage(PushMessage.COMMAND command, String to, Map<String, String> data) {
@@ -139,19 +118,19 @@ public class MyMqttService extends Service {
     }
 
     public static boolean subscribe(String topicName) {
-        if (mTopicNames.contains(topicName))
+        String topic = PREF_TOPIC + topicName;
+        if (mTopicNames.contains(topic))
             return true;
 
-        return subscribe(topicName, 1);
+        return subscribe(topic, 1);
     }
 
-    private static boolean subscribe(String topicName, int qos) {
+    private static boolean subscribe(String topic, int qos) {
         boolean flag = false;
-        String topic = PREF_TOPIC + topicName;
         if (mqttAndroidClient.isConnected()) {
             try {
                 mqttAndroidClient.subscribe(topic, qos);
-                mTopicNames.add(topicName);
+                mTopicNames.add(topic);
                 flag = true;
             } catch (MqttException e) {
                 Log.e(TAG, "subscribe: " + e.getMessage());
@@ -182,7 +161,7 @@ public class MyMqttService extends Service {
      * 初始化
      */
     private void init(String clientId) {
-        Log.i(TAG, "init:"+clientId);
+        Log.i(TAG, "init:" + clientId);
         String serverURI = HOST; //服务器地址（协议+地址+端口号）
         mqttAndroidClient = new MqttAndroidClient(this, serverURI, PREF_CLIENT_ID + clientId);
         mqttAndroidClient.setCallback(mqttCallback); //设置监听订阅消息的回调

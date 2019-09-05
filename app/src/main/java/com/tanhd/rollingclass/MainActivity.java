@@ -1,15 +1,20 @@
 package com.tanhd.rollingclass;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,12 +52,19 @@ import com.tanhd.rollingclass.views.TopbarView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingDeque;
+
+import static com.tanhd.library.mqtthttp.MyMqttService.PARAM_CLIENT_ID;
+import static com.tanhd.library.mqtthttp.MyMqttService.PARAM_TOPIC;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final int REQUEST_PERMISSION = 1;
+    private static Intent mIntent;
     private TopbarView mTopbarView;
     private MediaPlayer mediaPlayer;
     private AlertDialog mNetworkDialog;
@@ -62,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private RefreshTask mRefreshTask;
 
     private Handler mHandler = new Handler();
+    private UserData mUserData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,21 +106,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        UserData userData = ExternalParam.getInstance().getUserData();
-        if (userData == null) {
+        mUserData = ExternalParam.getInstance().getUserData();
+        if (mUserData == null) {
             Log.i(TAG, "onCreate: on UserData");
             Toast.makeText(getApplicationContext(), "获取用户信息失败, 请重新登录!", Toast.LENGTH_LONG).show();
             finish();
             return;
         } else {
             Log.i(TAG, "onCreate: has UserData");
-            new RefreshDataTask(userData).execute();
-            if (userData.isTeacher()) {
-//                MyMqttService.startService(MainActivity.this, userData.getOwnerID());
-            } else {
-                StudentData studentData = (StudentData) userData.getUserData();
-//                MyMqttService.startService(MainActivity.this, userData.getOwnerID(), studentData.ClassID);
-            }
+            new RefreshDataTask(mUserData).execute();
         }
         mTopbarView.setCallback(new TopbarView.Callback() {
             @Override
@@ -118,9 +125,79 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        String ownerID = mUserData.getOwnerID();
+//        Log.i(TAG, "onPostExecute: 初始化MQ");
+//        //初始化MQ
+//        if (MQTT.getInstance(ownerID, 8080) == null) {
+//            Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
+////            changeViewsStatus(false);
+//            return;
+//        }
+//        Log.i(TAG, "onPostExecute: 初始化MQ完成");
+//
+//        boolean flag = MQTT.getInstance().connect();
+//        if (!flag) {
+//            Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
+////            changeViewsStatus(false);
+//            return;
+//        }
+//        Log.i(TAG, "onPostExecute: 连接MQ");
+//        MQTT.register(mqttListener);
+//        MQTT.getInstance().subscribe();
+//
+//        if (!mUserData.isTeacher()) {
+//            StudentData studentData = (StudentData) mUserData.getUserData();
+//            MQTT.getInstance().subscribe(studentData.ClassID);
+//        } else {
+//            MQTT.getInstance().subscribe();
+//        }
         initUserUI();
         SmartPenService.getInstance().init(getApplicationContext());
         SmartPenService.getInstance().tryToConnect();
+        startMqttService();
+    }
+
+
+    private void requestPermission() {
+
+        List<String> permissionsList = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission_group.PHONE)
+                != PackageManager.PERMISSION_GRANTED)
+            permissionsList.add(Manifest.permission_group.PHONE);
+
+        if (permissionsList.size() == 0) {
+            startMqttService();
+        } else {
+            ActivityCompat.requestPermissions(this, permissionsList.toArray(new String[permissionsList.size()]),
+                    REQUEST_PERMISSION);
+        }
+    }
+
+    private void startMqttService() {
+        if (mUserData.isTeacher()) {
+            startService(MainActivity.this, mUserData.getOwnerID());
+        } else {
+            StudentData studentData = (StudentData) mUserData.getUserData();
+            startService(MainActivity.this, mUserData.getOwnerID(), studentData.ClassID);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_PERMISSION:
+                for (int i = 0; i < grantResults.length; i++) {
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(getApplicationContext(), "请点击<允许>", Toast.LENGTH_LONG).show();
+                        finish();
+                        return;
+                    }
+                }
+
+                startMqttService();
+                break;
+        }
     }
 
     @Override
@@ -131,6 +208,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopService(mIntent);
+//        MQTT.unregister(mqttListener);
+//        MQTT.getInstance().unsubscribe();
+//        MQTT.getInstance().disconnect();
     }
 
     @Override
@@ -240,6 +321,26 @@ public class MainActivity extends AppCompatActivity {
         FrameDialog.show(getSupportFragmentManager(), ChatFragment.newInstance(message.fromId));
     }
 
+    /**
+     * 开启服务
+     */
+    public static void startService(Context mContext, String clientId) {
+        Log.i(TAG, "startService:" + clientId);
+        mIntent = new Intent(mContext, MyMqttService.class);
+        mIntent.putExtra(PARAM_CLIENT_ID, clientId);
+        mContext.startService(mIntent);
+    }
+
+    /**
+     * 开启服务
+     */
+    public static void startService(Context mContext, String clientId, String topic) {
+        Log.i(TAG, "startService:" + clientId + "  " + topic);
+        mIntent = new Intent(mContext, MyMqttService.class);
+        mIntent.putExtra(PARAM_CLIENT_ID, clientId);
+        mIntent.putExtra(PARAM_TOPIC, topic);
+        mContext.startService(mIntent);
+    }
 
     private class RefreshDataTask extends AsyncTask<Void, Void, UserData> {
 

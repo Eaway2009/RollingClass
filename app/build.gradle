@@ -23,15 +23,8 @@ android {
         versionCode 110
         versionName "1.10"
     }
-    packagingOptions {
-        pickFirst 'META-INF/*' // picks the JavaMail license file
-    }
     buildTypes {
-        debug {
-            multiDexEnabled true
-        }
         release {
-            multiDexEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
