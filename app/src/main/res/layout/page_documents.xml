@@ -21,9 +21,8 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/add_icon"
             android:drawablePadding="5dp"
-            android:textSize="19sp"
             android:text="@string/add_document"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textColor="@color/chapter_menu_text" />
     </LinearLayout>
 
