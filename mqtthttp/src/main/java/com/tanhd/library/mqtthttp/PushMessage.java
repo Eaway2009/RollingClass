@@ -14,29 +14,29 @@ public class PushMessage {
     public static enum COMMAND {
         PING,
         PING_OK,
-        QUERY_CLASS,
-        ONLINE,
-        OFFLINE,
+        QUERY_CLASS,//查询全班，通知上课
+        ONLINE,//学生上线
+        OFFLINE,//学生下线
         CLASS_BEGIN,//开始上课
-        CLASS_END,
-        SCROLL_TO,
-        SCROLL_CUR,
-        MESSAGE,
+        CLASS_END,//下课
+        SCROLL_TO,//滚动翻页
+        SCROLL_CUR,//跳转（第几页）
+        MESSAGE,//指定提问
 
-        QUESTIONING,
-        ANSWER_COMPLETED,
+        QUESTIONING,//发起提问
+        ANSWER_COMPLETED,//完成回答
 
         PING_TEST,
         PING_TEST_REPLY,
 
-        OPEN_DOCUMENT,
+        OPEN_DOCUMENT,//打开学案
         SERVER_PING,
         SERVER_PING_STOP,
 
-        COMMENT_START,
-        COMMENT_END,
-        SMART_PEN_DOT,
-        SMART_PEN_COLOR,
+        COMMENT_START,//答卷开始
+        COMMENT_END,//答卷结束
+        SMART_PEN_DOT,//智能笔点击
+        SMART_PEN_COLOR,//智能笔画
 
         QUERY_STATUS,
     }
