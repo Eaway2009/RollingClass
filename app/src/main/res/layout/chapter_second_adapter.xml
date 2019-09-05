@@ -5,9 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingLeft="40dp"
-    android:paddingTop="5dp"
+    android:paddingTop="8dp"
     android:paddingRight="10dp"
-    android:paddingBottom="5dp">
+    android:paddingBottom="8dp">
 
     <TextView
         android:id="@+id/chapter_name"
@@ -16,5 +16,6 @@
         android:drawableLeft="@drawable/chapter_selector"
         android:drawablePadding="10dp"
         android:textColor="@color/chapter_menu_text"
+        android:textSize="16sp"
         tools:text="第一节" />
 </LinearLayout>

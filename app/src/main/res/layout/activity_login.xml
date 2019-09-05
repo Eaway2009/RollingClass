@@ -6,6 +6,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity"
     android:background="@drawable/login_bg">
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="老师登录"
+        android:checked="true"
+        android:visibility="invisible"
+        android:layout_centerInParent="true"/>
     <LinearLayout
         android:id="@+id/ip_layout"
         android:layout_width="match_parent"
@@ -69,9 +78,9 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:gravity="center"
-        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/checkbox"
         android:padding="25dp"
-        android:layout_marginRight="100dp"
+        android:layout_marginLeft="-60dp"
         android:background="@drawable/login_layout_bg"
         android:orientation="vertical">
 
@@ -79,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_layout_text"
-            android:textSize="16sp"
+            android:textSize="24sp"
             android:layout_marginTop="25dp"
             android:textColor="@color/black" />
 
@@ -97,7 +106,7 @@
             android:drawableLeft="@drawable/login_name_icon"
             android:hint="@string/hint_input_account"
             android:textColor="@color/login_text_color"
-            android:textSize="13sp"
+            android:textSize="16sp"
             android:singleLine="true" />
 
         <EditText
@@ -114,7 +123,7 @@
             android:drawableLeft="@drawable/login_password_icon"
             android:hint="@string/hint_input_account"
             android:textColor="@color/login_text_color"
-            android:textSize="13sp"
+            android:textSize="16sp"
             android:singleLine="true" />
 
         <CheckBox
@@ -130,22 +139,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:layout_gravity="center"
-            android:paddingBottom="5dp"
+            android:paddingBottom="8dp"
             android:background="@drawable/login_button"
             android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textSize="22sp"
             android:text="@string/sign_button"/>
 
     </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="老师登录"
-        android:checked="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"/>
 
     <ProgressBar
         android:id="@+id/progressbar"

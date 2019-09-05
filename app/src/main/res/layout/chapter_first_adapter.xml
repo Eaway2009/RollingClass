@@ -16,6 +16,7 @@
         android:paddingBottom="10dp"
         android:textColor="@color/chapter_menu_text"
         android:visibility="gone"
+        android:textSize="18sp"
         tools:text="人教版——初中数学初一" />
 
     <LinearLayout
@@ -23,9 +24,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="25dp"
-        android:paddingTop="5dp"
+        android:paddingTop="8dp"
         android:paddingRight="10dp"
-        android:paddingBottom="5dp">
+        android:paddingBottom="8dp">
 
         <ImageView
             android:id="@+id/expand_imageview"
@@ -42,6 +43,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:textColor="@color/chapter_menu_text"
+            android:textSize="16sp"
             tools:text="第一章" />
     </LinearLayout>
 </LinearLayout>
