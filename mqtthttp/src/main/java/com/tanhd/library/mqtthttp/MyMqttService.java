@@ -1,14 +1,20 @@
 package com.tanhd.library.mqtthttp;
 
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
@@ -23,6 +29,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -56,20 +63,29 @@ public class MyMqttService extends Service {
     private String mClassId;
     private static HashSet<String> mTopicNames = new HashSet<>();
     private static String mClientId;
+    public static String CLIENTID;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStart:");
-        mClientId = intent.getStringExtra(PARAM_CLIENT_ID);
-        mClassId = intent.getStringExtra(PARAM_TOPIC);
-        init(mClientId);
         return super.onStartCommand(intent, flags, startId);
     }
 
-    @Nullable
+
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        Log.i("DemoLog", "MyServivce -> onBind");
+        //获取Service自身Messenger所对应的IBinder，并将其发送共享给所有客户端
+        mClientId = intent.getStringExtra(PARAM_CLIENT_ID);
+        mClassId = intent.getStringExtra(PARAM_TOPIC);
+        CLIENTID = Utils.getDeviceId();//客户端ID，一般以客户端唯一标识符表示，这里用设备序列号表示
+        init(mClientId);
+        return serviceMessenger.getBinder();
     }
 
     public static void publishMessage(PushMessage.COMMAND command, String to, Map<String, String> data) {
@@ -162,6 +178,10 @@ public class MyMqttService extends Service {
      */
     private void init(String clientId) {
         Log.i(TAG, "init:" + clientId);
+        Log.i(TAG, "CLIENTID:" + CLIENTID);
+        if (mqttAndroidClient != null) {
+            return;
+        }
         String serverURI = HOST; //服务器地址（协议+地址+端口号）
         mqttAndroidClient = new MqttAndroidClient(this, serverURI, PREF_CLIENT_ID + clientId);
         mqttAndroidClient.setCallback(mqttCallback); //设置监听订阅消息的回调
@@ -262,7 +282,13 @@ public class MyMqttService extends Service {
         public void messageArrived(String topic, MqttMessage message) throws Exception {
             Log.i(TAG, "收到消息： " + new String(message.getPayload()));
             //收到消息，这里弹出Toast表示。如果需要更新UI，可以使用广播或者EventBus进行发送
-            Toast.makeText(getApplicationContext(), "messageArrived: " + new String(message.getPayload()), Toast.LENGTH_LONG).show();
+            String text = new String(message.getPayload());
+            try {
+                PushMessage pm = PushMessage.parse(text);
+                distribute(pm);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             //收到其他客户端的消息后，响应给对方告知消息已到达或者消息有问题等
             response("message arrived");
         }
@@ -279,6 +305,35 @@ public class MyMqttService extends Service {
         }
     };
 
+    private void distribute(PushMessage pm) {
+        if (pm.command == null)
+            return;
+
+        if (pm.from.equals(mClientId))
+            return;
+
+        boolean focus = false;
+        if (pm.to != null && pm.to.size() > 0) {
+            for (String str: pm.to) {
+                if (str.equals(mClientId)) {
+                    focus = true;
+                    break;
+                } else if (mTopicNames.contains(str)) {
+                    focus = true;
+                    break;
+                }
+            }
+        } else {
+            focus = true;
+        }
+
+        if (!focus) {
+            return;
+        }
+
+        EventBus.getDefault().post(pm);
+    }
+
     @Override
     public void onDestroy() {
         try {
@@ -286,6 +341,53 @@ public class MyMqttService extends Service {
         } catch (MqttException e) {
             e.printStackTrace();
         }
+        clientMessenger = null;
         super.onDestroy();
+    }
+
+    private static final int RECEIVE_MESSAGE_CODE = 0x0001;
+
+    private static final int SEND_MESSAGE_CODE = 0x0002;
+
+    //clientMessenger表示的是客户端的Messenger，可以通过来自于客户端的Message的replyTo属性获得，
+    //其内部指向了客户端的ClientHandler实例，可以用clientMessenger向客户端发送消息
+    private Messenger clientMessenger = null;
+
+    //serviceMessenger是Service自身的Messenger，其内部指向了ServiceHandler的实例
+    //客户端可以通过IBinder构建Service端的Messenger，从而向Service发送消息，
+    //并由ServiceHandler接收并处理来自于客户端的消息
+    private Messenger serviceMessenger = new Messenger(new ServiceHandler());
+
+    //MyService用ServiceHandler接收并处理来自于客户端的消息
+    private class ServiceHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            Log.i("DemoLog", "ServiceHandler -> handleMessage");
+            if (msg.what == RECEIVE_MESSAGE_CODE) {
+                Bundle data = msg.getData();
+                if (data != null) {
+                    String str = data.getString("msg");
+                    Log.i("DemoLog", "MyService收到客户端如下信息: " + str);
+                }
+                //通过Message的replyTo获取到客户端自身的Messenger，
+                //Service可以通过它向客户端发送消息
+                clientMessenger = msg.replyTo;
+                if (clientMessenger != null) {
+                    Log.i("DemoLog", "MyService向客户端回信");
+                    Message msgToClient = Message.obtain();
+                    msgToClient.what = SEND_MESSAGE_CODE;
+                    //可以通过Bundle发送跨进程的信息
+                    Bundle bundle = new Bundle();
+                    bundle.putString("msg", "你好，客户端，我是MyService");
+                    msgToClient.setData(bundle);
+                    try {
+                        clientMessenger.send(msgToClient);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        Log.e("DemoLog", "MyService向客户端发送信息失败: " + e.getMessage());
+                    }
+                }
+            }
+        }
     }
 }

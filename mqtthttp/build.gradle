@@ -29,4 +29,5 @@ dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     implementation 'com.squareup.okhttp3:mockwebserver:3.12.0'
     implementation 'com.parkingwang:okhttp3-loginterceptor:latest.integration'
+    implementation "org.greenrobot:eventbus:3.1.1"
 }

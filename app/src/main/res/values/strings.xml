@@ -77,6 +77,7 @@
     <string name="statics_result">统计结果：</string>
     <string name="login_layout_text">欢迎登陆智慧课堂系统</string>
     <string name="class_exercise_result">课堂练习结果</string>
+    <string name="class_started_warning">%1$s老师正在上课中，请立即进入！</string>
     <string name="insert_resources">插入资源</string>
     <string name="publish_success">发布成功</string>
     <string name="publish_fail">发布失败，请重试</string>

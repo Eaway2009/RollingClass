@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/class_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,7 +23,19 @@
                 android:text="@string/learning_class"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
-        </RelativeLayout>
+
+            <TextView
+                android:id="@+id/class_started_warning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="50dp"
+                android:background="@drawable/class_warning"
+                android:gravity="center"
+                android:text="@string/class_started_warning"
+                android:textColor="@color/white" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/knowledge_page_view"

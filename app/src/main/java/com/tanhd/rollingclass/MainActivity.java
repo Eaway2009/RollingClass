@@ -11,6 +11,8 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -33,11 +35,8 @@ import com.tanhd.rollingclass.db.Message;
 import com.tanhd.rollingclass.fragments.ChatFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.InBoxFragment;
-import com.tanhd.rollingclass.fragments.ServerTesterFragment;
-import com.tanhd.rollingclass.fragments.ShowAnswerCommentFragment;
 import com.tanhd.rollingclass.fragments.StudentFragment;
 import com.tanhd.rollingclass.fragments.TeacherFragment;
-import com.tanhd.rollingclass.fragments.pages.CommentAnswerPage;
 import com.tanhd.rollingclass.fragments.pages.ShowCommentPage;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
@@ -49,13 +48,13 @@ import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.GlobalWork;
 import com.tanhd.rollingclass.views.TopbarView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingDeque;
 
 import static com.tanhd.library.mqtthttp.MyMqttService.PARAM_CLIENT_ID;
 import static com.tanhd.library.mqtthttp.MyMqttService.PARAM_TOPIC;
@@ -64,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final int REQUEST_PERMISSION = 1;
+
     private static Intent mIntent;
     private TopbarView mTopbarView;
     private MediaPlayer mediaPlayer;
@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onCreate: 从LoginActivity过来");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        EventBus.getDefault().register(this);
+
         mTopbarView = findViewById(R.id.topbar);
         mBackButton = findViewById(R.id.back_button);
         mBackButton.setOnClickListener(new View.OnClickListener() {
@@ -124,53 +127,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-//        String ownerID = mUserData.getOwnerID();
-//        Log.i(TAG, "onPostExecute: 初始化MQ");
-//        //初始化MQ
-//        if (MQTT.getInstance(ownerID, 8080) == null) {
-//            Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
-////            changeViewsStatus(false);
-//            return;
-//        }
-//        Log.i(TAG, "onPostExecute: 初始化MQ完成");
-//
-//        boolean flag = MQTT.getInstance().connect();
-//        if (!flag) {
-//            Toast.makeText(getApplicationContext(), "连接消息服务器失败, 请重试!", Toast.LENGTH_LONG).show();
-////            changeViewsStatus(false);
-//            return;
-//        }
-//        Log.i(TAG, "onPostExecute: 连接MQ");
-//        MQTT.register(mqttListener);
-//        MQTT.getInstance().subscribe();
-//
-//        if (!mUserData.isTeacher()) {
-//            StudentData studentData = (StudentData) mUserData.getUserData();
-//            MQTT.getInstance().subscribe(studentData.ClassID);
-//        } else {
-//            MQTT.getInstance().subscribe();
-//        }
         initUserUI();
         SmartPenService.getInstance().init(getApplicationContext());
         SmartPenService.getInstance().tryToConnect();
         startMqttService();
-    }
-
-
-    private void requestPermission() {
-
-        List<String> permissionsList = new ArrayList<>();
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission_group.PHONE)
-                != PackageManager.PERMISSION_GRANTED)
-            permissionsList.add(Manifest.permission_group.PHONE);
-
-        if (permissionsList.size() == 0) {
-            startMqttService();
-        } else {
-            ActivityCompat.requestPermissions(this, permissionsList.toArray(new String[permissionsList.size()]),
-                    REQUEST_PERMISSION);
-        }
     }
 
     private void startMqttService() {
@@ -204,14 +164,142 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         stopService(mIntent);
-//        MQTT.unregister(mqttListener);
-//        MQTT.getInstance().unsubscribe();
-//        MQTT.getInstance().disconnect();
+
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    private void initUserUI() {
+
+        if (ExternalParam.getInstance().getUserData().isTeacher()) {
+            fragment = TeacherFragment.newInstance(new TeacherFragment.BackListener() {
+                @Override
+                public void showBack(boolean show) {
+                    if (show) {
+                        mBackButton.setVisibility(View.VISIBLE);
+                        mBackButton.setClickable(true);
+                    } else {
+                        mBackButton.setVisibility(View.INVISIBLE);
+                        mBackButton.setClickable(false);
+                    }
+                }
+            });
+        } else {
+            final StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+            mHandler.postAtTime(new Runnable() {
+                @Override
+                public void run() {
+                    getRefreshTask(studentData.Token).execute();
+                }
+            }, 10000);
+
+            fragment = new StudentFragment();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, fragment).commit();
+    }
+
+    private void openMessage(Message message) {
+        FrameDialog.show(getSupportFragmentManager(), ChatFragment.newInstance(message.fromId));
+    }
+
+    /**
+     * 开启服务
+     */
+    public void startService(Context mContext, String clientId) {
+        Log.i(TAG, "startService:" + clientId);
+        mIntent = new Intent(mContext, MyMqttService.class);
+        mIntent.putExtra(PARAM_CLIENT_ID, clientId);
+        mContext.bindService(mIntent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    /**
+     * 开启服务
+     */
+    public void startService(Context mContext, String clientId, String topic) {
+        Log.i(TAG, "startService:" + clientId + "  " + topic);
+        mIntent = new Intent(mContext, MyMqttService.class);
+        mIntent.putExtra(PARAM_CLIENT_ID, clientId);
+        mIntent.putExtra(PARAM_TOPIC, topic);
+        mContext.bindService(mIntent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private class RefreshDataTask extends AsyncTask<Void, Void, UserData> {
+
+        private UserData mUserData;
+
+        public RefreshDataTask(UserData userData) {
+            mUserData = userData;
+        }
+
+        @Override
+        protected UserData doInBackground(Void... voids) {
+            String ownerID = mUserData.getOwnerID();
+            Database.getInstance(getApplicationContext(), ownerID);
+
+            ScopeServer.getInstance().initUserData(mUserData);
+            return mUserData;
+        }
+
+        @Override
+        protected void onPostExecute(UserData userData) {
+            super.onPostExecute(userData);
+        }
+    }
+
+    private RefreshTask getRefreshTask(String token) {
+        if (mRefreshTask == null) {
+            mRefreshTask = new RefreshTask(token);
+        }
+        return mRefreshTask;
+    }
+
+    private class RefreshTask extends AsyncTask<Void, Void, Void> {
+
+        private String mUserToken;
+
+        public RefreshTask(String token) {
+            mUserToken = token;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ScopeServer.getInstance().refreshExpiration(mUserToken);
+            return null;
+        }
+    }
+    //serviceMessenger表示的是Service端的Messenger，其内部指向了MyService的ServiceHandler实例
+    //可以用serviceMessenger向MyService发送消息
+    private Messenger serviceMessenger = null;
+
+    //clientMessenger是客户端自身的Messenger，内部指向了ClientHandler的实例
+    //MyService可以通过Message的replyTo得到clientMessenger，从而MyService可以向客户端发送消息，
+    //并由ClientHandler接收并处理来自于Service的消息
+    private Messenger clientMessenger = new Messenger(new ClientHandler());
+
+    //客户端用ClientHandler接收并处理来自于Service的消息
+    private class ClientHandler extends Handler {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            Log.i("DemoLog", "ClientHandler -> handleMessage");
+            if(msg.what == RECEIVE_MESSAGE_CODE){
+                PushMessage pushMessage = (PushMessage) msg.obj;
+                if(pushMessage != null){
+                    Toast.makeText(MainActivity.this, "收到2："+pushMessage.toString(),Toast.LENGTH_SHORT).show();
+                    Log.i("DemoLog", "客户端收到Service的消息: " + pushMessage.toString());
+                }
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleEventBus(PushMessage pushMessage){
+        if(pushMessage != null){
+            mqttListener.messageArrived(pushMessage);
+        }
     }
 
     private MqttListener mqttListener = new MqttListener() {
@@ -282,105 +370,47 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private boolean isBound = false;
+    private static final int SEND_MESSAGE_CODE = 0x0001;
+    private static final int RECEIVE_MESSAGE_CODE = 0x0002;
 
-    private void initUserUI() {
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            //客户端与Service建立连接
+            Log.i("DemoLog", "客户端 onServiceConnected");
 
-        if (ExternalParam.getInstance().getUserData().isTeacher()) {
-            fragment = TeacherFragment.newInstance(new TeacherFragment.BackListener() {
-                @Override
-                public void showBack(boolean show) {
-                    if (show) {
-                        mBackButton.setVisibility(View.VISIBLE);
-                        mBackButton.setClickable(true);
-                    } else {
-                        mBackButton.setVisibility(View.INVISIBLE);
-                        mBackButton.setClickable(false);
-                    }
-                }
-            });
-        } else {
-            final StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
-            mHandler.postAtTime(new Runnable() {
-                @Override
-                public void run() {
-                    getRefreshTask(studentData.Token).execute();
-                }
-            }, 10000);
+            //我们可以通过从Service的onBind方法中返回的IBinder初始化一个指向Service端的Messenger
+            serviceMessenger = new Messenger(binder);
+            isBound = true;
 
-            fragment = new StudentFragment();
-        }
-        getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, fragment).commit();
-    }
+            android.os.Message msg = android.os.Message.obtain();
+            msg.what = SEND_MESSAGE_CODE;
 
-    private void openMessage(Message message) {
-        FrameDialog.show(getSupportFragmentManager(), ChatFragment.newInstance(message.fromId));
-    }
+            //此处跨进程Message通信不能将msg.obj设置为non-Parcelable的对象，应该使用Bundle
+            //msg.obj = "你好，MyService，我是客户端";
+            Bundle data = new Bundle();
+            data.putString("msg", "你好，MyService，我是客户端");
+            msg.setData(data);
 
-    /**
-     * 开启服务
-     */
-    public static void startService(Context mContext, String clientId) {
-        Log.i(TAG, "startService:" + clientId);
-        mIntent = new Intent(mContext, MyMqttService.class);
-        mIntent.putExtra(PARAM_CLIENT_ID, clientId);
-        mContext.startService(mIntent);
-    }
-
-    /**
-     * 开启服务
-     */
-    public static void startService(Context mContext, String clientId, String topic) {
-        Log.i(TAG, "startService:" + clientId + "  " + topic);
-        mIntent = new Intent(mContext, MyMqttService.class);
-        mIntent.putExtra(PARAM_CLIENT_ID, clientId);
-        mIntent.putExtra(PARAM_TOPIC, topic);
-        mContext.startService(mIntent);
-    }
-
-    private class RefreshDataTask extends AsyncTask<Void, Void, UserData> {
-
-        private UserData mUserData;
-
-        public RefreshDataTask(UserData userData) {
-            mUserData = userData;
+            //需要将Message的replyTo设置为客户端的clientMessenger，
+            //以便Service可以通过它向客户端发送消息
+            msg.replyTo = clientMessenger;
+            try {
+                Log.i("DemoLog", "客户端向service发送信息");
+                serviceMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                Log.i("DemoLog", "客户端向service发送消息失败: " + e.getMessage());
+            }
         }
 
         @Override
-        protected UserData doInBackground(Void... voids) {
-            String ownerID = mUserData.getOwnerID();
-            Database.getInstance(getApplicationContext(), ownerID);
-
-            ScopeServer.getInstance().initUserData(mUserData);
-            return mUserData;
+        public void onServiceDisconnected(ComponentName name) {
+            //客户端与Service失去连接
+            serviceMessenger = null;
+            isBound = false;
+            Log.i("DemoLog", "客户端 onServiceDisconnected");
         }
-
-        @Override
-        protected void onPostExecute(UserData userData) {
-            super.onPostExecute(userData);
-        }
-    }
-
-    private RefreshTask getRefreshTask(String token) {
-        if (mRefreshTask == null) {
-            mRefreshTask = new RefreshTask(token);
-        }
-        return mRefreshTask;
-    }
-
-    private class RefreshTask extends AsyncTask<Void, Void, Void> {
-
-        private String mUserToken;
-
-        public RefreshTask(String token) {
-            mUserToken = token;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            ScopeServer.getInstance().refreshExpiration(mUserToken);
-            return null;
-        }
-    }
-
-
+    };
 }
