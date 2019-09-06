@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <FrameLayout
             android:id="@+id/class_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,6 +33,7 @@
                 android:layout_marginBottom="50dp"
                 android:background="@drawable/class_warning"
                 android:gravity="center"
+                android:visibility="gone"
                 android:text="@string/class_started_warning"
                 android:textColor="@color/white" />
         </FrameLayout>

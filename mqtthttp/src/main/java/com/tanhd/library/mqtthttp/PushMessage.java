@@ -11,6 +11,16 @@ import java.util.List;
 import java.util.Map;
 
 public class PushMessage {
+
+    public static final String ENTER_CLASS = "EnterClass";
+    public static final String CLASS_NAME = "ClassName";
+    public static final String SUBJECT_NAME = "SubjectName";
+    public static final String TEACHER_NAME = "TeacherName";
+    public static final String KnowledgePointName = "KnowledgePointName";
+    public static final String KNOWLEDGE_ID = "knowledge_id";
+    public static final String LESSON_SAMPLE_NAME = "LessonSampleName";
+    public static final String PARAM_OBJECT = "paramObject";
+
     public static enum COMMAND {
         PING,
         PING_OK,
@@ -45,6 +55,7 @@ public class PushMessage {
     public List<String> to;
     public COMMAND command;
     public Map<String, String> parameters;
+    public Object objectJson;
 
     public String toString() {
         JSONObject json = new JSONObject();
@@ -52,7 +63,7 @@ public class PushMessage {
             json.put("from", from);
             if (to != null && to.size() > 0) {
                 JSONArray array = new JSONArray();
-                for (String t: to) {
+                for (String t : to) {
                     array.put(t);
                 }
                 json.put("to", array);
@@ -60,12 +71,12 @@ public class PushMessage {
             json.put("command", command.toString());
             if (parameters != null && parameters.size() > 0) {
                 JSONObject params = new JSONObject();
-                for (String key: parameters.keySet()) {
+                for (String key : parameters.keySet()) {
                     params.put(key, parameters.get(key));
                 }
                 json.put("parameters", params);
             }
-
+            json.put("objectJson", objectJson);
             return json.toString();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -91,7 +102,7 @@ public class PushMessage {
         if (json.has("to")) {
             JSONArray array = json.optJSONArray("to");
             ArrayList<String> to = new ArrayList<>();
-            for (int i=0; i<array.length(); i++) {
+            for (int i = 0; i < array.length(); i++) {
                 to.add(array.optString(i));
             }
             message.to = to;

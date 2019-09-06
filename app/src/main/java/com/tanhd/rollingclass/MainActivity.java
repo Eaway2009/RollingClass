@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int REQUEST_PERMISSION = 1;
 
-    private static Intent mIntent;
     private TopbarView mTopbarView;
     private MediaPlayer mediaPlayer;
     private AlertDialog mNetworkDialog;
@@ -163,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopService(mIntent);
 
         EventBus.getDefault().unregister(this);
     }
@@ -211,9 +209,9 @@ public class MainActivity extends AppCompatActivity {
      */
     public void startService(Context mContext, String clientId) {
         Log.i(TAG, "startService:" + clientId);
-        mIntent = new Intent(mContext, MyMqttService.class);
-        mIntent.putExtra(PARAM_CLIENT_ID, clientId);
-        mContext.bindService(mIntent, mConnection, Context.BIND_AUTO_CREATE);
+        Intent intent = new Intent(mContext, MyMqttService.class);
+        intent.putExtra(PARAM_CLIENT_ID, clientId);
+        mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     /**
@@ -221,10 +219,10 @@ public class MainActivity extends AppCompatActivity {
      */
     public void startService(Context mContext, String clientId, String topic) {
         Log.i(TAG, "startService:" + clientId + "  " + topic);
-        mIntent = new Intent(mContext, MyMqttService.class);
-        mIntent.putExtra(PARAM_CLIENT_ID, clientId);
-        mIntent.putExtra(PARAM_TOPIC, topic);
-        mContext.bindService(mIntent, mConnection, Context.BIND_AUTO_CREATE);
+        Intent intent = new Intent(mContext, MyMqttService.class);
+        intent.putExtra(PARAM_CLIENT_ID, clientId);
+        intent.putExtra(PARAM_TOPIC, topic);
+        mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     private class RefreshDataTask extends AsyncTask<Void, Void, UserData> {

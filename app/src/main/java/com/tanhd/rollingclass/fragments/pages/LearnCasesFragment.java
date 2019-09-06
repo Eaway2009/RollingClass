@@ -236,22 +236,22 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         //通知学生端打开学案
         TeacherData teacherData = (TeacherData) ExternalParam.getInstance().getUserData().getUserData();
         HashMap<String, String> params = new HashMap<>();
-        params.put("EnterClass", "1");
-        params.put("ClassName", classData.ClassName);
-        params.put("SubjectName", AppUtils.getSubjectNameByCode(teacherData.SubjectCode));
-        params.put("TeacherName", teacherData.Username);
-        params.put("KnowledgePointName", mKnowledgeDetailMessage.knowledge_point_name);
-        params.put("knowledge_id", mKnowledgeDetailMessage.knowledge_id);
-        params.put("LessonSampleName", mKnowledgeDetailMessage.knowledge_point_name);
+        params.put(PushMessage.ENTER_CLASS, "1");
+        params.put(PushMessage.CLASS_NAME, classData.ClassName);
+        params.put(PushMessage.SUBJECT_NAME, AppUtils.getSubjectNameByCode(teacherData.SubjectCode));
+        params.put(PushMessage.TEACHER_NAME, teacherData.Username);
+        params.put(PushMessage.KnowledgePointName, mKnowledgeDetailMessage.knowledge_point_name);
+        params.put(PushMessage.KNOWLEDGE_ID, mKnowledgeDetailMessage.knowledge_id);
+        params.put(PushMessage.LESSON_SAMPLE_NAME, mKnowledgeDetailMessage.knowledge_point_name);
 //        params.put("UrlContent", mKnowledgeDetailMessage.UrlContent);
-        MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
+        MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params, mKnowledgeDetailMessage);
     }
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        if(groupPosition<mAdapter.getGroupCount()&&mAdapter.getGroup(groupPosition)!=null){
+        if (groupPosition < mAdapter.getGroupCount() && mAdapter.getGroup(groupPosition) != null) {
             KnowledgeLessonSample group = mAdapter.getGroup(groupPosition);
-            if(childPosition<group.getChildren().size()&&group.getChildren().get(childPosition)!=null){
+            if (childPosition < group.getChildren().size() && group.getChildren().get(childPosition) != null) {
                 ResourceModel item = group.getChildren().get(childPosition);
                 mLearnCasesContainerFragment.showResource(item);
             }

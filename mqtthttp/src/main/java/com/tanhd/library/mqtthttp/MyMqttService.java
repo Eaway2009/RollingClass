@@ -90,17 +90,25 @@ public class MyMqttService extends Service {
 
     public static void publishMessage(PushMessage.COMMAND command, String to, Map<String, String> data) {
         if (to != null)
-            publishMessage(command, Arrays.asList(new String[]{to}), data);
+            publishMessage(command, Arrays.asList(new String[]{to}), data, null);
         else
-            publishMessage(command, (List<String>) null, data);
+            publishMessage(command, (List<String>) null, data, null);
     }
 
-    public static void publishMessage(PushMessage.COMMAND command, List<String> to, Map<String, String> data) {
+    public static void publishMessage(PushMessage.COMMAND command, String to, Map<String, String> data, Object objectJson) {
+        if (to != null)
+            publishMessage(command, Arrays.asList(new String[]{to}), data, objectJson);
+        else
+            publishMessage(command, (List<String>) null, data, objectJson);
+    }
+
+    public static void publishMessage(PushMessage.COMMAND command, List<String> to, Map<String, String> data, Object objectJson) {
         PushMessage message = new PushMessage();
         message.from = mClientId;
         message.command = command;
         message.to = to;
         message.parameters = data;
+        message.objectJson = objectJson;
 
         String text = message.toString();
 
@@ -314,7 +322,7 @@ public class MyMqttService extends Service {
 
         boolean focus = false;
         if (pm.to != null && pm.to.size() > 0) {
-            for (String str: pm.to) {
+            for (String str : pm.to) {
                 if (str.equals(mClientId)) {
                     focus = true;
                     break;

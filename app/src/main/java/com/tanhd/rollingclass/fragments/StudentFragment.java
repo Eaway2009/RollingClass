@@ -8,30 +8,39 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DatasActivity;
+import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.utils.AppUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class StudentFragment extends Fragment implements View.OnClickListener {
     private BackListener mListener;
     private View mClassPageView;
     private View mKnowledgePageView;
     private View mStaticsPageView;
+    private TextView mClassStartedWarningView;
+    private KnowledgeDetailMessage mKnowledgeDetailModel;
 
     public static StudentFragment newInstance(BackListener listener) {
         StudentFragment fragment = new StudentFragment();
@@ -47,30 +56,23 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_student, container, false);
+
+        EventBus.getDefault().register(this);
         initViews(view);
         return view;
     }
 
-    private void initViews(View view){
+    private void initViews(View view) {
         mClassPageView = view.findViewById(R.id.class_page_view);
         mKnowledgePageView = view.findViewById(R.id.knowledge_page_view);
         mStaticsPageView = view.findViewById(R.id.statics_page_view);
+        mClassStartedWarningView = view.findViewById(R.id.class_started_warning);
 
         mClassPageView.setOnClickListener(this);
         mKnowledgePageView.setOnClickListener(this);
         mStaticsPageView.setOnClickListener(this);
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        MQTT.register(mqttListener);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        MQTT.unregister(mqttListener);
+        mClassPageView.setEnabled(false);
     }
 
     private void notifyEnterClass(String studentID) {
@@ -91,39 +93,64 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
         MQTT.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleEventBus(PushMessage pushMessage) {
+        if (pushMessage != null) {
+            mqttListener.messageArrived(pushMessage);
+        }
+    }
+
     private MqttListener mqttListener = new MqttListener() {
+
         @Override
-        public void messageArrived(PushMessage message) {
+        public void messageArrived(final PushMessage message) {
             switch (message.command) {
-                case OFFLINE:
-                case ONLINE:
-                    if (ExternalParam.getInstance().getStatus() == 0)
-                        return;
-
-                    ClassData classData = ExternalParam.getInstance().getClassData();
-                    if (classData == null)
-                        return;
-
-                    classData.setStudentState(message.from, (message.command == PushMessage.COMMAND.ONLINE ? 1 : 0));
-                    break;
-                case QUERY_CLASS:
-                    if (ExternalParam.getInstance().getStatus() == 0)
-                        return;
-
-                    notifyEnterClass(message.from);
-                    break;
-                case ANSWER_COMPLETED:
-                    String content = message.parameters.get("content");
-                    try {
-                        JSONObject json = new JSONObject(content);
-                        String examID = json.optString("examID");
-                        Database.getInstance().setQuestioning(examID);
-                        FrameDialog.show(getChildFragmentManager(), WaitAnswerFragment.newInstance(examID));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                case CLASS_BEGIN: {
+                    if (ExternalParam.getInstance().getStatus() == 0) {
+                        mClassPageView.setEnabled(true);
+                        if (message.parameters != null) {
+                            String teacherName = message.parameters.get(PushMessage.TEACHER_NAME);
+                            mClassStartedWarningView.setText(getResources().getString(R.string.class_started_warning, teacherName));
+                            mClassStartedWarningView.setVisibility(View.VISIBLE);
+                        }
+                        mKnowledgeDetailModel = (KnowledgeDetailMessage) message.objectJson;
+                        ExternalParam.getInstance().setStatus(1);
                     }
-
                     break;
+                }
+                case CLASS_END: {
+//                    classEnd(message.from);
+                    break;
+                }
+                case QUESTIONING: {
+                    String examID = message.parameters.get("examID");
+                    final String teacherID = message.parameters.get("teacherID");
+                    FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
+                        @Override
+                        public void onFinished() {
+                            MQTT.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
+                        }
+                    }));
+                    break;
+                }
+                case OPEN_DOCUMENT: {
+                    if (ExternalParam.getInstance().getStatus() == 2) {
+                        String url = message.parameters.get("UrlContent");
+//                        showLessonSample(url, ShowDocumentFragment.SYNC_MODE.SLAVE);
+                    }
+                    break;
+                }
+                case SERVER_PING: {
+                    FrameDialog.show(getChildFragmentManager(), ServerTesterFragment.newInstance());
+                    break;
+                }
+                case QUERY_STATUS: {
+                    if (ExternalParam.getInstance().getStatus() == 2)
+                        MQTT.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
+                    else
+                        MQTT.publishMessage(PushMessage.COMMAND.OFFLINE, (List<String>) null, null);
+                    break;
+                }
             }
         }
 
@@ -135,9 +162,13 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.class_page_view:
-//                DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_DOCUMENTS, true);
+                MQTT.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
+                ExternalParam.getInstance().setStatus(2);
+                if (mKnowledgeDetailModel != null) {
+                    LearnCasesActivity.startMe(getActivity(), mKnowledgeDetailModel);
+                }
                 break;
             case R.id.knowledge_page_view:
                 DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_DOCUMENTS, true);
@@ -150,5 +181,11 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
 
     public interface BackListener {
         void showBack(boolean show);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
     }
 }
