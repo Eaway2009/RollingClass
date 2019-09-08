@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.ClassData;
@@ -123,7 +124,7 @@ public class ClassStateFragment extends Fragment {
             if (!isAdded())
                 return;
 
-            MQTT.publishMessage(PushMessage.COMMAND.QUERY_STATUS, (List<String>) null, null);
+            MyMqttService.publishMessage(PushMessage.COMMAND.QUERY_STATUS,  (List<String>) null, null);
             sendEmptyMessageDelayed(0, 1000);
         }
     };

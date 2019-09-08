@@ -22,6 +22,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
@@ -85,7 +86,8 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         mAddDocumentView = view.findViewById(R.id.add_document_view);
         mGridView = view.findViewById(R.id.grid_view);
 
-        mAdapter = new DocumentAdapter(getActivity(), this);
+        UserData userData = ExternalParam.getInstance().getUserData();
+        mAdapter = new DocumentAdapter(getActivity(), userData.isTeacher(), this);
         mGridView.setAdapter(mAdapter);
         mAddDocumentView.setOnClickListener(this);
         if (mKnowledgeModel == null) {
@@ -107,7 +109,8 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
                 if (userData.isTeacher()) {
                     return ScopeServer.getInstance().QureyKnowledgeByChapterAndTeacherID(mKnowledgeModel.teacher_id, mKnowledgeModel.teaching_material_id);
                 } else {
-                    return ScopeServer.getInstance().QureyKnowledgeByClassID(mKnowledgeModel.classID, mKnowledgeModel.teaching_material_id);
+                    StudentData studentData = (StudentData) userData.getUserData();
+                    return ScopeServer.getInstance().QureyKnowledgeByClassID(studentData.ClassID, mKnowledgeModel.teaching_material_id);
                 }
             }
             return null;

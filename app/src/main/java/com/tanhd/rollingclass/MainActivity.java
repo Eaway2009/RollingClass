@@ -134,10 +134,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void startMqttService() {
         if (mUserData.isTeacher()) {
-            startService(MainActivity.this, mUserData.getOwnerID());
+            MyMqttService.startService(MainActivity.this, mConnection, mUserData.getOwnerID());
         } else {
             StudentData studentData = (StudentData) mUserData.getUserData();
-            startService(MainActivity.this, mUserData.getOwnerID(), studentData.ClassID);
+            MyMqttService.startService(MainActivity.this, mConnection, mUserData.getOwnerID(), studentData.ClassID);
         }
     }
 
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        unbindService(mConnection);
         EventBus.getDefault().unregister(this);
     }
 
@@ -202,27 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void openMessage(Message message) {
         FrameDialog.show(getSupportFragmentManager(), ChatFragment.newInstance(message.fromId));
-    }
-
-    /**
-     * 开启服务
-     */
-    public void startService(Context mContext, String clientId) {
-        Log.i(TAG, "startService:" + clientId);
-        Intent intent = new Intent(mContext, MyMqttService.class);
-        intent.putExtra(PARAM_CLIENT_ID, clientId);
-        mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    /**
-     * 开启服务
-     */
-    public void startService(Context mContext, String clientId, String topic) {
-        Log.i(TAG, "startService:" + clientId + "  " + topic);
-        Intent intent = new Intent(mContext, MyMqttService.class);
-        intent.putExtra(PARAM_CLIENT_ID, clientId);
-        intent.putExtra(PARAM_TOPIC, topic);
-        mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     private class RefreshDataTask extends AsyncTask<Void, Void, UserData> {
@@ -269,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
     //serviceMessenger表示的是Service端的Messenger，其内部指向了MyService的ServiceHandler实例
     //可以用serviceMessenger向MyService发送消息
     private Messenger serviceMessenger = null;
@@ -283,10 +263,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(android.os.Message msg) {
             Log.i("DemoLog", "ClientHandler -> handleMessage");
-            if(msg.what == RECEIVE_MESSAGE_CODE){
+            if (msg.what == RECEIVE_MESSAGE_CODE) {
                 PushMessage pushMessage = (PushMessage) msg.obj;
-                if(pushMessage != null){
-                    Toast.makeText(MainActivity.this, "收到2："+pushMessage.toString(),Toast.LENGTH_SHORT).show();
+                if (pushMessage != null) {
+                    Toast.makeText(MainActivity.this, "收到2：" + pushMessage.toString(), Toast.LENGTH_SHORT).show();
                     Log.i("DemoLog", "客户端收到Service的消息: " + pushMessage.toString());
                 }
             }
@@ -294,8 +274,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void handleEventBus(PushMessage pushMessage){
-        if(pushMessage != null){
+    public void handleEventBus(PushMessage pushMessage) {
+        if (pushMessage != null) {
             mqttListener.messageArrived(pushMessage);
         }
     }
@@ -323,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
                 case PING: {
-                    MQTT.publishMessage(PushMessage.COMMAND.PING_OK, message.from, null);
+                    MyMqttService.publishMessage(PushMessage.COMMAND.PING_OK, message.from, null);
                     break;
                 }
                 case COMMENT_START: {

@@ -6,6 +6,7 @@ import android.os.Message;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 
 public class ConnectionStatus {
@@ -56,7 +57,7 @@ public class ConnectionStatus {
     private void ping() {
         times++;
         try {
-            MQTT.publishMessage(PushMessage.COMMAND.PING, mTargetID, null);
+            MyMqttService.publishMessage(PushMessage.COMMAND.PING, mTargetID, null);
             mHandler.sendEmptyMessageDelayed(0, 3000);
         } catch (Exception e) {
             e.printStackTrace();

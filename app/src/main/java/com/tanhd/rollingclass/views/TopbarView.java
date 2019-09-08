@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.LoginActivity;
 import com.tanhd.rollingclass.R;
@@ -127,7 +128,7 @@ public class TopbarView extends CardView {
                     AppCompatActivity activity = (AppCompatActivity) getContext();
                     FrameDialog.show(activity.getSupportFragmentManager(), ServerTesterFragment.newInstance());
                     if (ExternalParam.getInstance().getUserData().isTeacher())
-                        MQTT.publishMessage(PushMessage.COMMAND.SERVER_PING, (List<String>) null, null);
+                        MyMqttService.publishMessage(PushMessage.COMMAND.SERVER_PING, (List<String>) null, null);
                 }
             }
         });

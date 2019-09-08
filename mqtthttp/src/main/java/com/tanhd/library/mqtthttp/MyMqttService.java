@@ -31,6 +31,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -51,7 +52,7 @@ public class MyMqttService extends Service {
     private static MqttAndroidClient mqttAndroidClient;
     private MqttConnectOptions mMqttConnectOptions;
 
-    private static final String HOST = "tcp://mdm.sea-ai.com:1234";
+    private static final String HOST = "tcp://www.sea-ai.com:1883";
     public String USERNAME = "admin";//用户名
     public String PASSWORD = "admin";//密码
     //    public static String PUBLISH_TOPIC = "tourist_enter";//发布主题
@@ -64,6 +65,27 @@ public class MyMqttService extends Service {
     private static HashSet<String> mTopicNames = new HashSet<>();
     private static String mClientId;
     public static String CLIENTID;
+
+    /**
+     * 开启服务
+     */
+    public static void startService(Context mContext, ServiceConnection connection, String clientId) {
+        Log.i(TAG, "startService:" + clientId);
+        Intent intent = new Intent(mContext, MyMqttService.class);
+        intent.putExtra(PARAM_CLIENT_ID, clientId);
+        mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
+    /**
+     * 开启服务
+     */
+    public static void startService(Context mContext, ServiceConnection connection, String clientId, String topic) {
+        Log.i(TAG, "startService:" + clientId + "  " + topic);
+        Intent intent = new Intent(mContext, MyMqttService.class);
+        intent.putExtra(PARAM_CLIENT_ID, clientId);
+        intent.putExtra(PARAM_TOPIC, topic);
+        mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
 
     @Override
     public void onCreate() {
@@ -83,7 +105,7 @@ public class MyMqttService extends Service {
         //获取Service自身Messenger所对应的IBinder，并将其发送共享给所有客户端
         mClientId = intent.getStringExtra(PARAM_CLIENT_ID);
         mClassId = intent.getStringExtra(PARAM_TOPIC);
-        CLIENTID = Utils.getDeviceId();//客户端ID，一般以客户端唯一标识符表示，这里用设备序列号表示
+        CLIENTID = Utils.getDeviceId().replace("-","");//客户端ID，一般以客户端唯一标识符表示，这里用设备序列号表示
         init(mClientId);
         return serviceMessenger.getBinder();
     }
@@ -91,6 +113,13 @@ public class MyMqttService extends Service {
     public static void publishMessage(PushMessage.COMMAND command, String to, Map<String, String> data) {
         if (to != null)
             publishMessage(command, Arrays.asList(new String[]{to}), data, null);
+        else
+            publishMessage(command, (List<String>) null, data, null);
+    }
+
+    public static void publishMessage(PushMessage.COMMAND command, List<String> to, Map<String, String> data) {
+        if (to != null)
+            publishMessage(command, to, data, null);
         else
             publishMessage(command, (List<String>) null, data, null);
     }
@@ -273,6 +302,7 @@ public class MyMqttService extends Service {
         public void onSuccess(IMqttToken arg0) {
             Log.i(TAG, "连接成功 ");
             subscribe();
+            MyMqttService.publishMessage(PushMessage.COMMAND.PING, (List<String>)null, null);
         }
 
         @Override
@@ -292,6 +322,7 @@ public class MyMqttService extends Service {
             //收到消息，这里弹出Toast表示。如果需要更新UI，可以使用广播或者EventBus进行发送
             String text = new String(message.getPayload());
             try {
+//                Toast.makeText(MyMqttService.this, text, Toast.LENGTH_LONG).show();
                 PushMessage pm = PushMessage.parse(text);
                 distribute(pm);
             } catch (Exception e) {

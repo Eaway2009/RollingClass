@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -123,7 +124,7 @@ public class NewSetFragment extends Fragment {
             HashMap<String, String> params = new HashMap<>();
             params.put("examID", result);
             params.put("teacherID", ExternalParam.getInstance().getUserData().getOwnerID());
-            MQTT.publishMessage(PushMessage.COMMAND.QUESTIONING, to, params);
+            MyMqttService.publishMessage(PushMessage.COMMAND.QUESTIONING, to, params);
             ExternalParam.getInstance().setQuestionSetID(result);
             showFragment(WaitAnswerFragment.newInstance(result));
         }

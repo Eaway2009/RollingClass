@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.Database;
@@ -128,7 +129,7 @@ public class ChatFragment extends Fragment {
         HashMap<String, String> params = new HashMap<>();
         params.put("content", text);
         params.put("type", String.valueOf(MSG_TYPE.TEXT.ordinal()));
-        MQTT.publishMessage(PushMessage.COMMAND.MESSAGE, mChatID, params);
+        MyMqttService.publishMessage(PushMessage.COMMAND.MESSAGE, mChatID, params);
         Database.getInstance().newMessage(ExternalParam.getInstance().getUserData().getOwnerID(), mChatID, MSG_TYPE.TEXT, text, 1);
         mInputView.setText(null);
         refresh();

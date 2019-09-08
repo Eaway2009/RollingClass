@@ -20,6 +20,7 @@ public class ClassData extends BaseJsonClass implements MultiLevelModel<StudentD
     public int StudysectionCode;
     public long UpdateTime;
     public List<GroupData> Groups;
+    public List<String> teachers;
 
     @Override
     public List<StudentData> getChildren() {
@@ -82,5 +83,37 @@ public class ClassData extends BaseJsonClass implements MultiLevelModel<StudentD
                 studentData.Status = state;
             }
         }
+    }
+
+    @Override
+    public String getKey(String key) {
+        if("class_id".equals(key)||"ClassID".equals(key)) {
+            return "ClassID";
+        }
+        if("class_name".equals(key)||"ClassName".equals(key)) {
+            return "ClassName";
+        }
+        if("grade_id".equals(key)||"GradeID".equals(key)) {
+            return "GradeID";
+        }
+        if("groups".equals(key)||"Groups".equals(key)) {
+            return "Groups";
+        }
+        if("remark".equals(key)||"Remark".equals(key)) {
+            return "Remark";
+        }
+        if("school_id".equals(key)||"SchoolID".equals(key)) {
+            return "SchoolID";
+        }
+        if("study_section_code".equals(key)||"StudysectionCode".equals(key)) {
+            return "StudysectionCode";
+        }
+        if("studysection_id".equals(key)||"StudysectionID".equals(key)) {
+            return "StudysectionID";
+        }
+        if("update_time".equals(key)||"UpdateTime".equals(key)) {
+            return "UpdateTime";
+        }
+        return key;
     }
 }

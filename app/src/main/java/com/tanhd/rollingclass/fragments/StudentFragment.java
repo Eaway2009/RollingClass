@@ -12,11 +12,13 @@ import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DatasActivity;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.Database;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
@@ -40,7 +42,8 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
     private View mKnowledgePageView;
     private View mStaticsPageView;
     private TextView mClassStartedWarningView;
-    private KnowledgeDetailMessage mKnowledgeDetailModel;
+
+    private PushMessage mPushMessage;
 
     public static StudentFragment newInstance(BackListener listener) {
         StudentFragment fragment = new StudentFragment();
@@ -75,24 +78,6 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
         mClassPageView.setEnabled(false);
     }
 
-    private void notifyEnterClass(String studentID) {
-        ClassData classData = ExternalParam.getInstance().getClassData();
-
-        //通知学生端打开学案
-        TeacherData teacherData = (TeacherData) ExternalParam.getInstance().getUserData().getUserData();
-        KnowledgeData knowledgeData = ExternalParam.getInstance().getKnowledge();
-        LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
-        HashMap<String, String> params = new HashMap<>();
-        params.put("EnterClass", "1");
-        params.put("ClassName", classData.ClassName);
-        params.put("SubjectName", AppUtils.getSubjectNameByCode(teacherData.SubjectCode));
-        params.put("TeacherName", teacherData.Username);
-        params.put("KnowledgePointName", knowledgeData.KnowledgePointName);
-        params.put("LessonSampleName", lessonSampleData.LessonSampleName);
-        params.put("UrlContent", lessonSampleData.UrlContent);
-        MQTT.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleEventBus(PushMessage pushMessage) {
         if (pushMessage != null) {
@@ -106,6 +91,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
         public void messageArrived(final PushMessage message) {
             switch (message.command) {
                 case CLASS_BEGIN: {
+                    mPushMessage = message;
                     if (ExternalParam.getInstance().getStatus() == 0) {
                         mClassPageView.setEnabled(true);
                         if (message.parameters != null) {
@@ -113,7 +99,6 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                             mClassStartedWarningView.setText(getResources().getString(R.string.class_started_warning, teacherName));
                             mClassStartedWarningView.setVisibility(View.VISIBLE);
                         }
-                        mKnowledgeDetailModel = (KnowledgeDetailMessage) message.objectJson;
                         ExternalParam.getInstance().setStatus(1);
                     }
                     break;
@@ -128,14 +113,15 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                     FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
                         @Override
                         public void onFinished() {
-                            MQTT.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
+                            MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
                         }
                     }));
                     break;
                 }
                 case OPEN_DOCUMENT: {
                     if (ExternalParam.getInstance().getStatus() == 2) {
-                        String url = message.parameters.get("UrlContent");
+                        int childItem = Integer.valueOf(message.parameters.get(PushMessage.PARAM_CHILD_ITEM));
+                        int groupItem = Integer.valueOf(message.parameters.get(PushMessage.PARAM_GROUP_ITEM));
 //                        showLessonSample(url, ShowDocumentFragment.SYNC_MODE.SLAVE);
                     }
                     break;
@@ -144,11 +130,15 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                     FrameDialog.show(getChildFragmentManager(), ServerTesterFragment.newInstance());
                     break;
                 }
+                case PING: {
+                    MyMqttService.publishMessage(PushMessage.COMMAND.QUERY_CLASS,  (List<String>) null, null);
+                    break;
+                }
                 case QUERY_STATUS: {
                     if (ExternalParam.getInstance().getStatus() == 2)
-                        MQTT.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
+                        MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE,  (List<String>) null, null);
                     else
-                        MQTT.publishMessage(PushMessage.COMMAND.OFFLINE, (List<String>) null, null);
+                        MyMqttService.publishMessage(PushMessage.COMMAND.OFFLINE,  (List<String>) null, null);
                     break;
                 }
             }
@@ -164,10 +154,13 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.class_page_view:
-                MQTT.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
+                MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
                 ExternalParam.getInstance().setStatus(2);
-                if (mKnowledgeDetailModel != null) {
-                    LearnCasesActivity.startMe(getActivity(), mKnowledgeDetailModel);
+                if (mPushMessage != null && mPushMessage.parameters != null) {
+                    String knowledgeId = mPushMessage.parameters.get(PushMessage.KNOWLEDGE_ID);
+                    String knowledgeName = mPushMessage.parameters.get(PushMessage.KnowledgePointName);
+                    String teacherName = mPushMessage.parameters.get(PushMessage.TEACHER_NAME);
+                    LearnCasesActivity.startMe(getActivity(), knowledgeId, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE,teacherName);
                 }
                 break;
             case R.id.knowledge_page_view:

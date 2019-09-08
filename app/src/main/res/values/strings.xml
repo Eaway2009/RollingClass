@@ -53,7 +53,10 @@
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="add_knowledge">+任务</string>
-    <string name="not_publish">dai发布</string>
+    <string name="not_publish">待发布</string>
+    <string name="hand_up_request">举手提问</string>
+    <string name="pre_class_learning">课前学习</string>
+    <string name="after_class_learning">课后复习</string>
     <string name="class_record">上课记录</string>
     <string name="toast_crash">程序出错了, 错误报告提交, 我们将尽快修复该问题, 谢谢合作!</string>
     <string name="update_prompt">发现新版本，是否需要更新？</string>
@@ -78,6 +81,7 @@
     <string name="login_layout_text">欢迎登陆智慧课堂系统</string>
     <string name="class_exercise_result">课堂练习结果</string>
     <string name="class_started_warning">%1$s老师正在上课中，请立即进入！</string>
+    <string name="class_started">%1$s正在上课</string>
     <string name="insert_resources">插入资源</string>
     <string name="publish_success">发布成功</string>
     <string name="publish_fail">发布失败，请重试</string>

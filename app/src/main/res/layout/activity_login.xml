@@ -12,8 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="老师登录"
-        android:checked="false"
-        android:visibility="visible"
+        android:checked="true"
+        android:visibility="invisible"
         android:layout_centerInParent="true"/>
     <LinearLayout
         android:id="@+id/ip_layout"

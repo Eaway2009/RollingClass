@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.ExternalParam;
@@ -90,7 +91,7 @@ public class NetWorkTestFragment extends Fragment {
                     mSenderName =  message.parameters.get("UserName");
                     mMessageView.setText(String.format("【%s】正在测试网络....%s", mSenderName, sequenceNo));
                     message.parameters.put("UserName", mTargetName);
-                    MQTT.publishMessage(PushMessage.COMMAND.PING_TEST_REPLY, message.from, message.parameters);
+                    MyMqttService.publishMessage(PushMessage.COMMAND.PING_TEST_REPLY, message.from, message.parameters);
                     mButtonView.setVisibility(View.GONE);
                     break;
                 }
@@ -114,7 +115,7 @@ public class NetWorkTestFragment extends Fragment {
             HashMap<String, String> params = new HashMap<>();
             params.put("sequenceNo",  mSequenceNo + "");
             params.put("UserName", mTargetName);
-            MQTT.publishMessage(PushMessage.COMMAND.PING_TEST, mTargetID, params);
+            MyMqttService.publishMessage(PushMessage.COMMAND.PING_TEST, mTargetID, params);
 
             mMessageView.setText(String.format("测试终端:%s 发出:%d 收到:%d 丢失:%d", mSenderName, mSequenceNo, mReceiveNo, mMissCount));
 

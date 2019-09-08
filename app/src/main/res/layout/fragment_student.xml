@@ -13,16 +13,16 @@
             android:id="@+id/class_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/class_page"
-            android:paddingLeft="36dp"
-            android:paddingTop="6dp">
+            android:background="@drawable/class_page">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/class_page_icon"
+                android:gravity="center"
                 android:text="@string/learning_class"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="26sp" />
 
             <TextView
                 android:id="@+id/class_started_warning"
@@ -33,36 +33,37 @@
                 android:layout_marginBottom="50dp"
                 android:background="@drawable/class_warning"
                 android:gravity="center"
-                android:visibility="gone"
                 android:text="@string/class_started_warning"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:visibility="gone" />
         </FrameLayout>
 
-        <TextView
+        <LinearLayout
             android:id="@+id/knowledge_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/class_page_view"
-            android:background="@drawable/learning_page"
-            android:paddingLeft="36dp"
-            android:paddingTop="6dp"
-            android:text="@string/learning_seft"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:background="@drawable/learning_page">
 
-        <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/learning_page_icon"
+                android:gravity="center"
+                android:text="@string/learning_seft"
+                android:textColor="@color/white"
+                android:textSize="26sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/statics_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/knowledge_page_view"
             android:layout_alignBottom="@+id/class_page_view"
-            android:background="@drawable/statics_page"
-            android:paddingLeft="36dp"
-            android:paddingTop="6dp"
-            android:text="@string/statistics_title"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:background="@drawable/statistics_page"
+            android:orientation="vertical" />
     </RelativeLayout>
 
 </LinearLayout>

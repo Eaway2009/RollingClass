@@ -232,6 +232,32 @@ public class ScopeServer extends ServerRequest {
         return list;
     }
 
+    public List<ClassData> QureyClassByTeacherIDV2(String schoolID, String teacherID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("schoolID", schoolID);
+        params.put("teacherID", teacherID);
+        String response = sendRequest(getHostUrl() + "/class/QureyClassByTeacherIDV2/" + mToken, METHOD.GET, params);
+        List<ClassData> list = jsonToList(ClassData.class.getName(), response);
+        if (list == null)
+            return null;
+
+        for (ClassData classData : list) {
+            for (GroupData groupData : classData.Groups) {
+                ArrayList<StudentData> studentList = new ArrayList<>();
+                if (groupData != null && groupData.Students != null) {
+                    for (String studentID : groupData.Students) {
+                        StudentData studentData = getStudentData(studentID);
+                        if (studentData != null)
+                            studentList.add(studentData);
+                    }
+                }
+                groupData.StudentList = studentList;
+            }
+        }
+
+        return list;
+    }
+
     public StudentData getStudentData(String studentID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("studentID", studentID);

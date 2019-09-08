@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tanhd.library.mqtthttp.MQTT;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.library.smartpen.MyDot;
 import com.tanhd.library.smartpen.SmartPenView;
@@ -91,7 +92,7 @@ public class CommentAnswerPage extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        MQTT.publishMessage(PushMessage.COMMAND.COMMENT_END, (List<String>) null, null);
+        MyMqttService.publishMessage(PushMessage.COMMAND.COMMENT_END, (List<String>) null, null);
     }
 
     @Override
@@ -162,7 +163,7 @@ public class CommentAnswerPage extends Fragment {
         HashMap<String, String> params = new HashMap<>();
         params.put("Question", mQuestionData.toJSON().toString());
         params.put("Answer", mAnswerData.toJSON().toString());
-        MQTT.publishMessage(PushMessage.COMMAND.COMMENT_START, (List<String>) null, params);
+        MyMqttService.publishMessage(PushMessage.COMMAND.COMMENT_START, (List<String>) null, params);
         mHandler.sendEmptyMessageDelayed(0, 1000);
     }
 
@@ -187,7 +188,7 @@ public class CommentAnswerPage extends Fragment {
             to.add(studentData.ClassID);
         }
 
-        MQTT.publishMessage(PushMessage.COMMAND.MESSAGE, to, params);
+        MyMqttService.publishMessage(PushMessage.COMMAND.MESSAGE, to, params);
     }
 
     private void showFragment(Fragment fragment) {
@@ -266,7 +267,7 @@ public class CommentAnswerPage extends Fragment {
         public void onReceivePenHandwritingColor(int color) {
             HashMap<String, String> params = new HashMap<>();
             params.put("color", String.valueOf(color));
-            MQTT.publishMessage(PushMessage.COMMAND.SMART_PEN_COLOR, (List<String>) null, params);
+            MyMqttService.publishMessage(PushMessage.COMMAND.SMART_PEN_COLOR,  (List<String>) null, params);
         }
     };
 
@@ -292,7 +293,7 @@ public class CommentAnswerPage extends Fragment {
                 if (array.length() > 0) {
                     HashMap<String, String> params = new HashMap<>();
                     params.put("data", array.toString());
-                    MQTT.publishMessage(PushMessage.COMMAND.SMART_PEN_DOT, (List<String>) null, params);
+                    MyMqttService.publishMessage(PushMessage.COMMAND.SMART_PEN_DOT, (List<String>) null, params);
                 }
 
                 sendEmptyMessageDelayed(0, 1000);

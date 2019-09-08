@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.VideoPlayerActivity;
@@ -83,13 +84,11 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        MQTT.register(mqttListener);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        MQTT.unregister(mqttListener);
     }
 
     private void notifyEnterClass(String studentID) {
@@ -107,7 +106,7 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
         params.put("KnowledgePointName", knowledgeData.KnowledgePointName);
         params.put("LessonSampleName", lessonSampleData.LessonSampleName);
         params.put("UrlContent", lessonSampleData.UrlContent);
-        MQTT.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
+        MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
     }
 
     private MqttListener mqttListener = new MqttListener() {

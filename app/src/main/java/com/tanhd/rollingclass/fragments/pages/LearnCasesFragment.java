@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,31 +24,21 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.KeyConstants;
-import com.tanhd.rollingclass.fragments.ClassBeginFragment;
 import com.tanhd.rollingclass.fragments.ClassSelectorFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
-import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
 import com.tanhd.rollingclass.fragments.WaitAnswerFragment;
-import com.tanhd.rollingclass.fragments.kowledge.KnowledgeEditingFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
-import com.tanhd.rollingclass.server.data.KnowledgeData;
-import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
-import com.tanhd.rollingclass.server.data.KnowledgeModel;
-import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.TeacherData;
-import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
-import com.tanhd.rollingclass.views.ClassStudentsAdapter;
 import com.tanhd.rollingclass.views.LessonItemAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,18 +50,31 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     private TextView mTvInsertResource;
     private TextView mTvExerciseResult;
     private TextView mTvClassBegin;
+    private TextView mTvClassStatus;
     private PagesListener mListener;
 
     private LearnCasesContainerFragment mLearnCasesContainerFragment;
-    private KnowledgeDetailMessage mKnowledgeDetailMessage;
     private TextView mKnowledgeNameTextView;
     private ExpandableListView mExpandableListView;
     private LessonItemAdapter mAdapter;
+    private String mKnowledgeId;
+    private String mKnowledgeDetailName;
+    private String mTeacherName;
+    private int mClassPageType;
 
-    public static LearnCasesFragment newInstance(KnowledgeDetailMessage data, LearnCasesFragment.PagesListener listener) {
+    private boolean init = true;
+    private int mKnowledgeStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
+    private Button mPreClassLearningButton;
+    private Button mAfterClassLearningButton;
+    private View mLearningButtonsLayout;
+
+    public static LearnCasesFragment newInstance(String knowledgeId, String knowledgeName, int pageType, String teacherName, LearnCasesFragment.PagesListener listener) {
         Bundle args = new Bundle();
         LearnCasesFragment page = new LearnCasesFragment();
-        args.putSerializable(LearnCasesActivity.PARAM_KNOWLEDGE_DETAIL_MESSAGE, data);
+        args.putSerializable(LearnCasesActivity.PARAM_KNOWLEDGE_ID, knowledgeId);
+        args.putSerializable(LearnCasesActivity.PARAM_KNOWLEDGE_NAME, knowledgeName);
+        args.putSerializable(LearnCasesActivity.PARAM_TEACHER_NAME, teacherName);
+        args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, pageType);
         page.setArguments(args);
         page.setListener(listener);
         return page;
@@ -95,7 +96,10 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
 
     private void initParams() {
         Bundle args = getArguments();
-        mKnowledgeDetailMessage = (KnowledgeDetailMessage) args.getSerializable(LearnCasesActivity.PARAM_KNOWLEDGE_DETAIL_MESSAGE);
+        mClassPageType = args.getInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
+        mKnowledgeId = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_ID);
+        mTeacherName = args.getString(LearnCasesActivity.PARAM_TEACHER_NAME);
+        mKnowledgeDetailName = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME);
     }
 
     private void initViews(View view) {
@@ -106,15 +110,34 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         mTvInsertResource = view.findViewById(R.id.tv_insert_resource);
         mTvExerciseResult = view.findViewById(R.id.tv_exercise_result);
         mTvClassBegin = view.findViewById(R.id.tv_class_begin);
+        mTvClassStatus = view.findViewById(R.id.tv_in_class);
+        mLearningButtonsLayout = view.findViewById(R.id.learning_buttons_layout);
+        mPreClassLearningButton = view.findViewById(R.id.pre_class_learning_tv);
+        mAfterClassLearningButton = view.findViewById(R.id.after_class_learning_tv);
         initListViews(view);
 
         mTvInsertResource.setOnClickListener(this);
         mTvExerciseResult.setOnClickListener(this);
         mTvClassBegin.setOnClickListener(this);
+        mPreClassLearningButton.setOnClickListener(this);
+        mAfterClassLearningButton.setOnClickListener(this);
         view.findViewById(R.id.back_button).setOnClickListener(this);
 
-        mLearnCasesContainerFragment = LearnCasesContainerFragment.newInstance(1, mPagesListener);
+        mLearnCasesContainerFragment = LearnCasesContainerFragment.newInstance(mClassPageType, mPagesListener);
         getFragmentManager().beginTransaction().replace(R.id.content_layout, mLearnCasesContainerFragment).commit();
+        if (mClassPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE) {
+            mTvClassBegin.setVisibility(View.GONE);
+            mTvClassStatus.setVisibility(View.GONE);
+            mLearningButtonsLayout.setVisibility(View.VISIBLE);
+        } else if (mClassPageType == KeyConstants.ClassPageType.TEACHER_CLASS_PAGE) {
+            mTvClassBegin.setVisibility(View.VISIBLE);
+            mTvClassStatus.setVisibility(View.GONE);
+            mLearningButtonsLayout.setVisibility(View.GONE);
+        } else {
+            mTvClassBegin.setVisibility(View.GONE);
+            mTvClassStatus.setVisibility(View.GONE);
+            mLearningButtonsLayout.setVisibility(View.GONE);
+        }
     }
 
     private void initListViews(View view) {
@@ -129,8 +152,8 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
 
 
     private void setData() {
-        if (mKnowledgeDetailMessage != null) {
-            mKnowledgeNameTextView.setText(mKnowledgeDetailMessage.knowledge_point_name);
+        mKnowledgeNameTextView.setText(mKnowledgeDetailName);
+        if(init) {
             new InitDataTask().execute();
         }
     }
@@ -154,6 +177,20 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 break;
             case R.id.tv_exercise_result:
                 break;
+            case R.id.after_class_learning_tv:
+                mPreClassLearningButton.setEnabled(true);
+                mAfterClassLearningButton.setEnabled(false);
+                mKnowledgeStatus = KeyConstants.KnowledgeStatus.AFTER_CLASS;
+                init = true;
+                new InitDataTask().execute();
+                break;
+            case R.id.pre_class_learning_tv:
+                mPreClassLearningButton.setEnabled(false);
+                mAfterClassLearningButton.setEnabled(true);
+                mKnowledgeStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
+                init = true;
+                new InitDataTask().execute();
+                break;
             case R.id.tv_class_begin:
                 FrameDialog.showLittleDialog(getChildFragmentManager(), ClassSelectorFragment.newInstance(new ClassSelectorFragment.OnClassListener() {
                     @Override
@@ -164,6 +201,10 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                         classData.resetStudentState(0);
                         ExternalParam.getInstance().setClassData(classData);
                         notifyEnterClass(null);
+
+                        mTvClassBegin.setVisibility(View.GONE);
+                        mTvClassStatus.setVisibility(View.VISIBLE);
+                        mTvClassStatus.setText(getResources().getString(R.string.class_started, classData.ClassName));
                     }
                 }));
                 break;
@@ -203,12 +244,6 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
 
                     classData.setStudentState(message.from, (message.command == PushMessage.COMMAND.ONLINE ? 1 : 0));
                     break;
-                case QUERY_CLASS:
-                    if (ExternalParam.getInstance().getStatus() == 0)
-                        return;
-
-                    notifyEnterClass(message.from);
-                    break;
                 case ANSWER_COMPLETED:
                     String content = message.parameters.get("content");
                     try {
@@ -240,37 +275,63 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         params.put(PushMessage.CLASS_NAME, classData.ClassName);
         params.put(PushMessage.SUBJECT_NAME, AppUtils.getSubjectNameByCode(teacherData.SubjectCode));
         params.put(PushMessage.TEACHER_NAME, teacherData.Username);
-        params.put(PushMessage.KnowledgePointName, mKnowledgeDetailMessage.knowledge_point_name);
-        params.put(PushMessage.KNOWLEDGE_ID, mKnowledgeDetailMessage.knowledge_id);
-        params.put(PushMessage.LESSON_SAMPLE_NAME, mKnowledgeDetailMessage.knowledge_point_name);
+        params.put(PushMessage.KnowledgePointName, mKnowledgeDetailName);
+        params.put(PushMessage.KNOWLEDGE_ID, mKnowledgeId);
+        params.put(PushMessage.LESSON_SAMPLE_NAME, mKnowledgeDetailName);
 //        params.put("UrlContent", mKnowledgeDetailMessage.UrlContent);
-        MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params, mKnowledgeDetailMessage);
+        MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
     }
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         if (groupPosition < mAdapter.getGroupCount() && mAdapter.getGroup(groupPosition) != null) {
-            KnowledgeLessonSample group = mAdapter.getGroup(groupPosition);
-            if (childPosition < group.getChildren().size() && group.getChildren().get(childPosition) != null) {
-                ResourceModel item = group.getChildren().get(childPosition);
-                mLearnCasesContainerFragment.showResource(item);
-            }
+            callClickItem(groupPosition, childPosition);
         }
-        return false;
+        return true;
     }
 
+    public void callClickItem(int groupPosition, int childPosition) {
+        KnowledgeLessonSample group = mAdapter.getGroup(groupPosition);
+        if (childPosition < group.getChildren().size() && group.getChildren().get(childPosition) != null) {
+            ResourceModel item = group.getChildren().get(childPosition);
+            mLearnCasesContainerFragment.showResource(item);
+            if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassStatus.CLASS_ING) {
+                HashMap<String, String> params = new HashMap<>();
+                params.put(PushMessage.PARAM_GROUP_ITEM, groupPosition + "");
+                params.put(PushMessage.PARAM_CHILD_ITEM, childPosition + "");
+                MyMqttService.publishMessage(PushMessage.COMMAND.OPEN_DOCUMENT,  (List<String>) null, params);
+            }
+        }
+    }
+
+    public void showItem(int groupPosition, int childPosition){
+        KnowledgeLessonSample group = mAdapter.getGroup(groupPosition);
+        if (childPosition < group.getChildren().size() && group.getChildren().get(childPosition) != null) {
+            ResourceModel item = group.getChildren().get(childPosition);
+            mLearnCasesContainerFragment.showResource(item);
+        }
+    }
 
     private class InitDataTask extends AsyncTask<Void, Void, List<KnowledgeLessonSample>> {
 
         @Override
         protected List<KnowledgeLessonSample> doInBackground(Void... voids) {
-            return ScopeServer.getInstance().QuerySampleByKnowledge(mKnowledgeDetailMessage.knowledge_id, 2);
+            if (mClassPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE) {
+                return ScopeServer.getInstance().QuerySampleByKnowledge(mKnowledgeId, mKnowledgeStatus);
+            } else {
+                return ScopeServer.getInstance().QuerySampleByKnowledge(mKnowledgeId, 2);
+            }
         }
 
         @Override
         protected void onPostExecute(List<KnowledgeLessonSample> documentList) {
             if (documentList != null && documentList.size() > 0) {
                 mAdapter.setDataList(documentList);
+                mExpandableListView.expandGroup(0);
+                if (init) {
+                    callClickItem(0, 0);
+                }
+                init = false;
             }
         }
     }

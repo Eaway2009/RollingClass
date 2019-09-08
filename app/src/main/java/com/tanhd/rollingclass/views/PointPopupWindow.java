@@ -60,11 +60,11 @@ public class PointPopupWindow {
 
         List<PointType> list = new ArrayList<>();
         if (type == TYPE_SETTING_1) {
-            list.add(new PointType(ITEM_EXRCISE, R.mipmap.icon_exercise, R.string.test_study));
-            list.add(new PointType(ITEM_ANSWER, R.mipmap.icon_answer, R.string.answer_question));
+            list.add(new PointType(ITEM_EXRCISE, R.drawable.icon_exercise, R.string.test_study));
+            list.add(new PointType(ITEM_ANSWER, R.drawable.icon_answer, R.string.answer_question));
         } else if (type == TYPE_SETTING_2) {
-            list.add(new PointType(ITEM_LOCK, R.mipmap.icon_lock_enable, R.string.lock_enable));
-            list.add(new PointType(ITEM_MUTE, R.mipmap.icon_mute_enable, R.string.mute_enable));
+            list.add(new PointType(ITEM_LOCK, R.drawable.icon_lock_enable, R.string.lock_enable));
+            list.add(new PointType(ITEM_MUTE, R.drawable.icon_mute_enable, R.string.mute_enable));
         }
 
         if (list != null) {
@@ -87,18 +87,18 @@ public class PointPopupWindow {
 
                         if (obj.type == ITEM_LOCK) {
                             if (isClick) {
-                                imageView.setBackgroundResource(R.mipmap.icon_lock_enable);
+                                imageView.setBackgroundResource(R.drawable.icon_lock_enable);
                                 titleText.setText(mContext.getString(R.string.lock_enable));
                             } else {
-                                imageView.setBackgroundResource(R.mipmap.icon_lock_unable);
+                                imageView.setBackgroundResource(R.drawable.icon_lock_unable);
                                 titleText.setText(mContext.getString(R.string.lock_unable));
                             }
                         } else if (obj.type == ITEM_MUTE) {
                             if ((boolean)imageView.getTag()) {
-                                imageView.setBackgroundResource(R.mipmap.icon_mute_enable);
+                                imageView.setBackgroundResource(R.drawable.icon_mute_enable);
                                 titleText.setText(mContext.getString(R.string.mute_enable));
                             } else {
-                                imageView.setBackgroundResource(R.mipmap.icon_mute_unable);
+                                imageView.setBackgroundResource(R.drawable.icon_mute_unable);
                                 titleText.setText(mContext.getString(R.string.mute_unable));
                             }
                         }

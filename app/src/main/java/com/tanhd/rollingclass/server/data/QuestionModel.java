@@ -25,6 +25,7 @@ public class QuestionModel extends BaseJsonClass {
     public long update_time;
     public int QuestionType;
     public ContextData context;
+    public boolean isChecked;
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {

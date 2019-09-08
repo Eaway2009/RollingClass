@@ -15,21 +15,41 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.fragments.ClassSelectorFragment;
+import com.tanhd.rollingclass.fragments.FrameDialog;
+import com.tanhd.rollingclass.fragments.NewSetFragment;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
 import com.tanhd.rollingclass.fragments.VideoPlayerFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
 import com.tanhd.rollingclass.fragments.resource.ResourceBaseFragment;
 import com.tanhd.rollingclass.fragments.resource.ResourceGrideFragment;
+import com.tanhd.rollingclass.server.data.ClassData;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.ResourceModel;
+import com.tanhd.rollingclass.server.data.StudentData;
+import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.PointPopupWindow;
 import com.tanhd.rollingclass.views.PointPopupWindow.PopupClickCallBack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class LearnCasesContainerFragment extends Fragment implements OnClickListener {
     //1. ppt 2. doc 3. image 4. 微课 5. 习题
@@ -54,10 +74,18 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private VideoPlayerFragment mVideoPlayerFragment;
     private Fragment mCurrentFragment;
     private int mResourceType;
+    private int mPageType;
+    private View mHandsupLayout;
+    private View mStudentHandsupLayout;
+    private ImageView mShowOrHideIcon;
+    private LinearLayout mHandsupListLayout;
+    private View mHandsupHideLayout;
+
+    private List<String> mHandsupStudentName = new ArrayList<>();
 
     public static LearnCasesContainerFragment newInstance(int typeId, PagesListener listener) {
         Bundle args = new Bundle();
-        args.putInt("typeId", typeId);
+        args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, typeId);
         LearnCasesContainerFragment page = new LearnCasesContainerFragment();
         page.setArguments(args);
         page.setListener(listener);
@@ -72,8 +100,16 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_learncases_container, container, false);
+
+        EventBus.getDefault().register(this);
+        initParams();
         iniViews(view);
         return view;
+    }
+
+    private void initParams() {
+        Bundle args = getArguments();
+        mPageType = args.getInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE);
     }
 
     private void iniViews(View view) {
@@ -81,9 +117,17 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         mIvSetting2 = view.findViewById(R.id.iv_set2);
         mIvFullScreen = view.findViewById(R.id.iv_full_screen);
         mRlSettingLayout = view.findViewById(R.id.rl_setting);
+        mHandsupLayout = view.findViewById(R.id.handsup_layout);
+        mHandsupHideLayout = view.findViewById(R.id.handsup_hide_layout);
+        mHandsupListLayout = view.findViewById(R.id.handsup_list_layout);
+        mStudentHandsupLayout = view.findViewById(R.id.student_handsup_layout);
+        mShowOrHideIcon = view.findViewById(R.id.show_or_hide_icon);
         mIvSetting1.setOnClickListener(this);
         mIvSetting2.setOnClickListener(this);
         mIvFullScreen.setOnClickListener(this);
+        mStudentHandsupLayout.setOnClickListener(this);
+        mHandsupLayout.setOnClickListener(this);
+        mHandsupHideLayout.setOnClickListener(this);
 
         mPopupWindow1 = new PointPopupWindow();
         mPopupWindow1.create(getActivity(), PointPopupWindow.TYPE_SETTING_1);
@@ -91,6 +135,26 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         mPopupWindow2 = new PointPopupWindow();
         mPopupWindow2.create(getActivity(), PointPopupWindow.TYPE_SETTING_2);
         mPopupWindow2.setmListener(clickCallBack);
+
+        if (mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) {
+            mStudentHandsupLayout.setVisibility(View.VISIBLE);
+            mHandsupLayout.setVisibility(View.GONE);
+            mHandsupHideLayout.setVisibility(View.GONE);
+            mIsFullScreen = true;
+            fullScreen();
+        } else if (mPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE) {
+            mRlSettingLayout.setVisibility(View.GONE);
+            mIvFullScreen.setVisibility(View.GONE);
+            mHandsupLayout.setVisibility(View.GONE);
+            mHandsupHideLayout.setVisibility(View.GONE);
+            mStudentHandsupLayout.setVisibility(View.GONE);
+        } else {
+            mIvFullScreen.setVisibility(View.VISIBLE);
+            mRlSettingLayout.setVisibility(View.VISIBLE);
+            mHandsupLayout.setVisibility(View.GONE);
+            mHandsupHideLayout.setVisibility(View.VISIBLE);
+            mStudentHandsupLayout.setVisibility(View.GONE);
+        }
     }
 
     PopupClickCallBack clickCallBack = new PopupClickCallBack() {
@@ -122,20 +186,39 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 mPopupWindow1.dimissPopup();
                 mPopupWindow2.showPopup(v);
                 break;
-            case R.id.iv_full_screen:
-                if (mListener != null) {
-                    mIsFullScreen = !mIsFullScreen;
-                    mListener.onFullScreen(mIsFullScreen);
-                    if (mIsFullScreen) {
-                        mIvFullScreen.setBackgroundResource(R.mipmap.icon_fullscreen_unable);
-                    } else {
-                        mIvFullScreen.setBackgroundResource(R.mipmap.icon_fullscreen_enable);
-                    }
-                    mRlSettingLayout.setVisibility(mIsFullScreen == true ? View.GONE : View.VISIBLE);
-                    mPopupWindow1.dimissPopup();
-                    mPopupWindow2.dimissPopup();
-                }
+            case R.id.handsup_hide_layout:
+                mHandsupLayout.setVisibility(View.VISIBLE);
+                mHandsupHideLayout.setVisibility(View.GONE);
                 break;
+            case R.id.handsup_layout:
+                mHandsupLayout.setVisibility(View.GONE);
+                mHandsupHideLayout.setVisibility(View.VISIBLE);
+                break;
+            case R.id.student_handsup_layout:
+                HashMap<String, String> hashMap = new HashMap<>();
+                UserData userData = ExternalParam.getInstance().getUserData();
+                StudentData studentData = (StudentData) userData.getUserData();
+                hashMap.put(PushMessage.PARAM_STUDENT_NAME, studentData.Username);
+                MyMqttService.publishMessage(PushMessage.COMMAND.HAND_UP, (List<String>) null, hashMap);
+                break;
+            case R.id.iv_full_screen:
+                mIsFullScreen = !mIsFullScreen;
+                fullScreen();
+                break;
+        }
+    }
+
+    private void fullScreen() {
+        if (mListener != null) {
+            mListener.onFullScreen(mIsFullScreen);
+            if (mIsFullScreen) {
+                mIvFullScreen.setBackgroundResource(R.drawable.icon_fullscreen_unable);
+            } else {
+                mIvFullScreen.setBackgroundResource(R.drawable.icon_fullscreen_enable);
+            }
+            mRlSettingLayout.setVisibility(mIsFullScreen == true ? View.GONE : View.VISIBLE);
+            mPopupWindow1.dimissPopup();
+            mPopupWindow2.dimissPopup();
         }
     }
 
@@ -148,7 +231,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
      */
     public void showFragment(int moduleId, ResourceModel resourceModel) {
         Fragment fragment = getFragment(moduleId, resourceModel);
-        if(mCurrentShowModuleId !=moduleId) {
+        if (mCurrentShowModuleId != moduleId) {
             getChildFragmentManager().beginTransaction().replace(R.id.container_layout, fragment).commit();
         }
         mCurrentShowModuleId = moduleId;
@@ -159,7 +242,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
             case MODULE_ID_SHOW_DOCUMENT:
                 if (mDocumentPageFragment == null) {
                     mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
-                }else {
+                } else {
                     mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
                 }
                 return mDocumentPageFragment;
@@ -167,25 +250,25 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 if (mVideoPlayerFragment == null) {
                     mVideoPlayerFragment = VideoPlayerFragment.newInstance(resourceModel.resource_id, resourceModel.url);
                 }
-                return mDocumentPageFragment;
+                return mVideoPlayerFragment;
             case MODULE_ID_SHOW_DOC:
                 if (mDocumentPageFragment == null) {
                     mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
-                }else {
+                } else {
                     mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
                 }
                 return mDocumentPageFragment;
             case MODULE_ID_SHOW_IMAGE:
                 if (mDocumentPageFragment == null) {
                     mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
-                }else {
+                } else {
                     mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
                 }
                 return mDocumentPageFragment;
             case MODULE_ID_SHOW_QUESTION:
                 if (mDocumentPageFragment == null) {
                     mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
-                }else {
+                } else {
                     mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
                 }
                 return mDocumentPageFragment;
@@ -203,4 +286,46 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         void onFullScreen(boolean isFull);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleEventBus(PushMessage pushMessage) {
+        if (pushMessage != null) {
+            mqttListener.messageArrived(pushMessage);
+        }
+    }
+
+    private MqttListener mqttListener = new MqttListener() {
+        @Override
+        public void messageArrived(PushMessage message) {
+            switch (message.command) {
+                case HAND_UP:
+                    String studentName = message.parameters.get(PushMessage.PARAM_STUDENT_NAME);
+                    if (mHandsupStudentName.size() > 0) {
+                        for (String name : mHandsupStudentName) {
+                            if (name.equals(studentName)) {
+                                return;
+                            }
+                        }
+                    }
+                    mHandsupStudentName.add(studentName);
+                    Toast.makeText(getActivity(), studentName+"举手提问", Toast.LENGTH_SHORT).show();
+                    TextView handUpNameView = (TextView) getLayoutInflater().inflate(R.layout.view_handsup_name, null);
+                    handUpNameView.setText(studentName);
+                    mHandsupListLayout.addView(handUpNameView);
+                    break;
+            }
+        }
+
+        @Override
+        public void networkTimeout(boolean flag) {
+
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+
+        EventBus.getDefault().unregister(this);
+    }
 }

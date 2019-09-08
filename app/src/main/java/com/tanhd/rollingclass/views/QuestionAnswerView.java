@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tanhd.library.mqtthttp.MQTT;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.MSG_TYPE;
@@ -101,7 +102,7 @@ public class QuestionAnswerView extends ScrollView {
                 params.put("Answer", mAnswerData.toJSON().toString());
                 params.put("type", MSG_TYPE.COMMENT_REQUEST.ordinal() + "");
 
-                MQTT.publishMessage(PushMessage.COMMAND.MESSAGE, studentData.StudentID, params);
+                MyMqttService.publishMessage(PushMessage.COMMAND.MESSAGE, studentData.StudentID, params);
                 Toast.makeText(getContext().getApplicationContext(), "发起点评成功！ 指派点评人：" + studentData.Username, Toast.LENGTH_LONG).show();
             }
         }));

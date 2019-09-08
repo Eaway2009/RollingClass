@@ -102,8 +102,17 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
             return position;
         }
 
+        public void checkItem(int position){
+            for(QuestionModel model: mQuestionList){
+                model.isChecked = false;
+            }
+            QuestionModel checkItem = mQuestionList.get(position);
+            checkItem.isChecked = true;
+            notifyDataSetChanged();
+        }
+
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             final QuestionModel question = mQuestionList.get(position);
             View view = convertView;
             if (view == null) {
@@ -172,6 +181,9 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(mListener!=null){
+                        if(isChecked){
+                            checkItem(position);
+                        }
                         mListener.itemChecked(null, question);
                     }
                 }

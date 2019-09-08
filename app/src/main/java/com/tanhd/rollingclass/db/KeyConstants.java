@@ -6,6 +6,16 @@ public class KeyConstants {
         public static final int AT_CLASS = 2;
         public static final int AFTER_CLASS = 3;
     }
+    public class ClassPageType {
+        public static final int TEACHER_CLASS_PAGE = 1;
+        public static final int STUDENT_LEARNING_PAGE = 2;
+        public static final int STUDENT_CLASS_PAGE = 3;
+    }
+    public class ClassStatus {
+        public static final int CLASS_UNABLE = 0;
+        public static final int CLASS_WARNING = 1;
+        public static final int CLASS_ING = 2;
+    }
     public class ResourceType {
         public static final int PPT_TYPE = 1;
         public static final int WORD_TYPE = 2;

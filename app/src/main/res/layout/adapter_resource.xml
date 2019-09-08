@@ -39,7 +39,7 @@
                 android:id="@+id/iv_like"
                 android:layout_width="10dp"
                 android:layout_height="10dp"
-                android:background="@mipmap/icon_unlike"/>
+                android:background="@drawable/icon_unlike"/>
 
             <TextView
                 android:layout_width="wrap_content"

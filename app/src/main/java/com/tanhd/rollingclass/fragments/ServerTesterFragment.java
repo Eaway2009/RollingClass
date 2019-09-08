@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -63,7 +64,7 @@ public class ServerTesterFragment extends Fragment {
         super.onDetach();
         MQTT.unregister(mqttListener);
         if (ExternalParam.getInstance().getUserData().isTeacher()) {
-            MQTT.publishMessage(PushMessage.COMMAND.SERVER_PING_STOP, (List<String>) null, null);
+            MyMqttService.publishMessage(PushMessage.COMMAND.SERVER_PING_STOP, (List<String>) null, null);
         }
     }
 

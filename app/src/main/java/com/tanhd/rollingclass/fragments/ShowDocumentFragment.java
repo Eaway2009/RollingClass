@@ -22,6 +22,7 @@ import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageScrollListener;
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
+import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.RequestCallback;
@@ -185,7 +186,7 @@ public class ShowDocumentFragment extends Fragment {
         if (mSyncMode != SYNC_MODE.MASTER)
             return;
 
-        MQTT.publishMessage(command, to, data);
+        MyMqttService.publishMessage(command, to, data);
     }
 
     private OnPageScrollListener mPageScrollListener = new OnPageScrollListener() {
@@ -195,7 +196,7 @@ public class ShowDocumentFragment extends Fragment {
             params.put("page", String.valueOf(page));
             params.put("positionOffset", String.valueOf(positionOffset));
             params.put("scale", String.valueOf(webView.getZoom()));
-            MQTT.publishMessage(PushMessage.COMMAND.SCROLL_TO, (List<String>) null, params);
+            MyMqttService.publishMessage(PushMessage.COMMAND.SCROLL_TO, (List<String>) null, params);
         }
     };
 

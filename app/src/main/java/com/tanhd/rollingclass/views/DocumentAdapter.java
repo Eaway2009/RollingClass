@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
@@ -32,14 +33,16 @@ import java.util.List;
 
 public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
+    private boolean mIsTeacher;
     private Activity mContext;
     private List<KnowledgeDetailMessage> mDataList = new ArrayList<>();
 
     private Callback mListener;
 
-    public DocumentAdapter(Activity context, Callback callback) {
+    public DocumentAdapter(Activity context, boolean isTeacher, Callback callback) {
         mContext = context;
         mListener = callback;
+        mIsTeacher = isTeacher;
     }
 
     public void setData(List<KnowledgeDetailMessage> datas) {
@@ -91,7 +94,11 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.layout_content:
-                        LearnCasesActivity.startMe(mContext, data);
+                        if (mIsTeacher) {
+                            LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
+                        } else {
+                            LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE);
+                        }
                         break;
                     case R.id.more_bottom:
                         moreBottomView.setVisibility(View.GONE);
