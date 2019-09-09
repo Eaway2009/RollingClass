@@ -221,14 +221,16 @@ public class LearnCasesActivity extends AppCompatActivity {
                     break;
                 }
                 case QUESTIONING: {
-                    String examID = message.parameters.get("examID");
-                    final String teacherID = message.parameters.get("teacherID");
-                    FrameDialog.fullShow(getSupportFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
-                        @Override
-                        public void onFinished() {
-                            MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
-                        }
-                    }));
+                    if(ExternalParam.getInstance().getStatus() == 2 && !mUserData.isTeacher()) {
+                        String examID = message.parameters.get("examID");
+                        final String teacherID = message.parameters.get("teacherID");
+                        FrameDialog.fullShow(getSupportFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
+                            @Override
+                            public void onFinished() {
+                                MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
+                            }
+                        }));
+                    }
                     break;
                 }
                 case OPEN_DOCUMENT: {

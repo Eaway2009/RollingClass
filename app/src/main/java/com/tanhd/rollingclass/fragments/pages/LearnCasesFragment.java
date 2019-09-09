@@ -25,6 +25,7 @@ import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.ClassSelectorFragment;
+import com.tanhd.rollingclass.fragments.ExamFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.WaitAnswerFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -67,6 +68,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     private Button mPreClassLearningButton;
     private Button mAfterClassLearningButton;
     private View mLearningButtonsLayout;
+    private ClassData mClassData;
 
     public static LearnCasesFragment newInstance(String knowledgeId, String knowledgeName, int pageType, String teacherName, LearnCasesFragment.PagesListener listener) {
         Bundle args = new Bundle();
@@ -196,6 +198,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                     @Override
                     public void onClassSelected(ClassData classData) {
 //                        MQTT.getInstance().subscribe(classData.ClassID);
+                        mClassData = classData;
                         MyMqttService.subscribe(classData.ClassID);
                         ExternalParam.getInstance().setStatus(2);
                         classData.resetStudentState(0);
@@ -256,6 +259,19 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                     }
 
                     break;
+                case QUESTIONING: {
+                    if(ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
+                        String examID = message.parameters.get("examID");
+                        final String teacherID = message.parameters.get("teacherID");
+                        FrameDialog.fullShow(getFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
+                            @Override
+                            public void onFinished() {
+                                MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
+                            }
+                        }));
+                    }
+                    break;
+                }
             }
         }
 

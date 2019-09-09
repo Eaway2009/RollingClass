@@ -20,4 +20,6 @@ public class StudentData extends BaseJsonClass {
         public int Status;           //学生状态   0:离线   1:在线
         public SchoolData School;
         public String Token;
+
+
 }

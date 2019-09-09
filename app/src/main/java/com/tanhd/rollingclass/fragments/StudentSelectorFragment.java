@@ -3,12 +3,15 @@ package com.tanhd.rollingclass.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +28,8 @@ import java.util.List;
 import java.util.Random;
 
 public class StudentSelectorFragment extends Fragment {
+    private ClassData mClassData;
+
     public static interface StudentSelectListener {
         void onStudentSelected(ArrayList<StudentData> studentList);
     }
@@ -32,6 +37,7 @@ public class StudentSelectorFragment extends Fragment {
     private static class Args implements Serializable {
         public boolean single;
         public HashSet<String> filter;
+        public ClassData classData;
     }
 
     private StudentSelectListener mListener;
@@ -54,6 +60,20 @@ public class StudentSelectorFragment extends Fragment {
         return fragment;
     }
 
+    public static StudentSelectorFragment newInstance(boolean single, HashSet<String> filter, ClassData classData, StudentSelectListener listener) {
+        Args data = new Args();
+        data.single = single;
+        data.filter = filter;
+        data.classData = classData;
+
+        Bundle args = new Bundle();
+        args.putSerializable("args", data);
+        StudentSelectorFragment fragment = new StudentSelectorFragment();
+        fragment.setArguments(args);
+        fragment.setListener(listener);
+        return fragment;
+    }
+
     public void setListener(StudentSelectListener listener) {
         this.mListener = listener;
     }
@@ -63,6 +83,7 @@ public class StudentSelectorFragment extends Fragment {
         Args args = (Args) getArguments().get("args");
         isSingle = args.single;
         mFilter = args.filter;
+        mClassData = args.classData;
 
         mRootView = inflater.inflate(R.layout.fragment_student_selector, container, false);
         init(mRootView);
@@ -76,12 +97,12 @@ public class StudentSelectorFragment extends Fragment {
         } else {
             askLayout.setVisibility(View.VISIBLE);
             Button btn = view.findViewById(R.id.btn_confirm);
-            Button allAskBtn = view.findViewById(R.id.btn_all_ask);
+            CheckBox allAskBtn = view.findViewById(R.id.btn_all_ask);
             Button randomAskBtn = view.findViewById(R.id.btn_random_ask);
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dismiss();
+                    onStudentCheck();
                 }
             });
             allAskBtn.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +112,7 @@ public class StudentSelectorFragment extends Fragment {
                     for (GroupData data : mAllGroupList) {
                         mSelList.addAll(data.StudentList);
                     }
-                    dismiss();
+                    onStudentCheck();
                 }
             });
             randomAskBtn.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +125,7 @@ public class StudentSelectorFragment extends Fragment {
                         List<StudentData> studentList = mAllGroupList.get(x).StudentList;
                         int y = random.nextInt(studentList.size());
                         mSelList.add(studentList.get(y));
-                        dismiss();
+                        onStudentCheck();
                     } catch (Exception e) {
 
                     }
@@ -113,99 +134,105 @@ public class StudentSelectorFragment extends Fragment {
         }
 
         ViewGroup layoutView = view.findViewById(R.id.layout);
-        ClassData classData = ExternalParam.getInstance().getClassData();
-        if (classData == null) {
-            Toast.makeText(getContext().getApplicationContext(), "请先选择班级后再进行操作!", Toast.LENGTH_SHORT).show();
-            dismiss();
-            return;
-        }
 
         layoutView.removeAllViews();
-        TextView classNameView = view.findViewById(R.id.class_name);
 
-        classNameView.setText(classData.ClassName);
-        if (classData.Groups == null) {
+        if (mClassData != null && mClassData.Groups == null) {
             return;
         }
         mAllGroupList.clear();
-        mAllGroupList.addAll(classData.Groups);
-        for (GroupData groupData : classData.Groups) {
+        mAllGroupList.addAll(mClassData.Groups);
+        for (GroupData groupData : mClassData.Groups) {
             final ViewGroup viewGroup = (ViewGroup) getLayoutInflater().inflate(R.layout.item_student_selector_group, layoutView, false);
-            TextView groupName = viewGroup.findViewById(R.id.group_name);
+            CheckBox groupName = viewGroup.findViewById(R.id.group_name);
+            final GridView studentListLayout = viewGroup.findViewById(R.id.student_list_layout);
             groupName.setText(groupData.GroupName);
+            groupName.setTag(groupData.StudentList);
             groupName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ViewGroup layout = viewGroup.findViewById(R.id.container);
-                    for (int i = 0; i < layout.getChildCount(); i++) {
-                        View studentView = layout.getChildAt(i);
-                        studentView.callOnClick();
+                    if (studentListLayout.getVisibility() == View.VISIBLE) {
+                        studentListLayout.setVisibility(View.GONE);
+                    } else {
+                        studentListLayout.setVisibility(View.VISIBLE);
                     }
                 }
             });
-
-            for (StudentData studentData : groupData.StudentList) {
-                ViewGroup layout = viewGroup.findViewById(R.id.container);
-                View v = getLayoutInflater().inflate(R.layout.item_student_selector, layout, false);
-                TextView nameView = v.findViewById(R.id.name);
-                nameView.setText(studentData.Username);
-                TextView statusView = v.findViewById(R.id.status);
-                v.setTag(studentData);
-
-                int status = studentData.Status;
-                if (mFilter != null) {
-                    if (mFilter.contains(studentData.StudentID))
-                        status = -1;
-                }
-
-                if (status == -1) {
-                    statusView.setBackgroundColor(getResources().getColor(R.color.button_disable));
-                    statusView.setText("已提问");
-                } else {
-                    if (status == 1) {
-                        statusView.setBackgroundColor(getResources().getColor(R.color.online));
-                        statusView.setText("在线");
-                    } else {
-                        statusView.setBackgroundColor(getResources().getColor(R.color.offline));
-                        statusView.setText("离线");
+            groupName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked){
+                        mSelList.clear();
+                        GroupData groupData = (GroupData) buttonView.getTag();
+                        mSelList.addAll(groupData.StudentList);
+                        onStudentCheck();
                     }
-
-                    v.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            StudentData studentData = (StudentData) v.getTag();
-                            View overView = v.findViewById(R.id.over);
-                            if (mSelList.contains(studentData)) {
-                                mSelList.remove(studentData);
-                                overView.setVisibility(View.GONE);
-                            } else {
-                                mSelList.add(studentData);
-                                overView.setVisibility(View.VISIBLE);
-                            }
-
-                            if (isSingle)
-                                dismiss();
-                        }
-                    });
                 }
-
-                layout.addView(v);
-            }
-
+            });
+            StudentAdapter studentAdapter = new StudentAdapter(groupData.StudentList);
+            studentListLayout.setAdapter(studentAdapter);
             layoutView.addView(viewGroup);
         }
     }
 
-    private void dismiss() {
+    private class StudentAdapter extends BaseAdapter {
+
+        List<StudentData> mData;
+
+        public StudentAdapter(List<StudentData> data){
+            mData = data;
+        }
+
+        @Override
+        public int getCount() {
+            return mData == null ? 0 : mData.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mData == null ? null:mData.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                view = getActivity().getLayoutInflater().inflate(R.layout.item_student_selectlayout,null);
+            }
+            CheckBox checkBox = view.findViewById(R.id.check_student);
+            StudentData studentData = (StudentData) getItem(position);
+            if(studentData!=null) {
+                checkBox.setText(studentData.Username);
+            }
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked){
+                        if(!mSelList.contains(mData.get(position))){
+                            mSelList.add(mData.get(position));
+                        }
+                    }else{
+                        if(mSelList.contains(mData.get(position))){
+                            mSelList.remove(mData.get(position));
+                        }
+                    }
+                    onStudentCheck();
+                }
+            });
+            return view;
+        }
+    }
+
+    private void onStudentCheck() {
         if (!mSelList.isEmpty()) {
             ArrayList arrayList = new ArrayList();
             arrayList.addAll(mSelList);
             mListener.onStudentSelected(arrayList);
-        }
-
-        if (getParentFragment() instanceof FrameDialog) {
-            DialogFragment dialog = (DialogFragment) getParentFragment();
-            dialog.dismiss();
         }
     }
 }

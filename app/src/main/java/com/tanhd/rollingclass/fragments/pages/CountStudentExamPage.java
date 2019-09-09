@@ -130,7 +130,7 @@ public class CountStudentExamPage extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            mQuestionList = ScopeServer.getInstance().QureyQuestionByLessonSampleID(lessonSampleData.LessonSampleID);
+            mQuestionList = ScopeServer.getInstance().QureyQuestionByLessonSampleID(mLessonSampleData.LessonSampleID);
             if (mQuestionList == null)
                 return null;
 

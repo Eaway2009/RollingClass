@@ -43,6 +43,7 @@ public class PushMessage {
         MESSAGE,//指定提问
 
         QUESTIONING,//发起提问
+        RESPONDER,//抢答
         ANSWER_COMPLETED,//完成回答
 
         HAND_UP,//学生举手

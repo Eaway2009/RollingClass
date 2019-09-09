@@ -64,13 +64,15 @@ public class LoginActivity extends AppCompatActivity {
         mProgressBar = findViewById(R.id.progressbar);
         mSavePwdCheckBox = findViewById(R.id.save_pwd);
         mCheckBox = findViewById(R.id.checkbox);
+        mCheckBox.setChecked(true);
 //        mCheckBox.setVisibility(View.GONE);
 
         mSignButtonView = findViewById(R.id.sign_button);
         mIpEditView = findViewById(R.id.ip_edittext);
         mIpButton = findViewById(R.id.ip_button);
         mIpLayout =this.findViewById(R.id.ip_layout);
-        
+        mUserView.setText("syw386490759");
+        mPasswordView.setText("123");
         mSignButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

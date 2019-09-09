@@ -29,7 +29,6 @@ import static com.tanhd.rollingclass.fragments.statistics.StatisticsActivity.PAG
 import static com.tanhd.rollingclass.fragments.statistics.StatisticsActivity.PAGE_ID_QUESTION;
 
 public class CountClassFragment extends Fragment {
-    private CountClassMicroCoursePage microCourseInfoPage;
     private CountExamPage examPage;
     private int mPageId;
     private int mCurrentShowModuleId = -1;
@@ -38,6 +37,7 @@ public class CountClassFragment extends Fragment {
     private ClassData mClssData;
     private StudentData mStudentData;
     private ClassStudentsFragment mClassStudentsFragment;
+    private CountClassMicroCoursePage microCourseInfoPage;
 
     public static CountClassFragment newInstance(int pageId,PagesListener listener) {
         Bundle args = new Bundle();
@@ -73,7 +73,7 @@ public class CountClassFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId){
                     case R.id.micro_course:
-                        showModulePage(PAGE_ID_MICRO_COURSE);
+//                        showModulePage(PAGE_ID_MICRO_COURSE);
                         break;
                     case R.id.question:
                         showModulePage(PAGE_ID_QUESTION);
@@ -83,7 +83,7 @@ public class CountClassFragment extends Fragment {
         });
         switch (mPageId){
             case PAGE_ID_MICRO_COURSE:
-                mStatisticsTypeRadioGroup.check(R.id.micro_course);
+//                mStatisticsTypeRadioGroup.check(R.id.micro_course);
                 break;
             case PAGE_ID_QUESTION:
                 mStatisticsTypeRadioGroup.check(R.id.question);
@@ -135,7 +135,7 @@ public class CountClassFragment extends Fragment {
             }
         } else if (moduleId == PAGE_ID_QUESTION) {
             if (examPage == null) {
-                examPage = new CountExamPage();
+                examPage = CountExamPage.getInstance(mStudentData);
                 transaction.add(R.id.content_layout, examPage);
             }
             moduleFragment = examPage;

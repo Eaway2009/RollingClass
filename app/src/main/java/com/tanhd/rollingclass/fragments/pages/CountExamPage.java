@@ -13,38 +13,51 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.fragments.ClassSelectorFragment;
-import com.tanhd.rollingclass.fragments.LessonSampleSelectorForTeacherFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
-import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.StudentData;
-import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
-import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.StudentListView;
 
-import java.util.AbstractQueue;
+import java.io.Serializable;
 import java.util.List;
 
 public class CountExamPage extends Fragment {
+    private static final String PARAM_STUDENT_DATA = "PARAM_STUDENT_DATA";
+
     private StudentListView mStudentListView;
     private Spinner mKnowLedgeSpinner;
     private List<TeachingMaterialData> mItemList;
-    private ArrayAdapter adapter;
+    private ArrayAdapter mAdapter;
+    private StudentData mStudentData;
+
+    public static CountExamPage getInstance(StudentData studentData){
+        CountExamPage countExamPage = new CountExamPage();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(PARAM_STUDENT_DATA, studentData);
+        countExamPage.setArguments(bundle);
+        return countExamPage;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_count_exam, container, false);
+        initParams();
         initViews(view);
-
+        initDatas();
         return view;
+    }
+
+    private void initParams() {
+        Bundle args = getArguments();
+        mStudentData = (StudentData) args.getSerializable(PARAM_STUDENT_DATA);
     }
 
     private void initViews(View view) {
@@ -53,22 +66,24 @@ public class CountExamPage extends Fragment {
 
         // 将可选内容与ArrayAdapter连接起来
 
-        adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item){
-            @androidx.annotation.NonNull
+        mAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item){
             @NonNull
             @Override
-            public View getView(int position, @androidx.annotation.Nullable @Nullable View convertView, @androidx.annotation.NonNull @NonNull ViewGroup parent) {
-
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                TextView textView = convertView.findViewById(android.R.id.text1);
+                LessonSampleData item = (LessonSampleData) getItem(position);
+                textView.setText(item.LessonSampleName);
+                return super.getView(position, convertView, parent);
             }
-        }
+        };
         // 第1个参数为Context对象
         // 第2个参数为设置Spinner的样式
 
         // 设置Spinner中每一项的样式
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // 设置Spinner数据来源适配器
-        mKnowLedgeSpinner.setAdapter(adapter);
+        mKnowLedgeSpinner.setAdapter(mAdapter);
 
         // 使用内部类形式来实现事件监听
         mKnowLedgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -89,9 +104,10 @@ public class CountExamPage extends Fragment {
                 //第一个参数是上下文环境，可用this；
                 //第二个参数是要显示的字符串；
                 //第三个参数是显示的时间长短；
-                String str = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getApplicationContext(), "您选择的国家是：" + str, Toast.LENGTH_LONG)
+                LessonSampleData lessonSampleData = (LessonSampleData)parent.getItemAtPosition(position);
+                Toast.makeText(getActivity(), "您选择了：" + lessonSampleData.LessonSampleID, Toast.LENGTH_LONG)
                         .show();
+                checkData(lessonSampleData);
             }
 
             @Override
@@ -102,10 +118,15 @@ public class CountExamPage extends Fragment {
         });
     }
 
-    public void checkData(StudentData studentData) {
-        CountStudentExamPage page = CountStudentExamPage.newInstance(studentData);
+    private void initDatas() {
+        new InitDataTask().execute();
+    }
+
+    public void checkData(LessonSampleData lessonSampleData) {
+        CountStudentExamPage page = CountStudentExamPage.newInstance(mStudentData, lessonSampleData);
         showFragment(page);
     }
+
     private class InitDataTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -130,8 +151,8 @@ public class CountExamPage extends Fragment {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            adapter.addAll(mItemList);
-            adapter.notifyDataSetChanged();
+            mAdapter.addAll(mItemList);
+            mAdapter.notifyDataSetChanged();
         }
     }
 

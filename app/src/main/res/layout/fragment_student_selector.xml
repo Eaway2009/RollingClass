@@ -4,15 +4,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:gravity="left"
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/class_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="26sp"
+        android:visibility="gone"
         android:textColor="#000000"/>
+
+    <CheckBox
+        android:id="@+id/btn_all_ask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
+        android:textSize="16sp"
+        android:button="@drawable/student_selector"
+        android:textColor="@color/student_select_color"
+        android:text="提问所有学生"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -43,18 +55,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
-        android:paddingBottom="12dp">
-
-        <Button
-            android:id="@+id/btn_all_ask"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="36dp"
-            android:paddingRight="36dp"
-            android:background="@drawable/blue_button_selector"
-            android:textSize="20sp"
-            android:textColor="@color/white"
-            android:text="全部提问"/>
+        android:paddingBottom="12dp"
+        android:visibility="gone">
 
         <View
             android:layout_width="wrap_content"

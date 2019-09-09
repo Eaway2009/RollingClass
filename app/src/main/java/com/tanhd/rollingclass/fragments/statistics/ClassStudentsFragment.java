@@ -108,6 +108,11 @@ public class ClassStudentsFragment extends Fragment implements ExpandableListVie
         mAdapter.setDataList(classDataList);
         if (mAdapter.getGroupCount() > 0) {
             mExpandableListView.expandGroup(0);
+            if(mAdapter.getChild(0, 0)!=null){
+                if(mListener!=null){
+                    mListener.onCheckStudent(mAdapter.getGroup(0), mAdapter.getChild(0,0));
+                }
+            }
             mAdapter.notifyDataSetChanged();
         }
         mAdapter.notifyDataSetChanged();

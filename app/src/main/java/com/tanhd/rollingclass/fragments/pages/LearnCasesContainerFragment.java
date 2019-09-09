@@ -8,6 +8,7 @@ import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_MUTE;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -66,6 +67,8 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private RelativeLayout mRlSettingLayout;
     private boolean mIsFullScreen;
 
+    private static final String PARAM_CLASS_DATA = "PARAM_CLASS_DATA";
+
     private PointPopupWindow mPopupWindow1;
     private PointPopupWindow mPopupWindow2;
 
@@ -82,6 +85,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private View mHandsupHideLayout;
 
     private List<String> mHandsupStudentName = new ArrayList<>();
+    private ClassData mClassData;
 
     public static LearnCasesContainerFragment newInstance(int typeId, PagesListener listener) {
         Bundle args = new Bundle();
@@ -107,9 +111,18 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         return view;
     }
 
+    public void setParam(ClassData classData){
+
+        Bundle args = getArguments();
+        args.putSerializable(PARAM_CLASS_DATA, classData);
+
+        initParams();
+    }
+
     private void initParams() {
         Bundle args = getArguments();
         mPageType = args.getInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE);
+        mClassData = (ClassData) args.getSerializable(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE);
     }
 
     private void iniViews(View view) {
@@ -142,6 +155,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
             mHandsupHideLayout.setVisibility(View.GONE);
             mIsFullScreen = true;
             fullScreen();
+            mIvFullScreen.setVisibility(View.GONE);
         } else if (mPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE) {
             mRlSettingLayout.setVisibility(View.GONE);
             mIvFullScreen.setVisibility(View.GONE);
@@ -164,6 +178,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 case ITEM_ANSWER:
                     break;
                 case ITEM_EXRCISE:
+//                    FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData));
                     break;
                 case ITEM_LOCK:
                     break;

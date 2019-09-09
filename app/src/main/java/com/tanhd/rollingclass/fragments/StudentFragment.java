@@ -92,13 +92,13 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
             switch (message.command) {
                 case CLASS_BEGIN: {
                     mPushMessage = message;
+                    mClassPageView.setEnabled(true);
+                    if (message.parameters != null) {
+                        String teacherName = message.parameters.get(PushMessage.TEACHER_NAME);
+                        mClassStartedWarningView.setText(getResources().getString(R.string.class_started_warning, teacherName));
+                        mClassStartedWarningView.setVisibility(View.VISIBLE);
+                    }
                     if (ExternalParam.getInstance().getStatus() == 0) {
-                        mClassPageView.setEnabled(true);
-                        if (message.parameters != null) {
-                            String teacherName = message.parameters.get(PushMessage.TEACHER_NAME);
-                            mClassStartedWarningView.setText(getResources().getString(R.string.class_started_warning, teacherName));
-                            mClassStartedWarningView.setVisibility(View.VISIBLE);
-                        }
                         ExternalParam.getInstance().setStatus(1);
                     }
                     break;
