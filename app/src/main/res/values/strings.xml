@@ -29,6 +29,7 @@
     <string name="class_begin">开始上课</string>
     <string name="class_end">下课</string>
     <string name="comma">,</string>
+    <string name="knowledge">课时</string>
     <string name="fre_class">课前</string>
     <string name="at_class">课中</string>
     <string name="after_class">课后</string>

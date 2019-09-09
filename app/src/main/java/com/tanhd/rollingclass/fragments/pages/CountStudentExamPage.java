@@ -36,17 +36,19 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CountStudentExamPage extends Fragment {
-    private StudentData mStudentData;
     private ListView mListView;
     private ItemAdapter mAdapter;
     private ProgressBar mProgressBar;
     private List<QuestionData> mQuestionList;
     private HashMap<String, AnswerData> mAnswerMap;
     private View mChartView;
+    private StudentData mStudentData;
+    private LessonSampleData mLessonSampleData;
 
-    public static CountStudentExamPage newInstance(StudentData studentData) {
+    public static CountStudentExamPage newInstance(StudentData studentData,LessonSampleData lessonSampleData) {
         Bundle args = new Bundle();
         args.putSerializable("studentData", studentData);
+        args.putSerializable("lessonSampleData", lessonSampleData);
         CountStudentExamPage page = new CountStudentExamPage();
         page.setArguments(args);
         return page;
@@ -55,6 +57,7 @@ public class CountStudentExamPage extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mStudentData = (StudentData) getArguments().get("studentData");
+        mLessonSampleData = (LessonSampleData) getArguments().get("lessonSampleData");
         View view = inflater.inflate(R.layout.page_count_student_exam, container, false);
         mListView = view.findViewById(R.id.list);
         mProgressBar = view.findViewById(R.id.progressbar);
@@ -127,7 +130,6 @@ public class CountStudentExamPage extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
             mQuestionList = ScopeServer.getInstance().QureyQuestionByLessonSampleID(lessonSampleData.LessonSampleID);
             if (mQuestionList == null)
                 return null;
