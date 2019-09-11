@@ -9,10 +9,11 @@
     <CheckBox
         android:id="@+id/group_name"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:gravity="center"
-        android:textColor="#000000"
-        android:textSize="26sp"/>
+        android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
+        android:textSize="16sp"
+        android:button="@drawable/student_selector"
+        android:textColor="@color/student_select_color"/>
 
     <GridView
         android:id="@+id/student_list_layout"

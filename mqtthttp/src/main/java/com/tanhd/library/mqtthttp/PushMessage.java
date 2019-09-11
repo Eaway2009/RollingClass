@@ -48,7 +48,6 @@ public class PushMessage {
 
         HAND_UP,//学生举手
 
-
         PING,
         PING_OK,
         PING_TEST,

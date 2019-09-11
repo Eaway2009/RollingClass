@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
@@ -84,7 +85,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
                 mQuestionModel = questionModel;
             }
         });
-        getFragmentManager().beginTransaction().replace(R.id.framelayout, mQuestionResourceFragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
 
         mStudentSelectorFragment = StudentSelectorFragment.newInstance(false, null, mClassData, new StudentSelectorFragment.StudentSelectListener() {
             @Override
@@ -92,12 +93,13 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
                 mStudentList = new ArrayList<>();
                 for (StudentData studentData : studentList) {
                     if (studentData != null) {
-                        mStudentList.add(studentData.SchoolID);
+                        mStudentList.add(studentData.StudentID);
                     }
                 }
             }
         });
-        getFragmentManager().beginTransaction().replace(R.id.framelayout, mQuestionResourceFragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.student_select_layout_fragment, mStudentSelectorFragment).commit();
+        resetData(KeyConstants.LevelType.SCHOOL_LEVEL);
     }
 
     private void initParams() {
@@ -111,22 +113,40 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.school_resource:
+                mSchoolResourceTextView.setEnabled(false);
+                mMyResourceTextView.setEnabled(true);
+                mPublicResourceTextView.setEnabled(true);
                 resetData(KeyConstants.LevelType.SCHOOL_LEVEL);
                 break;
             case R.id.public_resource:
+                mSchoolResourceTextView.setEnabled(true);
+                mMyResourceTextView.setEnabled(true);
+                mPublicResourceTextView.setEnabled(false);
                 resetData(KeyConstants.LevelType.PUBLIC_LEVEL);
                 break;
             case R.id.my_resource:
+                mSchoolResourceTextView.setEnabled(true);
+                mMyResourceTextView.setEnabled(false);
+                mPublicResourceTextView.setEnabled(true);
                 resetData(KeyConstants.LevelType.PRIVATE_LEVEL);
                 break;
             case R.id.cancel_button:
                 dismiss();
                 break;
             case R.id.commit_button:
+                if(mQuestionModel==null){
+                    Toast.makeText(getActivity(), "请先选择题目",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(mStudentList==null||mStudentList.size()==0){
+                    Toast.makeText(getActivity(), "请选择需要参与测评的学生",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 HashMap<String, String> params = new HashMap<>();
                 params.put("examID", mQuestionModel.question_id);
                 params.put("teacherID", ExternalParam.getInstance().getUserData().getOwnerID());
                 MyMqttService.publishMessage(PushMessage.COMMAND.QUESTIONING, mStudentList, params);
+                dismiss();
                 break;
         }
     }

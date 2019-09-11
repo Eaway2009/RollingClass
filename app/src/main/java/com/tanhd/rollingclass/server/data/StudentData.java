@@ -21,5 +21,5 @@ public class StudentData extends BaseJsonClass {
         public SchoolData School;
         public String Token;
 
-
+        public boolean check;
 }

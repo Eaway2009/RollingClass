@@ -48,7 +48,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
         page.setListener(callback);
         return page;
     }
-    
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
         mListView.setAdapter(mAdapter);
     }
 
-    public void setListener(ResourceBaseFragment.Callback callback){
+    public void setListener(ResourceBaseFragment.Callback callback) {
         mListener = callback;
     }
 
@@ -102,12 +102,16 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
             return position;
         }
 
-        public void checkItem(int position){
-            for(QuestionModel model: mQuestionList){
-                model.isChecked = false;
-            }
+        public void checkItem(int position) {
             QuestionModel checkItem = mQuestionList.get(position);
             checkItem.isChecked = true;
+            notifyDataSetChanged();
+        }
+
+        private void clearCheck() {
+            for (QuestionModel model : mQuestionList) {
+                model.isChecked = false;
+            }
             notifyDataSetChanged();
         }
 
@@ -124,13 +128,13 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
             WebView stemView = view.findViewById(R.id.stem);
             View overView = view.findViewById(R.id.over);
             CheckBox itemCheckBox = view.findViewById(R.id.check_item_cb);
-            if(mListener!=null){
+            if (mListener != null) {
                 itemCheckBox.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 itemCheckBox.setVisibility(View.GONE);
             }
 
-            if(question.context!=null) {
+            if (question.context != null) {
                 typeView.setText(String.format("[%s]", question.context.QuestionCategoryName));
                 noView.setText(String.format("第%d题:", question.context.OrderIndex));
                 String html = AppUtils.dealHtmlText(question.context.Stem);
@@ -175,13 +179,23 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
                     } else {
                         overView.setVisibility(View.GONE);
                     }
+
+                    if (mListener != null) {
+                        if (overView.getVisibility() == View.VISIBLE) {
+                            checkItem(position);
+                            mListener.itemChecked(null, question);
+                        } else {
+                            clearCheck();
+                            mListener.itemChecked(null, null);
+                        }
+                    }
                 }
             });
             itemCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(mListener!=null){
-                        if(isChecked){
+                    if (mListener != null) {
+                        if (isChecked) {
                             checkItem(position);
                         }
                         mListener.itemChecked(null, question);

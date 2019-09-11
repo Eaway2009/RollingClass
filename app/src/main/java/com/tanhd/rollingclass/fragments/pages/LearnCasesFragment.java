@@ -62,6 +62,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     private String mKnowledgeDetailName;
     private String mTeacherName;
     private int mClassPageType;
+    private String mTeachingMaterialId;
 
     private boolean init = true;
     private int mKnowledgeStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
@@ -70,12 +71,13 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     private View mLearningButtonsLayout;
     private ClassData mClassData;
 
-    public static LearnCasesFragment newInstance(String knowledgeId, String knowledgeName, int pageType, String teacherName, LearnCasesFragment.PagesListener listener) {
+    public static LearnCasesFragment newInstance(String knowledgeId, String knowledgeName, String teachingMaterialId, int pageType, String teacherName, LearnCasesFragment.PagesListener listener) {
         Bundle args = new Bundle();
         LearnCasesFragment page = new LearnCasesFragment();
         args.putSerializable(LearnCasesActivity.PARAM_KNOWLEDGE_ID, knowledgeId);
         args.putSerializable(LearnCasesActivity.PARAM_KNOWLEDGE_NAME, knowledgeName);
         args.putSerializable(LearnCasesActivity.PARAM_TEACHER_NAME, teacherName);
+        args.putSerializable(LearnCasesActivity.PARAM_TEACHING_MATERIAL_ID, teachingMaterialId);
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, pageType);
         page.setArguments(args);
         page.setListener(listener);
@@ -102,6 +104,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         mKnowledgeId = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_ID);
         mTeacherName = args.getString(LearnCasesActivity.PARAM_TEACHER_NAME);
         mKnowledgeDetailName = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME);
+        mTeachingMaterialId = args.getString(LearnCasesActivity.PARAM_TEACHING_MATERIAL_ID);
     }
 
     private void initViews(View view) {
@@ -204,6 +207,9 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                         classData.resetStudentState(0);
                         ExternalParam.getInstance().setClassData(classData);
                         notifyEnterClass(null);
+                        if(mLearnCasesContainerFragment!=null){
+                            mLearnCasesContainerFragment.setParam(mClassData, mTeachingMaterialId);
+                        }
 
                         mTvClassBegin.setVisibility(View.GONE);
                         mTvClassStatus.setVisibility(View.VISIBLE);

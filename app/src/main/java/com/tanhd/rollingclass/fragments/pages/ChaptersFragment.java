@@ -104,11 +104,8 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
             if (mAdapter.getGroupCount() > 0 && chapter != null) {
                 mExpandableListView.expandGroup(0);
                 if (chapter.getChildren().size() > 0) {
-                    for (int i = 0; i < mAdapter.getGroupCount(); i++) {
-                        mAdapter.resetCheckItem(i);
-                    }
+                    mAdapter.resetCheckItem(0, 0);
                     ChaptersResponse.Section section = chapter.getChildren().get(0);
-                    section.isChecked = true;
                     if (mListener != null) {
                         if (teacherData != null) {
                             mListener.onTeacherCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chapter.teachingMaterial.SubjectCode, chapter.teachingMaterial.SubjectName, section.TeachingMaterialID);
@@ -146,9 +143,12 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
         ChaptersResponse.Chapter chapter = mAdapter.getGroup(groupPosition);
         if (chapter != null && chapter.getChildren() != null) {
             if (childPosition < mAdapter.getGroup(groupPosition).getChildren().size()) {
-                mAdapter.resetCheckItem(groupPosition);
+                for(int i=0;i<mAdapter.getGroupCount();i++) {
+                    mExpandableListView.collapseGroup(i);
+                }
+                mExpandableListView.expandGroup(groupPosition);
+                mAdapter.resetCheckItem(groupPosition, childPosition);
                 ChaptersResponse.Section section = mAdapter.getGroup(groupPosition).getChildren().get(childPosition);
-                section.isChecked = true;
                 if (mListener != null) {
                     if (teacherData != null) {
                         mListener.onTeacherCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chapter.teachingMaterial.SubjectCode, chapter.teachingMaterial.SubjectName, section.TeachingMaterialID);

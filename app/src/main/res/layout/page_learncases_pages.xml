@@ -115,7 +115,7 @@
                     android:id="@+id/after_class_learning_tv"
                     android:layout_width="120dp"
                     android:layout_height="30dp"
-                    android:text="@string/pre_class_learning"
+                    android:text="@string/after_class_learning"
                     android:textSize="18sp"
                     android:textColor="@color/white"
                     android:background="@drawable/learning_status_selector"/>

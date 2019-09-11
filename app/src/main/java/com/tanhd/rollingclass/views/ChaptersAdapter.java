@@ -8,11 +8,13 @@ import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.ChaptersResponse;
+import com.tanhd.rollingclass.server.data.GroupData;
 
 public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter, ChaptersResponse.Section> {
 
     //                用于存放Indicator的集合
     private SparseArray<ImageView> mIndicators;
+
     public ChaptersAdapter(Context context) {
         super(context, R.layout.chapter_first_adapter, R.layout.chapter_second_adapter);
         mIndicators = new SparseArray<>();
@@ -28,10 +30,10 @@ public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter,
         mIndicators.put(groupPosition, iconView);
         setIndicatorState(groupPosition, isExpanded);
 
-        if(item.teachingMaterial!=null&&item.teachingMaterial.isFirstItem){
+        if (item.teachingMaterial != null && item.teachingMaterial.isFirstItem) {
             teachingMaterialNameView.setText(item.teachingMaterial.TeachingMaterialName);
             teachingMaterialNameView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             teachingMaterialNameView.setVisibility(View.GONE);
         }
     }
@@ -52,12 +54,17 @@ public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter,
         }
     }
 
-    public void resetCheckItem(int group){
-        ChaptersResponse.Chapter groupItem = getGroup(group);
-        if(groupItem!=null&&groupItem.Sections!=null){
-            for (ChaptersResponse.Section section:groupItem.Sections) {
-                section.isChecked = false;
+    public void resetCheckItem(int groupPosition, int childPosition) {
+        for (int i = 0; i < getGroupCount(); i++) {
+            ChaptersResponse.Chapter groupData = getGroup(i);
+            for (int j = 0; j < groupData.getChildren().size(); j++) {
+                ChaptersResponse.Section child = groupData.getChildren().get(j);
+                child.isChecked = false;
+                if(groupPosition==i&&childPosition==j){
+                    child.isChecked = true;
+                }
             }
         }
+        notifyDataSetChanged();
     }
 }

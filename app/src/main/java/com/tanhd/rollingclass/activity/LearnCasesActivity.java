@@ -50,6 +50,7 @@ import org.greenrobot.eventbus.ThreadMode;
 public class LearnCasesActivity extends AppCompatActivity {
 
     public static final String PARAM_CLASS_STUDENT_PAGE = "PARAM_CLASS_STUDENT_PAGE";
+    public static final String PARAM_TEACHING_MATERIAL_ID = "PARAM_TEACHING_MATERIAL_ID";
     public static final String PARAM_KNOWLEDGE_ID = "PARAM_KNOWLEDGE_ID";
     public static final String PARAM_KNOWLEDGE_NAME = "PARAM_KNOWLEDGE_NAME";
     public static final String PARAM_TEACHER_NAME = "PARAM_TEACHER_NAME";
@@ -63,22 +64,35 @@ public class LearnCasesActivity extends AppCompatActivity {
     private int mPageType;
     private UserData mUserData;
     private String mTeacherName;
+    private String mTeachingMaterialId;
 
-    public static void startMe(Activity context, String knowledgeId, String knowledgeName) {
-        Intent intent = new Intent(context, LearnCasesActivity.class);
-        intent.putExtra(PARAM_KNOWLEDGE_ID, knowledgeId);
-        intent.putExtra(PARAM_KNOWLEDGE_NAME, knowledgeName);
-        context.startActivity(intent);
-    }
-
-    public static void startMe(Activity context, String knowledgeId, String knowledgeName, int classPageType) {
+    /**
+     * 老师端
+     *
+     * @param context
+     * @param knowledgeId
+     * @param knowledgeName
+     * @param teachingMaterialId
+     * @param classPageType
+     */
+    public static void startMe(Activity context, String knowledgeId, String knowledgeName, String teachingMaterialId, int classPageType) {
         Intent intent = new Intent(context, LearnCasesActivity.class);
         intent.putExtra(PARAM_KNOWLEDGE_ID, knowledgeId);
         intent.putExtra(PARAM_KNOWLEDGE_NAME, knowledgeName);
         intent.putExtra(PARAM_CLASS_STUDENT_PAGE, classPageType);
+        intent.putExtra(PARAM_TEACHING_MATERIAL_ID, teachingMaterialId);
         context.startActivity(intent);
     }
 
+    /**
+     * 学生端
+     *
+     * @param context
+     * @param knowledgeId
+     * @param knowledgeName
+     * @param classPageType
+     * @param teacherName
+     */
     public static void startMe(Activity context, String knowledgeId, String knowledgeName, int classPageType, String teacherName) {
         Intent intent = new Intent(context, LearnCasesActivity.class);
         intent.putExtra(PARAM_KNOWLEDGE_ID, knowledgeId);
@@ -114,11 +128,12 @@ public class LearnCasesActivity extends AppCompatActivity {
         mPageType = getIntent().getIntExtra(PARAM_CLASS_STUDENT_PAGE, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
         mKnowledgeId = getIntent().getStringExtra(PARAM_KNOWLEDGE_ID);
         mKnowledgeName = getIntent().getStringExtra(PARAM_KNOWLEDGE_NAME);
+        mTeachingMaterialId = getIntent().getStringExtra(PARAM_TEACHING_MATERIAL_ID);
         mTeacherName = getIntent().getStringExtra(PARAM_TEACHER_NAME);
     }
 
     private void initFragment() {
-        mLearnCasesFragment = LearnCasesFragment.newInstance(mKnowledgeId, mKnowledgeName, mPageType, mTeacherName, new LearnCasesFragment.PagesListener() {
+        mLearnCasesFragment = LearnCasesFragment.newInstance(mKnowledgeId, mKnowledgeName, mTeachingMaterialId, mPageType, mTeacherName, new LearnCasesFragment.PagesListener() {
             @Override
             public void onFullScreen(boolean isFull) {
                 mTopbarView.setVisibility(isFull == true ? View.GONE : View.VISIBLE);
@@ -205,7 +220,7 @@ public class LearnCasesActivity extends AppCompatActivity {
             switch (message.command) {
                 case OFFLINE:
                 case ONLINE:
-                    if(mUserData.isTeacher()) {
+                    if (mUserData.isTeacher()) {
                         if (ExternalParam.getInstance().getStatus() == 0)
                             return;
 
@@ -221,7 +236,7 @@ public class LearnCasesActivity extends AppCompatActivity {
                     break;
                 }
                 case QUESTIONING: {
-                    if(ExternalParam.getInstance().getStatus() == 2 && !mUserData.isTeacher()) {
+                    if (ExternalParam.getInstance().getStatus() == 2 && !mUserData.isTeacher()) {
                         String examID = message.parameters.get("examID");
                         final String teacherID = message.parameters.get("teacherID");
                         FrameDialog.fullShow(getSupportFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
@@ -247,18 +262,16 @@ public class LearnCasesActivity extends AppCompatActivity {
                     break;
                 }
                 case QUERY_CLASS:
-                case QUERY_STATUS: {
-                    if(mUserData.isTeacher()){
-                        if (ExternalParam.getInstance().getStatus() == 0)
-                            return;
+                    if (ExternalParam.getInstance().getStatus() == 0)
+                        return;
 
-                        notifyEnterClass(message.from);
-                    } else {
-                        if (ExternalParam.getInstance().getStatus() == 2)
-                            MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE,  (List<String>) null, null);
-                        else
-                            MyMqttService.publishMessage(PushMessage.COMMAND.OFFLINE,  (List<String>) null, null);
-                    }
+                    notifyEnterClass(message.from);
+                    break;
+                case QUERY_STATUS: {
+                    if (ExternalParam.getInstance().getStatus() == 2)
+                        MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
+                    else
+                        MyMqttService.publishMessage(PushMessage.COMMAND.OFFLINE, (List<String>) null, null);
                     break;
                 }
             }

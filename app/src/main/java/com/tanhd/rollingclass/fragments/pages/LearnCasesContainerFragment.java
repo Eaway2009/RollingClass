@@ -68,6 +68,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private boolean mIsFullScreen;
 
     private static final String PARAM_CLASS_DATA = "PARAM_CLASS_DATA";
+    private static final String PARAM_TEACHING_MATERIALID = "PARAM_TEACHING_MATERIALID";
 
     private PointPopupWindow mPopupWindow1;
     private PointPopupWindow mPopupWindow2;
@@ -86,6 +87,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 
     private List<String> mHandsupStudentName = new ArrayList<>();
     private ClassData mClassData;
+    private String mTeachingMaterialId;
 
     public static LearnCasesContainerFragment newInstance(int typeId, PagesListener listener) {
         Bundle args = new Bundle();
@@ -111,10 +113,11 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         return view;
     }
 
-    public void setParam(ClassData classData){
+    public void setParam(ClassData classData, String teachingMaterialId) {
 
         Bundle args = getArguments();
         args.putSerializable(PARAM_CLASS_DATA, classData);
+        args.putSerializable(PARAM_TEACHING_MATERIALID, teachingMaterialId);
 
         initParams();
     }
@@ -122,7 +125,10 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private void initParams() {
         Bundle args = getArguments();
         mPageType = args.getInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE);
-        mClassData = (ClassData) args.getSerializable(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE);
+        if (args.containsKey(PARAM_CLASS_DATA)) {
+            mClassData = (ClassData) args.getSerializable(PARAM_CLASS_DATA);
+            mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIALID);
+        }
     }
 
     private void iniViews(View view) {
@@ -178,7 +184,9 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 case ITEM_ANSWER:
                     break;
                 case ITEM_EXRCISE:
-//                    FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData));
+                    if (mClassData != null) {
+                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId));
+                    }
                     break;
                 case ITEM_LOCK:
                     break;
@@ -322,7 +330,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                         }
                     }
                     mHandsupStudentName.add(studentName);
-                    Toast.makeText(getActivity(), studentName+"举手提问", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), studentName + "举手提问", Toast.LENGTH_SHORT).show();
                     TextView handUpNameView = (TextView) getLayoutInflater().inflate(R.layout.view_handsup_name, null);
                     handUpNameView.setText(studentName);
                     mHandsupListLayout.addView(handUpNameView);

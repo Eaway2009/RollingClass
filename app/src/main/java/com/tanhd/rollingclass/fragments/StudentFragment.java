@@ -118,14 +118,6 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                     }));
                     break;
                 }
-                case OPEN_DOCUMENT: {
-                    if (ExternalParam.getInstance().getStatus() == 2) {
-                        int childItem = Integer.valueOf(message.parameters.get(PushMessage.PARAM_CHILD_ITEM));
-                        int groupItem = Integer.valueOf(message.parameters.get(PushMessage.PARAM_GROUP_ITEM));
-//                        showLessonSample(url, ShowDocumentFragment.SYNC_MODE.SLAVE);
-                    }
-                    break;
-                }
                 case SERVER_PING: {
                     FrameDialog.show(getChildFragmentManager(), ServerTesterFragment.newInstance());
                     break;

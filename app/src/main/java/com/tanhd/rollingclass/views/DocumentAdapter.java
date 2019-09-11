@@ -95,9 +95,9 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                 switch (v.getId()) {
                     case R.id.layout_content:
                         if (mIsTeacher) {
-                            LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
+                            LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, data.teaching_material_id, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
                         } else {
-                            LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE);
+                            LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, data.teaching_material_id, KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE);
                         }
                         break;
                     case R.id.more_bottom:
