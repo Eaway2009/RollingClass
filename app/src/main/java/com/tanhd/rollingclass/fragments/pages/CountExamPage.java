@@ -20,6 +20,7 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
@@ -30,17 +31,20 @@ import java.util.List;
 
 public class CountExamPage extends Fragment {
     private static final String PARAM_STUDENT_DATA = "PARAM_STUDENT_DATA";
+    private static final String PARAM_TEACHING_MATERIAL = "PARAM_TEACHING_MATERIAL";
 
     private StudentListView mStudentListView;
     private Spinner mKnowLedgeSpinner;
     private List<TeachingMaterialData> mItemList;
     private ArrayAdapter mAdapter;
     private StudentData mStudentData;
+    private String mTeachingMaterialId;
 
-    public static CountExamPage getInstance(StudentData studentData){
+    public static CountExamPage getInstance(StudentData studentData, String teachingMaterial) {
         CountExamPage countExamPage = new CountExamPage();
         Bundle bundle = new Bundle();
         bundle.putSerializable(PARAM_STUDENT_DATA, studentData);
+        bundle.putSerializable(PARAM_TEACHING_MATERIAL, teachingMaterial);
         countExamPage.setArguments(bundle);
         return countExamPage;
     }
@@ -58,6 +62,7 @@ public class CountExamPage extends Fragment {
     private void initParams() {
         Bundle args = getArguments();
         mStudentData = (StudentData) args.getSerializable(PARAM_STUDENT_DATA);
+        mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIAL);
     }
 
     private void initViews(View view) {
@@ -66,7 +71,7 @@ public class CountExamPage extends Fragment {
 
         // 将可选内容与ArrayAdapter连接起来
 
-        mAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item){
+        mAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -104,8 +109,8 @@ public class CountExamPage extends Fragment {
                 //第一个参数是上下文环境，可用this；
                 //第二个参数是要显示的字符串；
                 //第三个参数是显示的时间长短；
-                LessonSampleData lessonSampleData = (LessonSampleData)parent.getItemAtPosition(position);
-                Toast.makeText(getActivity(), "您选择了：" + lessonSampleData.LessonSampleID, Toast.LENGTH_LONG)
+                KnowledgeDetailMessage lessonSampleData = (KnowledgeDetailMessage) parent.getItemAtPosition(position);
+                Toast.makeText(getActivity(), "您选择了：" + lessonSampleData.knowledge_point_name, Toast.LENGTH_LONG)
                         .show();
                 checkData(lessonSampleData);
             }
@@ -122,7 +127,7 @@ public class CountExamPage extends Fragment {
         new InitDataTask().execute();
     }
 
-    public void checkData(LessonSampleData lessonSampleData) {
+    public void checkData(KnowledgeDetailMessage lessonSampleData) {
         CountStudentExamPage page = CountStudentExamPage.newInstance(mStudentData, lessonSampleData);
         showFragment(page);
     }
@@ -131,12 +136,12 @@ public class CountExamPage extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            List<LessonSampleData> sampleList = ScopeServer.getInstance().QureyLessonSampleByTeacherID(ExternalParam.getInstance().getUserData().getOwnerID());
+            List<KnowledgeDetailMessage> sampleList = ScopeServer.getInstance().QureyKnowledgeByChapterAndTeacherID(ExternalParam.getInstance().getUserData().getOwnerID(), mTeachingMaterialId);
             if (sampleList == null)
                 return null;
 
-            for (LessonSampleData sampleData: sampleList) {
-                KnowledgeData knowledgeData = ScopeServer.getInstance().QureyKnowledgeByID(sampleData.KnowledgeID);
+            for (KnowledgeDetailMessage sampleData : sampleList) {
+                KnowledgeData knowledgeData = ScopeServer.getInstance().QureyKnowledgeByID(sampleData.knowledge_id);
                 if (knowledgeData == null)
                     continue;
 

@@ -31,6 +31,7 @@ import static com.tanhd.rollingclass.fragments.statistics.StatisticsActivity.PAG
 public class CountClassFragment extends Fragment {
     private CountExamPage examPage;
     private int mPageId;
+    private String mTeachingMaterialId;
     private int mCurrentShowModuleId = -1;
     private RadioGroup mStatisticsTypeRadioGroup;
     private PagesListener mPagesListener;
@@ -39,9 +40,10 @@ public class CountClassFragment extends Fragment {
     private ClassStudentsFragment mClassStudentsFragment;
     private CountClassMicroCoursePage microCourseInfoPage;
 
-    public static CountClassFragment newInstance(int pageId,PagesListener listener) {
+    public static CountClassFragment newInstance(String teachingMaterialId,int pageId,PagesListener listener) {
         Bundle args = new Bundle();
         args.putInt(StatisticsActivity.PAGE_ID, pageId);
+        args.putString(StatisticsActivity.TEACHING_MATERIAL_ID, teachingMaterialId);
         CountClassFragment page = new CountClassFragment();
         page.setArguments(args);
         page.setListener(listener);
@@ -50,6 +52,7 @@ public class CountClassFragment extends Fragment {
 
     private void initParams() {
         mPageId = getArguments().getInt(StatisticsActivity.PAGE_ID, PAGE_ID_MICRO_COURSE);
+        mTeachingMaterialId = getArguments().getString(StatisticsActivity.TEACHING_MATERIAL_ID);
     }
 
     @Nullable
@@ -135,7 +138,7 @@ public class CountClassFragment extends Fragment {
             }
         } else if (moduleId == PAGE_ID_QUESTION) {
             if (examPage == null) {
-                examPage = CountExamPage.getInstance(mStudentData);
+                examPage = CountExamPage.getInstance(mStudentData, mTeachingMaterialId);
                 transaction.add(R.id.content_layout, examPage);
             }
             moduleFragment = examPage;

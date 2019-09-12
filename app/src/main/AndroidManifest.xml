@@ -45,6 +45,11 @@
             android:screenOrientation="landscape">
         </activity>
 
+        <activity android:name=".activity.ResourceShowActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape">
+        </activity>
+
         <activity android:name=".fragments.statistics.StatisticsActivity"
             android:launchMode="singleTop"
             android:screenOrientation="landscape">

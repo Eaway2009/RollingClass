@@ -22,13 +22,17 @@ public class StatisticsActivity extends AppCompatActivity {
     private CountClassFragment mCountClassFragment;
 
     public static final String PAGE_ID = "PAGE_ID";
+    public static final String TEACHING_MATERIAL_ID = "TEACHING_MATERIAL_ID";
     public static final int PAGE_ID_MICRO_COURSE = 0;
     public static final int PAGE_ID_QUESTION = 1;
-    private int mPageId;
 
-    public static void startMe(Activity context, int pageId){
+    private int mPageId;
+    private String mTeachingMaterialId;
+
+    public static void startMe(Activity context, int pageId, String teachingMaterialId){
         Intent intent = new Intent(context, StatisticsActivity.class);
         intent.putExtra(PAGE_ID, pageId);
+        intent.putExtra(TEACHING_MATERIAL_ID, teachingMaterialId);
         context.startActivity(intent);
     }
 
@@ -43,6 +47,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void initParams(){
         mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_MICRO_COURSE);
+        mTeachingMaterialId = getIntent().getStringExtra(TEACHING_MATERIAL_ID);
     }
 
     private void initViews(){
@@ -71,7 +76,7 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void initFragment() {
-        mCountClassFragment = CountClassFragment.newInstance(mPageId, new CountClassFragment.PagesListener() {
+        mCountClassFragment = CountClassFragment.newInstance(mTeachingMaterialId,mPageId, new CountClassFragment.PagesListener() {
             @Override
             public void onPageChange(int id) {
 

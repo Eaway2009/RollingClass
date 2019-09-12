@@ -46,9 +46,9 @@ public class StatisticsPageFragment extends Fragment implements View.OnClickList
         return view;
     }
 
-    private void initParams(){
+    private void initParams() {
         Bundle args = getArguments();
-        if(args!=null) {
+        if (args != null) {
             mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
         }
     }
@@ -70,47 +70,19 @@ public class StatisticsPageFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.weike_view:
                 FrameDialog.show(getChildFragmentManager(), TeacherMicroCourseSelectorFragment.newInstance(
                         new TeacherMicroCourseSelectorFragment.SelectorMicroCourseListener() {
                             @Override
                             public void onMicroCourseSelected(MicroCourseData microCourseData) {
-                                StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_MICRO_COURSE);
+                                StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_MICRO_COURSE, mKnowledgeModel.teaching_material_id);
                             }
                         }));
                 break;
             case R.id.xiti_view:
-                StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_QUESTION);
+                StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_QUESTION, mKnowledgeModel.teaching_material_id);
                 break;
-        }
-    }
-
-    private class InitDataTask extends AsyncTask<Void, Void, List<ResourceModel>> {
-
-        private int level;
-
-        public InitDataTask(int level) {
-            this.level = level;
-        }
-        @Override
-        protected List<ResourceModel> doInBackground(Void... voids) {
-            UserData userData = ExternalParam.getInstance().getUserData();
-            if (userData.isTeacher()) {
-                if(mKnowledgeModel!=null){
-                    return ScopeServer.getInstance().QureyResourceByTeacherID(
-                            mKnowledgeModel.teacher_id, mKnowledgeModel.teaching_material_id,
-                            level, KeyConstants.ResourceType.VIDEO_TYPE, 1, 40);
-                }
-            } else {
-                return null;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<ResourceModel> documentList) {
-
         }
     }
 }

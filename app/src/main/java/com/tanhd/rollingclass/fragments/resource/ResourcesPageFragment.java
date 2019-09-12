@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.fragments.resource;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.widget.Spinner;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.activity.ResourceShowActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.KeyConstants.LevelType;
 import com.tanhd.rollingclass.db.KeyConstants.ResourceType;
@@ -34,7 +36,7 @@ import com.tanhd.rollingclass.views.ResourceAdapter;
 
 import java.util.List;
 
-public class ResourcesPageFragment extends Fragment implements View.OnClickListener {
+public class ResourcesPageFragment extends Fragment implements View.OnClickListener, ResourceBaseFragment.Callback {
 
     private View mPptTitleView;
     private View mWordTitleView;
@@ -90,9 +92,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             return;
         }
         mIsRequesting = true;
-        if(type == ResourceType.QUESTION_TYPE){
-            new InitQuestionDataTask(page,level).execute();
-        }else {
+        if (type == ResourceType.QUESTION_TYPE) {
+            new InitQuestionDataTask(page, level).execute();
+        } else {
             new InitDataTask(page, level, type).execute();
         }
     }
@@ -161,7 +163,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
 
         mSpinnerSimple.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> arg0, View arg1,
-                    int arg2, long arg3) {
+                                       int arg2, long arg3) {
                 /**
                  * 1.初始化会执行一次
                  * 2.两次点一样会取消重复次
@@ -187,6 +189,20 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         mSpinnerSimple.setAdapter(spinnerAdapter);
     }
 
+    @Override
+    public void itemChecked(ResourceModel resourceModel, QuestionModel questionModel) {
+        if (resourceModel != null) {
+            switch (resourceModel.resource_type) {
+                case ResourceType.PPT_TYPE:
+                case ResourceType.WORD_TYPE:
+                case ResourceType.VIDEO_TYPE:
+                case ResourceType.IMAGE_TYPE:
+                    ResourceShowActivity.startMe(getActivity(), resourceModel);
+                    break;
+            }
+        }
+    }
+
     private class InitDataTask extends AsyncTask<Void, Void, List<ResourceModel>> {
 
         private int currentPage;
@@ -198,11 +214,12 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             this.level = level;
             this.type = type;
         }
+
         @Override
         protected List<ResourceModel> doInBackground(Void... voids) {
             UserData userData = ExternalParam.getInstance().getUserData();
             if (userData.isTeacher()) {
-                if(mKnowledgeModel!=null){
+                if (mKnowledgeModel != null) {
                     return ScopeServer.getInstance().QureyResourceByTeacherID(
                             mKnowledgeModel.teacher_id, mKnowledgeModel.teaching_material_id,
                             level, type, currentPage, mPageSize);
@@ -280,6 +297,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     private ResourceGrideFragment mImageFragment;
     private QuestionResourceFragment mQuestionFragment;
     private ResourceBaseFragment mCurrentFragment;
+
     /**
      * [展示指定Id的页面]<BR>
      */
@@ -287,13 +305,16 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         if (mCurrentFragment != null && mResourceType == type) {
             return;
         }
+        if (mListener == null) {
+            mListener = this;
+        }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         ResourceBaseFragment moduleFragment = null;
         if (type == ResourceType.PPT_TYPE) {
             if (mPPTFragment == null) {
-                if(mListener!=null){
+                if (mListener != null) {
                     mPPTFragment = ResourceGrideFragment.newInstance(mListener);
-                }else {
+                } else {
                     mPPTFragment = ResourceGrideFragment.newInstance();
                 }
                 transaction.add(ROOT_LAYOUT_ID, mPPTFragment);
@@ -303,9 +324,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
 
         } else if (type == ResourceType.VIDEO_TYPE) {
             if (mVideoFragment == null) {
-                if(mListener!=null){
+                if (mListener != null) {
                     mVideoFragment = ResourceGrideFragment.newInstance(mListener);
-                }else {
+                } else {
                     mVideoFragment = ResourceGrideFragment.newInstance();
                 }
                 transaction.add(ROOT_LAYOUT_ID, mVideoFragment);
@@ -314,9 +335,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             moduleFragment = mVideoFragment;
         } else if (type == ResourceType.WORD_TYPE) {
             if (mWordFragment == null) {
-                if(mListener!=null){
+                if (mListener != null) {
                     mWordFragment = ResourceGrideFragment.newInstance(mListener);
-                }else {
+                } else {
                     mWordFragment = ResourceGrideFragment.newInstance();
                 }
                 transaction.add(ROOT_LAYOUT_ID, mWordFragment);
@@ -325,9 +346,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             moduleFragment = mWordFragment;
         } else if (type == ResourceType.IMAGE_TYPE) {
             if (mImageFragment == null) {
-                if(mListener!=null){
+                if (mListener != null) {
                     mImageFragment = ResourceGrideFragment.newInstance(mListener);
-                }else {
+                } else {
                     mImageFragment = ResourceGrideFragment.newInstance();
                 }
                 transaction.add(ROOT_LAYOUT_ID, mImageFragment);
@@ -336,9 +357,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             moduleFragment = mImageFragment;
         } else if (type == ResourceType.QUESTION_TYPE) {
             if (mQuestionFragment == null) {
-                if(mListener!=null){
+                if (mListener != null) {
                     mQuestionFragment = QuestionResourceFragment.newInstance(mListener);
-                }else {
+                } else {
                     mQuestionFragment = QuestionResourceFragment.newInstance();
                 }
                 transaction.add(ROOT_LAYOUT_ID, mQuestionFragment);
