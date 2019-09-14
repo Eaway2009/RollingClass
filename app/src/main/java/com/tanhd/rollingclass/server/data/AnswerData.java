@@ -34,7 +34,20 @@ public class AnswerData extends BaseJsonClass {
     public int ErrCode;
     public int Modify;  //批改字段 1:已批改   2:未批改
     public String QuestionSetID;
+    public String knowledge_id;
+    public String knowledge_name;
+    public QuestionCoordinate QuestionCoordinate;
 
+    public static class QuestionCoordinate{
+        public List region;
+
+
+    }
+
+    public static class Region{
+        public long point_x;
+        public long point_y;
+    }
 
     public static AnswerData newAnswer(UserData userData, QuestionData question) {
         AnswerData answer = new AnswerData();

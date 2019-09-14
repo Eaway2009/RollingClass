@@ -30,8 +30,9 @@ public class StatisticsPageFragment extends Fragment implements View.OnClickList
     private View mWeikeView;
     private View mXitiView;
 
-    public static StatisticsPageFragment newInstance() {
+    public static StatisticsPageFragment newInstance(KnowledgeModel knowledgeModel) {
         Bundle args = new Bundle();
+        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         StatisticsPageFragment page = new StatisticsPageFragment();
         page.setArguments(args);
         return page;

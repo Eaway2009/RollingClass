@@ -45,8 +45,9 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
         context.startActivityForResult(intent, 0);
     }
 
-    public static void startMe(Activity context, int pageId, KnowledgeModel knowledgeModel, KnowledgeDetailMessage knowledgeDetailMessage) {
-        Intent intent = new Intent(context, DocumentEditActivity.class);
+    public static void startMe(Fragment context, int pageId, KnowledgeModel knowledgeModel, KnowledgeDetailMessage knowledgeDetailMessage) {
+        Intent intent = new Intent();
+        intent.setClass(context.getActivity(), DocumentEditActivity.class);
         intent.putExtra(PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         intent.putExtra(PARAM_KNOWLEDGE_DETAIL_DATA, knowledgeDetailMessage);
         intent.putExtra(PAGE_ID, pageId);

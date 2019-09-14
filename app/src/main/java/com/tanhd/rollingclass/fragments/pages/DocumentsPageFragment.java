@@ -90,7 +90,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         mGridView = view.findViewById(R.id.grid_view);
 
         UserData userData = ExternalParam.getInstance().getUserData();
-        mAdapter = new DocumentAdapter(getActivity(), userData.isTeacher(), this);
+        mAdapter = new DocumentAdapter(DocumentsPageFragment.this, userData.isTeacher(), this);
         mGridView.setAdapter(mAdapter);
         mAddDocumentView.setOnClickListener(this);
         if (mKnowledgeModel == null) {
@@ -204,7 +204,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (resultCode){
             case RESULT_OK:
                 refreshData();
                 break;

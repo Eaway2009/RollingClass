@@ -181,7 +181,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
             }
         } else if (moduleId == MODULE_ID_STATISTICS) {
             if (mStatisticsFragment == null) {
-                mStatisticsFragment = StatisticsPageFragment.newInstance();
+                mStatisticsFragment = StatisticsPageFragment.newInstance(mKnowledgeModel);
                 transaction.add(ROOT_LAYOUT_ID, mStatisticsFragment);
             }
             moduleFragment = mStatisticsFragment;
@@ -209,6 +209,12 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
     public void onStudentCheckChapter(String school_id, String class_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
         mKnowledgeModel = new KnowledgeModel(school_id, null, chapter_id, chapter_name, section_id, section_name, subject_code, subject_name, teaching_material_id, class_id);
         resetData();
+    }
+
+    public void resetDocumentsData(){
+        if(mCurrentShowModuleId ==MODULE_ID_DOCUMENTS){
+            mDocumentsFragment.resetData(mKnowledgeModel);
+        }
     }
 
     private void resetData() {

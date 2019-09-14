@@ -3,6 +3,7 @@ package com.tanhd.rollingclass.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -98,5 +99,13 @@ public class DatasActivity extends AppCompatActivity {
 
     private void openMessage(Message message) {
         FrameDialog.show(getSupportFragmentManager(), ChatFragment.newInstance(message.fromId));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            mShowPageFragment.resetDocumentsData();
+        }
     }
 }

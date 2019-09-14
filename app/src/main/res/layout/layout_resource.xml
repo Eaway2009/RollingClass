@@ -4,6 +4,13 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
+    <FrameLayout
+        android:id="@+id/framelayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/resource_icon"
         android:layout_width="wrap_content"
@@ -18,7 +25,7 @@
         android:textSize="16sp"
         android:layout_marginLeft="15dp"
         android:textColor="@color/resource_name"
-        android:text="@string/sync_after_class"/>
+        android:text="文件名"/>
 
     <TextView
         android:id="@+id/task_delete"

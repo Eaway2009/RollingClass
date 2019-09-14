@@ -63,8 +63,8 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_knowledge_controller, container, false);
         initParams();
-        showFragment();
         initViews(view);
+        showFragment();
         return view;
     }
 
@@ -88,6 +88,13 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
 
     private void showFragment() {
         if (mKnowledgeDetailMessage != null) {
+            if (mKnowledgeDetailMessage.class_before != 1) {
+                changeClassStatus(KeyConstants.KnowledgeStatus.FRE_CLASS);
+            } else if (mKnowledgeDetailMessage.class_process != 1) {
+                changeClassStatus(KeyConstants.KnowledgeStatus.AT_CLASS);
+            } else {
+                changeClassStatus(KeyConstants.KnowledgeStatus.AFTER_CLASS);
+            }
             showEditingFragment(mKnowledgeModel, mKnowledgeDetailMessage);
         } else {
             showKnowledgeNoneFragment();
@@ -153,7 +160,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                 } else {
                     if (mKnowledgeEditingFragment.isEditing()) {
                         Toast.makeText(getActivity(), getString(R.string.adding_task_warning), Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         if (mCallback != null) {
                             mCallback.onBack();
                         }
@@ -165,10 +172,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                     Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
-                mFreClassItemView.setEnabled(false);
-                mAtClassItemView.setEnabled(true);
-                mAfterClassItemView.setEnabled(true);
+                changeClassStatus(KeyConstants.KnowledgeStatus.FRE_CLASS);
                 resetStatus();
                 break;
             case R.id.at_class_item:
@@ -176,10 +180,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                     Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mStatus = KeyConstants.KnowledgeStatus.AT_CLASS;
-                mFreClassItemView.setEnabled(true);
-                mAtClassItemView.setEnabled(false);
-                mAfterClassItemView.setEnabled(true);
+                changeClassStatus(KeyConstants.KnowledgeStatus.AT_CLASS);
                 resetStatus();
                 break;
             case R.id.after_class_item:
@@ -187,13 +188,31 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                     Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mStatus = KeyConstants.KnowledgeStatus.AFTER_CLASS;
-                mFreClassItemView.setEnabled(true);
-                mAtClassItemView.setEnabled(true);
-                mAfterClassItemView.setEnabled(false);
+                changeClassStatus(KeyConstants.KnowledgeStatus.AFTER_CLASS);
                 resetStatus();
                 break;
         }
+    }
+
+    private void changeClassStatus(int status) {
+        switch (status) {
+            case KeyConstants.KnowledgeStatus.FRE_CLASS:
+                mFreClassItemView.setEnabled(false);
+                mAtClassItemView.setEnabled(true);
+                mAfterClassItemView.setEnabled(true);
+                break;
+            case KeyConstants.KnowledgeStatus.AT_CLASS:
+                mFreClassItemView.setEnabled(true);
+                mAtClassItemView.setEnabled(false);
+                mAfterClassItemView.setEnabled(true);
+                break;
+            case KeyConstants.KnowledgeStatus.AFTER_CLASS:
+                mFreClassItemView.setEnabled(true);
+                mAtClassItemView.setEnabled(true);
+                mAfterClassItemView.setEnabled(false);
+                break;
+        }
+        mStatus = status;
     }
 
     @Override

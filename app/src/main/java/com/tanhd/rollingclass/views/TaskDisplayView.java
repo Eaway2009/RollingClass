@@ -23,11 +23,13 @@ import android.widget.Toast;
 
 import com.tanhd.rollingclass.MainActivity;
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.TeacherData;
@@ -103,7 +105,10 @@ public class TaskDisplayView implements View.OnClickListener {
             }
         }
         if (mData.question_set != null) {
-
+            addQuetionsDisplayView(R.string.exercises, mData.question_set);
+            for (QuestionModel resourceModel:mData.question_set){
+                mExercisesList.add(resourceModel.question_id);
+            }
         }
         return mLinearLayout;
     }
@@ -117,6 +122,19 @@ public class TaskDisplayView implements View.OnClickListener {
         resourceTypeView.setText(resourceType);
         LinearLayout resourcesLayout = displayLayout.findViewById(R.id.files_display_layout);
         addFileView(resourcesLayout, dataSet);
+        mFilesLayout.addView(displayLayout);
+    }
+
+    private void addQuetionsDisplayView(int resourceType, List<QuestionModel> dataSet) {
+        LinearLayout displayLayout = (LinearLayout) mContext.getLayoutInflater().inflate(R.layout.layout_resource_item, null);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.topMargin = mContext.getResources().getDimensionPixelSize(R.dimen.activity_vertical_margin);
+        displayLayout.setLayoutParams(layoutParams);
+        TextView resourceTypeView = displayLayout.findViewById(R.id.files_type_tv);
+        resourceTypeView.setText(resourceType);
+        LinearLayout resourcesLayout = displayLayout.findViewById(R.id.files_display_layout);
+//        QuestionResourceFragment questionResourceFragment = QuestionResourceFragment.newInstance();
+//        mContext.getFragmentManager().beginTransaction().replace(R.id.framelayout, questionResourceFragment).commit();
         mFilesLayout.addView(displayLayout);
     }
 

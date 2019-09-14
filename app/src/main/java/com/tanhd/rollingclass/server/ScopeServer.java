@@ -930,6 +930,29 @@ public class ScopeServer extends ServerRequest {
         return -1;
     }
 
+    /**
+     * 答题信息查绚通过老师ID和课时ID(用于统计信息)
+     * @param teacherID
+     * @param knowlegeID
+     * @param answertype
+     * @param querytype
+     * @return
+     */
+    public List<AnswerData> QureyAnswerv2ByTeacherIDAndCourseID(String teacherID, String knowlegeID, int answertype, int querytype) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teacherID", teacherID);
+        params.put("knowlegeID", knowlegeID);
+        params.put("answertype", answertype+"");
+        params.put("querytype", querytype+"");
+        String response = sendRequest(getHostUrl() + "/answer/QureyAnswerv2ByTeacherIDAndCourseID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<AnswerData> list = jsonToList(AnswerData.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
     public List<AnswerData> QureyAnswerv2ByStudentIDAndQuestionID(String studentID, String questionID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("studentID", studentID);

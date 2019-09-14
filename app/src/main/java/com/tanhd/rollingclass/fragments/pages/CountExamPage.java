@@ -35,7 +35,7 @@ public class CountExamPage extends Fragment {
 
     private StudentListView mStudentListView;
     private Spinner mKnowLedgeSpinner;
-    private List<TeachingMaterialData> mItemList;
+    private List<KnowledgeDetailMessage> mItemList;
     private ArrayAdapter mAdapter;
     private StudentData mStudentData;
     private String mTeachingMaterialId;
@@ -132,32 +132,21 @@ public class CountExamPage extends Fragment {
         showFragment(page);
     }
 
-    private class InitDataTask extends AsyncTask<Void, Void, Void> {
+    private class InitDataTask extends AsyncTask<Void, Void, List<KnowledgeDetailMessage>> {
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected List<KnowledgeDetailMessage> doInBackground(Void... voids) {
             List<KnowledgeDetailMessage> sampleList = ScopeServer.getInstance().QureyKnowledgeByChapterAndTeacherID(ExternalParam.getInstance().getUserData().getOwnerID(), mTeachingMaterialId);
-            if (sampleList == null)
-                return null;
-
-            for (KnowledgeDetailMessage sampleData : sampleList) {
-                KnowledgeData knowledgeData = ScopeServer.getInstance().QureyKnowledgeByID(sampleData.knowledge_id);
-                if (knowledgeData == null)
-                    continue;
-
-                TeachingMaterialData materialData = ScopeServer.getInstance().QueryTeachingMaterialById(knowledgeData.TeachingMaterialID);
-                if (materialData == null)
-                    continue;
-                mItemList.add(materialData);
-            }
-
-            return null;
+            return sampleList;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            mAdapter.addAll(mItemList);
-            mAdapter.notifyDataSetChanged();
+        protected void onPostExecute(List<KnowledgeDetailMessage> aVoid) {
+            if(mItemList!=null) {
+                mAdapter.clear();
+                mAdapter.addAll(mItemList);
+                mAdapter.notifyDataSetChanged();
+            }
         }
     }
 

@@ -138,7 +138,11 @@ public class CountStudentExamPage extends Fragment {
             mAnswerMap = new HashMap<>();
             for (int i=0; i<mQuestionList.size(); i++) {
                 QuestionData questionData = mQuestionList.get(i);
-                List<AnswerData> answerDataList = ScopeServer.getInstance().QureyAnswerv2ByStudentIDAndQuestionID(mStudentData.StudentID, questionData.QuestionID);
+                List<AnswerData> answerDataList = ScopeServer.getInstance().QureyAnswerv2ByTeacherIDAndCourseID(
+                                ExternalParam.getInstance().getUserData().getOwnerID(),
+                                mLessonSampleData.knowledge_id,
+                                2, 0
+                        );
                 if (answerDataList != null && answerDataList.size() > 0) {
                     for (AnswerData answerData: answerDataList) {
                         if (answerData.QuestionSetID == null)

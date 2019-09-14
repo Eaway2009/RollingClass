@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -74,8 +75,9 @@ public class LearnCasesActivity extends AppCompatActivity {
      * @param teachingMaterialId
      * @param classPageType
      */
-    public static void startMe(Activity context, String knowledgeId, String knowledgeName, String teachingMaterialId, int classPageType) {
-        Intent intent = new Intent(context, LearnCasesActivity.class);
+    public static void startMe(Fragment context, String knowledgeId, String knowledgeName, String teachingMaterialId, int classPageType) {
+        Intent intent = new Intent();
+        intent.setClass(context.getActivity(), LearnCasesActivity.class);
         intent.putExtra(PARAM_KNOWLEDGE_ID, knowledgeId);
         intent.putExtra(PARAM_KNOWLEDGE_NAME, knowledgeName);
         intent.putExtra(PARAM_CLASS_STUDENT_PAGE, classPageType);

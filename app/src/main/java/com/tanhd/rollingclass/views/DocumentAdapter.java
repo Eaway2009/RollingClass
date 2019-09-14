@@ -3,6 +3,7 @@ package com.tanhd.rollingclass.views;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
@@ -34,12 +35,12 @@ import java.util.List;
 public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
     private boolean mIsTeacher;
-    private Activity mContext;
+    private Fragment mContext;
     private List<KnowledgeDetailMessage> mDataList = new ArrayList<>();
 
     private Callback mListener;
 
-    public DocumentAdapter(Activity context, boolean isTeacher, Callback callback) {
+    public DocumentAdapter(Fragment context, boolean isTeacher, Callback callback) {
         mContext = context;
         mListener = callback;
         mIsTeacher = isTeacher;
@@ -95,7 +96,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                 switch (v.getId()) {
                     case R.id.layout_content:
                         if (mIsTeacher) {
-                            LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, data.teaching_material_id, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
+                            teacherOnclickItem(data);
                         } else {
                             LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, data.teaching_material_id, KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE);
                         }
@@ -170,8 +171,17 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         return view;
     }
 
+    private void teacherOnclickItem(KnowledgeDetailMessage data){
+        if(data.class_before==1&&data.class_process==1&&data.class_after==1) {
+            LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, data.teaching_material_id, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
+        }else {
+            KnowledgeModel knowledgeModel = new KnowledgeModel(data.school_id, data.teacher_id, data.chapter_id, data.chapter_name, data.section_id, data.section_name, data.subject_code, data.subject_name, data.teaching_material_id, null);
+            DocumentEditActivity.startMe(mContext, DocumentEditActivity.PAGE_ID_EDIT_DOCUMENTS, knowledgeModel, data);
+        }
+    }
+
     private void showDeleteDialog(final KnowledgeDetailMessage data) {
-        new AlertDialog.Builder(mContext)
+        new AlertDialog.Builder(mContext.getContext())
                 .setMessage(R.string.delete_knowledge_warning)
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
@@ -225,7 +235,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                     showTeacherListDialog(knowledge_id, teacherDataList);
                 }
             } else {
-                Toast.makeText(mContext, R.string.check_teacher_list_fail, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext.getContext(), R.string.check_teacher_list_fail, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -239,12 +249,12 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
             @Override
             public void onResponse(String body) {
-                Toast.makeText(mContext, "分享成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext.getContext(), "分享成功", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(String code, String message) {
-                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext.getContext(), message, Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -261,7 +271,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
             teacherIdItems[i] = teacherDataList.get(i).TeacherID;
             checkedItems[i] = false;
         }
-        new AlertDialog.Builder(mContext)
+        new AlertDialog.Builder(mContext.getContext())
                 .setMultiChoiceItems(teacherNameItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -303,13 +313,13 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
     @Override
     public void onResponse(String body) {
-        Toast.makeText(mContext, R.string.operate_success, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext.getContext(), R.string.operate_success, Toast.LENGTH_SHORT).show();
         mListener.refreshData();
     }
 
     @Override
     public void onError(String code, String message) {
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext.getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     public interface Callback {

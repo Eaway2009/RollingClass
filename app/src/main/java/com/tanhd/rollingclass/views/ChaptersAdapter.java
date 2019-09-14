@@ -22,12 +22,20 @@ public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter,
 
     @Override
     protected void convertGroup(ViewHolder viewHolder, ChaptersResponse.Chapter item, int groupPosition, boolean isExpanded) {
+        TextView teachingMaterialNameView = viewHolder.getView(R.id.teaching_material_name);
         ImageView iconView = viewHolder.getView(R.id.expand_imageview);
         TextView chapterName = viewHolder.getView(R.id.chapter_name);
         chapterName.setText(item.ChapterName);
         //      把位置和图标添加到Map
         mIndicators.put(groupPosition, iconView);
         setIndicatorState(groupPosition, isExpanded);
+
+        if (item.teachingMaterial != null) {
+            teachingMaterialNameView.setText(item.teachingMaterial.GradeName);
+            teachingMaterialNameView.setVisibility(View.VISIBLE);
+        } else {
+            teachingMaterialNameView.setVisibility(View.GONE);
+        }
     }
 
     @Override

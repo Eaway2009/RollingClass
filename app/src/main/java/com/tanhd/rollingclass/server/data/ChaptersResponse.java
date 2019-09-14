@@ -23,10 +23,45 @@ public class ChaptersResponse extends BaseJsonClass {
     public String TeachingMaterialID;
     public String TeachingMaterialName;
 
-    public static class Chapter extends BaseJsonClass implements MultiLevelModel<Section>{
+    public static class TeachingMaterial {
+
+        public int GradeCode;
+        public String GradeName;
+        public int StudySectionCode;
+        public String StudySectionName;
+        public int SubjectCode;
+        public String SubjectName;
+        public int TeachingMaterialCode;
+        public String TeachingMaterialID;
+        public String TeachingMaterialName;
+
+        public TeachingMaterial(int GradeCode,
+                                String GradeName,
+                                int StudySectionCode,
+                                String StudySectionName,
+                                int SubjectCode,
+                                String SubjectName,
+                                int TeachingMaterialCode,
+                                String TeachingMaterialID,
+                                String TeachingMaterialName) {
+            this.GradeCode = GradeCode;
+            this.GradeName = GradeName;
+            this.StudySectionCode = StudySectionCode;
+            this.StudySectionName = StudySectionName;
+            this.SubjectCode = SubjectCode;
+            this.SubjectName = SubjectName;
+            this.TeachingMaterialCode = TeachingMaterialCode;
+            this.TeachingMaterialID = TeachingMaterialID;
+            this.TeachingMaterialName = TeachingMaterialName;
+        }
+    }
+
+    public static class Chapter extends BaseJsonClass implements MultiLevelModel<Section> {
         public String ChapterID;
         public String ChapterName;
         public List<Section> Sections;
+
+        public TeachingMaterial teachingMaterial;
 
         @Override
         public List<Section> getChildren() {
@@ -36,10 +71,10 @@ public class ChaptersResponse extends BaseJsonClass {
         @Override
         protected void onDealListField(Object object, Field field, JSONObject json, String key) {
             super.onDealListField(object, field, json, key);
-            if (key.equals("Sections")||key.equals("sections")) {
+            if (key.equals("Sections") || key.equals("sections")) {
                 JSONArray array = json.optJSONArray(key);
                 ArrayList<Section> list = new ArrayList<>();
-                for (int i=0; i<array.length(); i++) {
+                for (int i = 0; i < array.length(); i++) {
                     JSONObject obj = array.optJSONObject(i);
                     Section section = new Section();
                     section.parse(section, obj);
@@ -52,33 +87,35 @@ public class ChaptersResponse extends BaseJsonClass {
                 }
             }
         }
-        public String getKey(String key){
-            if("chapter_id".equals(key)||"ChapterID".equals(key)) {
+
+        public String getKey(String key) {
+            if ("chapter_id".equals(key) || "ChapterID".equals(key)) {
                 return "ChapterID";
             }
-            if("chapter_name".equals(key)||"ChapterName".equals(key)) {
+            if ("chapter_name".equals(key) || "ChapterName".equals(key)) {
                 return "ChapterName";
             }
-            if("sections".equals(key)||"Sections".equals(key)) {
+            if ("sections".equals(key) || "Sections".equals(key)) {
                 return "Sections";
             }
             return key;
         }
     }
 
-    public static class Section extends BaseJsonClass{
+    public static class Section extends BaseJsonClass {
         public boolean isChecked;
         public String SectionID;
         public String SectionName;
         public String TeachingMaterialID;
-        public String getKey(String key){
-            if("section_id".equals(key)||"SectionID".equals(key)) {
+
+        public String getKey(String key) {
+            if ("section_id".equals(key) || "SectionID".equals(key)) {
                 return "SectionID";
             }
-            if("section_name".equals(key)||"SectionName".equals(key)) {
+            if ("section_name".equals(key) || "SectionName".equals(key)) {
                 return "SectionName";
             }
-            if("teaching_material_id".equals(key)||"TeachingMaterialID".equals(key)) {
+            if ("teaching_material_id".equals(key) || "TeachingMaterialID".equals(key)) {
                 return "TeachingMaterialID";
             }
             return key;
@@ -88,10 +125,10 @@ public class ChaptersResponse extends BaseJsonClass {
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {
         super.onDealListField(object, field, json, key);
-        if (key.equals("Chapters")||key.equals("chapters")) {
+        if (key.equals("Chapters") || key.equals("chapters")) {
             JSONArray array = json.optJSONArray(key);
             ArrayList<Chapter> list = new ArrayList<>();
-            for (int i=0; i<array.length(); i++) {
+            for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.optJSONObject(i);
                 Chapter chapter = new Chapter();
                 chapter.parse(chapter, obj);
@@ -105,32 +142,32 @@ public class ChaptersResponse extends BaseJsonClass {
         }
     }
 
-    public String getKey(String key){
-        if("Chapters".equals(key)||"chapters".equals(key)) {
+    public String getKey(String key) {
+        if ("Chapters".equals(key) || "chapters".equals(key)) {
             return "Chapters";
         }
-        if("study_section_code".equals(key)||"StudySectionCode".equals(key)) {
+        if ("study_section_code".equals(key) || "StudySectionCode".equals(key)) {
             return "StudySectionCode";
         }
-        if("study_section_name".equals(key)||"StudySectionName".equals(key)) {
+        if ("study_section_name".equals(key) || "StudySectionName".equals(key)) {
             return "StudySectionName";
         }
-        if("grade_code".equals(key)||"GradeCode".equals(key)) {
+        if ("grade_code".equals(key) || "GradeCode".equals(key)) {
             return "GradeCode";
         }
-        if("grade_name".equals(key)||"GradeName".equals(key)) {
+        if ("grade_name".equals(key) || "GradeName".equals(key)) {
             return "GradeName";
         }
-        if("subject_code".equals(key)||"SubjectCode".equals(key)) {
+        if ("subject_code".equals(key) || "SubjectCode".equals(key)) {
             return "SubjectCode";
         }
-        if("subject_name".equals(key)||"SubjectName".equals(key)) {
+        if ("subject_name".equals(key) || "SubjectName".equals(key)) {
             return "SubjectName";
         }
-        if("teaching_material_code".equals(key)||"TeachingMaterialCode".equals(key)) {
+        if ("teaching_material_code".equals(key) || "TeachingMaterialCode".equals(key)) {
             return "TeachingMaterialCode";
         }
-        if("teaching_material_name".equals(key)||"TeachingMaterialName".equals(key)) {
+        if ("teaching_material_name".equals(key) || "TeachingMaterialName".equals(key)) {
             return "TeachingMaterialName";
         }
         return key;

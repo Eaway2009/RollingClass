@@ -80,7 +80,8 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
             Toast.makeText(getActivity(), "请先输入课时名称再添加任务，谢谢", Toast.LENGTH_LONG).show();
         } else {
             mKnowledgeModel.knowledge_point_name = mKnowledgeNameEditText.getText().toString();
-
+            mKnowledgeAddButton.setEnabled(false);
+            request();
         }
     }
 
@@ -100,12 +101,14 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
                 KnowledgeDetailMessage response = (KnowledgeDetailMessage) ScopeServer.getInstance().jsonToModel(KnowledgeDetailMessage.class.getName(),body);
                 mListener.onAddSuccess(mKnowledgeModel, response);
                 mRequesting = false;
+                mKnowledgeAddButton.setEnabled(true);
             }
 
             @Override
             public void onError(String code, String message) {
                 Toast.makeText(getActivity().getApplicationContext(), "课时名称添加失败，请稍候重试 ", Toast.LENGTH_LONG).show();
                 mRequesting = false;
+                mKnowledgeAddButton.setEnabled(true);
             }
         });}
 
