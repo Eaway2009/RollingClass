@@ -128,14 +128,6 @@ public class MainActivity extends AppCompatActivity {
             StudentData studentData = (StudentData) mUserData.getUserData();
             MyMqttService.startService(MainActivity.this, mConnection, mUserData.getOwnerID(), studentData.ClassID);
         }
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(!MyMqttService.StartedNormal){
-                    MyMqttService.dis
-                }
-            }
-        }, 5000);
     }
 
     @Override
@@ -157,14 +149,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        unbindService(mConnection);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
+        unbindService(mConnection);
         EventBus.getDefault().unregister(this);
     }
 

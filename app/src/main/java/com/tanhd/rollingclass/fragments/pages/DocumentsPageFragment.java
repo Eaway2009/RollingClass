@@ -1,6 +1,7 @@
 package com.tanhd.rollingclass.fragments.pages;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +31,8 @@ import com.tanhd.rollingclass.views.DocumentAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * 备课页面
@@ -189,12 +192,22 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         switch (v.getId()) {
             case R.id.add_document_view:
                 KnowledgeModel model = (KnowledgeModel) getArguments().getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
-                DocumentEditActivity.startMe(getActivity(), DocumentEditActivity.PAGE_ID_ADD_DOCUMENTS, model);
+                DocumentEditActivity.startMe(DocumentsPageFragment.this, DocumentEditActivity.PAGE_ID_ADD_DOCUMENTS, model);
                 break;
         }
     }
 
     public interface DocumentListener {
         void onDocumentClicked(int documentId);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case RESULT_OK:
+                refreshData();
+                break;
+        }
     }
 }

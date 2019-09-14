@@ -1,8 +1,8 @@
 package com.tanhd.rollingclass.fragments.resource;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,23 +16,19 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.Spinner;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.activity.ResourceShowActivity;
-import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.KeyConstants.LevelType;
 import com.tanhd.rollingclass.db.KeyConstants.ResourceType;
-import com.tanhd.rollingclass.fragments.pages.DocumentsPageFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.UserData;
-import com.tanhd.rollingclass.views.ResourceAdapter;
 
 import java.util.List;
 
@@ -56,6 +52,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     private final int mPageSize = 30;
     private static final int ROOT_LAYOUT_ID = R.id.fragment_container;
     private ResourceBaseFragment.Callback mListener;
+    private Handler mHandler = new Handler();
 
     public static ResourcesPageFragment newInstance(KnowledgeModel knowledgeModel) {
         Bundle args = new Bundle();
@@ -84,6 +81,14 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         setArguments(args);
         initParams();
         request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(mPPTFragment.getDataList()==null||mPPTFragment.getDataList().size()==0){
+                    request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
+                }
+            }
+        },1000);
     }
 
     private void request(int page, int level, int type) {
@@ -305,17 +310,14 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         if (mCurrentFragment != null && mResourceType == type) {
             return;
         }
-        if (mListener == null) {
-            mListener = this;
-        }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         ResourceBaseFragment moduleFragment = null;
         if (type == ResourceType.PPT_TYPE) {
             if (mPPTFragment == null) {
                 if (mListener != null) {
-                    mPPTFragment = ResourceGrideFragment.newInstance(mListener);
+                    mPPTFragment = ResourceGrideFragment.newInstance(true, mListener);
                 } else {
-                    mPPTFragment = ResourceGrideFragment.newInstance();
+                    mPPTFragment = ResourceGrideFragment.newInstance(false, this);
                 }
                 transaction.add(ROOT_LAYOUT_ID, mPPTFragment);
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
@@ -325,9 +327,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         } else if (type == ResourceType.VIDEO_TYPE) {
             if (mVideoFragment == null) {
                 if (mListener != null) {
-                    mVideoFragment = ResourceGrideFragment.newInstance(mListener);
+                    mVideoFragment = ResourceGrideFragment.newInstance(true, mListener);
                 } else {
-                    mVideoFragment = ResourceGrideFragment.newInstance();
+                    mVideoFragment = ResourceGrideFragment.newInstance(false, this);
                 }
                 transaction.add(ROOT_LAYOUT_ID, mVideoFragment);
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.VIDEO_TYPE);
@@ -336,9 +338,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         } else if (type == ResourceType.WORD_TYPE) {
             if (mWordFragment == null) {
                 if (mListener != null) {
-                    mWordFragment = ResourceGrideFragment.newInstance(mListener);
+                    mWordFragment = ResourceGrideFragment.newInstance(true, mListener);
                 } else {
-                    mWordFragment = ResourceGrideFragment.newInstance();
+                    mWordFragment = ResourceGrideFragment.newInstance(false, this);
                 }
                 transaction.add(ROOT_LAYOUT_ID, mWordFragment);
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.WORD_TYPE);
@@ -347,9 +349,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         } else if (type == ResourceType.IMAGE_TYPE) {
             if (mImageFragment == null) {
                 if (mListener != null) {
-                    mImageFragment = ResourceGrideFragment.newInstance(mListener);
+                    mImageFragment = ResourceGrideFragment.newInstance(true, mListener);
                 } else {
-                    mImageFragment = ResourceGrideFragment.newInstance();
+                    mImageFragment = ResourceGrideFragment.newInstance(false, this);
                 }
                 transaction.add(ROOT_LAYOUT_ID, mImageFragment);
                 request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.IMAGE_TYPE);
@@ -402,6 +404,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
                 showModulePage(ResourceType.IMAGE_TYPE, v);
                 break;
             case R.id.upload_file_resource_view:
+
                 break;
         }
     }

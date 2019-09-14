@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.pages.ResourceSelectorFragment;
 import com.tanhd.rollingclass.server.RequestCallback;
@@ -228,22 +229,22 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 });
                 break;
             case R.id.enter_upload_photo:
-                showPopupMenu(v, 3, true);
+                showPopupMenu(v, KeyConstants.ResourceType.IMAGE_TYPE, true);
                 break;
             case R.id.upload_ppt:
-                showPopupMenu(v, 1, false);
+                showPopupMenu(v, KeyConstants.ResourceType.PPT_TYPE, false);
                 break;
             case R.id.upload_video:
-                showPopupMenu(v, 4, false);
+                showPopupMenu(v, KeyConstants.ResourceType.VIDEO_TYPE, false);
                 break;
             case R.id.upload_exercises:
-                showPopupMenu(v, 5, false);
+                showPopupMenu(v, KeyConstants.ResourceType.QUESTION_TYPE, false);
                 break;
             case R.id.upload_documents:
-                showPopupMenu(v, 2, false);
+                showPopupMenu(v, KeyConstants.ResourceType.WORD_TYPE, false);
                 break;
             case R.id.upload_photo:
-                showPopupMenu(v, 3, false);
+                showPopupMenu(v, KeyConstants.ResourceType.IMAGE_TYPE, false);
                 break;
             case R.id.task_delete:
                 deleteFile(v);

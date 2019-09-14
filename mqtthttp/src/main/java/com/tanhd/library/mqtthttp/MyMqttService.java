@@ -1,32 +1,37 @@
 package com.tanhd.library.mqtthttp;
 
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +49,7 @@ public class MyMqttService extends Service {
     public static final String PARAM_TOPIC = "PARAM_TOPIC";
 
     public static final String TAG = MyMqttService.class.getSimpleName();
-    private static MqttClient mqttAndroidClient;
+    private static MqttAndroidClient mqttAndroidClient;
     private MqttConnectOptions mMqttConnectOptions;
 
     private static final String HOST = "tcp://www.sea-ai.com:1883";
@@ -60,7 +65,6 @@ public class MyMqttService extends Service {
     private static HashSet<String> mTopicNames = new HashSet<>();
     private static String mClientId;
     public static String CLIENTID;
-    public static boolean StartedNormal;
 
     /**
      * 开启服务
@@ -101,7 +105,7 @@ public class MyMqttService extends Service {
         //获取Service自身Messenger所对应的IBinder，并将其发送共享给所有客户端
         mClientId = intent.getStringExtra(PARAM_CLIENT_ID);
         mClassId = intent.getStringExtra(PARAM_TOPIC);
-        CLIENTID = Utils.getDeviceId().replace("-", "");//客户端ID，一般以客户端唯一标识符表示，这里用设备序列号表示
+        CLIENTID = Utils.getDeviceId().replace("-","");//客户端ID，一般以客户端唯一标识符表示，这里用设备序列号表示
         init(mClientId);
         return serviceMessenger.getBinder();
     }
@@ -216,41 +220,36 @@ public class MyMqttService extends Service {
             return;
         }
         String serverURI = HOST; //服务器地址（协议+地址+端口号）
-        try {
-            mqttAndroidClient = new MqttClient(serverURI, PREF_CLIENT_ID + clientId, new MemoryPersistence());
-            mqttAndroidClient.setCallback(mqttCallback); //设置监听订阅消息的回调
-            mMqttConnectOptions = new MqttConnectOptions();
-            mMqttConnectOptions.setCleanSession(true); //设置是否清除缓存
-            mMqttConnectOptions.setConnectionTimeout(10); //设置超时时间，单位：秒
-            mMqttConnectOptions.setKeepAliveInterval(20); //设置心跳包发送间隔，单位：秒
-            mMqttConnectOptions.setUserName(USERNAME); //设置用户名
-            mMqttConnectOptions.setPassword(PASSWORD.toCharArray()); //设置密码
+        mqttAndroidClient = new MqttAndroidClient(this, serverURI, PREF_CLIENT_ID + clientId);
+        mqttAndroidClient.setCallback(mqttCallback); //设置监听订阅消息的回调
+        mMqttConnectOptions = new MqttConnectOptions();
+        mMqttConnectOptions.setCleanSession(true); //设置是否清除缓存
+        mMqttConnectOptions.setConnectionTimeout(10); //设置超时时间，单位：秒
+        mMqttConnectOptions.setKeepAliveInterval(20); //设置心跳包发送间隔，单位：秒
+        mMqttConnectOptions.setUserName(USERNAME); //设置用户名
+        mMqttConnectOptions.setPassword(PASSWORD.toCharArray()); //设置密码
 
-            // last will message
-            boolean doConnect = true;
-            String message = "{\"terminal_uid\":\"" + PREF_CLIENT_ID + clientId + "\"}";
-            String topic = PREF_TOPIC + clientId;
-            mTopicNames.add(topic);
-            if (!TextUtils.isEmpty(mClassId)) {
-                mTopicNames.add(PREF_TOPIC + mClassId);
+        // last will message
+        boolean doConnect = true;
+        String message = "{\"terminal_uid\":\"" + PREF_CLIENT_ID + clientId + "\"}";
+        String topic = PREF_TOPIC + clientId;
+        mTopicNames.add(topic);
+        if (!TextUtils.isEmpty(mClassId)) {
+            mTopicNames.add(PREF_TOPIC + mClassId);
+        }
+        Integer qos = 2;
+        Boolean retained = false;
+        if ((!message.equals("")) || (!topic.equals(""))) {
+            try {
+                mMqttConnectOptions.setWill(topic, message.getBytes(), qos.intValue(), retained.booleanValue());
+            } catch (Exception e) {
+                Log.i(TAG, "Exception Occured", e);
+                doConnect = false;
+                iMqttActionListener.onFailure(null, e);
             }
-            Integer qos = 2;
-            Boolean retained = false;
-            if ((!message.equals("")) || (!topic.equals(""))) {
-                try {
-                    mMqttConnectOptions.setWill(topic, message.getBytes(), qos.intValue(), retained.booleanValue());
-                } catch (Exception e) {
-                    Log.i(TAG, "Exception Occured", e);
-                    doConnect = false;
-                    iMqttActionListener.onFailure(null, e);
-                }
-            }
-
-            if (doConnect) {
-                doClientConnection();
-            }
-        } catch (MqttException e) {
-            e.printStackTrace();
+        }
+        if (doConnect) {
+            doClientConnection();
         }
     }
 
@@ -303,7 +302,7 @@ public class MyMqttService extends Service {
         public void onSuccess(IMqttToken arg0) {
             Log.i(TAG, "连接成功 ");
             subscribe();
-            MyMqttService.publishMessage(PushMessage.COMMAND.PING, (List<String>) null, null);
+            MyMqttService.publishMessage(PushMessage.COMMAND.PING, (List<String>)null, null);
         }
 
         @Override
@@ -325,9 +324,6 @@ public class MyMqttService extends Service {
             try {
 //                Toast.makeText(MyMqttService.this, text, Toast.LENGTH_LONG).show();
                 PushMessage pm = PushMessage.parse(text);
-                if (pm.command == PushMessage.COMMAND.PING) {
-                    StartedNormal = true;
-                }
                 distribute(pm);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -8,7 +8,6 @@ import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_MUTE;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -27,14 +26,12 @@ import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
-import com.tanhd.rollingclass.fragments.ClassSelectorFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
-import com.tanhd.rollingclass.fragments.NewSetFragment;
+import com.tanhd.rollingclass.fragments.ImageShowFragment;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
+import com.tanhd.rollingclass.fragments.ShowPptFragment;
 import com.tanhd.rollingclass.fragments.VideoPlayerFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
-import com.tanhd.rollingclass.fragments.resource.ResourceBaseFragment;
-import com.tanhd.rollingclass.fragments.resource.ResourceGrideFragment;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.ResourceModel;
@@ -45,20 +42,15 @@ import com.tanhd.rollingclass.views.PointPopupWindow.PopupClickCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import com.tanhd.rollingclass.db.KeyConstants.SYNC_MODE;
+
 public class LearnCasesContainerFragment extends Fragment implements OnClickListener {
-    //1. ppt 2. doc 3. image 4. 微课 5. 习题
-    private static final int MODULE_ID_SHOW_DOCUMENT = 1;
-    private static final int MODULE_ID_SHOW_DOC = 2;
-    private static final int MODULE_ID_SHOW_IMAGE = 3;
-    private static final int MODULE_ID_SHOW_VIDEO = 4;
-    private static final int MODULE_ID_SHOW_QUESTION = 5;
 
     PagesListener mListener;
     private ImageView mIvSetting1;
@@ -75,6 +67,9 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 
     private int mCurrentShowModuleId = -1;
     private ShowDocumentFragment mDocumentPageFragment;
+    private ShowPptFragment mPptFragment;
+    private QuestionResourceFragment mQuestionFragment;
+    private ImageShowFragment mImageFragment;
     private VideoPlayerFragment mVideoPlayerFragment;
     private Fragment mCurrentFragment;
     private int mResourceType;
@@ -262,47 +257,41 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 
     private Fragment getFragment(int moduleId, ResourceModel resourceModel) {
         switch (moduleId) {
-            case MODULE_ID_SHOW_DOCUMENT:
-                if (mDocumentPageFragment == null) {
-                    mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+            case KeyConstants.ResourceType.PPT_TYPE:
+                if (mPptFragment == null) {
+                    mPptFragment = ShowPptFragment.newInstance(getActivity(), resourceModel.pdf_url,resourceModel.thumbs, SYNC_MODE.MASTER);
                 } else {
-                    mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                    mPptFragment.refreshPpt(resourceModel.pdf_url, resourceModel.thumbs);
                 }
-                return mDocumentPageFragment;
-            case MODULE_ID_SHOW_VIDEO:
+                return mPptFragment;
+            case KeyConstants.ResourceType.VIDEO_TYPE:
                 if (mVideoPlayerFragment == null) {
                     mVideoPlayerFragment = VideoPlayerFragment.newInstance(resourceModel.resource_id, resourceModel.url);
+                }else{
+                    mVideoPlayerFragment.refreshVideo(resourceModel.resource_id, resourceModel.url);
                 }
                 return mVideoPlayerFragment;
-            case MODULE_ID_SHOW_DOC:
+            case KeyConstants.ResourceType.WORD_TYPE:
                 if (mDocumentPageFragment == null) {
-                    mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+                    mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, KeyConstants.SYNC_MODE.MASTER);
                 } else {
                     mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
                 }
                 return mDocumentPageFragment;
-            case MODULE_ID_SHOW_IMAGE:
-                if (mDocumentPageFragment == null) {
-                    mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
+            case KeyConstants.ResourceType.IMAGE_TYPE:
+                if (mImageFragment == null) {
+                    mImageFragment = ImageShowFragment.newInstance(resourceModel.url);
                 } else {
-                    mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                    mImageFragment.resetData(resourceModel.url);
                 }
-                return mDocumentPageFragment;
-            case MODULE_ID_SHOW_QUESTION:
-                if (mDocumentPageFragment == null) {
-                    mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.MASTER);
-                } else {
-                    mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                return mImageFragment;
+            case KeyConstants.ResourceType.QUESTION_TYPE:
+                if (mQuestionFragment == null) {
+                    mQuestionFragment = QuestionResourceFragment.newInstance();
                 }
-                return mDocumentPageFragment;
+                return mQuestionFragment;
         }
         return null;
-    }
-
-    private void hideFragments(FragmentTransaction transaction, int moduleId) {
-        if (moduleId != MODULE_ID_SHOW_DOCUMENT) {
-            transaction.hide(mDocumentPageFragment);
-        }
     }
 
     public interface PagesListener {

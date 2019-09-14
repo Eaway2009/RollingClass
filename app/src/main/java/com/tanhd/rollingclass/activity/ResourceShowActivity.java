@@ -4,18 +4,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 
-import com.tanhd.rollingclass.PptShowFragment;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.ImageShowFragment;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
+import com.tanhd.rollingclass.fragments.ShowPptFragment;
 import com.tanhd.rollingclass.fragments.VideoPlayerFragment;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 
 import java.io.Serializable;
 
-public class ResourceShowActivity extends Activity {
+public class ResourceShowActivity extends AppCompatActivity {
 
     private static final String PAGE_RESOURCE = "PAGE_RESOURCE";
     private ResourceModel mResourceModel;
@@ -39,10 +40,10 @@ public class ResourceShowActivity extends Activity {
         if (mResourceModel != null) {
             switch (mResourceModel.resource_type) {
                 case KeyConstants.ResourceType.PPT_TYPE:
-                    mFragment = PptShowFragment.newInstance(mResourceModel.pdf_url);
+                    mFragment = ShowPptFragment.newInstance(ResourceShowActivity.this, mResourceModel.pdf_url, mResourceModel.thumbs, KeyConstants.SYNC_MODE.NONE);
                     break;
                 case KeyConstants.ResourceType.WORD_TYPE:
-                    mFragment = ShowDocumentFragment.newInstance(ResourceShowActivity.this, mResourceModel.pdf_url, ShowDocumentFragment.SYNC_MODE.NONE);
+                    mFragment = ShowDocumentFragment.newInstance(ResourceShowActivity.this, mResourceModel.pdf_url, KeyConstants.SYNC_MODE.NONE);
                     break;
                 case KeyConstants.ResourceType.IMAGE_TYPE:
                     mFragment = ImageShowFragment.newInstance(mResourceModel.url);
@@ -52,6 +53,7 @@ public class ResourceShowActivity extends Activity {
                     break;
             }
         }
+        getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mFragment).commit();
     }
 
     private void initParams() {

@@ -19,7 +19,7 @@ public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelMo
     public List<ResourceModel> ppt_set;
     public List<ResourceModel> video_set;
     public List<ResourceModel> doc_set;
-    public List<ResourceModel> question_set;
+    public List<QuestionModel> question_set;
     public List<ResourceModel> image_set;
     public String create_time;
     public String update_time;
@@ -52,9 +52,6 @@ public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelMo
         }
         if (doc_set != null) {
             resourceModelList.addAll(doc_set);
-        }
-        if (question_set != null) {
-            resourceModelList.addAll(question_set);
         }
         if (video_set != null) {
             resourceModelList.addAll(video_set);

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingLeft="40dp"
+    android:paddingLeft="60dp"
     android:paddingTop="8dp"
     android:paddingRight="10dp"
     android:paddingBottom="8dp">
@@ -16,6 +16,6 @@
         android:drawableLeft="@drawable/chapter_selector"
         android:drawablePadding="10dp"
         android:textColor="@color/chapter_menu_text"
-        android:textSize="16sp"
+        android:textSize="18sp"
         tools:text="第一节" />
 </LinearLayout>

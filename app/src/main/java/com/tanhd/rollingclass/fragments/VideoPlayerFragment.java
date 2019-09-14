@@ -10,11 +10,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.MediaController;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.VideoPlayerActivity;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.views.VideoViewEx;
@@ -44,24 +42,28 @@ public class VideoPlayerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = inflater.inflate(R.layout.activity_video_player, container, false);
+        initParams();
+        initViews(view);
+        resetVideo();
+        return view;
+    }
 
+    private void initParams() {
         Bundle args = getArguments();
         mMicroCourseID = args.getString("MicroCourseID");
         mResourceAddr = args.getString("ResourceAddr");
 
-        videoView = (VideoViewEx) view.findViewById(R.id.videoview);
+    }
 
-        //加载指定的视频文件
-        videoView.setVideoURI(Uri.parse(mResourceAddr));
+
+    private void initViews(View view) {
+        videoView = (VideoViewEx) view.findViewById(R.id.videoview);
 
         //创建MediaController对象
         mediaController = new MediaController(getActivity());
 
         //VideoView与MediaController建立关联
         videoView.setMediaController(mediaController);
-
-        //让VideoView获取焦点
-        videoView.requestFocus();
 
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -90,8 +92,27 @@ public class VideoPlayerFragment extends Fragment {
                 new UploadDataTask().execute(json.toString());
             }
         });
-        return view;
     }
+
+    private void resetVideo(){
+
+        //加载指定的视频文件
+        videoView.setVideoURI(Uri.parse(mResourceAddr));
+
+        //让VideoView获取焦点
+        videoView.requestFocus();
+    }
+
+    public void refreshVideo(String MicroCourseID, String VideoUrl){
+        Bundle bundle = new Bundle();
+        bundle.putString("MicroCourseID", MicroCourseID);
+        bundle.putString("ResourceAddr", ScopeServer.getInstance().getResourceUrl() + VideoUrl);
+        setArguments(bundle);
+
+        initParams();
+        resetVideo();
+    }
+
 
     @Override
     public void onPause() {

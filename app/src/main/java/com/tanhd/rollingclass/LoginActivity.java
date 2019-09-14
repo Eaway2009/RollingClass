@@ -166,6 +166,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -225,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
         CheckBox checkBox = findViewById(R.id.save_pwd);
         checkBox.setChecked(true);
         mUserView.setText(username);
-        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
+//        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
         //findViewById(R.id.sign).callOnClick();
     }
 

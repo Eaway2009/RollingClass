@@ -1,18 +1,15 @@
 package com.tanhd.rollingclass.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.barteksc.pdfviewer.PDFView;
@@ -23,37 +20,41 @@ import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.views.ThumbAdapter;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 
 import com.tanhd.rollingclass.db.KeyConstants.SYNC_MODE;
 
-public class ShowDocumentFragment extends Fragment {
+public class ShowPptFragment extends Fragment {
     private Activity mActivity;
+    private ListView mThumbsListView;
+    private ThumbAdapter mThumbAdapter;
+    private SYNC_MODE mSyncMode;
+    private PDFView.Configurator mConfigurator;
 
     private PDFView webView;
     private TextView mLoadFailView;
     private View mProgressBarView;
     private String mUrl;
     private String mPdfFilePath;
-    private SYNC_MODE mSyncMode;
     private boolean downLoadFinish = true;
-    private static final String TAG = "ShowDocumentFragment";
+    private static final String TAG = "ShowPptFragment";
+    private ArrayList<String> mThumbsList;
 
-    public static ShowDocumentFragment newInstance(Activity activity, String url, SYNC_MODE mode) {
+    public static ShowPptFragment newInstance(Activity activity, String url, ArrayList<String> thumbs, SYNC_MODE mode) {
         Bundle args = new Bundle();
         args.putString("url", url);
+        args.putStringArrayList("thumbs", thumbs);
         args.putInt("mode", mode.ordinal());
-        ShowDocumentFragment fragment = new ShowDocumentFragment();
+        ShowPptFragment fragment = new ShowPptFragment();
         fragment.setArguments(args);
         fragment.setActivity(activity);
         return fragment;
@@ -61,10 +62,11 @@ public class ShowDocumentFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        int mode = getArguments().getInt("mode");
+        mThumbsList = getArguments().getStringArrayList("thumbs");
         mUrl = getArguments().getString("url");
+        int mode = getArguments().getInt("mode");
         mSyncMode = SYNC_MODE.values()[mode];
-        View view = inflater.inflate(R.layout.fragment_show_document, container, false);
+        View view = inflater.inflate(R.layout.fragment_show_ppt, container, false);
         webView = view.findViewById(R.id.webview);
         mLoadFailView = view.findViewById(R.id.load_fail);
         mLoadFailView.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +79,21 @@ public class ShowDocumentFragment extends Fragment {
         if (mSyncMode == SYNC_MODE.SLAVE) {
             webView.setEnabled(false);
         }
+        initListView(view);
         return view;
+    }
+
+    private void initListView(View view){
+        mThumbsListView = view.findViewById(R.id.thumbs_listview);
+        mThumbAdapter = new ThumbAdapter(getActivity());
+        mThumbsListView.setAdapter(mThumbAdapter);
+        mThumbAdapter.setData(mThumbsList);
+        mThumbsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                webView.jumpTo(position);
+            }
+        });
     }
 
     public void setActivity(Activity activity){
@@ -92,9 +108,11 @@ public class ShowDocumentFragment extends Fragment {
         downloadPDF();
     }
 
-    public void refreshPdf(String url){
+    public void refreshPpt(String url, ArrayList<String> thumbs){
         if(downLoadFinish || mUrl!=url){
             mUrl = url;
+            mThumbsList.clear();
+            mThumbsList.addAll(thumbs);
             downloadPDF();
         }
     }
@@ -144,7 +162,7 @@ public class ShowDocumentFragment extends Fragment {
     private void load() {
         mLoadFailView.setVisibility(View.GONE);
         mProgressBarView.setVisibility(View.VISIBLE);
-        PDFView.Configurator configurator = webView.fromFile(new File(mPdfFilePath))
+        mConfigurator = webView.fromFile(new File(mPdfFilePath))
                 .enableSwipe(true) // allows to block changing pages using swipe
                 .swipeHorizontal(false)
                 .enableDoubletap(true)
@@ -155,6 +173,12 @@ public class ShowDocumentFragment extends Fragment {
                 .autoSpacing(true)
                 .enableAntialiasing(true) // improve rendering a little bit on low-res screens
                 .spacing(0)
+                .onPageScroll(new OnPageScrollListener() {
+                    @Override
+                    public void onPageScrolled(int page, float positionOffset) {
+                        mThumbsListView.smoothScrollToPosition(page);
+                    }
+                })
                 .onLoad(new OnLoadCompleteListener() {
                     @Override
                     public void loadComplete(int nbPages) {
@@ -171,16 +195,13 @@ public class ShowDocumentFragment extends Fragment {
                 });
 
         if (mSyncMode == SYNC_MODE.MASTER) {
-            configurator.onPageScroll(mPageScrollListener);
+            mConfigurator.onPageScroll(mPageScrollListener);
         }
 
-        configurator.load();
+        mConfigurator.load();
     }
 
     public void publish(PushMessage.COMMAND command, List<String> to, Map<String, String> data) {
-        if (mSyncMode != SYNC_MODE.MASTER)
-            return;
-
         MyMqttService.publishMessage(command, to, data);
     }
 

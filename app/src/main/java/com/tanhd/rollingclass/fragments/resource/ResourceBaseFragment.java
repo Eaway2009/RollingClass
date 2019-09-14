@@ -7,7 +7,7 @@ import com.tanhd.rollingclass.server.data.ResourceModel;
 
 import java.util.List;
 
-public class ResourceBaseFragment extends Fragment {
+public abstract class ResourceBaseFragment extends Fragment {
 
     void setListData(List resourceList) {
 
@@ -16,6 +16,8 @@ public class ResourceBaseFragment extends Fragment {
     void clearListData() {
 
     }
+
+    abstract List getDataList();
 
     public interface Callback{
 

@@ -103,10 +103,7 @@ public class TaskDisplayView implements View.OnClickListener {
             }
         }
         if (mData.question_set != null) {
-            addFilesDisplayView(R.string.exercises, mData.question_set);
-            for (ResourceModel resourceModel:mData.question_set){
-                mExercisesList.add(resourceModel.resource_id);
-            }
+
         }
         return mLinearLayout;
     }

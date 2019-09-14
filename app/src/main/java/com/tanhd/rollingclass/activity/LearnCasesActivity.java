@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;

@@ -28,6 +28,8 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
     private TextView mKnowledgeAddButton;
     private View mAddButtonsLayout;
 
+    private boolean mRequesting=false;
+
     public static KnowledgeNoneFragment newInstance(KnowledgeModel knowledgeModel, KnowledgeNoneFragment.Callback callback) {
         Bundle args = new Bundle();
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
@@ -79,25 +81,33 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
         } else {
             mKnowledgeModel.knowledge_point_name = mKnowledgeNameEditText.getText().toString();
 
-            ScopeServer.getInstance().InsertKnowledge(mKnowledgeModel, new RequestCallback() {
-                @Override
-                public void onProgress(boolean b) {
-
-                }
-
-                @Override
-                public void onResponse(String body) {
-                    KnowledgeDetailMessage response = (KnowledgeDetailMessage) ScopeServer.getInstance().jsonToModel(KnowledgeDetailMessage.class.getName(),body);
-                    mListener.onAddSuccess(mKnowledgeModel, response);
-                }
-
-                @Override
-                public void onError(String code, String message) {
-                    Toast.makeText(getActivity().getApplicationContext(), "课时名称添加失败，请稍候重试 ", Toast.LENGTH_LONG).show();
-                }
-            });
         }
     }
+
+    private  void request(){
+        if(mRequesting){
+            return;
+        }
+        mRequesting = true;
+        ScopeServer.getInstance().InsertKnowledge(mKnowledgeModel, new RequestCallback() {
+            @Override
+            public void onProgress(boolean b) {
+
+            }
+
+            @Override
+            public void onResponse(String body) {
+                KnowledgeDetailMessage response = (KnowledgeDetailMessage) ScopeServer.getInstance().jsonToModel(KnowledgeDetailMessage.class.getName(),body);
+                mListener.onAddSuccess(mKnowledgeModel, response);
+                mRequesting = false;
+            }
+
+            @Override
+            public void onError(String code, String message) {
+                Toast.makeText(getActivity().getApplicationContext(), "课时名称添加失败，请稍候重试 ", Toast.LENGTH_LONG).show();
+                mRequesting = false;
+            }
+        });}
 
     public interface Callback {
         void onAddSuccess(KnowledgeModel model, KnowledgeDetailMessage response);

@@ -204,7 +204,13 @@
         android:gravity="top|left"
         android:minHeight="100dp"
         android:orientation="vertical"
-        android:padding="36dp" >
+        android:padding="36dp">
+
+        <FrameLayout
+            android:id="@+id/framelayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout

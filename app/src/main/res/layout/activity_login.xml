@@ -131,6 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="保存密码"
+            android:checked="true"
             android:visibility="gone"/>
 
         <Button

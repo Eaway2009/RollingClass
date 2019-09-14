@@ -98,7 +98,6 @@ public class MQTT {
             options.setKeepAliveInterval(30000);
             options.setAutomaticReconnect(true);
             mClient = new MqttClient(MQTT_SERVER, PREF_CLIENT_ID + mClientID, new MemoryPersistence());
-            mClient.setCallback( );
             mClient.connect(options);
             Log.i(TAG, "Connect: true");
             return true;

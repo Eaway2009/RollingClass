@@ -85,6 +85,11 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
         }
     }
 
+    @Override
+    List getDataList() {
+        return mQuestionList;
+    }
+
     private class QuestionAdapter extends BaseAdapter {
 
         @Override

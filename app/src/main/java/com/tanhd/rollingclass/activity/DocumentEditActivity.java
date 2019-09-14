@@ -3,6 +3,7 @@ package com.tanhd.rollingclass.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -24,6 +25,7 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
     public static final String PARAM_TEACHING_MATERIAL_DATA = "PARAM_TEACHING_MATERIAL_DATA";
     public static final String PARAM_KNOWLEDGE_DETAIL_DATA = "PARAM_KNOWLEDGE_DETAIL_DATA";
     public static final String PAGE_ID = "PAGE_ID";
+    public static final String NEED_CHECK_ITEM = "NEED_CHECK_ITEM";
     public static final int PAGE_ID_ADD_DOCUMENTS = 0;
     public static final int PAGE_ID_EDIT_DOCUMENTS = 1;
 
@@ -35,11 +37,12 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
     private KnowledgeControllerFragment mKnowledgeControllerFragment;
     private KnowledgeDetailMessage mKnowledgeDetailMessage;
 
-    public static void startMe(Activity context, int pageId, KnowledgeModel knowledgeModel) {
-        Intent intent = new Intent(context, DocumentEditActivity.class);
+    public static void startMe(Fragment context, int pageId, KnowledgeModel knowledgeModel) {
+        Intent intent = new Intent();
+        intent.setClass(context.getActivity(), DocumentEditActivity.class);
         intent.putExtra(PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         intent.putExtra(PAGE_ID, pageId);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, 0);
     }
 
     public static void startMe(Activity context, int pageId, KnowledgeModel knowledgeModel, KnowledgeDetailMessage knowledgeDetailMessage) {
@@ -61,8 +64,8 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
     private void initParams() {
         mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_ADD_DOCUMENTS);
         mKnowledgeModel = (KnowledgeModel) getIntent().getSerializableExtra(PARAM_TEACHING_MATERIAL_DATA);
-        if(mPageId == PAGE_ID_EDIT_DOCUMENTS){
-            mKnowledgeDetailMessage = (KnowledgeDetailMessage)getIntent().getSerializableExtra(PARAM_KNOWLEDGE_DETAIL_DATA);
+        if (mPageId == PAGE_ID_EDIT_DOCUMENTS) {
+            mKnowledgeDetailMessage = (KnowledgeDetailMessage) getIntent().getSerializableExtra(PARAM_KNOWLEDGE_DETAIL_DATA);
         }
     }
 
@@ -93,9 +96,9 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
     }
 
     private void initFragment() {
-        if(mKnowledgeDetailMessage !=null){
-            mKnowledgeControllerFragment = KnowledgeControllerFragment.newInstance(mKnowledgeModel, mKnowledgeDetailMessage,this);
-        }else {
+        if (mKnowledgeDetailMessage != null) {
+            mKnowledgeControllerFragment = KnowledgeControllerFragment.newInstance(mKnowledgeModel, mKnowledgeDetailMessage, this);
+        } else {
             mKnowledgeControllerFragment = KnowledgeControllerFragment.newInstance(mKnowledgeModel, this);
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mKnowledgeControllerFragment).commit();
@@ -107,6 +110,16 @@ public class DocumentEditActivity extends AppCompatActivity implements Knowledge
 
     @Override
     public void onBack() {
+        backToList();
+    }
+
+    @Override
+    public void onBackPressed() {
+        backToList();
+    }
+
+    private void backToList() {
+        setResult(RESULT_OK);
         finish();
     }
 }
