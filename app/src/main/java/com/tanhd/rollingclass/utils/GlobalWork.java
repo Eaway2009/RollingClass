@@ -12,7 +12,7 @@ import com.tanhd.rollingclass.fragments.ShowAnswerCommentFragment;
 import com.tanhd.rollingclass.fragments.pages.CommentAnswerPage;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,9 +29,9 @@ public class GlobalWork {
     }
 
     public void dealCommentResult(String question, String answer) {
-        QuestionData questionData = new QuestionData();
+        QuestionModel questionData = new QuestionModel();
         questionData.parse(questionData, question);
-        if (questionData.QuestionID == null) {
+        if (questionData.question_id == null) {
             Toast.makeText(mContext, "读取数据失败!", Toast.LENGTH_LONG).show();
             return;
         }
@@ -47,9 +47,9 @@ public class GlobalWork {
     }
 
     public void dealCommentRequest(String question, String answer) {
-        QuestionData questionData = new QuestionData();
+        QuestionModel questionData = new QuestionModel();
         questionData.parse(questionData, question);
-        if (questionData.QuestionID == null) {
+        if (questionData.question_id == null) {
             Toast.makeText(mContext, "读取数据失败!", Toast.LENGTH_LONG).show();
             return;
         }

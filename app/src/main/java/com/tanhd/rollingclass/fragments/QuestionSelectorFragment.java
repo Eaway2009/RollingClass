@@ -23,7 +23,7 @@ import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.OptionData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.views.LessonSampleSelectorView;
 
@@ -36,13 +36,13 @@ import java.util.Set;
 
 public class QuestionSelectorFragment extends Fragment {
     public static interface QuestionSelectListener {
-        void onQuestionSelected(List<QuestionData> questionList);
+        void onQuestionSelected(List<QuestionModel> questionList);
     }
 
     private ListView mListView;
     private QuestionAdapter mAdapter;
-    private List<QuestionData> mQuestionList = new ArrayList<>();
-    private HashMap<String, QuestionData> mSelectedMap = new HashMap<>();
+    private List<QuestionModel> mQuestionList = new ArrayList<>();
+    private HashMap<String, QuestionModel> mSelectedMap = new HashMap<>();
     private QuestionSelectListener mListener;
     private LessonSampleSelectorView mLessonSampleView;
 
@@ -65,7 +65,7 @@ public class QuestionSelectorFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (mListener != null && !mSelectedMap.isEmpty()) {
-                    ArrayList<QuestionData> list = new ArrayList<>(mSelectedMap.values());
+                    ArrayList<QuestionModel> list = new ArrayList<>(mSelectedMap.values());
                     mListener.onQuestionSelected(list);
                 }
 
@@ -99,7 +99,7 @@ public class QuestionSelectorFragment extends Fragment {
         @Override
         protected Void doInBackground(String... strings) {
             String lessonSampleID = strings[0];
-            List<QuestionData> list = ScopeServer.getInstance().QureyQuestionByLessonSampleID(lessonSampleID);
+            List<QuestionModel> list = ScopeServer.getInstance().QureyQuestionByLessonSampleID(lessonSampleID);
             if (list == null)
                 return null;
 
@@ -132,7 +132,7 @@ public class QuestionSelectorFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            final QuestionData question = mQuestionList.get(position);
+            final QuestionModel question = mQuestionList.get(position);
             View view = convertView;
             if (view == null) {
                 view = getLayoutInflater().inflate(R.layout.item_question_selector, parent, false);
@@ -143,24 +143,24 @@ public class QuestionSelectorFragment extends Fragment {
             WebView stemView = view.findViewById(R.id.stem);
             View overView = view.findViewById(R.id.over);
 
-            if (mSelectedMap.containsKey(question.QuestionID)) {
+            if (mSelectedMap.containsKey(question.question_id)) {
                 overView.setVisibility(View.VISIBLE);
             } else {
                 overView.setVisibility(View.GONE);
             }
 
-            typeView.setText(String.format("[%s]", question.Context.QuestionCategoryName));
-            noView.setText(String.format("第%d题:", question.Context.OrderIndex));
-            String html = AppUtils.dealHtmlText(question.Context.Stem);
+            typeView.setText(String.format("[%s]", question.context.QuestionCategoryName));
+            noView.setText(String.format("第%d题:", question.context.OrderIndex));
+            String html = AppUtils.dealHtmlText(question.context.Stem);
             stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
             LinearLayout optionsLayout = view.findViewById(R.id.options);
-            if (question.Context.QuestionCategoryId == 1 && question.Context.Options != null) {
+            if (question.context.QuestionCategoryId == 1 && question.context.Options != null) {
                 optionsLayout.setVisibility(View.VISIBLE);
                 optionsLayout.removeAllViews();
 
                 try {
-                    for (OptionData optionData: question.Context.Options) {
+                    for (OptionData optionData: question.context.Options) {
                         View optionView = getLayoutInflater().inflate(R.layout.layout_question_option, optionsLayout, false);
                         noView = optionView.findViewById(R.id.no);
                         WebView textView = optionView.findViewById(R.id.option_text);
@@ -184,16 +184,16 @@ public class QuestionSelectorFragment extends Fragment {
                     View overView = v.findViewById(R.id.over);
                     if (overView.getVisibility() == View.GONE) {
                         overView.setVisibility(View.VISIBLE);
+//
+//                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) overView.getLayoutParams();
+//                        params.width = v.getWidth();
+//                        params.height = v.getHeight();
+//                        overView.setLayoutParams(params);
 
-                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) overView.getLayoutParams();
-                        params.width = v.getWidth();
-                        params.height = v.getHeight();
-                        overView.setLayoutParams(params);
-
-                        mSelectedMap.put(question.QuestionID, question);
+                        mSelectedMap.put(question.question_id, question);
                     } else {
                         overView.setVisibility(View.GONE);
-                        mSelectedMap.remove(question.QuestionID);
+                        mSelectedMap.remove(question.question_id);
                     }
                 }
             });

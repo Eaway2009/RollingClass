@@ -29,7 +29,7 @@ import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
@@ -55,7 +55,7 @@ public class ExamFragment extends Fragment {
     private ViewPager mViewPager;
     private ProgressBar mProgressBar;
     private QuestionPageAdapter mAdapter;
-    private List<QuestionData> mQuestionList;
+    private List<QuestionModel> mQuestionList;
     private HashMap<Integer, ResultClass> mResultMap = new HashMap<>();
     private View mRootView;
     private ExamListener mListener;
@@ -181,8 +181,8 @@ public class ExamFragment extends Fragment {
         mNextButton.setVisibility(View.VISIBLE);
         mPositionView.setVisibility(View.VISIBLE);
         mTotalView.setVisibility(View.VISIBLE);
-        QuestionData questionData = mQuestionList.get(currentPage);
-        mTypeNameView.setText(String.format("[%s]", questionData.Context.QuestionCategoryName));
+        QuestionModel questionData = mQuestionList.get(currentPage);
+        mTypeNameView.setText(String.format("[%s]", questionData.context.QuestionCategoryName));
         mPositionView.setText(String.valueOf(currentPage + 1));
         mTotalView.setText("/" + String.valueOf(mQuestionList.size()));
     }
@@ -197,7 +197,7 @@ public class ExamFragment extends Fragment {
         @Override
         public Fragment getItem(int i) {
             if (i < mQuestionList.size()) {
-                QuestionData questionData = mQuestionList.get(i);
+                QuestionModel questionData = mQuestionList.get(i);
                 ResultClass resultClass = mResultMap.get(i);
                 QuestionAnswerPage page = QuestionAnswerPage.newInstance(questionData, resultClass);
                 page.setListener(questionAnswerListener);
@@ -295,21 +295,21 @@ public class ExamFragment extends Fragment {
                     continue;
                 }
 
-                QuestionData questionData = mQuestionList.get(i);
+                QuestionModel questionData = mQuestionList.get(i);
                 AnswerData answerData = new AnswerData();
-                answerData.AnswerName = questionData.Context.QuestionCategoryName;
-                answerData.QuestionID = questionData.QuestionID;
-                answerData.QuestionName = questionData.Context.Stem;
+                answerData.AnswerName = questionData.context.QuestionCategoryName;
+                answerData.QuestionID = questionData.question_id;
+                answerData.QuestionName = questionData.context.Stem;
                 answerData.AnswerUserID = userID;
                 answerData.AnswerType = 2;
                 answerData.AnswerUserName = userName;
-                answerData.LessonSampleID = questionData.LessonSampleID;
-                answerData.LessonSampleName = questionData.LessonSampleName;
-                answerData.TeacherID = questionData.TeacherID;
-                answerData.TeacherName = questionData.TeacherName;
+                answerData.LessonSampleID = questionData.lesson_sample_id;
+                answerData.LessonSampleName = questionData.lesson_sample_name;
+                answerData.TeacherID = questionData.teacher_id;
+                answerData.TeacherName = questionData.teacher_name;
                 answerData.ClassID = ExternalParam.getInstance().getClassData().ClassID;
-                answerData.QuestionCategoryName = questionData.Context.QuestionCategoryName;
-                answerData.QuestionCategoryId = questionData.Context.QuestionCategoryId;
+                answerData.QuestionCategoryName = questionData.context.QuestionCategoryName;
+                answerData.QuestionCategoryId = questionData.context.QuestionCategoryId;
                 answerData.QuestionType = questionData.QuestionType;
                 answerData.QuestionSetID = getArguments().getString("questionSetID");
 
@@ -353,9 +353,9 @@ public class ExamFragment extends Fragment {
 
             mQuestionList = list;
             for (int i=0; i<list.size(); i++) {
-                QuestionData questionData = mQuestionList.get(i);
+                QuestionModel questionData = mQuestionList.get(i);
                 ResultClass resultClass = new ResultClass();
-                AnswerData answerData = answerMap.get(questionData.QuestionID);
+                AnswerData answerData = answerMap.get(questionData.question_id);
                 if (answerData != null) {
                     if (!TextUtils.isEmpty(answerData.AnswerUrl)) {
                         resultClass.mode = 2;
@@ -378,14 +378,14 @@ public class ExamFragment extends Fragment {
             String questionSetID = getArguments().getString("questionSetID");
             String lessonSampleId = getArguments().getString("lessonSampleId");
 
-            List<QuestionData> questionList = null;
-            if(lessonSampleId!=null){
+            List<QuestionModel> questionList = null;
+            /*if(lessonSampleId!=null){
                 questionList = ScopeServer.getInstance().QureyQuestionByLessonSampleID(lessonSampleId);
                 if (questionList == null)
                     return null;
 
                 String studentID = ExternalParam.getInstance().getUserData().getOwnerID();
-                for (QuestionData questionData: questionList) {
+                for (QuestionModel questionData: questionList) {
                     List<AnswerData> answerList = ScopeServer.getInstance().QureyAnswerv2ByStudentIDAndQuestionID(studentID, questionData.QuestionID);
                     if (answerList == null || answerList.isEmpty())
                         continue;
@@ -396,42 +396,39 @@ public class ExamFragment extends Fragment {
                         }
                     }
                 }
-            } else if (questionSetID == null) {
-                LessonSampleData lessonSampleData = ExternalParam.getInstance().getLessonSample();
-                if (lessonSampleData == null)
-                    return null;
+            } else */if (questionSetID == null) {
 
-                questionList = ScopeServer.getInstance().QureyQuestionByLessonSampleID(lessonSampleData.LessonSampleID);
+                questionList = ScopeServer.getInstance().QureyQuestionSetByKnowledgeID(questionSetID);
                 if (questionList == null)
                     return null;
 
                 String studentID = ExternalParam.getInstance().getUserData().getOwnerID();
-                for (QuestionData questionData: questionList) {
-                    List<AnswerData> answerList = ScopeServer.getInstance().QureyAnswerv2ByStudentIDAndQuestionID(studentID, questionData.QuestionID);
+                for (QuestionModel questionData: questionList) {
+                    List<AnswerData> answerList = ScopeServer.getInstance().QureyAnswerv2ByStudentIDAndQuestionID(studentID, questionData.question_id);
                     if (answerList == null || answerList.isEmpty())
                         continue;
                     for (AnswerData answerData: answerList) {
                         if (answerData.QuestionSetID == null) {
-                            answerMap.put(questionData.QuestionID, answerList.get(0));
+                            answerMap.put(questionData.question_id, answerList.get(0));
                             break;
                         }
                     }
                 }
-            } else {
+            }/* else {
                 QuestionSetData questionSetData = ScopeServer.getInstance().QureyQuestionSetByTeacherID(teacherID, questionSetID);
                 if (questionSetData == null || questionSetData.QuestionList == null)
                     return null;
 
                 questionList = new ArrayList<>();
                 for (String questionID: questionSetData.QuestionList) {
-                    List<QuestionData> list = ScopeServer.getInstance().QureyQuestionByID(questionID);
+                    List<QuestionModel> list = ScopeServer.getInstance().QureyQuestionByID(questionID);
                     if (list == null || list.isEmpty())
                         continue;
                     questionList.addAll(list);
                 }
-            }
+            }*/
 
-            QuestionData.sort(questionList);
+            QuestionModel.sort(questionList);
             return questionList;
         }
     }

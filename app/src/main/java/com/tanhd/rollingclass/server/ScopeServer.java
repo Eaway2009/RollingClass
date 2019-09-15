@@ -20,7 +20,7 @@ import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.RequestShareKnowledge;
@@ -870,13 +870,26 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
-    public List<QuestionData> QureyQuestionByLessonSampleID(String lessonsampleID) {
+    public List<QuestionModel> QureyQuestionByLessonSampleID(String lessonsampleID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("lessonsampleID", lessonsampleID);
         params.put("token", mToken);
         String response = sendRequest(getHostUrl() + "/question/QureyQuestionByLessonSampleID/" + mToken, METHOD.GET, params);
         if (response != null) {
-            List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);
+            List<QuestionModel> list = jsonToList(QuestionModel.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    public List<QuestionModel> QureyQuestionSetByKnowledgeID(String setId) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("setID", setId);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/questionset/QureyQuestionSetByKnowledgeID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<QuestionModel> list = jsonToList(QuestionModel.class.getName(), response);
             return list;
         }
 
@@ -1037,12 +1050,12 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
-    public List<QuestionData> QureyQuestionByID(String questionID) {
+    public List<QuestionModel> QureyQuestionByID(String questionID) {
         HashMap<String, String> params = new HashMap<>();
         params.put("questionID", questionID);
         String response = sendRequest(getHostUrl() + "/question/QureyQuestionByID/" + mToken, METHOD.GET, params);
         if (response != null) {
-            List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);
+            List<QuestionModel> list = jsonToList(QuestionModel.class.getName(), response);
             return list;
         }
 

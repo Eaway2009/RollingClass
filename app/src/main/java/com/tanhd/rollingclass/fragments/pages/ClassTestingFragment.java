@@ -18,12 +18,14 @@ import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.StudentSelectorFragment;
+import com.tanhd.rollingclass.fragments.WaitAnswerFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
 import com.tanhd.rollingclass.fragments.resource.ResourceBaseFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.QuestionModel;
+import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
@@ -37,23 +39,26 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
 
     private static final String PARAM_CLASS_DATA = "PARAM_CLASS_DATA";
     private static final String PARAM_TEACHING_MATERIAL_ID = "PARAM_TEACHING_MATERIAL_ID";
+    private static final String PARAM_KNOWLEDGE_ID = "PARAM_KNOWLEDGE_ID";
     private ClassData mClassData;
     private TextView mSchoolResourceTextView;
     private TextView mPublicResourceTextView;
     private TextView mMyResourceTextView;
     private QuestionResourceFragment mQuestionResourceFragment;
-    private QuestionModel mQuestionModel;
+    private List<QuestionModel> mQuestionList;
     private String mTeachingMaterialId;
     private StudentSelectorFragment mStudentSelectorFragment;
-    private ArrayList<String> mStudentList;
+    private List<StudentData> mStudentList;
     private Button mCancelButton;
     private Button mCommitButton;
+    private String mKnowledgeId;
 
-    public static ClassTestingFragment getInstance(ClassData classData, String teachingMaterialId) {
+    public static ClassTestingFragment getInstance(ClassData classData, String teachingMaterialId, String knowledgeId) {
         ClassTestingFragment classTestingFragment = new ClassTestingFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(PARAM_CLASS_DATA, classData);
         bundle.putString(PARAM_TEACHING_MATERIAL_ID, teachingMaterialId);
+        bundle.putString(PARAM_KNOWLEDGE_ID, teachingMaterialId);
         classTestingFragment.setArguments(bundle);
         return classTestingFragment;
     }
@@ -79,10 +84,11 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
         mCancelButton.setOnClickListener(this);
         mCommitButton.setOnClickListener(this);
 
-        mQuestionResourceFragment = QuestionResourceFragment.newInstance(new ResourceBaseFragment.Callback() {
+        mQuestionResourceFragment = QuestionResourceFragment.newInstance(new ResourceBaseFragment.ListCallback() {
+
             @Override
-            public void itemChecked(ResourceModel resourceModel, QuestionModel questionModel) {
-                mQuestionModel = questionModel;
+            public void onListChecked(List<ResourceModel> resourceList, List<QuestionModel> questionList) {
+                mQuestionList = questionList;
             }
         });
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
@@ -90,12 +96,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
         mStudentSelectorFragment = StudentSelectorFragment.newInstance(false, null, mClassData, new StudentSelectorFragment.StudentSelectListener() {
             @Override
             public void onStudentSelected(ArrayList<StudentData> studentList) {
-                mStudentList = new ArrayList<>();
-                for (StudentData studentData : studentList) {
-                    if (studentData != null) {
-                        mStudentList.add(studentData.StudentID);
-                    }
-                }
+                mStudentList = studentList;
             }
         });
         getFragmentManager().beginTransaction().replace(R.id.student_select_layout_fragment, mStudentSelectorFragment).commit();
@@ -106,6 +107,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
         Bundle args = getArguments();
         mClassData = (ClassData) args.getSerializable(PARAM_CLASS_DATA);
         mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIAL_ID);
+        mKnowledgeId = args.getString(PARAM_KNOWLEDGE_ID);
     }
 
 
@@ -134,7 +136,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
                 dismiss();
                 break;
             case R.id.commit_button:
-                if(mQuestionModel==null){
+                if(mQuestionList==null||mQuestionList.size()==0){
                     Toast.makeText(getActivity(), "请先选择题目",Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -142,12 +144,61 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
                     Toast.makeText(getActivity(), "请选择需要参与测评的学生",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                HashMap<String, String> params = new HashMap<>();
-                params.put("examID", mQuestionModel.question_id);
-                params.put("teacherID", ExternalParam.getInstance().getUserData().getOwnerID());
-                MyMqttService.publishMessage(PushMessage.COMMAND.QUESTIONING, mStudentList, params);
-                dismiss();
+                new NewSetTask(mQuestionList, mStudentList);
                 break;
+        }
+    }
+    private class NewSetTask extends AsyncTask<List, Void, String> {
+        private List<StudentData> studentList;
+        private List<QuestionModel> questionList;
+
+        NewSetTask(List<QuestionModel> questionModelList, List<StudentData> studentDataList){
+            studentList = studentDataList;
+            questionList = questionModelList;
+        }
+
+        @Override
+        protected String doInBackground(List... lists) {
+
+            QuestionSetData questionSetData = new QuestionSetData();
+            questionSetData.TeacherID = ExternalParam.getInstance().getUserData().getOwnerID();
+            questionSetData.SetName = "提问";
+
+            questionSetData.QuestionList = new ArrayList<>();
+            for (int i=0; i<questionList.size(); i++) {
+                QuestionModel questionData = (QuestionModel) questionList.get(i);
+                questionSetData.QuestionList.add(questionData.question_id);
+            }
+
+            questionSetData.StudentList = new ArrayList<>();
+            for (int i=0; i<studentList.size(); i++) {
+                StudentData studentData = (StudentData) studentList.get(i);
+                questionSetData.StudentList.add(studentData.StudentID);
+            }
+            questionSetData.knowledge_id = mKnowledgeId;
+            questionSetData.class_id = mClassData.ClassID;
+            String result = ScopeServer.getInstance().InsertQuestionSet(questionSetData.toJSON().toString());
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result == null || studentList == null || studentList.isEmpty()) {
+                Toast.makeText(getContext().getApplicationContext(), "发起提问失败!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            List<String> to = new ArrayList<>();
+            for (StudentData studentData: studentList) {
+                to.add(studentData.StudentID);
+            }
+            HashMap<String, String> params = new HashMap<>();
+            params.put("examID", result);
+            params.put("teacherID", ExternalParam.getInstance().getUserData().getOwnerID());
+            MyMqttService.publishMessage(PushMessage.COMMAND.QUESTIONING, to, params);
+            ExternalParam.getInstance().setQuestionSetID(result);
+//            showFragment(WaitAnswerFragment.newInstance(result));
+            dismiss();
         }
     }
 

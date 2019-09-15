@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.OptionData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.ResultClass;
 import com.tanhd.rollingclass.views.ObjectiveAnswerView;
@@ -31,14 +31,14 @@ public class QuestionAnswerPage extends Fragment {
         void onFinished(QuestionAnswerPage page);
     }
 
-    private QuestionData mQuestionData;
+    private QuestionModel mQuestionData;
     private ResultClass mResultClass = new ResultClass();
     private ObjectiveAnswerView mObjectiveView;
     private SubjectiveAnswerView mSubjectiveView;
     private QuestionAnswerListener mListener;
     private View mRootView;
 
-    public static QuestionAnswerPage newInstance(QuestionData questionData, ResultClass resultClass) {
+    public static QuestionAnswerPage newInstance(QuestionModel questionData, ResultClass resultClass) {
         Bundle args = new Bundle();
         args.putSerializable("questionData", questionData);
         args.putSerializable("resultClass", resultClass);
@@ -49,7 +49,7 @@ public class QuestionAnswerPage extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mQuestionData = (QuestionData) getArguments().get("questionData");
+        mQuestionData = (QuestionModel) getArguments().get("questionData");
         mResultClass = (ResultClass) getArguments().get("resultClass");
         mRootView = inflater.inflate(R.layout.page_question_answer, container, false);
         init();
@@ -125,7 +125,7 @@ public class QuestionAnswerPage extends Fragment {
             mSubjectiveView.setVisibility(View.VISIBLE);
 
             ArrayList<String> options = new ArrayList<>();
-            for (int i=0; i<mQuestionData.Context.Options.size(); i++)
+            for (int i=0; i<mQuestionData.context.Options.size(); i++)
                 options.add(AppUtils.OPTION_NO[i]);
 
             mSubjectiveView.setData(true, options, mResultClass.text);

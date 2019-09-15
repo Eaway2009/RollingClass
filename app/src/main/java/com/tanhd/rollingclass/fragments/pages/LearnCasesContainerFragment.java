@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.fragments.pages;
 
+import static com.tanhd.rollingclass.activity.LearnCasesActivity.PARAM_KNOWLEDGE_ID;
 import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_ANSWER;
 import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_EXRCISE;
 import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_LOCK;
@@ -83,6 +84,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private List<String> mHandsupStudentName = new ArrayList<>();
     private ClassData mClassData;
     private String mTeachingMaterialId;
+    private String mKnowledgeId;
 
     public static LearnCasesContainerFragment newInstance(int typeId, PagesListener listener) {
         Bundle args = new Bundle();
@@ -113,6 +115,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         Bundle args = getArguments();
         args.putSerializable(PARAM_CLASS_DATA, classData);
         args.putSerializable(PARAM_TEACHING_MATERIALID, teachingMaterialId);
+        args.putSerializable(PARAM_TEACHING_MATERIALID, mClassData);
 
         initParams();
     }
@@ -123,6 +126,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         if (args.containsKey(PARAM_CLASS_DATA)) {
             mClassData = (ClassData) args.getSerializable(PARAM_CLASS_DATA);
             mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIALID);
+            mKnowledgeId = args.getString(PARAM_KNOWLEDGE_ID);
         }
     }
 
@@ -180,7 +184,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                     break;
                 case ITEM_EXRCISE:
                     if (mClassData != null) {
-                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId));
+                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId));
                     }
                     break;
                 case ITEM_LOCK:

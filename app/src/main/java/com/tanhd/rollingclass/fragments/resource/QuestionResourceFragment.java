@@ -1,10 +1,12 @@
 package com.tanhd.rollingclass.fragments.resource;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,28 +16,24 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.db.KeyConstants;
-import com.tanhd.rollingclass.fragments.ExamFragment;
-import com.tanhd.rollingclass.fragments.QuestionSelectorFragment;
-import com.tanhd.rollingclass.server.data.ExternalParam;
-import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
-import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.utils.AppUtils;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class QuestionResourceFragment extends ResourceBaseFragment {
     private List<QuestionModel> mQuestionList = new ArrayList<>();
+    private List<QuestionModel> mCheckedQuestionList = new ArrayList<>();
 
     private ListView mListView;
     private QuestionAdapter mAdapter;
+    private ListCallback mListListener;
     private Callback mListener;
 
     public static QuestionResourceFragment newInstance() {
@@ -44,6 +42,12 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
     }
 
     public static QuestionResourceFragment newInstance(ResourceBaseFragment.Callback callback) {
+        QuestionResourceFragment page = new QuestionResourceFragment();
+        page.setListener(callback);
+        return page;
+    }
+
+    public static QuestionResourceFragment newInstance(ResourceBaseFragment.ListCallback callback) {
         QuestionResourceFragment page = new QuestionResourceFragment();
         page.setListener(callback);
         return page;
@@ -66,13 +70,17 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
         mListView.setAdapter(mAdapter);
     }
 
+    public void setListener(ResourceBaseFragment.ListCallback callback) {
+        mListListener = callback;
+    }
+
     public void setListener(ResourceBaseFragment.Callback callback) {
         mListener = callback;
     }
 
     public void setListData(List resourceList) {
         if (resourceList != null && !resourceList.isEmpty() && mAdapter != null) {
-            mQuestionList = resourceList;
+            mQuestionList.add((QuestionModel) resourceList.get(0));
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -107,19 +115,6 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
             return position;
         }
 
-        public void checkItem(int position) {
-            QuestionModel checkItem = mQuestionList.get(position);
-            checkItem.isChecked = true;
-            notifyDataSetChanged();
-        }
-
-        private void clearCheck() {
-            for (QuestionModel model : mQuestionList) {
-                model.isChecked = false;
-            }
-            notifyDataSetChanged();
-        }
-
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             final QuestionModel question = mQuestionList.get(position);
@@ -133,7 +128,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
             WebView stemView = view.findViewById(R.id.stem);
             View overView = view.findViewById(R.id.over);
             CheckBox itemCheckBox = view.findViewById(R.id.check_item_cb);
-            if (mListener != null) {
+            if (mListener != null || mListListener != null) {
                 itemCheckBox.setVisibility(View.VISIBLE);
             } else {
                 itemCheckBox.setVisibility(View.GONE);
@@ -169,40 +164,20 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
                     optionsLayout.setVisibility(View.GONE);
                 }
             }
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    View overView = v.findViewById(R.id.over);
-                    if (overView.getVisibility() == View.GONE) {
-                        overView.setVisibility(View.VISIBLE);
-
-                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) overView.getLayoutParams();
-                        params.width = v.getWidth();
-                        params.height = v.getHeight();
-                        overView.setLayoutParams(params);
-
-                    } else {
-                        overView.setVisibility(View.GONE);
-                    }
-
-                    if (mListener != null) {
-                        if (overView.getVisibility() == View.VISIBLE) {
-                            checkItem(position);
-                            mListener.itemChecked(null, question);
-                        } else {
-                            clearCheck();
-                            mListener.itemChecked(null, null);
-                        }
-                    }
-                }
-            });
             itemCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (mListener != null) {
+                    if (mListListener != null) {
                         if (isChecked) {
-                            checkItem(position);
+                            mCheckedQuestionList.add(question);
+                        } else {
+                            if (mCheckedQuestionList.contains(question)) {
+                                mCheckedQuestionList.remove(question);
+                            }
                         }
+                        mListListener.onListChecked(null, mCheckedQuestionList);
+                    }
+                    if (mListener != null) {
                         mListener.itemChecked(null, question);
                     }
                 }
@@ -210,4 +185,25 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
             return view;
         }
     }
+
+    //这里面的resource就是fromhtml函数的第一个参数里面的含有的url
+    Html.ImageGetter imgGetter = new Html.ImageGetter() {
+        public Drawable getDrawable(String source) {
+            Log.i("RG", "source---?>>>" + source);
+            Drawable drawable = null;
+            URL url;
+            try {
+                url = new URL(source);
+                Log.i("RG", "url---?>>>" + url);
+                drawable = Drawable.createFromStream(url.openStream(), ""); // 获取网路图片
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight());
+            Log.i("RG", "url---?>>>" + url);
+            return drawable;
+        }
+    };
 }

@@ -20,7 +20,7 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.StudentData;
 
@@ -55,7 +55,7 @@ public class NewSetFragment extends Fragment {
                 }
                 showFragment(QuestionSelectorFragment.newInstance(new QuestionSelectorFragment.QuestionSelectListener() {
                     @Override
-                    public void onQuestionSelected(List<QuestionData> questionList) {
+                    public void onQuestionSelected(List<QuestionModel> questionList) {
                         if (questionList == null || questionList.isEmpty()) {
                             Toast.makeText(getContext().getApplicationContext(), "没有选择题目", Toast.LENGTH_LONG).show();
                             DialogFragment dialog = (DialogFragment) getParentFragment();
@@ -96,8 +96,8 @@ public class NewSetFragment extends Fragment {
 
             questionSetData.QuestionList = new ArrayList<>();
             for (int i=0; i<questionList.size(); i++) {
-                QuestionData questionData = (QuestionData) questionList.get(i);
-                questionSetData.QuestionList.add(questionData.QuestionID);
+                QuestionModel questionData = (QuestionModel) questionList.get(i);
+                questionSetData.QuestionList.add(questionData.question_id);
             }
 
             questionSetData.StudentList = new ArrayList<>();

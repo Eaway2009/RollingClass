@@ -27,7 +27,7 @@ import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.views.ExamPieChartView;
 import com.tanhd.rollingclass.views.QuestionAnswerView;
@@ -40,7 +40,7 @@ public class CountStudentExamPage extends Fragment {
     private ListView mListView;
     private ItemAdapter mAdapter;
     private ProgressBar mProgressBar;
-    private List<QuestionData> mQuestionList;
+    private List<QuestionModel> mQuestionList;
     private HashMap<String, AnswerData> mAnswerMap;
     private View mChartView;
     private StudentData mStudentData;
@@ -117,8 +117,8 @@ public class CountStudentExamPage extends Fragment {
                 view = getLayoutInflater().inflate(R.layout.item_count_student_exam1, parent, false);
             }
 
-            QuestionData questionData = mQuestionList.get(position - 1);
-            AnswerData answerData = mAnswerMap.get(questionData.QuestionID);
+            QuestionModel questionData = mQuestionList.get(position - 1);
+            AnswerData answerData = mAnswerMap.get(questionData.question_id);
 
             QuestionAnswerView questionAnswerView = view.findViewById(R.id.question);
             questionAnswerView.setData(questionData, answerData);
@@ -137,7 +137,7 @@ public class CountStudentExamPage extends Fragment {
 
             mAnswerMap = new HashMap<>();
             for (int i=0; i<mQuestionList.size(); i++) {
-                QuestionData questionData = mQuestionList.get(i);
+                QuestionModel questionData = mQuestionList.get(i);
                 List<AnswerData> answerDataList = ScopeServer.getInstance().QureyAnswerv2ByTeacherIDAndCourseID(
                                 ExternalParam.getInstance().getUserData().getOwnerID(),
                                 mLessonSampleData.knowledge_id,
@@ -146,7 +146,7 @@ public class CountStudentExamPage extends Fragment {
                 if (answerDataList != null && answerDataList.size() > 0) {
                     for (AnswerData answerData: answerDataList) {
                         if (answerData.QuestionSetID == null)
-                            mAnswerMap.put(questionData.QuestionID, answerData);
+                            mAnswerMap.put(questionData.question_id, answerData);
                     }
                 }
             }

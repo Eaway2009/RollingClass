@@ -25,7 +25,7 @@ import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.OptionData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
@@ -40,7 +40,7 @@ import java.util.List;
 
 public class QuestionAnswerView extends ScrollView {
     private AnswerData mAnswerData;
-    private QuestionData mQuestionData;
+    private QuestionModel mQuestionData;
 
     public QuestionAnswerView(Context context) {
         super(context);
@@ -54,7 +54,7 @@ public class QuestionAnswerView extends ScrollView {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setData(QuestionData questionData, AnswerData answerData) {
+    public void setData(QuestionModel questionData, AnswerData answerData) {
         mAnswerData = answerData;
         mQuestionData = questionData;
         QuestionView questionView = findViewById(R.id.question_title);

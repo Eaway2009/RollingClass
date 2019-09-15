@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.AnswerData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,9 +31,9 @@ public class ScantronScorePage extends Fragment {
     private ScantronScoreListener mListener;
 
     private HashMap<String, AnswerData> mAnswerMap;
-    private List<QuestionData> mQuestionList;
+    private List<QuestionModel> mQuestionList;
 
-    public static ScantronScorePage newInstance(ArrayList<QuestionData> questionDataList, HashMap<String, AnswerData> answerDataHashMap, ScantronScoreListener listener) {
+    public static ScantronScorePage newInstance(ArrayList<QuestionModel> questionDataList, HashMap<String, AnswerData> answerDataHashMap, ScantronScoreListener listener) {
         Bundle args = new Bundle();
         args.putSerializable("questionDataList", questionDataList);
         args.putSerializable("answerDataHashMap", answerDataHashMap);
@@ -51,7 +51,7 @@ public class ScantronScorePage extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mAnswerMap = (HashMap<String, AnswerData>) getArguments().get("answerDataHashMap");
-        mQuestionList = (List<QuestionData>) getArguments().get("questionDataList");
+        mQuestionList = (List<QuestionModel>) getArguments().get("questionDataList");
         View view = inflater.inflate(R.layout.page_scantron_score, container, false);
         mGridView = view.findViewById(R.id.grid_view);
         view.findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
@@ -96,10 +96,10 @@ public class ScantronScorePage extends Fragment {
                 view = getLayoutInflater().inflate(R.layout.item_scantron_score, null);
             }
 
-            QuestionData questionData = mQuestionList.get(position);
-            AnswerData answerData = mAnswerMap.get(questionData.QuestionID);
+            QuestionModel questionData = mQuestionList.get(position);
+            AnswerData answerData = mAnswerMap.get(questionData.question_id);
 
-            final String title = String.format("第%d题", questionData.Context.OrderIndex);
+            final String title = String.format("第%d题", questionData.context.OrderIndex);
             TextView titleView = view.findViewById(R.id.title);
             titleView.setText(title);
 

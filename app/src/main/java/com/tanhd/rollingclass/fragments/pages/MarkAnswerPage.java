@@ -23,17 +23,17 @@ import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.OptionData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.views.QuestionAnswerView;
 import com.tanhd.rollingclass.views.ScoreView;
 
 public class MarkAnswerPage extends Fragment {
-    private QuestionData mQuestionData;
+    private QuestionModel mQuestionData;
     private AnswerData mAnswerData;
 
-    public static MarkAnswerPage newInstance(QuestionData questionData, AnswerData answerData) {
+    public static MarkAnswerPage newInstance(QuestionModel questionData, AnswerData answerData) {
         Bundle args = new Bundle();
         args.putSerializable("questionData", questionData);
         args.putSerializable("answerData", answerData);
@@ -44,7 +44,7 @@ public class MarkAnswerPage extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mQuestionData = (QuestionData) getArguments().get("questionData");
+        mQuestionData = (QuestionModel) getArguments().get("questionData");
         mAnswerData = (AnswerData) getArguments().get("answerData");
         View view = inflater.inflate(R.layout.page_mark_answer, container, false);
         init(view);

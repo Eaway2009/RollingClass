@@ -16,7 +16,7 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.OptionData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.AppUtils;
 
 import org.w3c.dom.Text;
@@ -35,11 +35,11 @@ public class QuestionView extends LinearLayout {
     }
 
 
-    public void setData(QuestionData questionData) {
+    public void setData(QuestionModel questionData) {
         setData(questionData, -1);
     }
 
-    public void setData(QuestionData questionData, int score) {
+    public void setData(QuestionModel questionData, int score) {
         WebView mStemView = findViewById(R.id.question_stem);
         if (questionData == null)
             return;

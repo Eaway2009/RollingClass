@@ -27,7 +27,7 @@ import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.GroupData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.QuestionAnswerView;
@@ -47,7 +47,7 @@ public class StudentWrongListFragment extends Fragment {
     private StudentListView mStudentListView;
 
     private HashMap<String, AnswerData> mAnswerMap = new HashMap<>();
-    private List<QuestionData> mQuestionList = new ArrayList<>();
+    private List<QuestionModel> mQuestionList = new ArrayList<>();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,18 +96,18 @@ public class StudentWrongListFragment extends Fragment {
                 if (answerData.QuestionSetID != null)
                     continue;
 
-                List<QuestionData> questionList = ScopeServer.getInstance().QureyQuestionByID(answerData.QuestionID);
+                List<QuestionModel> questionList = ScopeServer.getInstance().QureyQuestionByID(answerData.QuestionID);
                 if (questionList == null || questionList.isEmpty())
                     continue;
-                QuestionData questionData = questionList.get(0);
-                mAnswerMap.put(questionData.QuestionID, answerData);
+                QuestionModel questionData = questionList.get(0);
+                mAnswerMap.put(questionData.question_id, answerData);
                 mQuestionList.add(questionData);
             }
 
             if (mAnswerMap.isEmpty())
                 return -2;
 
-            QuestionData.sort(mQuestionList);
+            QuestionModel.sort(mQuestionList);
             return 0;
         }
 
@@ -154,8 +154,8 @@ public class StudentWrongListFragment extends Fragment {
                 view = getLayoutInflater().inflate(R.layout.item_student_wrong_list_question, parent, false);
             }
 
-            final QuestionData questionData = mQuestionList.get(position);
-            final AnswerData answerData = mAnswerMap.get(questionData.QuestionID);
+            final QuestionModel questionData = mQuestionList.get(position);
+            final AnswerData answerData = mAnswerMap.get(questionData.question_id);
             final QuestionAnswerView answerView = view.findViewById(R.id.answer_layout);
             answerView.setData(questionData, answerData);
 

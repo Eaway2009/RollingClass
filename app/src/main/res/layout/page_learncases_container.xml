@@ -48,8 +48,8 @@
         android:background="@drawable/shape_bg_gray_round" />
     <LinearLayout
         android:id="@+id/student_handsup_layout"
-        android:layout_width="140dp"
-        android:layout_height="46dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="180dp"
         android:background="@drawable/student_handsup_bg"
@@ -57,15 +57,17 @@
         android:gravity="center_vertical"
         android:visibility="visible">
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:src="@drawable/hands_up_icon"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="22sp"
+            android:gravity="center"
             android:text="@string/hand_up_request" />
     </LinearLayout>
 
@@ -87,7 +89,7 @@
         android:layout_marginBottom="180dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/handsup_status_layout"
@@ -116,6 +118,7 @@
                 android:background="@drawable/handsup_bg"
                 android:gravity="center"
                 android:text="举手情况"
+                android:textSize="16sp"
                 android:textColor="@color/white" />
 
             <View

@@ -17,6 +17,8 @@ public class QuestionSetData extends BaseJsonClass {
     public ArrayList<String> QuestionList;
     public ArrayList<String> StudentList;
     public String TeacherID;
+    public String class_id;
+    public String knowledge_id;
     public long CreateTime;
     public long UpdateTime;
     public String Remark;

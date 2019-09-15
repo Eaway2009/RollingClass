@@ -38,7 +38,7 @@ import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.OptionData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
@@ -57,14 +57,14 @@ import java.util.List;
 import java.util.UUID;
 
 public class CommentAnswerPage extends Fragment {
-    private QuestionData mQuestionData;
+    private QuestionModel mQuestionData;
     private AnswerData mAnswerData;
     private ObjectiveAnswerView mObjectiveView;
     private TextView mAnswerTextView;
     private String mScore = "0";
     private ArrayList<MyDot> mDotCache = new ArrayList<>();
 
-    public static CommentAnswerPage newInstance(QuestionData questionData, AnswerData answerData) {
+    public static CommentAnswerPage newInstance(QuestionModel questionData, AnswerData answerData) {
         Bundle args = new Bundle();
         args.putSerializable("questionData", questionData);
         args.putSerializable("answerData", answerData);
@@ -75,7 +75,7 @@ public class CommentAnswerPage extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mQuestionData = (QuestionData) getArguments().get("questionData");
+        mQuestionData = (QuestionModel) getArguments().get("questionData");
         mAnswerData = (AnswerData) getArguments().get("answerData");
         View view = inflater.inflate(R.layout.page_comment_answer, container, false);
         init(view);

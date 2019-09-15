@@ -25,7 +25,7 @@ import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.CountClassLessonSampleData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.MyValueFormatter;
 import com.tanhd.rollingclass.views.BarChartView;
 import com.tanhd.rollingclass.views.QuestionView;
@@ -38,7 +38,7 @@ public class CountClassLessonSamplePage extends Fragment {
     private ListView mListView;
     private View mLayoutItemView0;
 
-    private List<QuestionData> mQuestionList;
+    private List<QuestionModel> mQuestionList;
     private List<CountClassLessonSampleData> mCountDataList;
     private QuestionAdapter mAdapter;
 
@@ -116,13 +116,13 @@ public class CountClassLessonSamplePage extends Fragment {
                 view = getLayoutInflater().inflate(R.layout.item_count_class_lessonsample, parent, false);
             }
 
-            QuestionData questionData = mQuestionList.get(position - 1);
+            QuestionModel questionData = mQuestionList.get(position - 1);
             QuestionView questionView = view.findViewById(R.id.question_view);
             questionView.setData(questionData);
 
             TextView descriptionView = view.findViewById(R.id.description);
 
-            CountClassLessonSampleData data = queryCountData(questionData.QuestionID);
+            CountClassLessonSampleData data = queryCountData(questionData.question_id);
             if (data != null) {
                 String text = String.format("【%d人正确, %d人错误, %d人未提交】", data.CorrectTotal, data.ErrorTotal, data.NoAnswerTotal);
                 descriptionView.setText(text);
@@ -148,12 +148,12 @@ public class CountClassLessonSamplePage extends Fragment {
 
     private class LoadDataTask extends AsyncTask<Void, Void, List> {
 
-        private QuestionData queryQuestionByID(String questionID) {
+        private QuestionModel queryQuestionByID(String questionID) {
             if (mQuestionList == null)
                 return null;
 
-            for (QuestionData questionData: mQuestionList) {
-                if (questionData.QuestionID.equals(questionID))
+            for (QuestionModel questionData: mQuestionList) {
+                if (questionData.question_id.equals(questionID))
                     return questionData;
             }
 
@@ -172,14 +172,14 @@ public class CountClassLessonSamplePage extends Fragment {
                 xAxisValue = new ArrayList<>();
                 for (int i=0; i<mCountDataList.size(); i++) {
                     CountClassLessonSampleData data = mCountDataList.get(i);
-                    QuestionData questionData = queryQuestionByID(data.QuestionID);
+                    QuestionModel questionData = queryQuestionByID(data.QuestionID);
                     if (questionData == null)
                         continue;
 
-                    BarEntry entry = new BarEntry(questionData.Context.OrderIndex, new float[]{data.CorrectTotal, data.ErrorTotal, data.NoAnswerTotal}, questionData.Context.OrderIndex + "");
+                    BarEntry entry = new BarEntry(questionData.context.OrderIndex, new float[]{data.CorrectTotal, data.ErrorTotal, data.NoAnswerTotal}, questionData.context.OrderIndex + "");
                     yVals.add(entry);
-                    entry.setData(questionData.QuestionID);
-                    xAxisValue.add(String.format("第%d题", questionData.Context.OrderIndex));
+                    entry.setData(questionData.question_id);
+                    xAxisValue.add(String.format("第%d题", questionData.context.OrderIndex));
                 }
             }
 

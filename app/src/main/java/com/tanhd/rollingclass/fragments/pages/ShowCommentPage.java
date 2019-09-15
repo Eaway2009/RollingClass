@@ -20,7 +20,7 @@ import com.tanhd.library.smartpen.SmartPenView;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.server.data.AnswerData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.views.QuestionAnswerView;
 
 import org.json.JSONArray;
@@ -30,12 +30,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ShowCommentPage extends Fragment {
-    private QuestionData mQuestionData;
+    private QuestionModel mQuestionData;
     private AnswerData mAnswerData;
     private ArrayList<MyDot> mDotCache = new ArrayList<>();
     private SmartPenView mSmartPenView;
 
-    public static ShowCommentPage newInstance(QuestionData questionData, AnswerData answerData) {
+    public static ShowCommentPage newInstance(QuestionModel questionData, AnswerData answerData) {
         Bundle args = new Bundle();
         args.putSerializable("questionData", questionData);
         args.putSerializable("answerData", answerData);
@@ -47,7 +47,7 @@ public class ShowCommentPage extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mQuestionData = (QuestionData) getArguments().get("questionData");
+        mQuestionData = (QuestionModel) getArguments().get("questionData");
         mAnswerData = (AnswerData) getArguments().get("answerData");
         View view = inflater.inflate(R.layout.page_show_comment, container, false);
         QuestionAnswerView questionAnswerView = view.findViewById(R.id.question_view);

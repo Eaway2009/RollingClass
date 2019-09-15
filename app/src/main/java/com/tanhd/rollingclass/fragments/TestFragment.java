@@ -13,7 +13,7 @@ import android.webkit.WebView;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.OptionData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.AppUtils;
 
 import java.util.List;
@@ -30,11 +30,11 @@ public class TestFragment extends Fragment {
         return view;
     }
 
-    private class LoadTask extends AsyncTask<Void, Void, QuestionData> {
+    private class LoadTask extends AsyncTask<Void, Void, QuestionModel> {
 
         @Override
-        protected QuestionData doInBackground(Void... voids) {
-            List<QuestionData> list = ScopeServer.getInstance().QureyQuestionByID("5c86680ae6cf005532c18ba0");
+        protected QuestionModel doInBackground(Void... voids) {
+            List<QuestionModel> list = ScopeServer.getInstance().QureyQuestionByID("5c86680ae6cf005532c18ba0");
             if (list == null || list.isEmpty())
                 return null;
 
@@ -42,7 +42,7 @@ public class TestFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(QuestionData questionData) {
+        protected void onPostExecute(QuestionModel questionData) {
             if (questionData == null)
                 return;
 

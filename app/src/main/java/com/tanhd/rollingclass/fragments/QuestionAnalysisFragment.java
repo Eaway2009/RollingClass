@@ -14,13 +14,13 @@ import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.OptionData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.AppUtils;
 
 public class QuestionAnalysisFragment extends Fragment {
-    private QuestionData mQuestionData;
+    private QuestionModel mQuestionData;
 
-    public static QuestionAnalysisFragment newInstance(QuestionData questionData) {
+    public static QuestionAnalysisFragment newInstance(QuestionModel questionData) {
         Bundle args = new Bundle();
         args.putSerializable("questionData", questionData);
         QuestionAnalysisFragment fragment = new QuestionAnalysisFragment();
@@ -31,7 +31,7 @@ public class QuestionAnalysisFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mQuestionData = (QuestionData) getArguments().get("questionData");
+        mQuestionData = (QuestionModel) getArguments().get("questionData");
         View view = inflater.inflate(R.layout.fragment_question_analysis, container, false);
         init(view);
         return view;
@@ -41,16 +41,16 @@ public class QuestionAnalysisFragment extends Fragment {
         WebView stemView = view.findViewById(R.id.question_stem);
 
         //题目
-        String html = AppUtils.dealHtmlText(mQuestionData.Context.Stem);
+        String html = AppUtils.dealHtmlText(mQuestionData.context.Stem);
         stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
         //选择题选项
         LinearLayout optionsLayout = view.findViewById(R.id.options);
-        if (mQuestionData.Context.QuestionCategoryId == 1) {
+        if (mQuestionData.context.QuestionCategoryId == 1) {
             optionsLayout.setVisibility(View.VISIBLE);
             optionsLayout.removeAllViews();
 
-            for (OptionData optionData: mQuestionData.Context.Options) {
+            for (OptionData optionData: mQuestionData.context.Options) {
                 View optionView = getLayoutInflater().inflate(R.layout.layout_question_option, optionsLayout, false);
                 TextView noView = optionView.findViewById(R.id.no);
                 WebView textView = optionView.findViewById(R.id.option_text);
@@ -66,7 +66,7 @@ public class QuestionAnalysisFragment extends Fragment {
 
         //问题分析
         WebView analysisView = view.findViewById(R.id.analysis);
-        html = AppUtils.dealHtmlText(mQuestionData.Context.Analysis);
+        html = AppUtils.dealHtmlText(mQuestionData.context.Analysis);
         analysisView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
     }
 }

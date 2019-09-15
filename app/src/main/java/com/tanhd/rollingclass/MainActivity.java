@@ -35,7 +35,7 @@ import com.tanhd.rollingclass.fragments.pages.ShowCommentPage;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
                 case COMMENT_START: {
                     String question = message.parameters.get("Question");
                     String answer = message.parameters.get("Answer");
-                    QuestionData questionData = new QuestionData();
+                    QuestionModel questionData = new QuestionModel();
                     questionData.parse(questionData, question);
                     AnswerData answerData = new AnswerData();
                     answerData.parse(answerData, answer);

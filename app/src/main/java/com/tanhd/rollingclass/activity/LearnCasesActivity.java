@@ -236,8 +236,17 @@ public class LearnCasesActivity extends AppCompatActivity {
 //                    classEnd(message.from);
                     break;
                 }
-                case QUESTIONING: {
+                case OPEN_DOCUMENT: {
                     if (ExternalParam.getInstance().getStatus() == 2 && !mUserData.isTeacher()) {
+                        String lesson_sample_id = message.parameters.get(PushMessage.PARAM_LESSON_SAMPLE_ID);
+                        String resourceId = message.parameters.get(PushMessage.PARAM_RESOURCE_ID);
+//                        showLessonSample(url, ShowDocumentFragment.SYNC_MODE.SLAVE);
+                        mLearnCasesFragment.showItem(lesson_sample_id, resourceId);
+                    }
+                    break;
+                }
+                case QUESTIONING: {
+                    if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
                         String examID = message.parameters.get("examID");
                         final String teacherID = message.parameters.get("teacherID");
                         FrameDialog.fullShow(getSupportFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
@@ -246,15 +255,6 @@ public class LearnCasesActivity extends AppCompatActivity {
                                 MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
                             }
                         }));
-                    }
-                    break;
-                }
-                case OPEN_DOCUMENT: {
-                    if (ExternalParam.getInstance().getStatus() == 2 && !mUserData.isTeacher()) {
-                        int childItem = Integer.valueOf(message.parameters.get(PushMessage.PARAM_CHILD_ITEM));
-                        int groupItem = Integer.valueOf(message.parameters.get(PushMessage.PARAM_GROUP_ITEM));
-//                        showLessonSample(url, ShowDocumentFragment.SYNC_MODE.SLAVE);
-                        mLearnCasesFragment.showItem(groupItem, childItem);
                     }
                     break;
                 }

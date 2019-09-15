@@ -107,17 +107,6 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
 //                    classEnd(message.from);
                     break;
                 }
-                case QUESTIONING: {
-                    String examID = message.parameters.get("examID");
-                    final String teacherID = message.parameters.get("teacherID");
-                    FrameDialog.fullShow(getChildFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
-                        @Override
-                        public void onFinished() {
-                            MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
-                        }
-                    }));
-                    break;
-                }
                 case SERVER_PING: {
                     FrameDialog.show(getChildFragmentManager(), ServerTesterFragment.newInstance());
                     break;

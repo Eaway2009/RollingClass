@@ -23,6 +23,8 @@ public class PushMessage {
     public static final String PARAM_GROUP_ITEM = "paramGroupItem";
     public static final String PARAM_CHILD_ITEM = "paramChildItem";
     public static final String PARAM_STUDENT_NAME = "PARAM_STUDENT_NAME";
+    public static final String PARAM_LESSON_SAMPLE_ID = "lesson_sample_id";
+    public static final String PARAM_RESOURCE_ID = "resource_id";
 
     public static enum COMMAND {
         OPEN_DOCUMENT,//打开学案(切换教案)

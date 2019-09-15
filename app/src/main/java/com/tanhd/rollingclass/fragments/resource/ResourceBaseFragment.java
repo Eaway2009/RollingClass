@@ -24,4 +24,10 @@ public abstract class ResourceBaseFragment extends Fragment {
         void itemChecked(ResourceModel resourceModel, QuestionModel questionModel);
 
     }
+
+    public interface ListCallback{
+
+        void onListChecked(List<ResourceModel> resourceList, List<QuestionModel> questionList);
+
+    }
 }

@@ -26,7 +26,7 @@ import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.CountClassLessonSampleData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.UserData;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class WrongQuestionShowFragment extends Fragment {
     private TextView mTotalView;
     private ViewPager mViewPager;
     private ErrorPageAdapter mAdapter;
-    private List<QuestionData> mQuestionList;
+    private List<QuestionModel> mQuestionList;
     private String mStudentID;
     private HashMap<String, AnswerData> mAnswerMap = new HashMap<>();
     private HashMap<Integer, Fragment> mPageMap = new HashMap<>();
@@ -95,8 +95,8 @@ public class WrongQuestionShowFragment extends Fragment {
         int currentPage = mViewPager.getCurrentItem();
         mPositionView.setVisibility(View.VISIBLE);
         mTotalView.setVisibility(View.VISIBLE);
-        QuestionData questionData = mQuestionList.get(currentPage);
-        mTypeNameView.setText(String.format("[%s]", questionData.Context.QuestionCategoryName));
+        QuestionModel questionData = mQuestionList.get(currentPage);
+        mTypeNameView.setText(String.format("[%s]", questionData.context.QuestionCategoryName));
         mPositionView.setText(String.valueOf(currentPage + 1));
         mTotalView.setText("/" + String.valueOf(mQuestionList.size()));
     }
@@ -156,17 +156,17 @@ public class WrongQuestionShowFragment extends Fragment {
                 if (!answerData.LessonSampleID.equals(lessonSampleData.LessonSampleID))
                     continue;
 
-                List<QuestionData> list = ScopeServer.getInstance().QureyQuestionByID(answerData.QuestionID);
+                List<QuestionModel> list = ScopeServer.getInstance().QureyQuestionByID(answerData.QuestionID);
                 if (list == null || list.isEmpty())
                     continue;
-                QuestionData questionData = list.get(0);
+                QuestionModel questionData = list.get(0);
                 mQuestionList.add(questionData);
                 mAnswerMap.put(answerData.QuestionID, answerData);
             }
 
             for (int i=0; i<mQuestionList.size(); i++) {
-                QuestionData questionData = mQuestionList.get(i);
-                mPageMap.put(i, ErrorQuestionPage.newInstance(questionData, mAnswerMap.get(questionData.QuestionID), queryCountData(questionData.QuestionID)));
+                QuestionModel questionData = mQuestionList.get(i);
+                mPageMap.put(i, ErrorQuestionPage.newInstance(questionData, mAnswerMap.get(questionData.question_id), queryCountData(questionData.question_id)));
             }
 
             if (mQuestionList.isEmpty())

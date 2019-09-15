@@ -19,17 +19,17 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.OptionData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.views.ScoreView;
 
 public class ShowAnswerCommentFragment extends Fragment {
-    private QuestionData mQuestionData;
+    private QuestionModel mQuestionData;
     private AnswerData mAnswerData;
     private TextView mAnswerTextView;
     private String mScore = "0";
 
-    public static ShowAnswerCommentFragment newInstance(QuestionData questionData, AnswerData answerData) {
+    public static ShowAnswerCommentFragment newInstance(QuestionModel questionData, AnswerData answerData) {
         Bundle args = new Bundle();
         args.putSerializable("questionData", questionData);
         args.putSerializable("answerData", answerData);
@@ -41,7 +41,7 @@ public class ShowAnswerCommentFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mQuestionData = (QuestionData) getArguments().get("questionData");
+        mQuestionData = (QuestionModel) getArguments().get("questionData");
         mAnswerData = (AnswerData) getArguments().get("answerData");
         View view = inflater.inflate(R.layout.fragment_show_answer_comment, container, false);
         init(view);
@@ -59,16 +59,16 @@ public class ShowAnswerCommentFragment extends Fragment {
         scoreView.setEnabled(false);
         scoreView.setScore(mAnswerData.Score + "");
 
-        String html = AppUtils.dealHtmlText(mQuestionData.Context.Stem);
+        String html = AppUtils.dealHtmlText(mQuestionData.context.Stem);
         mStemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
         //选择题选项
         LinearLayout optionsLayout = view.findViewById(R.id.options);
-        if (mQuestionData.Context.QuestionCategoryId == 1) {
+        if (mQuestionData.context.QuestionCategoryId == 1) {
             optionsLayout.setVisibility(View.VISIBLE);
             optionsLayout.removeAllViews();
 
-            for (OptionData optionData: mQuestionData.Context.Options) {
+            for (OptionData optionData: mQuestionData.context.Options) {
                 View optionView = getLayoutInflater().inflate(R.layout.layout_question_option, optionsLayout, false);
                 TextView noView = optionView.findViewById(R.id.no);
                 WebView textView = optionView.findViewById(R.id.option_text);

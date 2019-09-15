@@ -158,7 +158,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
 
     private void setData() {
         mKnowledgeNameTextView.setText(mKnowledgeDetailName);
-        if(init) {
+        if (init) {
             new InitDataTask().execute();
         }
     }
@@ -207,7 +207,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                         classData.resetStudentState(0);
                         ExternalParam.getInstance().setClassData(classData);
                         notifyEnterClass(null);
-                        if(mLearnCasesContainerFragment!=null){
+                        if (mLearnCasesContainerFragment != null) {
                             mLearnCasesContainerFragment.setParam(mClassData, mTeachingMaterialId);
                         }
 
@@ -265,19 +265,6 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                     }
 
                     break;
-                case QUESTIONING: {
-                    if(ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
-                        String examID = message.parameters.get("examID");
-                        final String teacherID = message.parameters.get("teacherID");
-                        FrameDialog.fullShow(getFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
-                            @Override
-                            public void onFinished() {
-                                MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
-                            }
-                        }));
-                    }
-                    break;
-                }
             }
         }
 
@@ -319,18 +306,33 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
             mLearnCasesContainerFragment.showResource(item);
             if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassStatus.CLASS_ING) {
                 HashMap<String, String> params = new HashMap<>();
-                params.put(PushMessage.PARAM_GROUP_ITEM, groupPosition + "");
-                params.put(PushMessage.PARAM_CHILD_ITEM, childPosition + "");
-                MyMqttService.publishMessage(PushMessage.COMMAND.OPEN_DOCUMENT,  (List<String>) null, params);
+                params.put(PushMessage.PARAM_LESSON_SAMPLE_ID, group.lesson_sample_id);
+                params.put(PushMessage.PARAM_RESOURCE_ID, item.resource_id);
+                MyMqttService.publishMessage(PushMessage.COMMAND.OPEN_DOCUMENT, (List<String>) null, params);
             }
         }
     }
 
-    public void showItem(int groupPosition, int childPosition){
+    public void showItem(int groupPosition, int childPosition) {
         KnowledgeLessonSample group = mAdapter.getGroup(groupPosition);
         if (childPosition < group.getChildren().size() && group.getChildren().get(childPosition) != null) {
             ResourceModel item = group.getChildren().get(childPosition);
             mLearnCasesContainerFragment.showResource(item);
+        }
+    }
+
+    public void showItem(String lesson_sample_id, String resource_id) {
+        for (int i = 0; i < mAdapter.getGroupCount(); i++) {
+            KnowledgeLessonSample group = mAdapter.getGroup(i);
+            if (group.lesson_sample_id.equals(lesson_sample_id)) {
+                for (int j = 0; j < group.getChildren().size(); j++) {
+                    ResourceModel resourceModel = group.getChildren().get(j);
+                    if (resourceModel.resource_id.equals(resource_id)) {
+                        mLearnCasesContainerFragment.showResource(resourceModel);
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -340,6 +342,8 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         protected List<KnowledgeLessonSample> doInBackground(Void... voids) {
             if (mClassPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE) {
                 return ScopeServer.getInstance().QuerySampleByKnowledge(mKnowledgeId, mKnowledgeStatus);
+            } else if (mClassPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) {
+                return ScopeServer.getInstance().QuerySampleByKnowledge(mKnowledgeId, 2);
             } else {
                 return ScopeServer.getInstance().QuerySampleByKnowledge(mKnowledgeId, 2);
             }

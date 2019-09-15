@@ -16,17 +16,17 @@ import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.QuestionAnalysisFragment;
 import com.tanhd.rollingclass.fragments.ShowAnswerCommentFragment;
 import com.tanhd.rollingclass.server.data.AnswerData;
-import com.tanhd.rollingclass.server.data.QuestionData;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.views.QuestionAnswerView;
 import com.tanhd.rollingclass.views.ScoreView;
 
 public class ErrorQuestionPage extends Fragment {
 
-    private QuestionData mQuestionData;
+    private QuestionModel mQuestionData;
     private AnswerData mAnswerData;
     private String mDescription;
 
-    public static ErrorQuestionPage newInstance(QuestionData questionData, AnswerData answerData, String description) {
+    public static ErrorQuestionPage newInstance(QuestionModel questionData, AnswerData answerData, String description) {
         Bundle args = new Bundle();
         args.putSerializable("questionData", questionData);
         args.putSerializable("answerData", answerData);
@@ -39,7 +39,7 @@ public class ErrorQuestionPage extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mQuestionData = (QuestionData) getArguments().get("questionData");
+        mQuestionData = (QuestionModel) getArguments().get("questionData");
         mAnswerData = (AnswerData) getArguments().get("answerData");
         mDescription = getArguments().getString("description");
         View view = inflater.inflate(R.layout.page_error_question, container, false);
@@ -51,7 +51,7 @@ public class ErrorQuestionPage extends Fragment {
         scoreView.setScore(String.valueOf(mAnswerData.Score));
 
         View analysisView = view.findViewById(R.id.btn_analysis);
-        if (TextUtils.isEmpty(mQuestionData.Context.Analysis)) {
+        if (TextUtils.isEmpty(mQuestionData.context.Analysis)) {
             analysisView.setVisibility(View.GONE);
         } else {
             analysisView.setVisibility(View.VISIBLE);
