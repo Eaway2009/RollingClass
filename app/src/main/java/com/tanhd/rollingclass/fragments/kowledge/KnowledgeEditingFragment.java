@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.fragments.kowledge;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -547,6 +548,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private void showPopupMenu(View view) {
         // 这里的view代表popupMenu需要依附的view
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);

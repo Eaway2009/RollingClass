@@ -203,13 +203,13 @@
         android:background="@drawable/task_light_frame"
         android:gravity="top|left"
         android:minHeight="100dp"
-        android:orientation="vertical"
-        android:padding="36dp">
+        android:orientation="vertical">
 
         <FrameLayout
             android:id="@+id/framelayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="36dp"
             android:visibility="gone" />
     </LinearLayout>
 

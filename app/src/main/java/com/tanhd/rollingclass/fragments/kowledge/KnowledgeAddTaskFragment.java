@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.fragments.kowledge;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.db.KeyConstants.ResourceType;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.pages.ResourceSelectorFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionModelFragment;
@@ -262,10 +264,10 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 mPPTList.remove(resourceModel.resource_id);
                 break;
             case 2:
-                mWordList.remove(resourceModel.resource_id);
+                mImageList.remove(resourceModel.resource_id);
                 break;
             case 3:
-                mImageList.remove(resourceModel.resource_id);
+                mWordList.remove(resourceModel.resource_id);
                 break;
             case 4:
                 mVideoList.remove(resourceModel.resource_id);
@@ -275,7 +277,13 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 break;
         }
         LinearLayout resourceLayout = (LinearLayout) v.getParent();
-        mUploadFilesLayout.removeView(resourceLayout);
+        LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
+        int count = displayLayout.getChildCount();
+        displayLayout.removeView(resourceLayout);
+        if(count == 1) {
+            LinearLayout parenLayout = (LinearLayout)displayLayout.getParent().getParent();
+            mUploadFilesLayout.removeView(parenLayout);
+        }
     }
 
     private void editFile(View v) {
@@ -286,10 +294,10 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 mPPTList.remove(resourceModel.resource_id);
                 break;
             case 2:
-                mWordList.remove(resourceModel.resource_id);
+                mImageList.remove(resourceModel.resource_id);
                 break;
             case 3:
-                mImageList.remove(resourceModel.resource_id);
+                mWordList.remove(resourceModel.resource_id);
                 break;
             case 4:
                 mVideoList.remove(resourceModel.resource_id);
@@ -299,7 +307,13 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 break;
         }
         LinearLayout resourceLayout = (LinearLayout) v.getParent();
-        mUploadFilesLayout.removeView(resourceLayout);
+        LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
+        int count = displayLayout.getChildCount();
+        displayLayout.removeView(resourceLayout);
+        if(count == 1) {
+            LinearLayout parenLayout = (LinearLayout)displayLayout.getParent().getParent();
+            mUploadFilesLayout.removeView(parenLayout);
+        }
     }
 
     private void uploadFile(int resourceCode, boolean isImage) {
@@ -418,43 +432,83 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
                 }
             } else {
-                LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
-                ImageView iconView = resourceLayout.findViewById(R.id.resource_icon);
-                TextView nameView = resourceLayout.findViewById(R.id.resource_name_view);
-                TextView deleteView = resourceLayout.findViewById(R.id.task_delete);
-                TextView editView = resourceLayout.findViewById(R.id.task_edit);
-                deleteView.setTag(result);
-                deleteView.setOnClickListener(this);
-                editView.setVisibility(View.GONE);
-                nameView.setText(result.name);
-                switch (result.resource_type) {
-                    case 1:
-                        mPPTList.add(result.resource_id);
-                        iconView.setImageResource(R.drawable.ppt_icon);
-                        break;
-                    case 2:
-                        mWordList.add(result.resource_id);
-                        iconView.setImageResource(R.drawable.word_icon);
-                        break;
-                    case 3:
-                        mImageList.add(result.resource_id);
-                        iconView.setImageResource(R.drawable.image_icon);
-                        break;
-                    case 4:
-                        mVideoList.add(result.resource_id);
-                        iconView.setImageResource(R.drawable.video_icon);
-                        break;
-                    case 5:
-                        mExercisesList.add(result.resource_id);
-                        iconView.setImageResource(R.drawable.pdf_icon);
-                        break;
+                int count = mUploadFilesLayout.getChildCount();
+                for (int i = 1; count > i; i++){
+                    LinearLayout displayLayout = (LinearLayout) mUploadFilesLayout.getChildAt(i);
+                    if ((int)displayLayout.getTag() == result.resource_type) {
+                        LinearLayout resourcesLayout = (LinearLayout) displayLayout.getChildAt(1);
+                        addFileView(result, resourcesLayout);
+                        return;
+                    }
                 }
-                mUploadFilesLayout.addView(resourceLayout);
+
+                LinearLayout displayLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource_item, null);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    layoutParams.topMargin = getActivity().getResources().getDimensionPixelSize(R.dimen.activity_vertical_margin);
+                displayLayout.setLayoutParams(layoutParams);
+                TextView resourceTypeView = displayLayout.findViewById(R.id.files_type_tv);
+                resourceTypeView.setText(type2Name(result.resource_type));
+                LinearLayout resourcesLayout = displayLayout.findViewById(R.id.files_display_layout);
+                addFileView(result, resourcesLayout);
+                displayLayout.setTag(result.resource_type);
+                mUploadFilesLayout.addView(displayLayout);
             }
 
         }
     }
 
+    private String type2Name(int type) {
+        switch (type) {
+            case ResourceType.PPT_TYPE:
+                return getString(R.string.ppt_u);
+            case ResourceType.IMAGE_TYPE:
+                return getString(R.string.photo);
+            case ResourceType.WORD_TYPE:
+                return getString(R.string.documents);
+            case ResourceType.VIDEO_TYPE:
+                return getString(R.string.micro_course);
+            case ResourceType.QUESTION_TYPE:
+                return getString(R.string.exercises);
+        }
+        return "";
+    }
+
+    private void addFileView(ResourceModel result, LinearLayout linearLayout) {
+        LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
+        ImageView iconView = resourceLayout.findViewById(R.id.resource_icon);
+        TextView nameView = resourceLayout.findViewById(R.id.resource_name_view);
+        TextView deleteView = resourceLayout.findViewById(R.id.task_delete);
+        TextView editView = resourceLayout.findViewById(R.id.task_edit);
+        deleteView.setTag(result);
+        deleteView.setOnClickListener(this);
+        editView.setVisibility(View.GONE);
+        nameView.setText(result.name);
+        switch (result.resource_type) {
+            case 1:
+                mPPTList.add(result.resource_id);
+                iconView.setImageResource(R.drawable.ppt_icon);
+                break;
+            case 2:
+                mImageList.add(result.resource_id);
+                iconView.setImageResource(R.drawable.image_icon);
+                break;
+            case 3:
+                mWordList.add(result.resource_id);
+                iconView.setImageResource(R.drawable.word_icon);
+                break;
+            case 4:
+                mVideoList.add(result.resource_id);
+                iconView.setImageResource(R.drawable.video_icon);
+                break;
+            case 5:
+                mExercisesList.add(result.resource_id);
+                iconView.setImageResource(R.drawable.pdf_icon);
+                break;
+        }
+        linearLayout.addView(resourceLayout);
+    }
+
+    @SuppressLint("RestrictedApi")
     private void showPopupMenu(View view, final int resourceCode, final boolean isImage) {
         // 这里的view代表popupMenu需要依附的view
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
