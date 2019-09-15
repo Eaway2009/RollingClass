@@ -1,5 +1,7 @@
 package com.tanhd.rollingclass.fragments.resource;
 
+import static com.tanhd.rollingclass.fragments.pages.ResourceSelectorFragment.PARAM_RESOURCE_TYPE;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,6 +55,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     private static final int ROOT_LAYOUT_ID = R.id.fragment_container;
     private ResourceBaseFragment.Callback mListener;
     private Handler mHandler = new Handler();
+    private int resourceType = -1;
 
     public static ResourcesPageFragment newInstance(KnowledgeModel knowledgeModel) {
         Bundle args = new Bundle();
@@ -62,10 +65,11 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         return page;
     }
 
-    public static ResourcesPageFragment newInstance(KnowledgeModel knowledgeModel, ResourceBaseFragment.Callback callback) {
+    public static ResourcesPageFragment newInstance(KnowledgeModel knowledgeModel, int resourceCode, ResourceBaseFragment.Callback callback) {
         Bundle args = new Bundle();
         ResourcesPageFragment page = new ResourcesPageFragment();
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
+        args.putInt(PARAM_RESOURCE_TYPE, resourceCode);
         page.setListener(callback);
         page.setArguments(args);
         return page;
@@ -80,11 +84,15 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, model);
         setArguments(args);
         initParams();
+        if (resourceType != -1) {
+            request(mDefaultPage, LevelType.ALL_LEVEL, resourceType);
+            return;
+        }
         request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(mPPTFragment.getDataList()==null||mPPTFragment.getDataList().size()==0){
+                if(mPPTFragment != null && mPPTFragment.getDataList()==null||mPPTFragment.getDataList().size()==0){
                     request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
                 }
             }
@@ -111,7 +119,6 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         initParams();
         initViews(view);
         initSpinner();
-        showModulePage(ResourceType.PPT_TYPE, mPptTitleView);
         return view;
     }
 
@@ -119,6 +126,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         Bundle args = getArguments();
         if (args != null) {
             mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
+            resourceType = getArguments().getInt(PARAM_RESOURCE_TYPE, resourceType);
         }
     }
 
@@ -138,14 +146,44 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         mImageTitleView.setOnClickListener(this);
         mUploadFileTitleView.setOnClickListener(this);
 
+        //若带有指定类型进来则选中指定类型，其余类型不可点击
+        if(resourceType != -1) {
+            switch (resourceType) {
+                case ResourceType.PPT_TYPE:
+                    showModulePage(resourceType, mPptTitleView, false);
+                    break;
+                case ResourceType.IMAGE_TYPE:
+                    showModulePage(resourceType, mImageTitleView, false);
+                    break;
+                case ResourceType.WORD_TYPE:
+                    showModulePage(resourceType, mWordTitleView, false);
+                    break;
+                case ResourceType.VIDEO_TYPE:
+                    showModulePage(resourceType, mMicroCourseTitleView, false);
+                    break;
+                case ResourceType.QUESTION_TYPE:
+                    showModulePage(resourceType, mQuestionTitleView, false);
+                    break;
+            }
+        } else {
+            showModulePage(ResourceType.PPT_TYPE, mPptTitleView);
+        }
     }
 
-    private void resetButtomStatus() {
-        mPptTitleView.setSelected(false);
-        mMicroCourseTitleView.setSelected(false);
-        mWordTitleView.setSelected(false);
-        mQuestionTitleView.setSelected(false);
-        mImageTitleView.setSelected(false);
+    private void resetButtomStatus(boolean isChange) {
+        if (isChange) {
+            mPptTitleView.setSelected(false);
+            mMicroCourseTitleView.setSelected(false);
+            mWordTitleView.setSelected(false);
+            mQuestionTitleView.setSelected(false);
+            mImageTitleView.setSelected(false);
+        } else {
+            mPptTitleView.setEnabled(false);
+            mMicroCourseTitleView.setEnabled(false);
+            mWordTitleView.setEnabled(false);
+            mQuestionTitleView.setEnabled(false);
+            mImageTitleView.setEnabled(false);
+        }
     }
 
     private void initSpinner() {
@@ -306,7 +344,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     /**
      * [展示指定Id的页面]<BR>
      */
-    public void showModulePage(int type, View view) {
+    public void showModulePage(int type, View view, boolean isChange) {
         if (mCurrentFragment != null && mResourceType == type) {
             return;
         }
@@ -376,7 +414,8 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             transaction.hide(mCurrentFragment);
         }
 
-        resetButtomStatus();
+        resetButtomStatus(isChange);
+        view.setEnabled(true);
         view.setSelected(true);
         transaction.show(moduleFragment);
         transaction.commitAllowingStateLoss();
@@ -384,6 +423,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         mResourceType = type;
     }
 
+    public void showModulePage(int type, View view) {
+        showModulePage(type, view, true);
+    }
 
     @Override
     public void onClick(View v) {

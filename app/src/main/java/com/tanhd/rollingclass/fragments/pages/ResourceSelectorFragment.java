@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.db.KeyConstants.ResourceType;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.resource.ResourceBaseFragment;
 import com.tanhd.rollingclass.fragments.resource.ResourcesPageFragment;
@@ -30,10 +32,15 @@ public class ResourceSelectorFragment extends Fragment implements View.OnClickLi
     private ResourceModel mResourceModel;
     private QuestionModel mQuestionModel;
     private Callback mListener;
+    public static final String PARAM_RESOURCE_TYPE = "RESOURCE_TYPE";
+    private int resourceType;
 
-    public static ResourceSelectorFragment newInstance(Callback callback) {
+    public static ResourceSelectorFragment newInstance(Callback callback, int resourceCode) {
+        Bundle args = new Bundle();
+        args.putInt(PARAM_RESOURCE_TYPE, resourceCode);
         ResourceSelectorFragment fragment = new ResourceSelectorFragment();
         fragment.setListener(callback);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -41,9 +48,14 @@ public class ResourceSelectorFragment extends Fragment implements View.OnClickLi
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_resource_selector, container, false);
+        initParams();
         initViews(view);
         initFragments();
         return view;
+    }
+
+    private void initParams() {
+        resourceType = getArguments().getInt(PARAM_RESOURCE_TYPE, ResourceType.PPT_TYPE);
     }
 
     public void setListener(Callback callback) {
@@ -62,7 +74,7 @@ public class ResourceSelectorFragment extends Fragment implements View.OnClickLi
         mChapterFragment = ChaptersFragment.newInstance(this);
         getFragmentManager().beginTransaction().replace(R.id.chapters_layout, mChapterFragment).commit();
 
-        mResourceFragment = ResourcesPageFragment.newInstance(mKnowledgeFragment, this);
+        mResourceFragment = ResourcesPageFragment.newInstance(mKnowledgeFragment, resourceType,this);
         getFragmentManager().beginTransaction().replace(R.id.framelayout, mResourceFragment).commit();
     }
 

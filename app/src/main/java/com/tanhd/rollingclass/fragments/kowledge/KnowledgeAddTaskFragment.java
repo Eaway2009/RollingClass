@@ -492,7 +492,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                                     onCheckQuetion(questionModel);
                                 }
                             }
-                        }));
+                        }, resourceCode));
                         break;
                 }
                 return true;

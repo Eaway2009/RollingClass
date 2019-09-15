@@ -580,7 +580,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                             public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
                                 mEditingView.editFile(mEditingResourceModel, resourceModel);
                             }
-                        }));
+                        }, mEditingResourceModel.resource_type));
                         break;
                 }
                 return true;
