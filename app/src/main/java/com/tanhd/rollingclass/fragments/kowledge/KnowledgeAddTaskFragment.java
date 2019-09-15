@@ -240,7 +240,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 showPopupMenu(v, KeyConstants.ResourceType.VIDEO_TYPE, false);
                 break;
             case R.id.upload_exercises:
-                showPopupMenu(v, KeyConstants.ResourceType.QUESTION_TYPE, false);
+                selectResourceFromServer(KeyConstants.ResourceType.QUESTION_TYPE);
                 break;
             case R.id.upload_documents:
                 showPopupMenu(v, KeyConstants.ResourceType.WORD_TYPE, false);
@@ -280,8 +280,8 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
         int count = displayLayout.getChildCount();
         displayLayout.removeView(resourceLayout);
-        if(count == 1) {
-            LinearLayout parenLayout = (LinearLayout)displayLayout.getParent().getParent();
+        if (count == 1) {
+            LinearLayout parenLayout = (LinearLayout) displayLayout.getParent().getParent();
             mUploadFilesLayout.removeView(parenLayout);
         }
     }
@@ -310,8 +310,8 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
         int count = displayLayout.getChildCount();
         displayLayout.removeView(resourceLayout);
-        if(count == 1) {
-            LinearLayout parenLayout = (LinearLayout)displayLayout.getParent().getParent();
+        if (count == 1) {
+            LinearLayout parenLayout = (LinearLayout) displayLayout.getParent().getParent();
             mUploadFilesLayout.removeView(parenLayout);
         }
     }
@@ -433,9 +433,9 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 }
             } else {
                 int count = mUploadFilesLayout.getChildCount();
-                for (int i = 1; count > i; i++){
+                for (int i = 1; count > i; i++) {
                     LinearLayout displayLayout = (LinearLayout) mUploadFilesLayout.getChildAt(i);
-                    if ((int)displayLayout.getTag() == result.resource_type) {
+                    if ((int) displayLayout.getTag() == result.resource_type) {
                         LinearLayout resourcesLayout = (LinearLayout) displayLayout.getChildAt(1);
                         addFileView(result, resourcesLayout);
                         return;
@@ -522,7 +522,6 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         }
         // 获取布局文件
         popupMenu.getMenuInflater().inflate(R.menu.upload_file, popupMenu.getMenu());
-
         // 通过上面这几行代码，就可以把控件显示出来了
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -532,21 +531,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                         uploadFile(resourceCode, isImage);
                         break;
                     case R.id.from_resource:
-                        FrameDialog.show(getChildFragmentManager(), ResourceSelectorFragment.newInstance(new ResourceSelectorFragment.Callback() {
-                            @Override
-                            public void cancel() {
-
-                            }
-
-                            @Override
-                            public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
-                                if (resourceModel != null) {
-                                    onCheckFile(resourceModel, null);
-                                } else if (questionModel != null) {
-                                    onCheckQuetion(questionModel);
-                                }
-                            }
-                        }, resourceCode));
+                        selectResourceFromServer(resourceCode);
                         break;
                 }
                 return true;
@@ -562,6 +547,24 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
     }
 
+    private void selectResourceFromServer(final int resourceCode) {
+        FrameDialog.show(getChildFragmentManager(), ResourceSelectorFragment.newInstance(new ResourceSelectorFragment.Callback() {
+            @Override
+            public void cancel() {
+
+            }
+
+            @Override
+            public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
+                if (resourceModel != null) {
+                    onCheckFile(resourceModel, null);
+                } else if (questionModel != null) {
+                    onCheckQuetion(questionModel);
+                }
+            }
+        }, resourceCode));
+    }
+
     private void onCheckQuetion(QuestionModel questionModel) {
         LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
         resourceLayout.findViewById(R.id.resource_icon).setVisibility(View.GONE);
@@ -572,8 +575,8 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         deleteView.setOnClickListener(this);
         editView.setVisibility(View.GONE);
         QuestionModelFragment questionModelFragment = QuestionModelFragment.newInstance(questionModel);
-        getFragmentManager().beginTransaction().replace(R.id.framelayout, questionModelFragment).commit();
-        resourceLayout.findViewById(R.id.framelayout).setVisibility(View.VISIBLE);
+        getFragmentManager().beginTransaction().replace(R.id.question_fragment, questionModelFragment).commit();
+        resourceLayout.findViewById(R.id.question_fragment).setVisibility(View.VISIBLE);
         mExercisesList.add(questionModel.question_id);
         mUploadFilesLayout.addView(resourceLayout);
     }

@@ -80,6 +80,8 @@
     <string name="publish_warning">发布后将不可再次修改是否确定发布此学案？</string>
     <string name="please_check_knowledge">请选择要同步的知识点</string>
     <string name="delete_knowledge_warning">是否确定删除此备课？</string>
+    <string name="class_on_knowledge_warning">请先完成课时编辑与发布</string>
+    <string name="no_class_records_warning">暂无上课记录</string>
     <string name="into_class">进入课堂</string>
     <string name="statics_result">统计结果：</string>
     <string name="login_layout_text">欢迎登陆智慧课堂系统</string>

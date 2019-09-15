@@ -30,13 +30,15 @@ public class ResourceModel extends BaseJsonClass {
         if (key.equals("thumbs")) {
             JSONArray array = json.optJSONArray(key);
             ArrayList<String> list = new ArrayList<>();
-            for (int i=0; i<array.length(); i++) {
-                list.add(array.optString(i));
-            }
-            try {
-                field.set(object, list);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            if(array!=null) {
+                for (int i = 0; i < array.length(); i++) {
+                    list.add(array.optString(i));
+                }
+                try {
+                    field.set(object, list);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -80,7 +80,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
 
     public void setListData(List resourceList) {
         if (resourceList != null && !resourceList.isEmpty() && mAdapter != null) {
-            mQuestionList.add((QuestionModel) resourceList.get(0));
+            mQuestionList = resourceList;
             mAdapter.notifyDataSetChanged();
         }
     }

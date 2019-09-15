@@ -46,7 +46,7 @@ public class QuestionModelFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = getLayoutInflater().inflate(R.layout.item_question_resource, container, false);
+        View view = inflater.inflate(R.layout.item_question_resource, container, false);
 
         TextView typeView = view.findViewById(R.id.type);
         TextView noView = view.findViewById(R.id.no);
@@ -87,23 +87,6 @@ public class QuestionModelFragment extends Fragment {
                 optionsLayout.setVisibility(View.GONE);
             }
         }
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                View overView = v.findViewById(R.id.over);
-                if (overView.getVisibility() == View.GONE) {
-                    overView.setVisibility(View.VISIBLE);
-
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) overView.getLayoutParams();
-                    params.width = v.getWidth();
-                    params.height = v.getHeight();
-                    overView.setLayoutParams(params);
-
-                } else {
-                    overView.setVisibility(View.GONE);
-                }
-            }
-        });
         return view;
     }
 
