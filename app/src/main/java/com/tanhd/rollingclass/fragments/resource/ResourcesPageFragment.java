@@ -86,14 +86,20 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         initParams();
         if (resourceType != -1) {
             request(mDefaultPage, LevelType.ALL_LEVEL, resourceType);
-            return;
+            rerequst(resourceType);
+        } else {
+            request(mDefaultPage, LevelType.ALL_LEVEL, mResourceType);
+            rerequst(mResourceType);
         }
-        request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
+    }
+
+    private void rerequst(final int resourceType){
+
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(mPPTFragment != null && mPPTFragment.getDataList()==null||mPPTFragment.getDataList().size()==0){
-                    request(mDefaultPage, LevelType.ALL_LEVEL, ResourceType.PPT_TYPE);
+                if(mCurrentFragment != null && mCurrentFragment.getDataList()==null||mCurrentFragment.getDataList().size()==0){
+                    request(mDefaultPage, LevelType.ALL_LEVEL, resourceType);
                 }
             }
         },1000);
