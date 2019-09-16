@@ -30,7 +30,7 @@
         android:layout_weight="1"
         android:text="文件名"
         android:textColor="@color/resource_name"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/task_delete"

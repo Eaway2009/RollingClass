@@ -73,7 +73,6 @@
                 android:id="@+id/knowledge_tasks_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/task_light_frame"
                 android:gravity="top|left"
                 android:minHeight="20dp"
                 android:orientation="vertical"/>

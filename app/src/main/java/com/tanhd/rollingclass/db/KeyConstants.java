@@ -22,6 +22,7 @@ public class KeyConstants {
         public static final int WORD_TYPE = 2;
         public static final int VIDEO_TYPE = 4;
         public static final int QUESTION_TYPE = 5;
+        public static final int ANSWER_TYPE = 6;
     }
 
     public static class LevelType {

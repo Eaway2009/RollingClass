@@ -56,7 +56,7 @@ public class StringUtils {
     public static String secondToDate(long second,String patten) {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(second * 1000);//转换为毫秒
+        calendar.setTimeInMillis(second);//转换为毫秒
         Date date = calendar.getTime();
         SimpleDateFormat format = new SimpleDateFormat(patten);
         String dateString = format.format(date);

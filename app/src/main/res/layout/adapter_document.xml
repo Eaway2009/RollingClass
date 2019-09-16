@@ -20,8 +20,10 @@
         android:background="@drawable/document_status_selector"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="14sp"
-        tools:text="上课记录" />
+        android:textSize="21sp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        tools:text="课前课后未发布" />
 
     <TextView
         android:id="@+id/document_title_tv"
@@ -32,7 +34,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="26sp"
         tools:text="勾股定理" />
 
     <FrameLayout
@@ -53,14 +55,15 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textColor="@color/white"
-                android:textSize="14dp"
+                android:padding="5dp"
+                android:textSize="18dp"
                 tools:text="2019年7月28日" />
 
             <ImageView
                 android:id="@+id/document_more_ib"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
+                android:padding="8dp"
                 android:src="@drawable/document_more_icon" />
         </LinearLayout>
 

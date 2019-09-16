@@ -144,7 +144,6 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
             publishStatus.append(mContext.getResources().getString(R.string.not_publish));
         } else if (data.class_before == 1 && data.class_process == 1 && data.class_after == 1) {
             publishStatus.append(mContext.getResources().getString(R.string.class_record));
-
         } else {
             if (data.class_before == 0) {
                 publishStatus.append(mContext.getResources().getString(R.string.fre_class));
