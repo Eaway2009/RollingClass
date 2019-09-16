@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,13 +33,17 @@ import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.pages.ResourceSelectorFragment;
+import com.tanhd.rollingclass.fragments.resource.QuestionModelFragment;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.server.data.LessonSampleData;
+import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.QuestionModel;
+import com.tanhd.rollingclass.server.data.ResourceBaseModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
 import com.tanhd.rollingclass.server.data.TeacherData;
@@ -47,13 +52,19 @@ import com.tanhd.rollingclass.utils.GetFileHelper;
 import com.tanhd.rollingclass.utils.StringUtils;
 import com.tanhd.rollingclass.views.TaskDisplayView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class KnowledgeEditingFragment extends Fragment implements View.OnClickListener, TaskDisplayView.TaskDisplayEditListener, KnowledgeAddTaskFragment.Callback {
+import static android.content.DialogInterface.BUTTON_NEGATIVE;
+import static android.content.DialogInterface.BUTTON_POSITIVE;
+
+public class KnowledgeEditingFragment extends Fragment implements View.OnClickListener, KnowledgeAddTaskFragment.Callback {
 
     public static final String PARAM_KNOWLEDGE_DETAIL_DATA = "PARAM_KNOWLEDGE_DETAIL_DATA";
     public static final String PARAM_KNOWLEDGE_DETAIL_STATUS = "PARAM_KNOWLEDGE_DETAIL_STATUS";
@@ -84,8 +95,8 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private ProgressBar mProgressBar;
     private RequestListDataTask mRequestListDataTask;
     private List<KnowledgeLessonSample> mDataList;
-    private TaskDisplayView mEditingView;
-    private ResourceModel mEditingResourceModel;
+    private ResourceBaseModel mEditingResourceModel;
+    private View mEditingView;
 
     /**
      * @param knowledgeModel         所属教材章节的参数
@@ -249,8 +260,210 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                     showLessonSampleDialog(KeyConstants.KnowledgeStatus.AFTER_CLASS);
                 }
                 break;
+            case R.id.task_delete:
+                showDeleteDialog(v);
+                break;
+            case R.id.task_edit:
+                editFile(v);
+                break;
         }
     }
+
+    private void showDeleteDialog(final View v) {
+        final Dialog[] mNetworkDialog = new Dialog[1];
+        DialogInterface.OnClickListener onDialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case BUTTON_POSITIVE:
+                        deleteFile(v);
+                        break;
+                    case BUTTON_NEGATIVE:
+                        mNetworkDialog[0].dismiss();
+                        mNetworkDialog[0] = null;
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                .setMessage(R.string.delete_task_warning)
+                .setTitle(R.string.dialog_tile)
+                .setPositiveButton(R.string.sure, onDialogClickListener)
+                .setNegativeButton(R.string.cancel, onDialogClickListener)
+                .setCancelable(false)
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        mNetworkDialog[0] = null;
+                    }
+                });
+        mNetworkDialog[0] = builder.create();
+        mNetworkDialog[0].show();
+    }
+
+    private void editFile(View v) {
+        mEditingView = v;
+        ResourceBaseModel resourceModel = (ResourceBaseModel) v.getTag();
+        mEditingResourceModel = resourceModel;
+        if (resourceModel instanceof ResourceModel) {
+            showPopupMenu(v);
+        } else {
+            FrameDialog.show(getChildFragmentManager(), ResourceSelectorFragment.newInstance(new ResourceSelectorFragment.Callback() {
+                @Override
+                public void cancel() {
+
+                }
+
+                @Override
+                public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
+                    editQuestionView(questionModel);
+                }
+            }, KeyConstants.ResourceType.QUESTION_TYPE));
+        }
+    }
+
+    private void editFileView(ResourceModel resourceModel) {
+        LinearLayout taskView = (LinearLayout) mEditingView.getParent().getParent().getParent().getParent();
+        KnowledgeLessonSample knowledgeLessonSample = (KnowledgeLessonSample) taskView.getTag();
+        switch (resourceModel.resource_type) {
+            case KeyConstants.ResourceType.PPT_TYPE:
+                knowledgeLessonSample.ppt_set.remove(mEditingResourceModel);
+                knowledgeLessonSample.ppt_set.add(resourceModel);
+                break;
+            case KeyConstants.ResourceType.IMAGE_TYPE:
+                knowledgeLessonSample.image_set.remove(mEditingResourceModel);
+                knowledgeLessonSample.image_set.add(resourceModel);
+                break;
+            case KeyConstants.ResourceType.WORD_TYPE:
+                knowledgeLessonSample.doc_set.remove(mEditingResourceModel);
+                knowledgeLessonSample.doc_set.add(resourceModel);
+                break;
+            case KeyConstants.ResourceType.VIDEO_TYPE:
+                knowledgeLessonSample.video_set.remove(mEditingResourceModel);
+                knowledgeLessonSample.video_set.add(resourceModel);
+                break;
+        }
+        LinearLayout resourceLayout = (LinearLayout) mEditingView.getParent();
+        TextView nameView = resourceLayout.findViewById(R.id.resource_name_view);
+        TextView deleteView = resourceLayout.findViewById(R.id.task_delete);
+        TextView editView = resourceLayout.findViewById(R.id.task_edit);
+        deleteView.setTag(resourceModel);
+        deleteView.setOnClickListener(this);
+        editView.setVisibility(View.GONE);
+        nameView.setText(resourceModel.name);
+        requestEdit(knowledgeLessonSample);
+    }
+
+    private void editQuestionView(QuestionModel questionModel) {
+        LinearLayout taskView = (LinearLayout) mEditingView.getParent().getParent().getParent().getParent();
+        KnowledgeLessonSample knowledgeLessonSample = (KnowledgeLessonSample) taskView.getTag();
+
+        knowledgeLessonSample.question_set.remove(mEditingResourceModel);
+        knowledgeLessonSample.question_set.add(questionModel);
+        LinearLayout resourceLayout = (LinearLayout) mEditingView.getParent();
+        TextView deleteView = resourceLayout.findViewById(R.id.task_delete);
+        TextView editView = resourceLayout.findViewById(R.id.task_edit);
+        deleteView.setTag(questionModel);
+        deleteView.setOnClickListener(this);
+        editView.setTag(questionModel);
+        editView.setOnClickListener(this);
+        resourceLayout.findViewById(R.id.bottom_selector_layout).setVisibility(View.GONE);
+        View questionView = resourceLayout.findViewById(R.id.question_fragment);
+        QuestionModelFragment.showQuestionModel(getLayoutInflater(), questionView, questionModel);
+        resourceLayout.findViewById(R.id.question_fragment).setVisibility(View.VISIBLE);
+        requestEdit(knowledgeLessonSample);
+    }
+
+    private void deleteFile(View v) {
+        ResourceBaseModel resourceBaseModel = (ResourceBaseModel) v.getTag();
+        LinearLayout taskView = (LinearLayout) v.getParent().getParent().getParent().getParent();
+        KnowledgeLessonSample knowledgeLessonSample = (KnowledgeLessonSample) taskView.getTag();
+        if (resourceBaseModel instanceof ResourceModel) {
+            ResourceModel resourceModel = (ResourceModel) resourceBaseModel;
+            switch (resourceModel.resource_type) {
+                case KeyConstants.ResourceType.PPT_TYPE:
+                    knowledgeLessonSample.ppt_set.remove(resourceModel);
+                    break;
+                case KeyConstants.ResourceType.IMAGE_TYPE:
+                    knowledgeLessonSample.image_set.remove(resourceModel);
+                    break;
+                case KeyConstants.ResourceType.WORD_TYPE:
+                    knowledgeLessonSample.doc_set.remove(resourceModel);
+                    break;
+                case KeyConstants.ResourceType.VIDEO_TYPE:
+                    knowledgeLessonSample.video_set.remove(resourceModel);
+                    break;
+            }
+        } else if (resourceBaseModel instanceof QuestionModel) {
+            QuestionModel resourceModel = (QuestionModel) resourceBaseModel;
+            knowledgeLessonSample.question_set.remove(resourceModel);
+        }
+        LinearLayout resourceLayout = (LinearLayout) v.getParent();
+        LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
+        int count = displayLayout.getChildCount();
+        displayLayout.removeView(resourceLayout);
+        if (count == 1) {
+            LinearLayout parenLayout = (LinearLayout) displayLayout.getParent();
+            taskView.removeView(parenLayout);
+        }
+        requestEdit(knowledgeLessonSample);
+    }
+
+    private void requestEdit(KnowledgeLessonSample knowledgeLessonSample) {
+        LessonSampleModel lessonSampleModel = new LessonSampleModel();
+        lessonSampleModel.lesson_sample_id = knowledgeLessonSample.lesson_sample_id;
+        lessonSampleModel.knowledge_id = knowledgeLessonSample.knowledge_id;
+        lessonSampleModel.lesson_type = knowledgeLessonSample.lesson_type;
+        lessonSampleModel.number = knowledgeLessonSample.number;
+        lessonSampleModel.lesson_sample_name = knowledgeLessonSample.lesson_sample_name;
+        lessonSampleModel.status = knowledgeLessonSample.status;
+
+        lessonSampleModel.doc_set = getIdSetFromModelSet(knowledgeLessonSample.doc_set);
+        lessonSampleModel.ppt_set = getIdSetFromModelSet(knowledgeLessonSample.ppt_set);
+        lessonSampleModel.question_set = getIdSetFromQuestionSet(knowledgeLessonSample.question_set);
+        lessonSampleModel.image_set = getIdSetFromModelSet(knowledgeLessonSample.image_set);
+        lessonSampleModel.video_set = getIdSetFromModelSet(knowledgeLessonSample.video_set);
+        ScopeServer.getInstance().EditLessonSample(lessonSampleModel, requestCallback);
+
+    }
+
+    private List<String> getIdSetFromModelSet(List<ResourceModel> resourceModels) {
+        List<String> idSet = new ArrayList<>();
+        if(resourceModels!=null) {
+            for (ResourceModel resourceBaseModel : resourceModels) {
+                idSet.add(resourceBaseModel.resource_id);
+            }
+        }
+        return idSet;
+
+    }
+
+    private List<String> getIdSetFromQuestionSet(List<QuestionModel> resourceModels) {
+        List<String> idSet = new ArrayList<>();
+        if(resourceModels!=null) {
+            for (QuestionModel resourceBaseModel : resourceModels) {
+                idSet.add(resourceBaseModel.question_id);
+            }
+        }
+        return idSet;
+    }
+
+    RequestCallback requestCallback = new RequestCallback() {
+        @Override
+        public void onProgress(boolean b) {
+
+        }
+
+        @Override
+        public void onResponse(String body) {
+        }
+
+        @Override
+        public void onError(String code, String message) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            requestData();
+        }
+    };
 
     private void initFilterDialog() {
         String[] items = new String[2];
@@ -502,18 +715,6 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    @Override
-    public void onEditTask(TaskDisplayView taskDisplayView, ResourceModel resourceModel, View editView) {
-        mEditingView = taskDisplayView;
-        mEditingResourceModel = resourceModel;
-        showPopupMenu(editView);
-    }
-
-    @Override
-    public void onDeleteSuccess() {
-        requestData();
-    }
-
     private class RequestListDataTask extends AsyncTask<Void, Void, List<KnowledgeLessonSample>> {
 
         @Override
@@ -538,12 +739,109 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                 getFragmentManager().beginTransaction().remove(mAddTaskFragment);
                 mAddFragmentView.setVisibility(View.GONE);
                 for (KnowledgeLessonSample lessonSample : mDataList) {
-                    TaskDisplayView taskDiplayView = new TaskDisplayView(getActivity(), (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_task_added, null), KnowledgeEditingFragment.this);
-                    LinearLayout taskDisplayView = taskDiplayView.setData(lessonSample);
-                    mKnowledgeTasksLayout.addView(taskDisplayView);
+                    LinearLayout taskLinearLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_task_added, null);
+                    TextView titleTextView = taskLinearLayout.findViewById(R.id.task_title);
+                    titleTextView.setText(lessonSample.lesson_sample_name);
+                    taskLinearLayout.setTag(lessonSample);
+                    if (lessonSample.doc_set != null) {
+                        addResourceDisplayFile(getResources().getString(R.string.documents), taskLinearLayout, lessonSample.doc_set);
+                    }
+                    if (lessonSample.ppt_set != null) {
+                        addResourceDisplayFile(getResources().getString(R.string.ppt), taskLinearLayout, lessonSample.ppt_set);
+                    }
+                    if (lessonSample.image_set != null) {
+                        addResourceDisplayFile(getResources().getString(R.string.photo), taskLinearLayout, lessonSample.image_set);
+                    }
+                    if (lessonSample.video_set != null) {
+                        addResourceDisplayFile(getResources().getString(R.string.micro_course), taskLinearLayout, lessonSample.video_set);
+                    }
+                    if (lessonSample.question_set != null) {
+                        addQuestionDisplayFile(getResources().getString(R.string.exercises), taskLinearLayout, lessonSample.question_set);
+                    }
+
+                    mKnowledgeTasksLayout.addView(taskLinearLayout);
                 }
             }
         }
+    }
+
+    private void addResourceDisplayFile(String resourceTypeText, LinearLayout taskLinearLayout, List<ResourceModel> resourceList) {
+        LinearLayout displayLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource_item, null);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    layoutParams.topMargin = getActivity().getResources().getDimensionPixelSize(R.dimen.activity_vertical_margin);
+        displayLayout.setLayoutParams(layoutParams);
+
+        LinearLayout resourcesLayout = displayLayout.findViewById(R.id.files_display_layout);
+
+        TextView resourceTypeView = displayLayout.findViewById(R.id.files_type_tv);
+        resourceTypeView.setText(resourceTypeText);
+        for (ResourceModel resourceModel : resourceList) {
+            addFileView(resourceModel, resourcesLayout);
+            displayLayout.setTag(resourceModel.resource_type);
+        }
+        taskLinearLayout.addView(displayLayout);
+    }
+
+    private void addQuestionDisplayFile(String resourceTypeText, LinearLayout taskLinearLayout, List<QuestionModel> resourceList) {
+        LinearLayout displayLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource_item, null);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    layoutParams.topMargin = getActivity().getResources().getDimensionPixelSize(R.dimen.activity_vertical_margin);
+        displayLayout.setLayoutParams(layoutParams);
+
+        LinearLayout resourcesLayout = displayLayout.findViewById(R.id.files_display_layout);
+
+        TextView resourceTypeView = displayLayout.findViewById(R.id.files_type_tv);
+        resourceTypeView.setText(resourceTypeText);
+        for (QuestionModel result : resourceList) {
+            onCheckQuestion(result, resourcesLayout);
+            displayLayout.setTag(KeyConstants.ResourceType.QUESTION_TYPE);
+        }
+        taskLinearLayout.addView(displayLayout);
+    }
+
+    private void onCheckQuestion(QuestionModel questionModel, LinearLayout linearLayout) {
+        LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
+        resourceLayout.findViewById(R.id.resource_icon).setVisibility(View.GONE);
+        resourceLayout.findViewById(R.id.resource_name_view).setVisibility(View.GONE);
+        TextView deleteView = resourceLayout.findViewById(R.id.task_delete);
+        TextView editView = resourceLayout.findViewById(R.id.task_edit);
+        deleteView.setTag(questionModel);
+        deleteView.setOnClickListener(this);
+        editView.setTag(questionModel);
+        editView.setOnClickListener(this);
+        resourceLayout.findViewById(R.id.bottom_selector_layout).setVisibility(View.GONE);
+        View questionView = resourceLayout.findViewById(R.id.question_fragment);
+        QuestionModelFragment.showQuestionModel(getLayoutInflater(), questionView, questionModel);
+        resourceLayout.findViewById(R.id.question_fragment).setVisibility(View.VISIBLE);
+        linearLayout.addView(resourceLayout);
+    }
+
+    private void addFileView(ResourceModel result, LinearLayout linearLayout) {
+        LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
+        ImageView iconView = resourceLayout.findViewById(R.id.resource_icon);
+        TextView nameView = resourceLayout.findViewById(R.id.resource_name_view);
+        TextView deleteView = resourceLayout.findViewById(R.id.task_delete);
+        TextView editView = resourceLayout.findViewById(R.id.task_edit);
+        deleteView.setTag(result);
+        deleteView.setOnClickListener(this);
+        editView.setTag(result);
+        editView.setOnClickListener(this);
+        nameView.setText(result.name);
+        switch (result.resource_type) {
+            case KeyConstants.ResourceType.PPT_TYPE:
+                iconView.setImageResource(R.drawable.ppt_icon);
+                break;
+            case KeyConstants.ResourceType.IMAGE_TYPE:
+                iconView.setImageResource(R.drawable.image_icon);
+                break;
+            case KeyConstants.ResourceType.WORD_TYPE:
+                iconView.setImageResource(R.drawable.word_icon);
+                break;
+            case KeyConstants.ResourceType.VIDEO_TYPE:
+                iconView.setImageResource(R.drawable.video_icon);
+                break;
+        }
+        linearLayout.addView(resourceLayout);
     }
 
     @SuppressLint("RestrictedApi")
@@ -578,9 +876,9 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
                             @Override
                             public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
-                                mEditingView.editFile(mEditingResourceModel, resourceModel);
+                                editFileView(resourceModel);
                             }
-                        }, mEditingResourceModel.resource_type));
+                        }, ((ResourceModel) mEditingResourceModel).resource_type));
                         break;
                 }
                 return true;
@@ -623,14 +921,14 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         File file = new File(imagePath);
 
         if (file.exists()) {
-            new UploadMarkTask(imagePath, file.getName(), mEditingResourceModel.resource_type, 1).execute();
+            new UploadMarkTask(imagePath, file.getName(), ((ResourceModel) mEditingResourceModel).resource_type, 1).execute();
         } else {
             Toast.makeText(getActivity(), R.string.select_pic_again, Toast.LENGTH_SHORT).show();
         }
     }
 
 
-    private class UploadMarkTask extends AsyncTask<Void, Void, ResourceModel> {
+    private class UploadMarkTask extends AsyncTask<Void, Void, String> {
         private final int resourceType;
         private final int level;
         private final String filePath;
@@ -650,21 +948,33 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
 
         @Override
-        protected ResourceModel doInBackground(Void... strings) {
+        protected String doInBackground(Void... strings) {
             UserData userData = ExternalParam.getInstance().getUserData();
             TeacherData teacherData = (TeacherData) userData.getUserData();
             File file = new File(filePath);
             String newFileName = StringUtils.getFormatDate(new Date());
             String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
-            file.renameTo(new File(file.getParent() + "/" + newFileName+"."+suffix));
-            return ScopeServer.getInstance().resourceUpload(file.getParent() + "/" + newFileName+"."+suffix, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
+            file.renameTo(new File(file.getParent() + "/" + newFileName + "." + suffix));
+            return ScopeServer.getInstance().resourceUpload(file.getParent() + "/" + newFileName + "." + suffix, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
         }
 
         @Override
-        protected void onPostExecute(ResourceModel resourceUpload) {
-            super.onPostExecute(resourceUpload);
-            onLoading(false);
-            mEditingView.editFile(mEditingResourceModel, resourceUpload);
+        protected void onPostExecute(String response) {
+            try {
+                JSONObject json = new JSONObject(response);
+                String errorCode = json.optString("errorCode");
+                if (!TextUtils.isEmpty(errorCode) && !errorCode.equals("0")) {
+                    Toast.makeText(KnowledgeEditingFragment.this.getContext(), json.optString("errorMessage"), Toast.LENGTH_SHORT).show();
+                } else {
+                    ResourceModel model = new ResourceModel();
+                    model.parse(model, response);
+
+                    onLoading(false);
+                    editFileView(model);
+                }
+            } catch (JSONException e) {
+                Toast.makeText(KnowledgeEditingFragment.this.getContext(), R.string.upload_fail, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

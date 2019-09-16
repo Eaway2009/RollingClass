@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourceModel extends BaseJsonClass {
+public class ResourceModel extends ResourceBaseModel {
     public long create_time;
     public long level;
     public String name;

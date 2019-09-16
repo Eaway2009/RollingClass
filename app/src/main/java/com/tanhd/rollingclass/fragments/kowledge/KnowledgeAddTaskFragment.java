@@ -18,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -40,11 +42,13 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
+import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
+import com.tanhd.rollingclass.server.data.ResourceBaseModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
-import com.tanhd.rollingclass.server.data.ResourceUpload;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.BitmapUtils;
 import com.tanhd.rollingclass.utils.GetFileHelper;
 import com.tanhd.rollingclass.utils.StringUtils;
@@ -53,9 +57,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -224,7 +226,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
                     @Override
                     public void onError(String code, String message) {
-                        if (code != null) {
+                        if (message != null) {
                             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -251,67 +253,37 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
             case R.id.task_delete:
                 deleteFile(v);
                 break;
-            case R.id.task_edit:
-                editFile(v);
-                break;
         }
     }
 
     private void deleteFile(View v) {
-        ResourceModel resourceModel = (ResourceModel) v.getTag();
-        switch (resourceModel.resource_type) {
-            case 1:
-                mPPTList.remove(resourceModel.resource_id);
-                break;
-            case 2:
-                mImageList.remove(resourceModel.resource_id);
-                break;
-            case 3:
-                mWordList.remove(resourceModel.resource_id);
-                break;
-            case 4:
-                mVideoList.remove(resourceModel.resource_id);
-                break;
-            case 5:
-                mExercisesList.remove(resourceModel.resource_id);
-                break;
+        ResourceBaseModel resourceBaseModel = (ResourceBaseModel) v.getTag();
+        if (resourceBaseModel instanceof ResourceModel) {
+            ResourceModel resourceModel = (ResourceModel) resourceBaseModel;
+            switch (resourceModel.resource_type) {
+                case ResourceType.PPT_TYPE:
+                    mPPTList.remove(resourceModel.resource_id);
+                    break;
+                case ResourceType.IMAGE_TYPE:
+                    mImageList.remove(resourceModel.resource_id);
+                    break;
+                case ResourceType.WORD_TYPE:
+                    mWordList.remove(resourceModel.resource_id);
+                    break;
+                case ResourceType.VIDEO_TYPE:
+                    mVideoList.remove(resourceModel.resource_id);
+                    break;
+            }
+        } else if (resourceBaseModel instanceof ResourceModel) {
+            QuestionModel resourceModel = (QuestionModel) resourceBaseModel;
+            mExercisesList.remove(resourceModel.question_id);
         }
         LinearLayout resourceLayout = (LinearLayout) v.getParent();
         LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
         int count = displayLayout.getChildCount();
         displayLayout.removeView(resourceLayout);
         if (count == 1) {
-            LinearLayout parenLayout = (LinearLayout) displayLayout.getParent().getParent();
-            mUploadFilesLayout.removeView(parenLayout);
-        }
-    }
-
-    private void editFile(View v) {
-        ResourceModel resourceModel = (ResourceModel) v.getTag();
-        showPopupMenu(v, resourceModel.resource_type, false);
-        switch (resourceModel.resource_type) {
-            case 1:
-                mPPTList.remove(resourceModel.resource_id);
-                break;
-            case 2:
-                mImageList.remove(resourceModel.resource_id);
-                break;
-            case 3:
-                mWordList.remove(resourceModel.resource_id);
-                break;
-            case 4:
-                mVideoList.remove(resourceModel.resource_id);
-                break;
-            case 5:
-                mExercisesList.remove(resourceModel.resource_id);
-                break;
-        }
-        LinearLayout resourceLayout = (LinearLayout) v.getParent();
-        LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
-        int count = displayLayout.getChildCount();
-        displayLayout.removeView(resourceLayout);
-        if (count == 1) {
-            LinearLayout parenLayout = (LinearLayout) displayLayout.getParent().getParent();
+            LinearLayout parenLayout = (LinearLayout) displayLayout.getParent();
             mUploadFilesLayout.removeView(parenLayout);
         }
     }
@@ -349,13 +321,17 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
     }
 
     private void receiveFilePathCallback(String imagePath) {
+        if(imagePath ==null) {
+            Toast.makeText(getActivity(), R.string.select_pic_again, Toast.LENGTH_SHORT).show();
+            return;
+        }
         File file = new File(imagePath);
 
-        if (file.exists()) {
-            new UploadMarkTask(imagePath, file.getName(), mResourceCode, 1).execute();
-        } else {
+        if (!file.exists()) {
             Toast.makeText(getActivity(), R.string.select_pic_again, Toast.LENGTH_SHORT).show();
+            return;
         }
+        new UploadMarkTask(imagePath, file.getName(), mResourceCode, 1).execute();
     }
 
     @Override
@@ -377,7 +353,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         }
     }
 
-    private class UploadMarkTask extends AsyncTask<Void, Void, ResourceModel> {
+    private class UploadMarkTask extends AsyncTask<Void, Void, String> {
         private final int resourceType;
         private final int level;
         private final String filePath;
@@ -396,27 +372,39 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         }
 
         @Override
-        protected ResourceModel doInBackground(Void... strings) {
+        protected String doInBackground(Void... strings) {
             UserData userData = ExternalParam.getInstance().getUserData();
             TeacherData teacherData = (TeacherData) userData.getUserData();
             File file = new File(filePath);
             String newFileName = StringUtils.getFormatDate(new Date());
             String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
             file.renameTo(new File(file.getParent() + "/" + newFileName + "." + suffix));
-            return ScopeServer.getInstance().resourceUpload(file.getParent() + "/" + newFileName + "." + suffix, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
-
+            String response = ScopeServer.getInstance().resourceUpload(file.getParent() + "/" + newFileName + "." + suffix, teacherData.TeacherID, mKnowledgeModel.teaching_material_id, fileName, resourceType, level);
+            return response;
         }
 
         @Override
-        protected void onPostExecute(ResourceModel result) {
+        protected void onPostExecute(String response) {
             mListener.onLoading(false);
-            onCheckFile(result, filePath);
+            try {
+                JSONObject json = new JSONObject(response);
+                String errorCode = json.optString("errorCode");
+                if (!TextUtils.isEmpty(errorCode) && !errorCode.equals("0")) {
+                    Toast.makeText(KnowledgeAddTaskFragment.this.getContext(), json.optString("errorMessage"), Toast.LENGTH_SHORT).show();
+                } else {
+                    ResourceModel model = new ResourceModel();
+                    model.parse(model, json.optString("result"));
+                    onCheckFile(model, filePath);
+                }
+            } catch (JSONException e) {
+                Toast.makeText(KnowledgeAddTaskFragment.this.getContext(), R.string.upload_fail, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
-    private void onCheckFile(ResourceModel result, String filePath) {
+    private void onCheckFile(ResourceBaseModel result, String filePath) {
         if (result == null) {
-            Toast.makeText(getActivity(), "上传失败，请重试", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.upload_fail, Toast.LENGTH_SHORT).show();
         } else {
             mEnterTypeRadioGroup.setEnabled(false);
             if (mEnterRadioButton.isChecked()) {
@@ -435,10 +423,18 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 int count = mUploadFilesLayout.getChildCount();
                 for (int i = 1; count > i; i++) {
                     LinearLayout displayLayout = (LinearLayout) mUploadFilesLayout.getChildAt(i);
-                    if ((int) displayLayout.getTag() == result.resource_type) {
-                        LinearLayout resourcesLayout = (LinearLayout) displayLayout.getChildAt(1);
-                        addFileView(result, resourcesLayout);
-                        return;
+                    if (result instanceof ResourceModel) {
+                        if ((int) displayLayout.getTag() == ((ResourceModel) result).resource_type) {
+                            LinearLayout resourcesLayout = (LinearLayout) displayLayout.getChildAt(1);
+                            addFileView((ResourceModel) result, resourcesLayout);
+                            return;
+                        }
+                    } else {
+                        if ((int) displayLayout.getTag() == ResourceType.QUESTION_TYPE) {
+                            LinearLayout resourcesLayout = (LinearLayout) displayLayout.getChildAt(1);
+                            onCheckQuestion((QuestionModel) result, resourcesLayout);
+                            return;
+                        }
                     }
                 }
 
@@ -446,11 +442,19 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //                    layoutParams.topMargin = getActivity().getResources().getDimensionPixelSize(R.dimen.activity_vertical_margin);
                 displayLayout.setLayoutParams(layoutParams);
-                TextView resourceTypeView = displayLayout.findViewById(R.id.files_type_tv);
-                resourceTypeView.setText(type2Name(result.resource_type));
+
                 LinearLayout resourcesLayout = displayLayout.findViewById(R.id.files_display_layout);
-                addFileView(result, resourcesLayout);
-                displayLayout.setTag(result.resource_type);
+                TextView resourceTypeView = displayLayout.findViewById(R.id.files_type_tv);
+                if (result instanceof ResourceModel) {
+                    ResourceModel resourceModel= (ResourceModel) result;
+                    resourceTypeView.setText(type2Name(resourceModel.resource_type));
+                    addFileView(resourceModel, resourcesLayout);
+                    displayLayout.setTag(resourceModel.resource_type);
+                } else {
+                    resourceTypeView.setText(getString(R.string.exercises));
+                    onCheckQuestion((QuestionModel) result, resourcesLayout);
+                    displayLayout.setTag(ResourceType.QUESTION_TYPE);
+                }
                 mUploadFilesLayout.addView(displayLayout);
             }
 
@@ -559,13 +563,13 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 if (resourceModel != null) {
                     onCheckFile(resourceModel, null);
                 } else if (questionModel != null) {
-                    onCheckQuetion(questionModel);
+                    onCheckFile(questionModel, null);
                 }
             }
         }, resourceCode));
     }
 
-    private void onCheckQuetion(QuestionModel questionModel) {
+    private void onCheckQuestion(QuestionModel questionModel, LinearLayout linearLayout) {
         LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
         resourceLayout.findViewById(R.id.resource_icon).setVisibility(View.GONE);
         resourceLayout.findViewById(R.id.resource_name_view).setVisibility(View.GONE);
@@ -574,11 +578,12 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         deleteView.setTag(questionModel);
         deleteView.setOnClickListener(this);
         editView.setVisibility(View.GONE);
-        QuestionModelFragment questionModelFragment = QuestionModelFragment.newInstance(questionModel);
-        getFragmentManager().beginTransaction().replace(R.id.question_fragment, questionModelFragment).commit();
+        resourceLayout.findViewById(R.id.bottom_selector_layout).setVisibility(View.GONE);
+        View questionView = resourceLayout.findViewById(R.id.question_fragment);
+        QuestionModelFragment.showQuestionModel(getLayoutInflater(), questionView, questionModel);
         resourceLayout.findViewById(R.id.question_fragment).setVisibility(View.VISIBLE);
         mExercisesList.add(questionModel.question_id);
-        mUploadFilesLayout.addView(resourceLayout);
+        linearLayout.addView(resourceLayout);
     }
 
     public interface Callback {

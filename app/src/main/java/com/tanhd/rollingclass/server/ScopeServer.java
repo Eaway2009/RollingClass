@@ -911,7 +911,7 @@ public class ScopeServer extends ServerRequest {
      * @param level         资源类别: 1 公共资源 2 校本资源 3 私藏资源
      * @return
      */
-    public ResourceModel resourceUpload(String filePath, String teahcerID, String teaching_material_id, String fileName, int resource_type, int level) {
+    public String resourceUpload(String filePath, String teahcerID, String teaching_material_id, String fileName, int resource_type, int level) {
         HashMap<String, String> params = new HashMap<>();
         params.put("teahcerID", teahcerID);
         params.put("name", fileName);
@@ -920,13 +920,8 @@ public class ScopeServer extends ServerRequest {
         params.put("teacher_id", teahcerID);
         params.put("teaching_material_id", teaching_material_id);
         params.put("token", mToken);
-        String response = uploadFile(getHostUrl() + "/resource/resource/upload/" + mToken, params, filePath);
-        if (response != null) {
-            ResourceModel model = new ResourceModel();
-            model.parse(model, response);
-            return model;
-        }
-        return null;
+        String response = uploadFile(getHostUrl() + "/resource/resource/upload/" + mToken, params, filePath, true);
+        return response;
     }
 
     public int InsertAnswerv2(String question) {

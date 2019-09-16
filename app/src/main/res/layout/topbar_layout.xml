@@ -15,21 +15,22 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="10dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:clickable="false"
         android:src="@drawable/back" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center">
+            android:layout_weight="2"
+            android:layout_marginLeft="80dp"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -40,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="翻转课堂"
+                android:text="智慧课堂系统"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -49,8 +50,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:gravity="center">
 
             <TextView
@@ -74,9 +74,9 @@
             android:id="@+id/inbox"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center"
+            android:visibility="gone">
 
             <com.tanhd.rollingclass.views.CornerImageView
                 android:id="@+id/count_text"
@@ -102,33 +102,93 @@
             android:id="@+id/userinfo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
-            android:layout_weight="1"
-            android:gravity="center">
+            android:layout_weight="3"
+            android:layout_marginRight="80dp"
+            android:gravity="center_vertical|right">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/sample_person"
+                android:padding="7dp"
                 app:civ_border_color="#FFCACACA"
                 app:civ_border_width="0.1dp" />
 
             <TextView
+                android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:text="个人设置中心"
+                android:text="老师"
                 android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:padding="4dp"
+                android:src="@drawable/bar_line" />
+
+            <ImageView
+                android:id="@+id/home_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:padding="7dp"
+                android:src="@drawable/home_icon" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:padding="4dp"
+                android:src="@drawable/bar_line" />
+
+            <ImageView
+                android:id="@+id/message_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="7dp"
+                android:src="@drawable/message_icon" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:padding="4dp"
+                android:src="@drawable/bar_line" />
+
+            <ImageView
+                android:id="@+id/setting_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="7dp"
+                android:src="@drawable/setting_icon" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:padding="4dp"
+                android:src="@drawable/bar_line" />
+
+            <ImageView
+                android:id="@+id/power_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="7dp"
+                android:src="@drawable/power_icon" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/more"
-            android:layout_width="80dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:visibility="gone"
             android:orientation="horizontal">
 
             <ImageView

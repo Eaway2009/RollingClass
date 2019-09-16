@@ -73,12 +73,14 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
         mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
         mKnowledgeDetailMessage = (KnowledgeDetailMessage) args.getSerializable(DocumentEditActivity.PARAM_KNOWLEDGE_DETAIL_DATA);
 
-        if (mKnowledgeDetailMessage.class_before != 1) {
-            mStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
-        } else if (mKnowledgeDetailMessage.class_process != 1) {
-            mStatus = KeyConstants.KnowledgeStatus.AT_CLASS;
-        } else {
-            mStatus = KeyConstants.KnowledgeStatus.AFTER_CLASS;
+        if (mKnowledgeDetailMessage != null) {
+            if (mKnowledgeDetailMessage.class_before != 1) {
+                mStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
+            } else if (mKnowledgeDetailMessage.class_process != 1) {
+                mStatus = KeyConstants.KnowledgeStatus.AT_CLASS;
+            } else {
+                mStatus = KeyConstants.KnowledgeStatus.AFTER_CLASS;
+            }
         }
     }
 

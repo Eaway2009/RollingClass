@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.server.data;
 
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.utils.AppUtils;
 
 import org.json.JSONObject;
@@ -11,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-public class QuestionModel extends BaseJsonClass {
+public class QuestionModel extends ResourceBaseModel {
     public long create_time;
     public String lesson_sample_id;
     public String lesson_sample_name;
@@ -26,6 +27,7 @@ public class QuestionModel extends BaseJsonClass {
     public int QuestionType;
     public ContextData context;
     public boolean isChecked;
+    public int resource_type = KeyConstants.ResourceType.QUESTION_TYPE;
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {

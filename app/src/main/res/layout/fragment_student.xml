@@ -22,7 +22,7 @@
                 android:gravity="center"
                 android:text="@string/learning_class"
                 android:textColor="@color/white"
-                android:textSize="26sp" />
+                android:textSize="23sp" />
 
             <TextView
                 android:id="@+id/class_started_warning"
@@ -31,6 +31,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="bottom|center_horizontal"
                 android:layout_marginBottom="50dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
                 android:background="@drawable/class_warning"
                 android:gravity="center"
                 android:text="@string/class_started_warning"
@@ -53,7 +55,7 @@
                 android:gravity="center"
                 android:text="@string/learning_seft"
                 android:textColor="@color/white"
-                android:textSize="26sp" />
+                android:textSize="23sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -62,8 +64,17 @@
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/knowledge_page_view"
             android:layout_alignBottom="@+id/class_page_view"
-            android:background="@drawable/statistics_page"
-            android:orientation="vertical" />
+            android:background="@drawable/statistics_page">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/statistics_page_icon"
+                android:gravity="center"
+                android:text="@string/statistics_title"
+                android:textColor="@color/white"
+                android:textSize="23sp" />
+        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>

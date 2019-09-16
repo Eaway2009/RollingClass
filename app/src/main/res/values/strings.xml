@@ -65,7 +65,7 @@
     <string name="toast_crash">程序出错了, 错误报告提交, 我们将尽快修复该问题, 谢谢合作!</string>
     <string name="update_prompt">发现新版本，是否需要更新？</string>
     <string name="check_teacher_list_fail">获取教师列表失败，请重试</string>
-    <string name="select_pic_again">文件有误，请重选</string>
+    <string name="select_pic_again">文件不存在，请重选</string>
     <string name="no_update_prompt">当前已经是最新版本, 无需更新!</string>
     <string name="start_class_check">请您选择开课的班级</string>
     <string name="adding_task_warning">当前正在添加任务,请先保存!</string>
@@ -94,6 +94,7 @@
     <string name="sync_success">同步成功</string>
     <string name="sync_fail">同步失败，请重试</string>
     <string name="update_fail">修改失败，请重试</string>
+    <string name="upload_fail">上传失败，请重试</string>
     <string name="upload_from_local">从本地选择文件</string>
     <string name="upload_from_resource">从资源库选择文件</string>
     <string name="answer_question">抢答</string>

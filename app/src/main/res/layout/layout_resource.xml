@@ -1,62 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingLeft="38dp"
+    android:paddingTop="5dp"
+    android:paddingRight="26dp"
+    android:paddingBottom="5dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <include
+        android:id="@+id/question_fragment"
+        layout="@layout/item_question_resource"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:layout_weight="1"
+        android:visibility="gone" />
 
-        <FrameLayout
-            android:id="@+id/question_fragment"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="200dp"
-            android:layout_weight="1"
-            android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/resource_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ppt_icon" />
 
-        <ImageView
-            android:id="@+id/resource_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ppt_icon" />
+    <TextView
+        android:id="@+id/resource_name_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_weight="1"
+        android:text="文件名"
+        android:textColor="@color/resource_name"
+        android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/resource_name_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="16sp"
-            android:layout_marginLeft="15dp"
-            android:textColor="@color/resource_name"
-            android:text="文件名"/>
+    <TextView
+        android:id="@+id/task_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:drawableLeft="@drawable/task_delete"
+        android:drawablePadding="6dp"
+        android:padding="8dp"
+        android:text="@string/delete"
+        android:textColor="@color/knowledge_edit_text"
+        android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/task_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="8dp"
-            android:text="@string/delete"
-            android:drawableLeft="@drawable/task_delete"
-            android:drawablePadding="6dp"
-            android:textColor="@color/knowledge_edit_text"
-            android:layout_marginLeft="15dp"
-            android:textSize="12sp"/>
-
-        <TextView
-            android:id="@+id/task_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="8dp"
-            android:drawableLeft="@drawable/task_edit_icon"
-            android:drawablePadding="6dp"
-            android:text="@string/edit"
-            android:layout_marginLeft="15dp"
-            android:textColor="@color/knowledge_edit_text"
-            android:textSize="12sp"/>
-    </LinearLayout>
-
+    <TextView
+        android:id="@+id/task_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:drawableLeft="@drawable/task_edit_icon"
+        android:drawablePadding="6dp"
+        android:padding="8dp"
+        android:text="@string/edit"
+        android:textColor="@color/knowledge_edit_text"
+        android:textSize="12sp" />
 </LinearLayout>

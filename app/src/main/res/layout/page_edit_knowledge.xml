@@ -72,11 +72,11 @@
             <LinearLayout
                 android:id="@+id/knowledge_tasks_layout"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp"></LinearLayout>
+                android:layout_height="wrap_content"
+                android:background="@drawable/task_light_frame"
+                android:gravity="top|left"
+                android:minHeight="20dp"
+                android:orientation="vertical"/>
 
             <FrameLayout
                 android:id="@+id/fragment_add_task"

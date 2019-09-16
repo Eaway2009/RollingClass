@@ -309,6 +309,42 @@ public class ServerRequest {
         }
     }
 
+    protected String uploadFile(String url, Map<String, String> params, String filePath, boolean getResponse) {
+        MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
+        multipartBodyBuilder.setType(MultipartBody.FORM);
+        //遍历map中所有参数到builder
+        if (params != null) {
+            for (String key : params.keySet()) {
+                multipartBodyBuilder.addFormDataPart(key, params.get(key));
+            }
+        }
+
+        File f = new File(filePath);
+        String fileName = f.getName();
+        MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+        multipartBodyBuilder.addFormDataPart("file", fileName, RequestBody.create(MEDIA_TYPE_PNG, f));
+        //构建请求体
+        RequestBody requestBody = multipartBodyBuilder.build();
+        Request request;
+        request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
+        try {
+            Response response = okHttpClient.newCall(request).execute();
+            String text = response.body().string();
+            Log.i(TAG, text);
+
+            return text;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     protected String uploadFile(String url, Map<String, String> params, String filePath) {
         MultipartBody.Builder multipartBodyBuilder = new MultipartBody.Builder();
         multipartBodyBuilder.setType(MultipartBody.FORM);

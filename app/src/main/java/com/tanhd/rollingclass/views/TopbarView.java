@@ -42,6 +42,7 @@ public class TopbarView extends CardView {
     private CornerImageView mMessageView;
     private PopMenu mPopMenu;
     private Callback mCallback;
+    private TextView mUserNameView;
 
     public TopbarView(Context context) {
         super(context);
@@ -61,6 +62,7 @@ public class TopbarView extends CardView {
         mDateView = findViewById(R.id.datetext);
         mWeekView = findViewById(R.id.weektext);
         mMessageView = findViewById(R.id.count_text);
+        mUserNameView = findViewById(R.id.username);
 
         Calendar calendar = Calendar.getInstance();
         String text = String.format("%04d.%02d.%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
@@ -71,6 +73,8 @@ public class TopbarView extends CardView {
         mWeekView.setText(text);
 
         refreshMessageCount();
+        UserData userData = ExternalParam.getInstance().getUserData();
+        mUserNameView.setText(userData.getOwnerName());
 
         findViewById(R.id.userinfo).setOnClickListener(new OnClickListener() {
             @Override

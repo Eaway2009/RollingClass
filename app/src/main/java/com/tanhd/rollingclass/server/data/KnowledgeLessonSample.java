@@ -27,7 +27,7 @@ public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelMo
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {
-        if (key.equals("ppt_set") || key.equals("video_set") || key.equals("doc_set") || key.equals("question_set") || key.equals("image_set")) {
+        if (key.equals("ppt_set") || key.equals("video_set") || key.equals("doc_set") || key.equals("image_set")) {
             try {
                 JSONArray array = json.optJSONArray(key);
                 ArrayList<ResourceModel> list = new ArrayList<>();
@@ -36,6 +36,22 @@ public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelMo
                     ResourceModel resourceModel = new ResourceModel();
                     resourceModel.parse(resourceModel, obj);
                     list.add(resourceModel);
+                }
+                field.set(object, list);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        if(key.equals("question_set")){
+            try {
+                JSONArray array = json.optJSONArray(key);
+                ArrayList<QuestionModel> list = new ArrayList<>();
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.optJSONObject(i);
+                    QuestionModel questionModel = new QuestionModel();
+                    questionModel.parse(questionModel, obj);
+                    list.add(questionModel);
                 }
                 field.set(object, list);
             } catch (IllegalAccessException e) {
