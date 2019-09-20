@@ -35,6 +35,7 @@ import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.KeyConstants.ResourceType;
 import com.tanhd.rollingclass.fragments.FrameDialog;
+import com.tanhd.rollingclass.fragments.pages.AnswerListFragment;
 import com.tanhd.rollingclass.fragments.pages.ResourceSelectorFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionModelFragment;
 import com.tanhd.rollingclass.server.RequestCallback;
@@ -95,6 +96,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
      */
     private int mResourceCode;
     private List<String> mExercisesList = new ArrayList<>();
+    private List<QuestionModel> mQuestionModes = new ArrayList<>();
     private List<String> mPPTList = new ArrayList<>();
     private List<String> mWordList = new ArrayList<>();
     private List<String> mImageList = new ArrayList<>();
@@ -104,7 +106,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
      * 1.课前；2.课时；3.课后
      */
     private int mStatus;
-    private LinearLayout answerDisplayLayout;
+    private AnswerDisplayLayout answerDisplayLayout;
 
     /**
      * @param knowledgeModel         所属教材章节的参数
@@ -279,9 +281,10 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                     mVideoList.remove(resourceModel.resource_id);
                     break;
             }
-        } else if (resourceBaseModel instanceof ResourceModel) {
+        } else if (resourceBaseModel instanceof QuestionModel) {
             QuestionModel resourceModel = (QuestionModel) resourceBaseModel;
             mExercisesList.remove(resourceModel.question_id);
+            mQuestionModes.remove(resourceModel);
         }
         LinearLayout resourceLayout = (LinearLayout) v.getParent();
         LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
@@ -290,6 +293,12 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         if (count == 1) {
             LinearLayout parenLayout = (LinearLayout) displayLayout.getParent();
             mUploadFilesLayout.removeView(parenLayout);
+        }
+        answerDisplayLayout.resetData(mQuestionModes);
+        if (mQuestionModes.size() == 0) {
+            answerDisplayLayout.setVisibility(View.GONE);
+            LinearLayout view = (LinearLayout) answerDisplayLayout.getParent().getParent();
+            mUploadFilesLayout.removeView(view);
         }
     }
 
@@ -426,7 +435,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 }
             } else {
                 int count = mUploadFilesLayout.getChildCount();
-                for (int i = 1; count > i; i++) {
+                for (int i = 0; count > i; i++) {
                     LinearLayout displayLayout = (LinearLayout) mUploadFilesLayout.getChildAt(i);
                     if (result instanceof ResourceModel) {
                         if ((int) displayLayout.getTag() == ((ResourceModel) result).resource_type) {
@@ -438,7 +447,8 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                         if ((int) displayLayout.getTag() == ResourceType.QUESTION_TYPE) {
                             LinearLayout resourcesLayout = (LinearLayout) displayLayout.getChildAt(1);
                             onCheckQuestion((QuestionModel) result, resourcesLayout);
-                            displayAnswer((QuestionModel) result, answerDisplayLayout);
+//                            answerListFragment.addData((QuestionModel) result);
+                            answerDisplayLayout.addData((QuestionModel) result);
                             return;
                         }
                     }
@@ -456,28 +466,33 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                     resourceTypeView.setText(type2Name(resourceModel.resource_type));
                     addFileView(resourceModel, resourcesLayout);
                     displayLayout.setTag(resourceModel.resource_type);
+                    mUploadFilesLayout.addView(displayLayout);
                 } else {
                     resourceTypeView.setText(getString(R.string.exercises));
                     onCheckQuestion((QuestionModel) result, resourcesLayout);
                     displayLayout.setTag(ResourceType.QUESTION_TYPE);
-                }
-                mUploadFilesLayout.addView(displayLayout);
-
-                if (result instanceof QuestionModel) {
-                    answerDisplayLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource_item, null);
-                    answerDisplayLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-                    LinearLayout answersLayout = answerDisplayLayout.findViewById(R.id.files_display_layout);
-                    TextView titleView = answerDisplayLayout.findViewById(R.id.files_type_tv);
-
-                    titleView.setText(getString(R.string.answers));
-                    displayAnswer((QuestionModel) result, answersLayout);
-                    answerDisplayLayout.setTag(ResourceType.ANSWER_TYPE);
-                    mUploadFilesLayout.addView(answerDisplayLayout);
+                    mUploadFilesLayout.addView(displayLayout);
+                    addQuestionAnswerLayout((QuestionModel) result);
                 }
             }
 
         }
+    }
+
+    private void addQuestionAnswerLayout(QuestionModel questionModel) {
+        LinearLayout answerLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource_item, null);
+        answerLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        LinearLayout answersLayout = answerLayout.findViewById(R.id.files_display_layout);
+        TextView titleView = answerLayout.findViewById(R.id.files_type_tv);
+        titleView.setText(getString(R.string.answers));
+
+        answerDisplayLayout = answersLayout.findViewById(R.id.answer_layout);
+        answerDisplayLayout.setVisibility(View.VISIBLE);
+        answerDisplayLayout.addData(questionModel);
+        answerLayout.setTag(ResourceType.ANSWER_TYPE);
+        mUploadFilesLayout.addView(answerLayout);
+
     }
 
     private String type2Name(int type) {
@@ -507,25 +522,21 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         editView.setVisibility(View.GONE);
         nameView.setText(result.name);
         switch (result.resource_type) {
-            case 1:
+            case ResourceType.PPT_TYPE:
                 mPPTList.add(result.resource_id);
                 iconView.setImageResource(R.drawable.ppt_icon);
                 break;
-            case 2:
+            case ResourceType.IMAGE_TYPE:
                 mImageList.add(result.resource_id);
                 iconView.setImageResource(R.drawable.image_icon);
                 break;
-            case 3:
+            case ResourceType.WORD_TYPE:
                 mWordList.add(result.resource_id);
                 iconView.setImageResource(R.drawable.word_icon);
                 break;
-            case 4:
+            case ResourceType.VIDEO_TYPE:
                 mVideoList.add(result.resource_id);
                 iconView.setImageResource(R.drawable.video_icon);
-                break;
-            case 5:
-                mExercisesList.add(result.resource_id);
-                iconView.setImageResource(R.drawable.pdf_icon);
                 break;
         }
         linearLayout.addView(resourceLayout);
@@ -602,32 +613,6 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         QuestionModelFragment.showQuestionModel(getLayoutInflater(), questionView, questionModel);
         resourceLayout.findViewById(R.id.question_fragment).setVisibility(View.VISIBLE);
         mExercisesList.add(questionModel.question_id);
-        linearLayout.addView(resourceLayout);
-    }
-
-    private void displayAnswer(QuestionModel questionModel, LinearLayout linearLayout) {
-        LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
-        resourceLayout.findViewById(R.id.resource_icon).setVisibility(View.GONE);
-        resourceLayout.findViewById(R.id.task_delete).setVisibility(View.GONE);
-        resourceLayout.findViewById(R.id.task_edit).setVisibility(View.GONE);
-        resourceLayout.findViewById(R.id.bottom_selector_layout).setVisibility(View.GONE);
-
-        TextView answerTextView = resourceLayout.findViewById(R.id.resource_name_view);
-        StringBuffer answerText = new StringBuffer();
-        answerText.append(questionModel.context.OrderIndex+".");
-        for (OptionData optionData : questionModel.context.Options) {
-            String option = AppUtils.OPTION_NO[optionData.OrderIndex - 1];
-            if (option.equals(questionModel.context.Answer)) {
-                answerText.append("<font color='#FF0000'>");
-            }
-            answerText.append("[");
-            answerText.append(option);
-            answerText.append("]");
-            if (option.equals(questionModel.context.Answer)) {
-                answerText.append("</font>");
-            }
-        }
-        answerTextView.setText(Html.fromHtml(answerText.toString()));
         linearLayout.addView(resourceLayout);
     }
 

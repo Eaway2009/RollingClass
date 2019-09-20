@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
+import com.tanhd.rollingclass.utils.AppUtils;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class AnswerCardAdapter extends BaseAdapter {
 
     public void setData(List<QuestionModel> dataList) {
         mDataList = dataList;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -68,7 +70,7 @@ public class AnswerCardAdapter extends BaseAdapter {
             testIndexView.setText(data.context.OrderIndex + mDot);
             for (OptionData option : data.context.Options) {
                 TextView optionView = (TextView) mContext.getLayoutInflater().inflate(R.layout.answer_textview, null);
-                optionView.setText(mClosingCheron + option.OptionText + mOpeningCheron);
+                optionView.setText(mClosingCheron + AppUtils.OPTION_NO[option.OrderIndex-1] + mOpeningCheron);
                 optionView.setTag(option);
                 answerLayout.addView(optionView);
             }

@@ -416,14 +416,6 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             QuestionModel resourceModel = (QuestionModel) resourceBaseModel;
             knowledgeLessonSample.question_set.remove(resourceModel);
         }
-        LinearLayout resourceLayout = (LinearLayout) v.getParent();
-        LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
-        int count = displayLayout.getChildCount();
-        displayLayout.removeView(resourceLayout);
-        if (count == 1) {
-            LinearLayout parenLayout = (LinearLayout) displayLayout.getParent();
-            taskView.removeView(parenLayout);
-        }
         requestEdit(knowledgeLessonSample);
     }
 
@@ -474,6 +466,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
         @Override
         public void onResponse(String body) {
+            requestData();
         }
 
         @Override
@@ -720,7 +713,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                         addResourceDisplayFile(getResources().getString(R.string.micro_course), taskLinearLayout, lessonSample.video_set);
                     }
                     if (lessonSample.question_set != null) {
-                        addQuestionDisplayFile(getResources().getString(R.string.exercises), taskLinearLayout, lessonSample.question_set,false);
+                        addQuestionDisplayFile(getResources().getString(R.string.exercises), taskLinearLayout, lessonSample.question_set, false);
                         addQuestionDisplayFile(getResources().getString(R.string.answers), taskLinearLayout, lessonSample.question_set, true);
                     }
 
@@ -757,11 +750,15 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
         TextView resourceTypeView = displayLayout.findViewById(R.id.files_type_tv);
         resourceTypeView.setText(resourceTypeText);
-        for (QuestionModel result : resourceList) {
-            if(!displayAnswer) {
+
+        if (displayAnswer) {
+            AnswerDisplayLayout answerDisplayLayout = resourcesLayout.findViewById(R.id.answer_layout);
+            answerDisplayLayout.setVisibility(View.VISIBLE);
+            answerDisplayLayout.resetData(resourceList);
+            displayLayout.setTag(KeyConstants.ResourceType.ANSWER_TYPE);
+        } else {
+            for (QuestionModel result : resourceList) {
                 onCheckQuestion(result, resourcesLayout);
-            }else{
-                displayAnswer(result, resourcesLayout);
             }
             displayLayout.setTag(KeyConstants.ResourceType.QUESTION_TYPE);
         }
@@ -794,7 +791,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
         TextView answerTextView = resourceLayout.findViewById(R.id.resource_name_view);
         StringBuffer answerText = new StringBuffer();
-        answerText.append(questionModel.context.OrderIndex+".");
+        answerText.append(questionModel.context.OrderIndex + ".");
         for (OptionData optionData : questionModel.context.Options) {
             String option = AppUtils.OPTION_NO[optionData.OrderIndex - 1];
             if (option.equals(questionModel.context.Answer)) {
