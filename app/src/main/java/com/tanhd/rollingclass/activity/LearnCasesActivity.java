@@ -26,6 +26,7 @@ import com.tanhd.rollingclass.fragments.ExamFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.InBoxFragment;
 import com.tanhd.rollingclass.fragments.ServerTesterFragment;
+import com.tanhd.rollingclass.fragments.pages.ClassAnsweringFragment;
 import com.tanhd.rollingclass.fragments.pages.LearnCasesFragment;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
@@ -249,7 +250,7 @@ public class LearnCasesActivity extends AppCompatActivity {
                     if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
                         String examID = message.parameters.get("examID");
                         final String teacherID = message.parameters.get("teacherID");
-                        FrameDialog.fullShow(getSupportFragmentManager(), ExamFragment.newInstance(teacherID, examID, new ExamFragment.ExamListener() {
+                        FrameDialog.fullShow(getSupportFragmentManager(), ClassAnsweringFragment.getInstance(teacherID, examID, new ClassAnsweringFragment.ExamListener() {
                             @Override
                             public void onFinished() {
                                 MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);

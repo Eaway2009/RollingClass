@@ -13,6 +13,7 @@
     <color name="student_select_color">#666666</color>
     <color name="class_title">#212121</color>
     <color name="class_item">#747474</color>
+    <color name="publish_item">#7D7D7D</color>
     <color name="lesson_text">#3E3E3E</color>
     <color name="group_name">#484848</color>
     <color name="group_name_checked">#46B0E6</color>
@@ -44,8 +45,10 @@
     <color name="button_6_teacher_color">#88ABDA</color>
     <color name="button_7_teacher_color">#8C97CB</color>
     <color name="button_8_teacher_color">#AA89BD</color>
+    <color name="dialog_button_text">#6D6D6D</color>
     <color name="button_orange">#FF4200</color>
     <color name="button_gray">#959595</color>
+    <color name="gray_line">#DFDFDF</color>
     <color name="button_disable">#A0A0A0</color>
     <color name="frame_color">#AAAAAA</color>
     <color name="frame_solid_light_color">#F8F9FB</color>

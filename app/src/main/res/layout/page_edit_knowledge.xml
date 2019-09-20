@@ -93,9 +93,9 @@
                 android:textColor="@color/knowledge_add_text" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="150dp"
+                android:paddingLeft="150dp"
                 android:gravity="center_vertical|right"
                 android:paddingBottom="30dp"
                 android:paddingTop="30dp">
@@ -106,9 +106,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@drawable/check_selector"
-
                     android:text="@string/sync_in_class"
-                    android:textColor="@color/knowledge_add_text"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/sync_text_selector"
                     android:textSize="14sp" />
 
                 <CheckBox
@@ -118,7 +118,8 @@
                     android:layout_height="wrap_content"
                     android:button="@drawable/check_selector"
                     android:text="@string/sync_in_class"
-                    android:textColor="@color/knowledge_add_text"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/sync_text_selector"
                     android:textSize="14sp" />
 
                 <CheckBox
@@ -128,7 +129,8 @@
                     android:button="@drawable/check_selector"
                     android:text="@string/sync_after_class"
                     android:layout_marginLeft="50dp"
-                    android:textColor="@color/knowledge_add_text"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/sync_text_selector"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>

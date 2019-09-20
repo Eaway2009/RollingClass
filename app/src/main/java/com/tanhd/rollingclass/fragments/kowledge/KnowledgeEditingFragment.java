@@ -171,6 +171,21 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         if (mStatus == KeyConstants.KnowledgeStatus.AFTER_CLASS) {
             mSyncAfterClassCheckBox.setVisibility(View.GONE);
         }
+        if (mKnowledgeDetailMessage.class_before == 1) {
+            mSyncFreClassCheckBox.setEnabled(false);
+        } else {
+            mSyncFreClassCheckBox.setEnabled(true);
+        }
+        if (mKnowledgeDetailMessage.class_process == 1) {
+            mSyncFreClassCheckBox.setEnabled(false);
+        } else {
+            mSyncFreClassCheckBox.setEnabled(true);
+        }
+        if (mKnowledgeDetailMessage.class_after == 1) {
+            mSyncFreClassCheckBox.setEnabled(false);
+        } else {
+            mSyncFreClassCheckBox.setEnabled(true);
+        }
         mSyncFreClassCheckBox.setOnClickListener(this);
         mSyncInClassCheckBox.setOnClickListener(this);
         mSyncAfterClassCheckBox.setOnClickListener(this);
@@ -432,7 +447,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
     private List<String> getIdSetFromModelSet(List<ResourceModel> resourceModels) {
         List<String> idSet = new ArrayList<>();
-        if(resourceModels!=null) {
+        if (resourceModels != null) {
             for (ResourceModel resourceBaseModel : resourceModels) {
                 idSet.add(resourceBaseModel.resource_id);
             }
@@ -443,7 +458,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
     private List<String> getIdSetFromQuestionSet(List<QuestionModel> resourceModels) {
         List<String> idSet = new ArrayList<>();
-        if(resourceModels!=null) {
+        if (resourceModels != null) {
             for (QuestionModel resourceBaseModel : resourceModels) {
                 idSet.add(resourceBaseModel.question_id);
             }
@@ -469,66 +484,12 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     };
 
     private void initFilterDialog() {
-        String[] items = new String[2];
-        final int[] checkedPublish = new int[]{1, 1, 1};
-        switch (mStatus) {
-            case KeyConstants.KnowledgeStatus.FRE_CLASS:
-                items[0] = getString(R.string.publish_sync_in_class);
-                items[1] = getString(R.string.publish_sync_after_class);
-                break;
-            case KeyConstants.KnowledgeStatus.AT_CLASS:
-                items[0] = getString(R.string.publish_sync_fre_class);
-                items[1] = getString(R.string.publish_sync_after_class);
-                break;
-            case KeyConstants.KnowledgeStatus.AFTER_CLASS:
-                items[0] = getString(R.string.publish_sync_fre_class);
-                items[1] = getString(R.string.publish_sync_in_class);
-                break;
-        }
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.publish_warning)
-                .setMultiChoiceItems(items, new boolean[]{true, true}, new DialogInterface.OnMultiChoiceClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        switch (mStatus) {
-                            case KeyConstants.KnowledgeStatus.FRE_CLASS:
-                                if (which == 0) {
-                                    checkedPublish[1] = isChecked ? 1 : 0;
-                                } else if (which == 1) {
-                                    checkedPublish[2] = isChecked ? 1 : 0;
-                                }
-                                break;
-                            case KeyConstants.KnowledgeStatus.AT_CLASS:
-                                if (which == 0) {
-                                    checkedPublish[0] = isChecked ? 1 : 0;
-                                } else if (which == 1) {
-                                    checkedPublish[2] = isChecked ? 1 : 0;
-                                }
-                                break;
-                            case KeyConstants.KnowledgeStatus.AFTER_CLASS:
-                                if (which == 0) {
-                                    checkedPublish[0] = isChecked ? 1 : 0;
-                                } else if (which == 1) {
-                                    checkedPublish[1] = isChecked ? 1 : 0;
-                                }
-                                break;
-                        }
-
-                    }
-                })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        new RequestPublishTask(checkedPublish).execute();
-                    }
-                }).show();
+        FrameDialog.showLittleDialog(getChildFragmentManager(), KnowledgePublishFragment.newInstance(mStatus, new KnowledgePublishFragment.PublishCallback() {
+            @Override
+            public void publish(int[] checkedPublish) {
+                new RequestPublishTask(checkedPublish).execute();
+            }
+        }));
     }
 
     private void showLessonSampleDialog(final int syncTo) {
