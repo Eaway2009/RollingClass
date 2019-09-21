@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +16,7 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
@@ -28,10 +30,12 @@ import com.tanhd.rollingclass.fragments.ClassSelectorFragment;
 import com.tanhd.rollingclass.fragments.ExamFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.WaitAnswerFragment;
+import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
+import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.utils.AppUtils;
@@ -70,6 +74,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     private Button mAfterClassLearningButton;
     private View mLearningButtonsLayout;
     private ClassData mClassData;
+    private KnowledgeLessonSample mRelativeData;
 
     public static LearnCasesFragment newInstance(String knowledgeId, String knowledgeName, String teachingMaterialId, int pageType, String teacherName, LearnCasesFragment.PagesListener listener) {
         Bundle args = new Bundle();
@@ -179,6 +184,23 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_insert_resource:
+                FrameDialog.show(getFragmentManager(), ResourceSelectorFragment.newInstance(new ResourceSelectorFragment.Callback() {
+                    @Override
+                    public void cancel() {
+
+                    }
+
+                    @Override
+                    public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
+                        if (mRelativeData != null) {
+                            if (resourceModel != null) {
+                                onCheckFile(resourceModel.resource_id, resourceModel.resource_type);
+                            } else if (questionModel != null) {
+                                onCheckFile(questionModel.question_id, questionModel.resource_type);
+                            }
+                        }
+                    }
+                }, -1));
                 break;
             case R.id.tv_exercise_result:
                 break;
@@ -223,6 +245,27 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 }
                 break;
         }
+    }
+
+    private void onCheckFile(String resource_id, int resource_type) {
+        ScopeServer.getInstance().AddLessonSampleResource(mRelativeData.lesson_sample_id, resource_id, resource_type, new RequestCallback() {
+            @Override
+            public void onProgress(boolean b) {
+
+            }
+
+            @Override
+            public void onResponse(String body) {
+                new InitDataTask().execute();
+            }
+
+            @Override
+            public void onError(String code, String message) {
+                if (!TextUtils.isEmpty(message)) {
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
@@ -353,6 +396,12 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         protected void onPostExecute(List<KnowledgeLessonSample> documentList) {
             if (documentList != null && documentList.size() > 0) {
                 mAdapter.setDataList(documentList);
+                for (KnowledgeLessonSample knowledgeLessonSample : documentList) {
+                    if (knowledgeLessonSample.lesson_type != 1) {
+                        mRelativeData = knowledgeLessonSample;
+                    }
+                }
+
                 mExpandableListView.expandGroup(0);
                 if (init) {
                     callClickItem(0, 0);

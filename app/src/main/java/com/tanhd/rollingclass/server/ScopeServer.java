@@ -841,6 +841,21 @@ public class ScopeServer extends ServerRequest {
     }
 
     /**
+     * 查绚指定课时
+     *
+     * @param lesson_sample_id
+     * @return
+     */
+    public void AddLessonSampleResource(String lesson_sample_id,String resource_id, int resource_type, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("lesson_sample_id", lesson_sample_id);
+        params.put("resource_id", resource_id);
+        params.put("resource_type", resource_type + "");
+        params.put("token", mToken);
+        new RequestTask(getHostUrl() + "/teachingSample/AddLessonSampleResource/" + mToken, METHOD.POST, params, null, callback).execute();
+    }
+
+    /**
      * 查绚指定学科知识点
      *
      * @param knowledgeID

@@ -1,6 +1,7 @@
 package com.tanhd.rollingclass.fragments.pages;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,8 @@ public class AnswerListFragment extends Fragment {
     private List<QuestionModel> mQuestionModelList;
     private AnswerCardAdapter mAdapter;
 
+    private Handler mHandler = new Handler();
+
     public static AnswerListFragment getInstance() {
         AnswerListFragment answerListFragment = new AnswerListFragment();
         Bundle args = new Bundle();
@@ -39,16 +42,22 @@ public class AnswerListFragment extends Fragment {
     private void initViews(View contentView) {
         mAnswerListView = contentView.findViewById(R.id.listview);
         mAdapter = new AnswerCardAdapter(getActivity());
-        if(mQuestionModelList!=null){
-            mAdapter.setData(mQuestionModelList);
-        }
         mAnswerListView.setAdapter(mAdapter);
     }
 
     public void resetData(List<QuestionModel> questionModelList) {
+        mQuestionModelList = questionModelList;
         if(mAdapter!=null) {
-            mQuestionModelList = questionModelList;
-            mAdapter.setData(questionModelList);
+            mAdapter.setData(mQuestionModelList);
+        }else {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mAdapter != null) {
+                        mAdapter.setData(mQuestionModelList);
+                    }
+                }
+            }, 500);
         }
     }
 

@@ -2,6 +2,7 @@ package com.tanhd.rollingclass.fragments.resource;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
@@ -35,6 +36,8 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
     private QuestionAdapter mAdapter;
     private ListCallback mListListener;
     private Callback mListener;
+
+    private Handler mHandler = new Handler();
 
     public static QuestionResourceFragment newInstance() {
         QuestionResourceFragment page = new QuestionResourceFragment();
@@ -79,9 +82,18 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
     }
 
     public void setListData(List resourceList) {
-        if (resourceList != null && !resourceList.isEmpty() && mAdapter != null) {
-            mQuestionList = resourceList;
+        mQuestionList = resourceList;
+        if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
+        }else{
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mAdapter != null) {
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            },500);
         }
     }
 

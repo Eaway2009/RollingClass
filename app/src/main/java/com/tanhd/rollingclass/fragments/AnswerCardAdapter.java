@@ -66,16 +66,18 @@ public class AnswerCardAdapter extends BaseAdapter {
         QuestionModel data = (QuestionModel) getItem(position);
         if (data != null && data.context != null) {
             LinearLayout answerLayout = view.findViewById(R.id.answer_layout);
+            LinearLayout answerListLayout = view.findViewById(R.id.answer_list_layout);
             TextView testIndexView = view.findViewById(R.id.test_index);
             testIndexView.setText(data.context.OrderIndex + mDot);
-            for (OptionData option : data.context.Options) {
-                TextView optionView = (TextView) mContext.getLayoutInflater().inflate(R.layout.answer_textview, null);
-                optionView.setText(mClosingCheron + AppUtils.OPTION_NO[option.OrderIndex-1] + mOpeningCheron);
+            for (int i = 0; i < data.context.Options.size(); i++) {
+                OptionData option = data.context.Options.get(i);
+                TextView optionView = (TextView) answerListLayout.getChildAt(i);
+                optionView.setText(mClosingCheron + AppUtils.OPTION_NO[option.OrderIndex - 1] + mOpeningCheron);
                 optionView.setTag(option);
-                if(option.OrderIndex ==data.context.OrderIndex){
+                if (option.OrderIndex == data.context.OrderIndex) {
                     optionView.setTextColor(mContext.getResources().getColor(R.color.button_orange));
                 }
-                answerLayout.addView(optionView);
+                optionView.setVisibility(View.VISIBLE);
             }
         }
         return view;

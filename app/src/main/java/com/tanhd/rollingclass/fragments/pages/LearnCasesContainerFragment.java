@@ -115,9 +115,8 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 
         Bundle args = getArguments();
         args.putSerializable(PARAM_CLASS_DATA, classData);
-        args.putSerializable(PARAM_TEACHING_MATERIALID, teachingMaterialId);
-        args.putSerializable(PARAM_TEACHING_MATERIALID, mClassData);
-
+        args.putString(PARAM_TEACHING_MATERIALID, teachingMaterialId);
+        setArguments(args);
         initParams();
     }
 
@@ -127,7 +126,6 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         if (args.containsKey(PARAM_CLASS_DATA)) {
             mClassData = (ClassData) args.getSerializable(PARAM_CLASS_DATA);
             mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIALID);
-            mKnowledgeId = args.getString(PARAM_KNOWLEDGE_ID);
         }
     }
 

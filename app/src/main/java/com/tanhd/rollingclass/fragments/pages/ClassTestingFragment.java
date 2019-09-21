@@ -75,6 +75,14 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
         return contentView;
     }
 
+    private void initParams() {
+        Bundle args = getArguments();
+        mClassData = (ClassData) args.getSerializable(PARAM_CLASS_DATA);
+        mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIAL_ID);
+        mKnowledgeId = args.getString(PARAM_KNOWLEDGE_ID);
+        mIsResponder = args.getBoolean(PARAM_IS_RESPONDER);
+    }
+
     private void initViews(View view) {
         mSchoolResourceTextView = view.findViewById(R.id.school_resource);
         mMyResourceTextView = view.findViewById(R.id.my_resource);
@@ -104,14 +112,6 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
         });
         getFragmentManager().beginTransaction().replace(R.id.student_select_layout_fragment, mStudentSelectorFragment).commit();
         resetData(KeyConstants.LevelType.SCHOOL_LEVEL);
-    }
-
-    private void initParams() {
-        Bundle args = getArguments();
-        mClassData = (ClassData) args.getSerializable(PARAM_CLASS_DATA);
-        mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIAL_ID);
-        mKnowledgeId = args.getString(PARAM_KNOWLEDGE_ID);
-        mIsResponder = args.getBoolean(PARAM_IS_RESPONDER);
     }
 
 
