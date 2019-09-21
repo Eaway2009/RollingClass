@@ -39,12 +39,17 @@ public class AnswerListFragment extends Fragment {
     private void initViews(View contentView) {
         mAnswerListView = contentView.findViewById(R.id.listview);
         mAdapter = new AnswerCardAdapter(getActivity());
+        if(mQuestionModelList!=null){
+            mAdapter.setData(mQuestionModelList);
+        }
         mAnswerListView.setAdapter(mAdapter);
     }
 
     public void resetData(List<QuestionModel> questionModelList) {
-        mQuestionModelList = questionModelList;
-        mAdapter.setData(questionModelList);
+        if(mAdapter!=null) {
+            mQuestionModelList = questionModelList;
+            mAdapter.setData(questionModelList);
+        }
     }
 
     public void clearListData() {

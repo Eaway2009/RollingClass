@@ -75,6 +75,9 @@ public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelMo
         if (image_set != null) {
             resourceModelList.addAll(image_set);
         }
+        if(question_set!=null&&question_set.size()>0){
+            resourceModelList.add(new ResourceModel(question_set, "习题"));
+        }
         return resourceModelList;
     }
 }

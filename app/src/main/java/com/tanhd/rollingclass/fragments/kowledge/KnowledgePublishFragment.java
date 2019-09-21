@@ -30,13 +30,14 @@ public class KnowledgePublishFragment extends Fragment {
         knowledgePublishFragment.setListener(callback);
         Bundle args = new Bundle();
         args.putInt("Status", status);
+        knowledgePublishFragment.setArguments(args);
         return knowledgePublishFragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_publish, container);
+        View contentView = inflater.inflate(R.layout.fragment_publish, container,false);
         initParams();
         initViews(contentView);
         return contentView;

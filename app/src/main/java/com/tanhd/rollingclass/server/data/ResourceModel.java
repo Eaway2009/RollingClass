@@ -1,5 +1,7 @@
 package com.tanhd.rollingclass.server.data;
 
+import com.tanhd.rollingclass.db.KeyConstants;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceModel extends ResourceBaseModel {
+    public List<QuestionModel> mResourceList;
     public long create_time;
     public long level;
     public String name;
@@ -23,6 +26,14 @@ public class ResourceModel extends ResourceBaseModel {
     public boolean isChecked;
 
     public ArrayList<String> thumbs;
+
+    public ResourceModel(){}
+
+    public ResourceModel(List<QuestionModel> resourceList, String resource_name){
+        resource_type = KeyConstants.ResourceType.QUESTION_TYPE;
+        name = resource_name;
+        mResourceList = resourceList;
+    }
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {

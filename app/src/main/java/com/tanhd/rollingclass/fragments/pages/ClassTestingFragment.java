@@ -40,6 +40,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
     private static final String PARAM_CLASS_DATA = "PARAM_CLASS_DATA";
     private static final String PARAM_TEACHING_MATERIAL_ID = "PARAM_TEACHING_MATERIAL_ID";
     private static final String PARAM_KNOWLEDGE_ID = "PARAM_KNOWLEDGE_ID";
+    private static final String PARAM_IS_RESPONDER = "PARAM_IS_RESPONDER";
     private ClassData mClassData;
     private TextView mSchoolResourceTextView;
     private TextView mPublicResourceTextView;
@@ -52,13 +53,15 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
     private Button mCancelButton;
     private Button mCommitButton;
     private String mKnowledgeId;
+    private boolean mIsResponder;
 
-    public static ClassTestingFragment getInstance(ClassData classData, String teachingMaterialId, String knowledgeId) {
+    public static ClassTestingFragment getInstance(ClassData classData, String teachingMaterialId, String knowledgeId, boolean isResponder) {
         ClassTestingFragment classTestingFragment = new ClassTestingFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(PARAM_CLASS_DATA, classData);
         bundle.putString(PARAM_TEACHING_MATERIAL_ID, teachingMaterialId);
         bundle.putString(PARAM_KNOWLEDGE_ID, teachingMaterialId);
+        bundle.putBoolean(PARAM_IS_RESPONDER, isResponder);
         classTestingFragment.setArguments(bundle);
         return classTestingFragment;
     }
@@ -108,6 +111,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
         mClassData = (ClassData) args.getSerializable(PARAM_CLASS_DATA);
         mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIAL_ID);
         mKnowledgeId = args.getString(PARAM_KNOWLEDGE_ID);
+        mIsResponder = args.getBoolean(PARAM_IS_RESPONDER);
     }
 
 
@@ -195,7 +199,11 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
             HashMap<String, String> params = new HashMap<>();
             params.put("examID", result);
             params.put("teacherID", ExternalParam.getInstance().getUserData().getOwnerID());
-            MyMqttService.publishMessage(PushMessage.COMMAND.QUESTIONING, to, params);
+            if(mIsResponder) {
+                MyMqttService.publishMessage(PushMessage.COMMAND.QUESTIONING, to, params);
+            } else {
+                MyMqttService.publishMessage(PushMessage.COMMAND.RESPONDER, to, params);
+            }
             ExternalParam.getInstance().setQuestionSetID(result);
 //            showFragment(WaitAnswerFragment.newInstance(result));
             dismiss();

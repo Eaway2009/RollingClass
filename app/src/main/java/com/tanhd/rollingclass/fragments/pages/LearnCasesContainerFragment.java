@@ -29,6 +29,7 @@ import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.ImageShowFragment;
+import com.tanhd.rollingclass.fragments.QuestionDisplayFragment;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
 import com.tanhd.rollingclass.fragments.ShowPptFragment;
 import com.tanhd.rollingclass.fragments.VideoPlayerFragment;
@@ -69,7 +70,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private int mCurrentShowModuleId = -1;
     private ShowDocumentFragment mDocumentPageFragment;
     private ShowPptFragment mPptFragment;
-    private QuestionResourceFragment mQuestionFragment;
+    private QuestionDisplayFragment mQuestionFragment;
     private ImageShowFragment mImageFragment;
     private VideoPlayerFragment mVideoPlayerFragment;
     private Fragment mCurrentFragment;
@@ -181,10 +182,13 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         public void onClick(int type, boolean isClick) {
             switch (type) {
                 case ITEM_ANSWER:
+                    if (mClassData != null) {
+                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId,true));
+                    }
                     break;
                 case ITEM_EXRCISE:
                     if (mClassData != null) {
-                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId));
+                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId,false));
                     }
                     break;
                 case ITEM_LOCK:
@@ -291,7 +295,9 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 return mImageFragment;
             case KeyConstants.ResourceType.QUESTION_TYPE:
                 if (mQuestionFragment == null) {
-                    mQuestionFragment = QuestionResourceFragment.newInstance();
+                    mQuestionFragment = QuestionDisplayFragment.getInstance(resourceModel);
+                }else {
+                    mQuestionFragment.resetData(resourceModel);
                 }
                 return mQuestionFragment;
         }

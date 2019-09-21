@@ -140,24 +140,26 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         statusView.setOnClickListener(onClickListener);
 
         StringBuffer publishStatus = new StringBuffer();
-        if (data.class_before == 0 && data.class_process == 0 && data.class_after == 0) {
-            publishStatus.append(mContext.getResources().getString(R.string.not_publish));
-        } else if (data.class_before == 1 && data.class_process == 1 && data.class_after == 1) {
+        if (data.class_before == 1 && data.class_process == 1 && data.class_after == 1) {
             publishStatus.append(mContext.getResources().getString(R.string.class_record));
         } else {
             if (data.class_before == 0) {
                 publishStatus.append(mContext.getResources().getString(R.string.fre_class));
-                publishStatus.append(mContext.getResources().getString(R.string.comma));
             }
             if (data.class_process == 0) {
+                if(publishStatus.length()>0) {
+                    publishStatus.append(mContext.getResources().getString(R.string.comma));
+                }
                 publishStatus.append(mContext.getResources().getString(R.string.at_class));
-                publishStatus.append(mContext.getResources().getString(R.string.comma));
             }
             if (data.class_after == 0) {
+                if(publishStatus.length()>0) {
+                    publishStatus.append(mContext.getResources().getString(R.string.comma));
+                }
                 publishStatus.append(mContext.getResources().getString(R.string.after_class));
             }
-            if(publishStatus.toString().endsWith(mContext.getResources().getString(R.string.comma))) {
-                publishStatus.substring(0, publishStatus.length() - 2);
+            if(publishStatus.toString().startsWith(mContext.getResources().getString(R.string.comma))) {
+                publishStatus.substring(1, publishStatus.length() - 1);
             }
             publishStatus.append(mContext.getResources().getString(R.string.to_publish));
         }
@@ -175,7 +177,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
     }
 
     private void teacherOnclickItem(KnowledgeDetailMessage data){
-        if(data.class_before==1&&data.class_process==1&&data.class_after==1) {
+        if(data.class_process==1) {
             LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, data.teaching_material_id, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
         } else {
             Toast.makeText(mContext.getContext(), R.string.class_on_knowledge_warning, Toast.LENGTH_SHORT).show();

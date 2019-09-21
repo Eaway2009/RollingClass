@@ -194,6 +194,19 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mFinishButton.setOnClickListener(this);
         mKnowledgeNameEditView.setOnClickListener(this);
         mKnowledgeAddButton.setOnClickListener(this);
+        setViewStatus();
+    }
+
+    private void setViewStatus(){
+        if((mStatus==KeyConstants.KnowledgeStatus.FRE_CLASS&&mKnowledgeDetailMessage.class_before ==1)
+                ||(mStatus==KeyConstants.KnowledgeStatus.AT_CLASS&&mKnowledgeDetailMessage.class_process ==1)
+                ||(mStatus==KeyConstants.KnowledgeStatus.AFTER_CLASS&&mKnowledgeDetailMessage.class_after ==1)){
+            mKnowledgeAddButton.setVisibility(View.GONE);
+            mSyncAfterClassCheckBox.setVisibility(View.GONE);
+            mSyncInClassCheckBox.setVisibility(View.GONE);
+            mSyncFreClassCheckBox.setVisibility(View.GONE);
+            mKnowledgeNameEditView.setVisibility(View.GONE);
+        }
     }
 
     private void initData() {
@@ -635,8 +648,9 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         protected void onPostExecute(String resultCode) {
             changeLoading(false);
             if (!TextUtils.isEmpty(resultCode)) {
-                Toast.makeText(getActivity(), R.string.publish_success, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), resultCode, Toast.LENGTH_SHORT).show();
             } else {
+                Toast.makeText(getActivity(), R.string.publish_success, Toast.LENGTH_SHORT).show();
                 mListener.onBack();
             }
         }
@@ -775,36 +789,17 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         deleteView.setOnClickListener(this);
         editView.setTag(questionModel);
         editView.setOnClickListener(this);
+
+        if((mStatus==KeyConstants.KnowledgeStatus.FRE_CLASS&&mKnowledgeDetailMessage.class_before ==1)
+                ||(mStatus==KeyConstants.KnowledgeStatus.AT_CLASS&&mKnowledgeDetailMessage.class_process ==1)
+                ||(mStatus==KeyConstants.KnowledgeStatus.AFTER_CLASS&&mKnowledgeDetailMessage.class_after ==1)){
+            deleteView.setVisibility(View.GONE);
+            editView.setVisibility(View.GONE);
+        }
         resourceLayout.findViewById(R.id.bottom_selector_layout).setVisibility(View.GONE);
         View questionView = resourceLayout.findViewById(R.id.question_fragment);
         QuestionModelFragment.showQuestionModel(getLayoutInflater(), questionView, questionModel);
         resourceLayout.findViewById(R.id.question_fragment).setVisibility(View.VISIBLE);
-        linearLayout.addView(resourceLayout);
-    }
-
-    private void displayAnswer(QuestionModel questionModel, LinearLayout linearLayout) {
-        LinearLayout resourceLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_resource, null);
-        resourceLayout.findViewById(R.id.resource_icon).setVisibility(View.GONE);
-        resourceLayout.findViewById(R.id.task_delete).setVisibility(View.GONE);
-        resourceLayout.findViewById(R.id.task_edit).setVisibility(View.GONE);
-        resourceLayout.findViewById(R.id.bottom_selector_layout).setVisibility(View.GONE);
-
-        TextView answerTextView = resourceLayout.findViewById(R.id.resource_name_view);
-        StringBuffer answerText = new StringBuffer();
-        answerText.append(questionModel.context.OrderIndex + ".");
-        for (OptionData optionData : questionModel.context.Options) {
-            String option = AppUtils.OPTION_NO[optionData.OrderIndex - 1];
-            if (option.equals(questionModel.context.Answer)) {
-                answerText.append("<font color='#FF0000'>");
-            }
-            answerText.append("[");
-            answerText.append(option);
-            answerText.append("]");
-            if (option.equals(questionModel.context.Answer)) {
-                answerText.append("</font>");
-            }
-        }
-        answerTextView.setText(Html.fromHtml(answerText.toString()));
         linearLayout.addView(resourceLayout);
     }
 
@@ -819,6 +814,13 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         editView.setTag(result);
         editView.setOnClickListener(this);
         nameView.setText(result.name);
+
+        if((mStatus==KeyConstants.KnowledgeStatus.FRE_CLASS&&mKnowledgeDetailMessage.class_before ==1)
+                ||(mStatus==KeyConstants.KnowledgeStatus.AT_CLASS&&mKnowledgeDetailMessage.class_process ==1)
+                ||(mStatus==KeyConstants.KnowledgeStatus.AFTER_CLASS&&mKnowledgeDetailMessage.class_after ==1)){
+            deleteView.setVisibility(View.GONE);
+            editView.setVisibility(View.GONE);
+        }
         switch (result.resource_type) {
             case KeyConstants.ResourceType.PPT_TYPE:
                 iconView.setImageResource(R.drawable.ppt_icon);

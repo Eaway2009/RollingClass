@@ -72,6 +72,9 @@ public class AnswerCardAdapter extends BaseAdapter {
                 TextView optionView = (TextView) mContext.getLayoutInflater().inflate(R.layout.answer_textview, null);
                 optionView.setText(mClosingCheron + AppUtils.OPTION_NO[option.OrderIndex-1] + mOpeningCheron);
                 optionView.setTag(option);
+                if(option.OrderIndex ==data.context.OrderIndex){
+                    optionView.setTextColor(mContext.getResources().getColor(R.color.button_orange));
+                }
                 answerLayout.addView(optionView);
             }
         }
