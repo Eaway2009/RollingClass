@@ -10,6 +10,8 @@ import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import org.acra.sender.HttpSender;
+
+import com.bumptech.glide.util.LogTime;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -20,6 +22,8 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.tanhd.rollingclass.utils.Logger;
+import com.tanhd.rollingclass.utils.ScreenUtils;
 
 @ReportsCrashes(
         logcatArguments = { "-t", "1000", "-v", "long", "*:S", "LogEng"},
@@ -67,6 +71,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
         resToastText = R.string.toast_crash
 )
 public class MainApp extends Application {
+    private static final String TAG = "MainApp";
+    
     private static final int THREAD_COUNT = 2;
     private static final int PRIORITY = 2;
     private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024;
@@ -78,7 +84,10 @@ public class MainApp extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        Logger.setDebug(BuildConfig.DEBUG);
         initImageLoader(getApplicationContext());
+        
+        Logger.i(TAG,"分辨率>>>" + ScreenUtils.getScreenHeight(this) + "x" + ScreenUtils.getScreenWidth(this));
     }
 
     @Override
