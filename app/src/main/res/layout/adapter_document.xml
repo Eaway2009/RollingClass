@@ -32,6 +32,8 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:maxLines="5"
+        android:ellipsize="end"
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_16"
