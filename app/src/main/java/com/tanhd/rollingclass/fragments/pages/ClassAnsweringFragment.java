@@ -44,11 +44,17 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
     private String mQuestionSetID;
     private Button mCommitButton;
     private ExamListener mListener;
+    private String mKnowledgeID;
+    private String mKnowledgeName;
+    private int mPageType;
 
-    public static ClassAnsweringFragment getInstance(String teacherID, String questionSetID, ExamListener examListener) {
+    public static ClassAnsweringFragment getInstance(int pageType, String KnowledgeID, String KnowledgeName, String teacherID, String questionSetID, ExamListener examListener) {
         ClassAnsweringFragment classAnsweringFragment = new ClassAnsweringFragment();
         Bundle args = new Bundle();
+        args.putInt("pageType", pageType);
         args.putString("teacherID", teacherID);
+        args.putString("KnowledgeName", KnowledgeName);
+        args.putString("KnowledgeID", KnowledgeID);
         if (questionSetID != null)
             args.putString("questionSetID", questionSetID);
         classAnsweringFragment.setArguments(args);
@@ -68,8 +74,11 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
 
     private void initParams() {
         Bundle args = getArguments();
+        mPageType = args.getInt("pageType");
         mTeacherID = args.getString("teacherID");
         mQuestionSetID = args.getString("questionSetID");
+        mKnowledgeID = args.getString("KnowledgeID");
+        mKnowledgeName = args.getString("KnowledgeName");
     }
 
     private void initViews(View view) {
@@ -78,8 +87,8 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
 
         mQuestionResourceFragment = QuestionResourceFragment.newInstance();
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
-        mAnswerListFragment = AnswerListFragment.getInstance();
-        getFragmentManager().beginTransaction().replace(R.id.student_select_layout_fragment, mAnswerListFragment).commit();
+        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, mKnowledgeID, mKnowledgeName);
+        getFragmentManager().beginTransaction().replace(R.id.answer_fragment, mAnswerListFragment).commit();
     }
 
     private void initData() {
@@ -98,10 +107,8 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
         protected List<QuestionModel> doInBackground(Void... voids) {
             UserData userData = ExternalParam.getInstance().getUserData();
             if (!userData.isTeacher()) {
-                if (questionSetID == null) {
-                    List<QuestionModel> questionList = ScopeServer.getInstance().QureyQuestionSetByKnowledgeID(questionSetID);
-                    return questionList;
-                }
+                List<QuestionModel> questionList = ScopeServer.getInstance().QureyQuestionSetByKnowledgeID(questionSetID);
+                return questionList;
             }
             return null;
         }
@@ -110,7 +117,7 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
         protected void onPostExecute(List<QuestionModel> questionDataList) {
             if (questionDataList != null && questionDataList.size() > 0) {
                 mQuestionResourceFragment.setListData(questionDataList);
-                mAnswerListFragment.resetData(questionDataList);
+                mAnswerListFragment.resetData(questionSetID, questionDataList);
             } else {
                 mQuestionResourceFragment.clearListData();
                 mAnswerListFragment.clearListData();

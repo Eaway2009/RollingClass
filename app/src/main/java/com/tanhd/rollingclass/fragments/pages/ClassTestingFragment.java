@@ -49,7 +49,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
     private List<QuestionModel> mQuestionList;
     private String mTeachingMaterialId;
     private StudentSelectorFragment mStudentSelectorFragment;
-    private List<StudentData> mStudentList;
+    private List<QuestionSetData.Group> mStudentList;
     private Button mCancelButton;
     private Button mCommitButton;
     private String mKnowledgeId;
@@ -60,7 +60,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
         Bundle bundle = new Bundle();
         bundle.putSerializable(PARAM_CLASS_DATA, classData);
         bundle.putString(PARAM_TEACHING_MATERIAL_ID, teachingMaterialId);
-        bundle.putString(PARAM_KNOWLEDGE_ID, teachingMaterialId);
+        bundle.putString(PARAM_KNOWLEDGE_ID, knowledgeId);
         bundle.putBoolean(PARAM_IS_RESPONDER, isResponder);
         classTestingFragment.setArguments(bundle);
         return classTestingFragment;
@@ -106,7 +106,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
 
         mStudentSelectorFragment = StudentSelectorFragment.newInstance(false, null, mClassData, new StudentSelectorFragment.StudentSelectListener() {
             @Override
-            public void onStudentSelected(ArrayList<StudentData> studentList) {
+            public void onStudentSelected(ArrayList<QuestionSetData.Group> studentList) {
                 mStudentList = studentList;
             }
         });
@@ -148,16 +148,16 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
                     Toast.makeText(getActivity(), "请选择需要参与测评的学生",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                new NewSetTask(mQuestionList, mStudentList);
+                new NewSetTask(mQuestionList, mStudentList).execute();
                 break;
         }
     }
     private class NewSetTask extends AsyncTask<List, Void, String> {
-        private List<StudentData> studentList;
+        private List<QuestionSetData.Group> groupList;
         private List<QuestionModel> questionList;
 
-        NewSetTask(List<QuestionModel> questionModelList, List<StudentData> studentDataList){
-            studentList = studentDataList;
+        NewSetTask(List<QuestionModel> questionModelList, List<QuestionSetData.Group> groups){
+            groupList = groups;
             questionList = questionModelList;
         }
 
@@ -174,11 +174,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
                 questionSetData.QuestionList.add(questionData.question_id);
             }
 
-            questionSetData.StudentList = new ArrayList<>();
-            for (int i=0; i<studentList.size(); i++) {
-                StudentData studentData = (StudentData) studentList.get(i);
-                questionSetData.StudentList.add(studentData.StudentID);
-            }
+            questionSetData.groups = groupList;
             questionSetData.knowledge_id = mKnowledgeId;
             questionSetData.class_id = mClassData.ClassID;
             String result = ScopeServer.getInstance().InsertQuestionSet(questionSetData.toJSON().toString());
@@ -187,22 +183,22 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
 
         @Override
         protected void onPostExecute(String result) {
-            if (result == null || studentList == null || studentList.isEmpty()) {
+            if (result == null) {
                 Toast.makeText(getContext().getApplicationContext(), "发起提问失败!", Toast.LENGTH_LONG).show();
                 return;
             }
 
             List<String> to = new ArrayList<>();
-            for (StudentData studentData: studentList) {
-                to.add(studentData.StudentID);
+            for (QuestionSetData.Group group : groupList) {
+                to.addAll(group.students);
             }
             HashMap<String, String> params = new HashMap<>();
             params.put("examID", result);
             params.put("teacherID", ExternalParam.getInstance().getUserData().getOwnerID());
             if(mIsResponder) {
-                MyMqttService.publishMessage(PushMessage.COMMAND.QUESTIONING, to, params);
-            } else {
                 MyMqttService.publishMessage(PushMessage.COMMAND.RESPONDER, to, params);
+            } else {
+                MyMqttService.publishMessage(PushMessage.COMMAND.QUESTIONING, to, params);
             }
             ExternalParam.getInstance().setQuestionSetID(result);
 //            showFragment(WaitAnswerFragment.newInstance(result));

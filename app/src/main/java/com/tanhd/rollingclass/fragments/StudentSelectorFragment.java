@@ -12,13 +12,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.GridView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.ClassData;
-import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.GroupData;
+import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.StudentData;
 
 import java.io.Serializable;
@@ -29,9 +29,10 @@ import java.util.Random;
 
 public class StudentSelectorFragment extends Fragment {
     private ClassData mClassData;
+    private LinearLayout mLayoutView;
 
     public static interface StudentSelectListener {
-        void onStudentSelected(ArrayList<StudentData> studentList);
+        void onStudentSelected(ArrayList<QuestionSetData.Group> studentList);
     }
 
     private static class Args implements Serializable {
@@ -106,14 +107,15 @@ public class StudentSelectorFragment extends Fragment {
                     onStudentCheck();
                 }
             });
-            allAskBtn.setOnClickListener(new View.OnClickListener() {
+            allAskBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
-                public void onClick(View v) {
-                    for(GroupData groupData:mClassData.Groups){
-                        for(StudentData studentData:groupData.StudentList){
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    for (GroupData groupData : mClassData.Groups) {
+                        for (StudentData studentData : groupData.StudentList) {
                             studentData.check = true;
                         }
                     }
+                    notifyDatasChange();
                     onStudentCheck();
                 }
             });
@@ -133,9 +135,9 @@ public class StudentSelectorFragment extends Fragment {
             });
         }
 
-        ViewGroup layoutView = view.findViewById(R.id.layout);
+        mLayoutView = view.findViewById(R.id.layout);
 
-        layoutView.removeAllViews();
+        mLayoutView.removeAllViews();
 
         if (mClassData != null && mClassData.Groups == null) {
             return;
@@ -144,7 +146,7 @@ public class StudentSelectorFragment extends Fragment {
         mAllGroupList.addAll(mClassData.Groups);
         for (int i = 0; i < mClassData.Groups.size(); i++) {
             GroupData groupData = mClassData.Groups.get(i);
-            final ViewGroup viewGroup = (ViewGroup) getLayoutInflater().inflate(R.layout.item_student_selector_group, layoutView, false);
+            ViewGroup viewGroup = (ViewGroup) getLayoutInflater().inflate(R.layout.item_student_selector_group, mLayoutView, false);
             CheckBox groupName = viewGroup.findViewById(R.id.group_name);
             final GridView studentListLayout = viewGroup.findViewById(R.id.student_list_layout);
             groupName.setText(groupData.GroupName);
@@ -164,24 +166,53 @@ public class StudentSelectorFragment extends Fragment {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Integer index = (Integer) buttonView.getTag();
                     GroupData groupData = mClassData.Groups.get(index);
-                    for(StudentData studentData:groupData.StudentList){
+                    for (StudentData studentData : groupData.StudentList) {
                         studentData.check = isChecked;
                     }
+                    notifyDatasChange();
                     onStudentCheck();
                 }
             });
-            StudentAdapter studentAdapter = new StudentAdapter(groupData.StudentList);
+            StudentAdapter studentAdapter = new StudentAdapter(i, groupData.StudentList);
             studentListLayout.setAdapter(studentAdapter);
-            layoutView.addView(viewGroup);
+            mLayoutView.addView(viewGroup);
         }
+    }
+
+    private void notifyDatasChange() {
+        for (int i = 0; i < mLayoutView.getChildCount(); i++) {
+            View groupView = mLayoutView.getChildAt(i);
+            CheckBox groupName = groupView.findViewById(R.id.group_name);
+            if(groupName!=null){
+                int index = (int) groupName.getTag();
+                groupName.setChecked(groupIsChecked(index));
+
+                GridView studentListLayout = groupView.findViewById(R.id.student_list_layout);
+                StudentAdapter studentAdapter = (StudentAdapter) studentListLayout.getAdapter();
+                studentAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    private boolean groupIsChecked(int i){
+        GroupData groupData = mClassData.Groups.get(i);
+        for(StudentData studentData:groupData.StudentList){
+            if(studentData.check==false){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private class StudentAdapter extends BaseAdapter {
 
         List<StudentData> mData;
+        int mIndex;
 
-        public StudentAdapter(List<StudentData> data) {
+        public StudentAdapter(int index, List<StudentData> data) {
             mData = data;
+            mIndex = index;
         }
 
         @Override
@@ -200,6 +231,11 @@ public class StudentSelectorFragment extends Fragment {
         }
 
         @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+        }
+
+        @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = convertView;
             if (view == null) {
@@ -215,6 +251,7 @@ public class StudentSelectorFragment extends Fragment {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     studentData.check = isChecked;
+                    notifyDatasChange();
                     onStudentCheck();
                 }
             });
@@ -223,12 +260,18 @@ public class StudentSelectorFragment extends Fragment {
     }
 
     private void onStudentCheck() {
-        ArrayList arrayList = new ArrayList();
-        for(GroupData groupData:mClassData.Groups){
-            for(StudentData studentData:groupData.StudentList){
-                if(studentData.check){
-                    arrayList.add(studentData);
+        ArrayList<QuestionSetData.Group> arrayList = new ArrayList();
+        for (GroupData groupData : mClassData.Groups) {
+            QuestionSetData.Group group = new QuestionSetData.Group();
+            ArrayList<String> studentList = new ArrayList<>();
+            for (StudentData studentData : groupData.StudentList) {
+                if (studentData.check) {
+                    studentList.add(studentData.StudentID);
                 }
+            }
+            if(studentList.size()>0){
+                group.students = studentList;
+                arrayList.add(group);
             }
         }
         mListener.onStudentSelected(arrayList);

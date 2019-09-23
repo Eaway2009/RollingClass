@@ -91,17 +91,18 @@ public class AnswerDisplayLayout extends LinearLayout {
     private void addModelView(QuestionModel data) {
         View view =  LayoutInflater.from(getContext()).inflate(R.layout.answer_card, null);
         if (data != null && data.context != null) {
-            LinearLayout answerLayout = view.findViewById(R.id.answer_layout);
+            LinearLayout answerLayout = view.findViewById(R.id.answer_list_layout);
             TextView testIndexView = view.findViewById(R.id.test_index);
             testIndexView.setText(data.context.OrderIndex + mDot);
-            for (OptionData option : data.context.Options) {
-                TextView optionView = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.answer_textview, null);
+            for (int i = 0; i < data.context.Options.size(); i++) {
+                OptionData option = data.context.Options.get(i);
+                TextView optionView = (TextView) answerLayout.getChildAt(i);
                 optionView.setText(mClosingCheron + AppUtils.OPTION_NO[option.OrderIndex - 1] + mOpeningCheron);
-                if(option.OrderIndex ==data.context.OrderIndex){
-                    optionView.setTextColor(getResources().getColor(R.color.button_orange));
-                }
                 optionView.setTag(option);
-                answerLayout.addView(optionView);
+                if (option.OrderIndex == data.context.OrderIndex) {
+                    optionView.setTextColor(getContext().getResources().getColor(R.color.button_orange));
+                }
+                optionView.setVisibility(View.VISIBLE);
             }
         }
         mDisplayLayout.addView(view);

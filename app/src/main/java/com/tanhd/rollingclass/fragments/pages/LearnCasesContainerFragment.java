@@ -63,6 +63,8 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 
     private static final String PARAM_CLASS_DATA = "PARAM_CLASS_DATA";
     private static final String PARAM_TEACHING_MATERIALID = "PARAM_TEACHING_MATERIALID";
+    private static final String PARAM_KNOWLEDGE_ID = "PARAM_KNOWLEDGE_ID";
+    private static final String PARAM_KNOWLEDGE_NAME = "PARAM_KNOWLEDGE_NAME";
 
     private PointPopupWindow mPopupWindow1;
     private PointPopupWindow mPopupWindow2;
@@ -86,10 +88,13 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private ClassData mClassData;
     private String mTeachingMaterialId;
     private String mKnowledgeId;
+    private String mKnowledgeName;
 
-    public static LearnCasesContainerFragment newInstance(int typeId, PagesListener listener) {
+    public static LearnCasesContainerFragment newInstance(String knowledgeId, String knowledgeName, int typeId, PagesListener listener) {
         Bundle args = new Bundle();
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, typeId);
+        args.putString(PARAM_KNOWLEDGE_ID, knowledgeId);
+        args.putString(PARAM_KNOWLEDGE_NAME, knowledgeName);
         LearnCasesContainerFragment page = new LearnCasesContainerFragment();
         page.setArguments(args);
         page.setListener(listener);
@@ -111,11 +116,13 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         return view;
     }
 
-    public void setParam(ClassData classData, String teachingMaterialId) {
+    public void setParam(ClassData classData, String teachingMaterialId, String knowledgeId, String knowledgeName) {
 
         Bundle args = getArguments();
         args.putSerializable(PARAM_CLASS_DATA, classData);
         args.putString(PARAM_TEACHING_MATERIALID, teachingMaterialId);
+        args.putString(PARAM_KNOWLEDGE_ID, knowledgeId);
+        args.putString(PARAM_KNOWLEDGE_NAME, knowledgeName);
         setArguments(args);
         initParams();
     }
@@ -126,6 +133,8 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         if (args.containsKey(PARAM_CLASS_DATA)) {
             mClassData = (ClassData) args.getSerializable(PARAM_CLASS_DATA);
             mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIALID);
+            mKnowledgeId = args.getString(PARAM_KNOWLEDGE_ID);
+            mKnowledgeName = args.getString(PARAM_KNOWLEDGE_NAME);
         }
     }
 
@@ -181,12 +190,12 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
             switch (type) {
                 case ITEM_ANSWER:
                     if (mClassData != null) {
-                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId,true));
+                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId, true));
                     }
                     break;
                 case ITEM_EXRCISE:
                     if (mClassData != null) {
-                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId,false));
+                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId, false));
                     }
                     break;
                 case ITEM_LOCK:
@@ -250,6 +259,20 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         showFragment(resourceModel.resource_type, resourceModel);
     }
 
+    public void showExercises(ResourceModel resourceModel,String knowledgeId, String knowledgeName,  String lessonSampleId, String lessonSampleName) {
+        mKnowledgeId = knowledgeId;
+        mKnowledgeName = knowledgeName;
+        if (mQuestionFragment == null) {
+            mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName, lessonSampleId, lessonSampleName);
+        } else {
+            mQuestionFragment.resetData(resourceModel,lessonSampleId, lessonSampleName);
+        }
+        if (mCurrentShowModuleId != KeyConstants.ResourceType.QUESTION_TYPE) {
+            getChildFragmentManager().beginTransaction().replace(R.id.container_layout, mQuestionFragment).commit();
+        }
+        mCurrentShowModuleId = KeyConstants.ResourceType.QUESTION_TYPE;
+    }
+
     /**
      * [展示指定Id的页面]<BR>
      */
@@ -265,7 +288,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         switch (moduleId) {
             case KeyConstants.ResourceType.PPT_TYPE:
                 if (mPptFragment == null) {
-                    mPptFragment = ShowPptFragment.newInstance(getActivity(), resourceModel.pdf_url,resourceModel.thumbs, SYNC_MODE.MASTER);
+                    mPptFragment = ShowPptFragment.newInstance(getActivity(), resourceModel.pdf_url, resourceModel.thumbs, SYNC_MODE.MASTER);
                 } else {
                     mPptFragment.refreshPpt(resourceModel.pdf_url, resourceModel.thumbs);
                 }
@@ -273,7 +296,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
             case KeyConstants.ResourceType.VIDEO_TYPE:
                 if (mVideoPlayerFragment == null) {
                     mVideoPlayerFragment = VideoPlayerFragment.newInstance(resourceModel.resource_id, resourceModel.url);
-                }else{
+                } else {
                     mVideoPlayerFragment.refreshVideo(resourceModel.resource_id, resourceModel.url);
                 }
                 return mVideoPlayerFragment;
@@ -293,8 +316,8 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 return mImageFragment;
             case KeyConstants.ResourceType.QUESTION_TYPE:
                 if (mQuestionFragment == null) {
-                    mQuestionFragment = QuestionDisplayFragment.getInstance(resourceModel);
-                }else {
+                    mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName);
+                } else {
                     mQuestionFragment.resetData(resourceModel);
                 }
                 return mQuestionFragment;

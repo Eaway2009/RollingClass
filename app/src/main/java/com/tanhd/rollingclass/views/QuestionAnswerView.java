@@ -92,19 +92,5 @@ public class QuestionAnswerView extends ScrollView {
             Toast.makeText(getContext().getApplicationContext(), "该题未作答或查找回答失败, 无法发起点评!", Toast.LENGTH_LONG).show();
             return;
         }
-
-        FrameDialog.show(manager, StudentSelectorFragment.newInstance(true, null, new StudentSelectorFragment.StudentSelectListener() {
-            @Override
-            public void onStudentSelected(ArrayList<StudentData> list) {
-                StudentData studentData = list.get(0);
-                HashMap<String, String> params = new HashMap<>();
-                params.put("Question", mQuestionData.toJSON().toString());
-                params.put("Answer", mAnswerData.toJSON().toString());
-                params.put("type", MSG_TYPE.COMMENT_REQUEST.ordinal() + "");
-
-                MyMqttService.publishMessage(PushMessage.COMMAND.MESSAGE, studentData.StudentID, params);
-                Toast.makeText(getContext().getApplicationContext(), "发起点评成功！ 指派点评人：" + studentData.Username, Toast.LENGTH_LONG).show();
-            }
-        }));
     }
 }

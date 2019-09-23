@@ -133,7 +133,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         mAfterClassLearningButton.setOnClickListener(this);
         view.findViewById(R.id.back_button).setOnClickListener(this);
 
-        mLearnCasesContainerFragment = LearnCasesContainerFragment.newInstance(mClassPageType, mPagesListener);
+        mLearnCasesContainerFragment = LearnCasesContainerFragment.newInstance(mKnowledgeId, mKnowledgeDetailName, mClassPageType, mPagesListener);
         getFragmentManager().beginTransaction().replace(R.id.content_layout, mLearnCasesContainerFragment).commit();
         if (mClassPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE) {
             mTvClassBegin.setVisibility(View.GONE);
@@ -226,11 +226,27 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                         mClassData = classData;
                         MyMqttService.subscribe(classData.ClassID);
                         ExternalParam.getInstance().setStatus(2);
+                        ScopeServer.getInstance().UpdateKnowledgeStatus(2, mClassData.ClassID, mKnowledgeId, new RequestCallback() {
+                            @Override
+                            public void onProgress(boolean b) {
+
+                            }
+
+                            @Override
+                            public void onResponse(String body) {
+
+                            }
+
+                            @Override
+                            public void onError(String code, String message) {
+
+                            }
+                        });
                         classData.resetStudentState(0);
                         ExternalParam.getInstance().setClassData(classData);
                         notifyEnterClass(null);
                         if (mLearnCasesContainerFragment != null) {
-                            mLearnCasesContainerFragment.setParam(mClassData, mTeachingMaterialId);
+                            mLearnCasesContainerFragment.setParam(mClassData, mTeachingMaterialId, mKnowledgeId, mKnowledgeDetailName);
                         }
 
                         mTvClassBegin.setVisibility(View.GONE);
@@ -346,7 +362,11 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         KnowledgeLessonSample group = mAdapter.getGroup(groupPosition);
         if (childPosition < group.getChildren().size() && group.getChildren().get(childPosition) != null) {
             ResourceModel item = group.getChildren().get(childPosition);
-            mLearnCasesContainerFragment.showResource(item);
+            if (item.resource_type == KeyConstants.ResourceType.QUESTION_TYPE) {
+                mLearnCasesContainerFragment.showExercises(item, mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name);
+            } else {
+                mLearnCasesContainerFragment.showResource(item);
+            }
             if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassStatus.CLASS_ING) {
                 HashMap<String, String> params = new HashMap<>();
                 params.put(PushMessage.PARAM_LESSON_SAMPLE_ID, group.lesson_sample_id);

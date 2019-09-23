@@ -1,5 +1,7 @@
 package com.tanhd.rollingclass.server.data;
 
+import com.tanhd.rollingclass.server.ScopeServer;
+
 import java.util.List;
 
 public class ExternalParam {

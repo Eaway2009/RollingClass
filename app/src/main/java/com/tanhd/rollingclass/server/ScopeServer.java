@@ -661,11 +661,11 @@ public class ScopeServer extends ServerRequest {
      * @param knowledgeID 课时信息
      * @return
      */
-    public void UpdateKnowledgeStatus(String status, String classID, String knowledgeID, RequestCallback callback) {
+    public void UpdateKnowledgeStatus(int status, String classID, String knowledgeID, RequestCallback callback) {
         HashMap<String, String> params = new HashMap<>();
         params.put("status", "" + status);
-        params.put("classID", "" + classID);
-        params.put("knowledgeID", "" + knowledgeID);
+        params.put("classID", classID);
+        params.put("knowledgeID", knowledgeID);
         params.put("token", mToken);
 
         new RequestTask(getHostUrl() + "/teachingMaterial/UpdateKnowledgeStatus/" + mToken, METHOD.POST, params, null, callback).execute();

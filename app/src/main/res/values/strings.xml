@@ -75,6 +75,7 @@
     <string name="adding_task_warning">当前正在添加任务,请先保存!</string>
     <string name="delete_task_warning">删除后不可恢复，确认删除吗？</string>
     <string name="dialog_tile">温馨提示</string>
+    <string name="commit_answer">提交答案</string>
     <string name="sync_fre_class">同步至课前</string>
     <string name="sync_in_class">同步至课中</string>
     <string name="sync_after_class">同步至课后</string>

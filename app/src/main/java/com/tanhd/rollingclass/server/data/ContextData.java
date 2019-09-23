@@ -1,5 +1,7 @@
 package com.tanhd.rollingclass.server.data;
 
+import com.tanhd.rollingclass.utils.ResultClass;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,6 +18,7 @@ public class ContextData extends BaseJsonClass {
     public int QuestionDisplayId;
     public String Stem;
     public List<OptionData> Options;
+    public ResultClass resultClass;
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {

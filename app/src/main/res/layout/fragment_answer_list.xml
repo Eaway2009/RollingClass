@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/listview"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:divider="@null"
-    android:dividerHeight="0dp">
-</ListView>
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:layout_gravity="center"
+        android:dividerHeight="0dp"></ListView>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <Button
+        android:id="@+id/commit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:text="@string/commit_answer"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColor="@color/white"
+        android:background="@drawable/commit_answer_button"/>
+</LinearLayout>

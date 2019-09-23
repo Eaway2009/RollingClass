@@ -98,7 +98,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private CheckBox mSyncInClassCheckBox;
     private CheckBox mSyncFreClassCheckBox;
     private ProgressBar mProgressBar;
-    private RequestListDataTask mRequestListDataTask;
+
     private List<KnowledgeLessonSample> mDataList;
     private ResourceBaseModel mEditingResourceModel;
     private View mEditingView;
@@ -165,6 +165,32 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mSyncFreClassCheckBox = view.findViewById(R.id.sync_fre_class_cb);
         mSyncInClassCheckBox = view.findViewById(R.id.sync_in_class_cb);
         mSyncAfterClassCheckBox = view.findViewById(R.id.sync_after_class_cb);
+        mSyncFreClassCheckBox.setOnClickListener(this);
+        mSyncInClassCheckBox.setOnClickListener(this);
+        mSyncAfterClassCheckBox.setOnClickListener(this);
+
+        mPublishButton.setOnClickListener(this);
+        mFinishButton.setOnClickListener(this);
+        mKnowledgeNameEditView.setOnClickListener(this);
+        mKnowledgeAddButton.setOnClickListener(this);
+    }
+
+    private void setViewStatus(){
+        if((mStatus==KeyConstants.KnowledgeStatus.FRE_CLASS&&mKnowledgeDetailMessage.class_before ==1)
+                ||(mStatus==KeyConstants.KnowledgeStatus.AT_CLASS&&mKnowledgeDetailMessage.class_process ==1)
+                ||(mStatus==KeyConstants.KnowledgeStatus.AFTER_CLASS&&mKnowledgeDetailMessage.class_after ==1)){
+            mKnowledgeAddButton.setVisibility(View.GONE);
+            mSyncAfterClassCheckBox.setVisibility(View.GONE);
+            mSyncInClassCheckBox.setVisibility(View.GONE);
+            mSyncFreClassCheckBox.setVisibility(View.GONE);
+            mKnowledgeNameEditView.setVisibility(View.GONE);
+        }else{
+            mKnowledgeAddButton.setVisibility(View.VISIBLE);
+            mSyncAfterClassCheckBox.setVisibility(View.VISIBLE);
+            mSyncInClassCheckBox.setVisibility(View.VISIBLE);
+            mSyncFreClassCheckBox.setVisibility(View.VISIBLE);
+            mKnowledgeNameEditView.setVisibility(View.VISIBLE);
+        }
         if (mStatus == KeyConstants.KnowledgeStatus.FRE_CLASS) {
             mSyncFreClassCheckBox.setVisibility(View.GONE);
         }
@@ -180,35 +206,14 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             mSyncFreClassCheckBox.setEnabled(true);
         }
         if (mKnowledgeDetailMessage.class_process == 1) {
-            mSyncFreClassCheckBox.setEnabled(false);
+            mSyncInClassCheckBox.setEnabled(false);
         } else {
-            mSyncFreClassCheckBox.setEnabled(true);
+            mSyncInClassCheckBox.setEnabled(true);
         }
         if (mKnowledgeDetailMessage.class_after == 1) {
-            mSyncFreClassCheckBox.setEnabled(false);
+            mSyncAfterClassCheckBox.setEnabled(false);
         } else {
-            mSyncFreClassCheckBox.setEnabled(true);
-        }
-        mSyncFreClassCheckBox.setOnClickListener(this);
-        mSyncInClassCheckBox.setOnClickListener(this);
-        mSyncAfterClassCheckBox.setOnClickListener(this);
-
-        mPublishButton.setOnClickListener(this);
-        mFinishButton.setOnClickListener(this);
-        mKnowledgeNameEditView.setOnClickListener(this);
-        mKnowledgeAddButton.setOnClickListener(this);
-        setViewStatus();
-    }
-
-    private void setViewStatus(){
-        if((mStatus==KeyConstants.KnowledgeStatus.FRE_CLASS&&mKnowledgeDetailMessage.class_before ==1)
-                ||(mStatus==KeyConstants.KnowledgeStatus.AT_CLASS&&mKnowledgeDetailMessage.class_process ==1)
-                ||(mStatus==KeyConstants.KnowledgeStatus.AFTER_CLASS&&mKnowledgeDetailMessage.class_after ==1)){
-            mKnowledgeAddButton.setVisibility(View.GONE);
-            mSyncAfterClassCheckBox.setVisibility(View.GONE);
-            mSyncInClassCheckBox.setVisibility(View.GONE);
-            mSyncFreClassCheckBox.setVisibility(View.GONE);
-            mKnowledgeNameEditView.setVisibility(View.GONE);
+            mSyncAfterClassCheckBox.setEnabled(true);
         }
     }
 
@@ -220,6 +225,8 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             if (!TextUtils.isEmpty(mKnowledgeDetailMessage.knowledge_id)) {
                 requestData();
             }
+
+            setViewStatus();
         }
     }
 
@@ -709,10 +716,11 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             mDataList = dataList;
 
             if (mDataList != null) {
-
                 mIsEditing = false;
                 getFragmentManager().beginTransaction().remove(mAddTaskFragment);
                 mAddFragmentView.setVisibility(View.GONE);
+                setViewStatus();
+
                 for (KnowledgeLessonSample lessonSample : mDataList) {
                     LinearLayout taskLinearLayout = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.layout_task_added, null);
                     TextView titleTextView = taskLinearLayout.findViewById(R.id.task_title);

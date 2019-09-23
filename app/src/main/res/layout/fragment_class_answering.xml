@@ -5,6 +5,12 @@
     android:orientation="vertical"
     android:padding="30dp">
 
+    <include
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        layout="@layout/fragment_question_display" />
+
     <Button
         android:id="@+id/commit_button"
         android:layout_width="wrap_content"

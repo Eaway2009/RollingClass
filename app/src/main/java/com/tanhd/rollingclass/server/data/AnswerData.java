@@ -15,6 +15,8 @@ public class AnswerData extends BaseJsonClass {
     public String AnswerUserName;
     public long CreateTime;
     public String LessonSampleID;
+    public String KnowledgeID;
+    public String KnowledgeName;
     public String LessonSampleName;
     public String QuestionID;
     public String QuestionName;

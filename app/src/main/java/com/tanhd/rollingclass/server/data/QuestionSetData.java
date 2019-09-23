@@ -15,7 +15,7 @@ public class QuestionSetData extends BaseJsonClass {
     public String LessonSampleID;
     public String SetName;
     public ArrayList<String> QuestionList;
-    public ArrayList<String> StudentList;
+    public List<Group> groups;
     public String TeacherID;
     public String class_id;
     public String knowledge_id;
@@ -23,18 +23,59 @@ public class QuestionSetData extends BaseJsonClass {
     public long UpdateTime;
     public String Remark;
 
+    public static class Group extends BaseJsonClass {
+        String group_name;
+        public List<String> students;
+
+        @Override
+        protected void onDealListField(Object object, Field field, JSONObject json, String key) {
+            super.onDealListField(object, field, json, key);
+            if (key.equals("students")) {
+                JSONArray array = json.optJSONArray(key);
+                if (array == null)
+                    return;
+
+                ArrayList<String> list = new ArrayList<>();
+                for (int i=0; i<array.length(); i++) {
+                    list.add(array.optString(i));
+                }
+                try {
+                    field.set(object, list);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {
-        if (key.equals("QuestionList") || key.equals("StudentList")) {
+        if (key.equals("QuestionList") || key.equals("StudentList") || key.equals("student_list")) {
             try {
                 JSONArray array = new JSONArray(json.optString(key));
                 ArrayList<String> list = new ArrayList<>();
-                for (int i=0; i<array.length(); i++) {
+                for (int i = 0; i < array.length(); i++) {
                     list.add(array.optString(i));
                 }
                 field.set(object, list);
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (key.equals("groups")) {
+            JSONArray array = json.optJSONArray(key);
+            ArrayList<Group> list = new ArrayList<>();
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.optJSONObject(i);
+                Group groupData = new Group();
+                groupData.parse(groupData, obj);
+                list.add(groupData);
+            }
+            try {
+                field.set(object, list);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -47,7 +88,7 @@ public class QuestionSetData extends BaseJsonClass {
             QuestionSetData a = (QuestionSetData) lhs;
             QuestionSetData b = (QuestionSetData) rhs;
 
-            return (int)(b.CreateTime - a.CreateTime);
+            return (int) (b.CreateTime - a.CreateTime);
         }
     }
 

@@ -251,7 +251,20 @@ public class LearnCasesActivity extends BaseActivity {
                     if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
                         String examID = message.parameters.get("examID");
                         final String teacherID = message.parameters.get("teacherID");
-                        FrameDialog.fullShow(getSupportFragmentManager(), ClassAnsweringFragment.getInstance(teacherID, examID, new ClassAnsweringFragment.ExamListener() {
+                        FrameDialog.show(getSupportFragmentManager(), ClassAnsweringFragment.getInstance(mPageType, mKnowledgeId, mKnowledgeName, teacherID, examID, new ClassAnsweringFragment.ExamListener() {
+                            @Override
+                            public void onFinished() {
+                                MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
+                            }
+                        }));
+                    }
+                    break;
+                }
+                case RESPONDER: {
+                    if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
+                        String examID = message.parameters.get("examID");
+                        final String teacherID = message.parameters.get("teacherID");
+                        FrameDialog.show(getSupportFragmentManager(), ClassAnsweringFragment.getInstance(mPageType, mKnowledgeId, mKnowledgeName, teacherID, examID, new ClassAnsweringFragment.ExamListener() {
                             @Override
                             public void onFinished() {
                                 MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);

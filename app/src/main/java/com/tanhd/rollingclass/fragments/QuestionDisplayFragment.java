@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.fragments.pages.AnswerListFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -29,11 +30,32 @@ public class QuestionDisplayFragment extends Fragment {
     private AnswerListFragment mAnswerListFragment;
 
     private ResourceModel mResourceModel;
+    private int mPageType;
+    private String mLessonSampleName;
+    private String mLessonSampleId;
 
-    public static QuestionDisplayFragment getInstance(ResourceModel resourceModel) {
+    public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel,String knowledgeId, String knowledgeName) {
         QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
         Bundle args = new Bundle();
+        args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, typeId);
         args.putSerializable("resourceModel", resourceModel);
+
+        args.putString("KnowledgeID", knowledgeId);
+        args.putString("KnowledgeName", knowledgeName);
+        QuestionDisplayFragment.setArguments(args);
+        return QuestionDisplayFragment;
+    }
+
+    public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel,String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName) {
+        QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
+        Bundle args = new Bundle();
+        args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, typeId);
+        args.putSerializable("resourceModel", resourceModel);
+
+        args.putString("KnowledgeID", knowledgeId);
+        args.putString("KnowledgeName", knowledgeName);
+        args.putString("lessonSampleId", lessonSampleId);
+        args.putString("lessonSampleName", lessonSampleName);
         QuestionDisplayFragment.setArguments(args);
         return QuestionDisplayFragment;
     }
@@ -51,12 +73,15 @@ public class QuestionDisplayFragment extends Fragment {
     private void initParams() {
         Bundle args = getArguments();
         mResourceModel = (ResourceModel) args.getSerializable("resourceModel");
+        mPageType = args.getInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE);
+        mLessonSampleName = args.getString("lessonSampleName");
+        mLessonSampleId = args.getString("lessonSampleId");
     }
 
     private void initViews(View view) {
         mQuestionResourceFragment = QuestionResourceFragment.newInstance();
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
-        mAnswerListFragment = AnswerListFragment.getInstance();
+        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, getArguments().getString("KnowledgeID"), getArguments().getString("KnowledgeName"),mLessonSampleId, mLessonSampleName);
         getFragmentManager().beginTransaction().replace(R.id.answer_fragment, mAnswerListFragment).commit();
     }
 
@@ -66,11 +91,20 @@ public class QuestionDisplayFragment extends Fragment {
             initData();
         }
     }
+
+    public void resetData(ResourceModel resourceModel, String lessonSampleId, String lessonSampleName) {
+        if(resourceModel!=null){
+            mResourceModel = resourceModel;
+            mLessonSampleId = lessonSampleId;
+            mLessonSampleName = lessonSampleName;
+            initData();
+        }
+    }
     private void initData() {
         List<QuestionModel> questionDataList = mResourceModel.mResourceList;
         if (questionDataList != null && questionDataList.size() > 0) {
             mQuestionResourceFragment.setListData(questionDataList);
-            mAnswerListFragment.resetData(questionDataList);
+            mAnswerListFragment.resetData("", questionDataList);
         } else {
             mQuestionResourceFragment.clearListData();
             mAnswerListFragment.clearListData();

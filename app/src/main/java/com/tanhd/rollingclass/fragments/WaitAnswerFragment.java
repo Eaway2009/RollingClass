@@ -186,15 +186,15 @@ public class WaitAnswerFragment extends Fragment {
                 if (mQuestionSetData == null)
                     return -1;
 
-                mStudentList = new ArrayList<>();
-                if (mQuestionSetData.StudentList != null && !mQuestionSetData.StudentList.isEmpty()) {
-                    for (int i=0; i<mQuestionSetData.StudentList.size(); i++) {
-                        String studentID = mQuestionSetData.StudentList.get(i);
-                        StudentData studentData = ExternalParam.getInstance().queryStudent(studentID);
-                        if (studentData != null)
-                            mStudentList.add(studentData);
-                    }
-                }
+//                mStudentList = new ArrayList<>();
+//                if (mQuestionSetData.student_list != null && !mQuestionSetData.student_list.isEmpty()) {
+//                    for (int i=0; i<mQuestionSetData.student_list.size(); i++) {
+//                        String studentID = mQuestionSetData.student_list.get(i);
+//                        StudentData studentData = ExternalParam.getInstance().queryStudent(studentID);
+//                        if (studentData != null)
+//                            mStudentList.add(studentData);
+//                    }
+//                }
             }
 
 

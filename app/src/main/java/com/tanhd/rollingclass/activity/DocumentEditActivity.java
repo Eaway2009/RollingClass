@@ -53,7 +53,7 @@ public class DocumentEditActivity extends BaseActivity implements KnowledgeContr
         intent.putExtra(PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         intent.putExtra(PARAM_KNOWLEDGE_DETAIL_DATA, knowledgeDetailMessage);
         intent.putExtra(PAGE_ID, pageId);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, 0);
     }
 
     @Override
