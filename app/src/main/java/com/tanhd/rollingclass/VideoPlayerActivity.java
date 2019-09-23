@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.Toast;
 
+import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.views.VideoViewEx;
@@ -18,7 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class VideoPlayerActivity extends AppCompatActivity {
+public class VideoPlayerActivity extends BaseActivity {
     private String mMicroCourseID;
     private String mResourceAddr;
     private boolean mCloseFlag = false;

@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity"
-    android:background="@drawable/login_bg">
+    android:background="@mipmap/login_bg">
 
     <CheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="老师登录"
-        android:checked="false"
+        android:checked="true"
         android:visibility="visible"
         android:layout_centerInParent="true"/>
     <LinearLayout
@@ -76,11 +76,15 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:gravity="center"
-        android:layout_toRightOf="@+id/checkbox"
-        android:padding="25dp"
-        android:layout_marginLeft="-60dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/dp_100"
+        android:paddingTop="@dimen/dp_19"
+        android:paddingBottom="@dimen/dp_9"
+        android:paddingLeft="@dimen/dp_20"
+        android:paddingRight="@dimen/dp_20"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_57"
         android:background="@drawable/login_layout_bg"
         android:orientation="vertical">
 
@@ -88,8 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_layout_text"
-            android:textSize="24sp"
-            android:layout_marginTop="25dp"
+            android:textSize="@dimen/text_size_16"
             android:textColor="@color/black" />
 
         <EditText
@@ -97,16 +100,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left|center_vertical"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@drawable/login_edit_bg"
             android:inputType="text"
             android:maxLines="1"
-            android:paddingLeft="10dp"
-            android:drawablePadding="10dp"
+            android:paddingTop="@dimen/dp_7"
+            android:paddingBottom="@dimen/dp_7"
+            android:paddingLeft="@dimen/dp_8"
+            android:drawablePadding="@dimen/dp_10"
             android:drawableLeft="@drawable/login_name_icon"
             android:hint="@string/hint_input_account"
-            android:textColor="@color/login_text_color"
-            android:textSize="16sp"
+            android:textColorHint="@color/login_text_color"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_11"
             android:singleLine="true" />
 
         <EditText
@@ -114,16 +120,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left|center_vertical"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="@dimen/dp_13"
             android:background="@drawable/login_edit_bg"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:maxLines="1"
-            android:paddingLeft="10dp"
-            android:drawablePadding="10dp"
+            android:paddingTop="@dimen/dp_7"
+            android:paddingBottom="@dimen/dp_7"
+            android:paddingLeft="@dimen/dp_8"
+            android:drawablePadding="@dimen/dp_11"
             android:drawableLeft="@drawable/login_password_icon"
             android:hint="@string/hint_input_password"
-            android:textColor="@color/login_text_color"
-            android:textSize="16sp"
+            android:textColorHint="@color/login_text_color"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_10"
             android:singleLine="true" />
 
         <CheckBox
@@ -138,12 +147,12 @@
             android:id="@+id/sign_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="@dimen/dp_11"
             android:layout_gravity="center"
             android:paddingBottom="8dp"
             android:background="@drawable/login_button"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="@dimen/text_size_12"
             android:text="@string/sign_button"/>
 
     </LinearLayout>

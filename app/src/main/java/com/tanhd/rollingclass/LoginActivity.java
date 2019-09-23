@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.StudentData;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     private static final int REQUEST_PERMISSION = 1;
     private static final int REQUEST_TIME = 1;
     private static final String TAG = "LoginActivity";
@@ -226,8 +227,8 @@ public class LoginActivity extends AppCompatActivity {
         CheckBox checkBox = findViewById(R.id.save_pwd);
         checkBox.setChecked(true);
         mUserView.setText(username);
-//        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
-        //findViewById(R.id.sign).callOnClick();
+        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
+        mSignButtonView.performClick();
     }
 
     private class LoginTask extends AsyncTask<Void, Void, Integer> {

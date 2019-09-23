@@ -67,6 +67,9 @@ import java.util.List;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
+/**
+ * 编辑|新增任务
+ */
 public class KnowledgeEditingFragment extends Fragment implements View.OnClickListener, KnowledgeAddTaskFragment.Callback {
 
     public static final String PARAM_KNOWLEDGE_DETAIL_DATA = "PARAM_KNOWLEDGE_DETAIL_DATA";
@@ -77,7 +80,6 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
     private TextView mPublishButton;
     private TextView mFinishButton;
-    private TextView mKnowledgeNameTextView;
     private TextView mKnowledgeNameEditView;
     private EditText mKnowledgeNameEditText;
     private TextView mKnowledgeAddButton;
@@ -100,6 +102,8 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private List<KnowledgeLessonSample> mDataList;
     private ResourceBaseModel mEditingResourceModel;
     private View mEditingView;
+    private boolean isEdit; //是否编辑
+
 
     /**
      * @param knowledgeModel         所属教材章节的参数
@@ -151,7 +155,6 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private void initViews(View view) {
         mPublishButton = view.findViewById(R.id.knowledge_publish_button);
         mFinishButton = view.findViewById(R.id.knowledge_finish_button);
-        mKnowledgeNameTextView = view.findViewById(R.id.knowledge_name);
         mKnowledgeNameEditText = view.findViewById(R.id.knowledge_name_et);
         mKnowledgeNameEditView = view.findViewById(R.id.knowledge_name_edit);
         mKnowledgeTasksLayout = view.findViewById(R.id.knowledge_tasks_layout);
@@ -211,8 +214,9 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
     private void initData() {
         if (mKnowledgeDetailMessage != null) {
+            mKnowledgeNameEditText.setEnabled(false);
+            mKnowledgeNameEditText.setBackgroundResource(R.color.transparent);
             mKnowledgeNameEditText.setText(mKnowledgeDetailMessage.knowledge_point_name);
-            mKnowledgeNameTextView.setText(mKnowledgeDetailMessage.knowledge_point_name);
             if (!TextUtils.isEmpty(mKnowledgeDetailMessage.knowledge_id)) {
                 requestData();
             }
@@ -252,11 +256,15 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                 }
                 break;
             case R.id.knowledge_name_edit:
-                if (mKnowledgeNameTextView.getVisibility() == View.VISIBLE) {
-                    mKnowledgeNameTextView.setVisibility(View.GONE);
+                isEdit = !isEdit;
+
+                if (isEdit) { //是编辑态
                     mKnowledgeNameEditView.setText(R.string.finish);
-                    mKnowledgeNameEditText.setVisibility(View.VISIBLE);
+                    mKnowledgeNameEditText.setEnabled(true);
+                    mKnowledgeNameEditText.setBackgroundResource(R.drawable.edittext_bg);
                 } else {
+                    mKnowledgeNameEditText.setEnabled(false);
+                    mKnowledgeNameEditText.setBackgroundResource(R.color.transparent);
                     editTitle();
                 }
                 break;
@@ -568,11 +576,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
 
             @Override
             public void onResponse(String body) {
-                mKnowledgeNameTextView.setText(mKnowledgeNameEditText.getText());
-
-                mKnowledgeNameTextView.setVisibility(View.VISIBLE);
                 mKnowledgeNameEditView.setText(R.string.edit);
-                mKnowledgeNameEditText.setVisibility(View.INVISIBLE);
             }
 
             @Override

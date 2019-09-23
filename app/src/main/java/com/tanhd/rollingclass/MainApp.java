@@ -87,7 +87,7 @@ public class MainApp extends Application {
         Logger.setDebug(BuildConfig.DEBUG);
         initImageLoader(getApplicationContext());
         
-        Logger.i(TAG,"分辨率>>>" + ScreenUtils.getScreenHeight(this) + "x" + ScreenUtils.getScreenWidth(this));
+        Logger.i(TAG,"分辨率>>>" + ScreenUtils.getScreenHeight(this) + "x" + ScreenUtils.getScreenWidth(this) + "|sw:" + getString(R.string.base_dpi));
     }
 
     @Override

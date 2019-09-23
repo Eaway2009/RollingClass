@@ -19,6 +19,9 @@ import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 
+/**
+ * 新建学案-课前
+ */
 public class KnowledgeNoneFragment extends Fragment implements View.OnClickListener {
 
     private KnowledgeModel mKnowledgeModel;
@@ -68,7 +71,7 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.knowledge_add_button:
+            case R.id.knowledge_add_button:     //添加任务
                 onClickAddTask();
                 break;
         }

@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="12dp"
+    android:layout_marginTop="@dimen/dp_12"
+    android:layout_marginBottom="@dimen/dp_12"
     android:orientation="vertical">
 
     <TextView
@@ -15,7 +16,7 @@
         android:paddingLeft="15dp"
         android:paddingTop="8dp"
         android:textColor="@color/knowledge_text"
-        android:textSize="20dp"
+        android:textSize="@dimen/text_size_18"
         tools:text="文档" />
     <LinearLayout
         android:id="@+id/files_display_layout"

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.ImageShowFragment;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
@@ -16,7 +17,7 @@ import com.tanhd.rollingclass.server.data.ResourceModel;
 
 import java.io.Serializable;
 
-public class ResourceShowActivity extends AppCompatActivity {
+public class ResourceShowActivity extends BaseActivity {
 
     private static final String PAGE_RESOURCE = "PAGE_RESOURCE";
     private ResourceModel mResourceModel;

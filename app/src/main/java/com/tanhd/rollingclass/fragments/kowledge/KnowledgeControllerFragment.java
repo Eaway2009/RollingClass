@@ -16,6 +16,9 @@ import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 
+/**
+ * 课前 课中 课后
+ */
 public class KnowledgeControllerFragment extends Fragment implements View.OnClickListener, KnowledgeNoneFragment.Callback, KnowledgeEditingFragment.Callback {
 
     private static final int MODULE_ID_NEW_KNOWLEDGE = 1;

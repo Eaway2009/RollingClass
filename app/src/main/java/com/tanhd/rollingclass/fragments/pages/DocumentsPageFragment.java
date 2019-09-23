@@ -1,41 +1,32 @@
 package com.tanhd.rollingclass.fragments.pages;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
-import com.tanhd.rollingclass.db.Document;
-import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
-import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.StudentData;
-import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
-import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.DocumentAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
 /**
- * 备课页面
+ * 备课页面 ---学案
  */
 public class DocumentsPageFragment extends Fragment implements View.OnClickListener, DocumentAdapter.Callback {
 

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.db.Message;
 import com.tanhd.rollingclass.fragments.ChatFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
@@ -15,7 +16,10 @@ import com.tanhd.rollingclass.fragments.InBoxFragment;
 import com.tanhd.rollingclass.fragments.ShowPageFragment;
 import com.tanhd.rollingclass.views.TopbarView;
 
-public class DatasActivity extends AppCompatActivity {
+/**
+ * 数据主要页
+ */
+public class DatasActivity extends BaseActivity {
 
     private static final String TAG = "DatasActivity";
     private TopbarView mTopbarView;

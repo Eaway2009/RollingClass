@@ -3,30 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/chapter_menu_background"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/teaching_material_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/teaching_material_icon"
-        android:drawablePadding="10dp"
+        android:drawablePadding="@dimen/dp_5"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
         android:paddingLeft="12dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="@dimen/dp_28"
+        android:paddingBottom="@dimen/dp_10"
+        android:singleLine="true"
+        tools:text="人教版——数学人教版——数学人教版——数学"
         android:textColor="@color/chapter_menu_text"
-        android:visibility="visible"
-        android:textSize="18sp"
-        android:text="人教版——数学" />
+        android:textSize="@dimen/text_size_16"
+        android:visibility="visible" />
 
-    <ExpandableListView
-        android:id="@+id/expandable_listview"
+    <!--    <ExpandableListView-->
+    <!--        android:id="@+id/expandable_listview"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:divider="@null"-->
+    <!--        android:indicatorStart="15dp"-->
+    <!--        android:indicatorLeft="10dp"-->
+    <!--        android:indicatorRight="20dp"-->
+    <!--        android:scrollbars="none" />-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@null"
-        android:indicatorStart="15dp"
-        android:indicatorLeft="10dp"
-        android:indicatorRight="20dp"
+        android:overScrollMode="never"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         android:scrollbars="none" />
+
 </LinearLayout>

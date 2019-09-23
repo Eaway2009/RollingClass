@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.db.Message;
 import com.tanhd.rollingclass.fragments.ChatFragment;
 import com.tanhd.rollingclass.fragments.CountClassFragment;
@@ -14,7 +15,7 @@ import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.InBoxFragment;
 import com.tanhd.rollingclass.views.TopbarView;
 
-public class StatisticsActivity extends AppCompatActivity {
+public class StatisticsActivity extends BaseActivity {
 
     private static final String TAG = "StatisticsActivity";
     private TopbarView mTopbarView;

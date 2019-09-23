@@ -7,7 +7,7 @@
 
     <FrameLayout
         android:id="@+id/fragment_chapter_menu"
-        android:layout_width="260dp"
+        android:layout_width="@dimen/dp_210"
         android:layout_height="match_parent" />
 
     <LinearLayout
@@ -19,18 +19,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/title_bar_background"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp">
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10">
 
             <TextView
                 android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:drawableLeft="@drawable/back_icon"
-                android:drawablePadding="10dp"
-                android:textSize="16sp"
+                android:padding="@dimen/dp_14"
+                android:textColor="#989898"
+                android:drawableLeft="@mipmap/back_icon"
+                android:drawablePadding="@dimen/dp_8"
+                android:textSize="@dimen/text_size_11"
                 android:text="@string/back" />
 
             <LinearLayout
@@ -38,8 +39,8 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:background="@drawable/black_round_bg"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
+                android:paddingTop="@dimen/dp_6"
+                android:paddingBottom="@dimen/dp_6"
                 android:gravity="center_vertical">
 
                 <TextView
@@ -47,25 +48,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingLeft="@dimen/dp_15"
+                    android:paddingRight="@dimen/dp_20"
                     android:drawableLeft="@drawable/document_selector"
-                    android:drawablePadding="3dp"
+                    android:drawablePadding="@dimen/dp_6"
                     android:enabled="false"
                     android:gravity="center_vertical"
                     android:text="@string/document_title"
                     android:textColor="@color/white"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/text_size_15" />
 
                 <TextView
                     android:id="@+id/resource_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingRight="@dimen/dp_20"
                     android:drawableLeft="@drawable/resource_selector"
-                    android:drawablePadding="3dp"
+                    android:drawablePadding="@dimen/dp_6"
                     android:gravity="center_vertical"
                     android:text="@string/resource_title"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/text_size_15"
                     android:visibility="visible" />
 
                 <TextView
@@ -73,12 +77,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingRight="@dimen/dp_14"
                     android:drawableLeft="@drawable/statistics_selector"
-                    android:drawablePadding="3dp"
+                    android:drawablePadding="@dimen/dp_6"
                     android:gravity="center_vertical"
                     android:text="@string/statistics_title"
                     android:textColor="@color/white"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/text_size_15" />
             </LinearLayout>
         </RelativeLayout>
 

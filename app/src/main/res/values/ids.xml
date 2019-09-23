@@ -7,4 +7,6 @@
     <item name="server_test" type="id" />
     <item name="show_bar" type="id" />
     <item name="hide_bar" type="id" />
+    <item name="statusbarutil_fake_status_bar_view" type="id"/>
+    <item name="statusbarutil_translucent_view" type="id"/>
 </resources>

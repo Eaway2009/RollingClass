@@ -20,7 +20,7 @@
         android:background="@drawable/document_status_selector"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="21sp"
+        android:textSize="@dimen/text_size_12"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
         tools:text="课前课后未发布" />
@@ -34,9 +34,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="26sp"
-        tools:text="勾股定理" />
-
+        android:textSize="@dimen/text_size_16"
+        tools:text="勾股定理"/>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -56,7 +55,7 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:padding="5dp"
-                android:textSize="18dp"
+                android:textSize="@dimen/text_size_12"
                 tools:text="2019年7月28日" />
 
             <ImageView
@@ -75,34 +74,37 @@
             android:layout_alignParentBottom="true"
             android:gravity="center_vertical|right"
             android:background="@drawable/document_adapter_bottom"
-            android:paddingRight="10dp"
-            android:visibility="gone">
+            android:paddingRight="@dimen/dp_10"
+            android:paddingLeft="@dimen/dp_10"
+            tools:visibility="visible"
+            android:visibility="invisible">
             <ImageView
                 android:id="@+id/more_copy_iv"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:layout_marginRight="4dp"
+                android:padding="@dimen/dp_8"
                 android:src="@drawable/copy"/>
             <ImageView
                 android:id="@+id/more_share_iv"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:layout_marginRight="4dp"
+                android:padding="@dimen/dp_8"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:src="@drawable/share"/>
             <ImageView
                 android:id="@+id/more_edit_iv"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:layout_marginRight="4dp"
+                android:padding="@dimen/dp_8"
                 android:src="@drawable/edit"/>
             <ImageView
                 android:id="@+id/more_delete_iv"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
+                android:padding="@dimen/dp_8"
                 android:src="@drawable/delete"/>
         </LinearLayout>
     </FrameLayout>

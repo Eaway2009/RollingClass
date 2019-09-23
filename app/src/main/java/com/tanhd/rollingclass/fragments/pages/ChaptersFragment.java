@@ -5,31 +5,43 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.db.model.Course;
 import com.tanhd.rollingclass.server.data.ChaptersResponse;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.ChaptersAdapter;
+import com.tanhd.rollingclass.views.ChaptersAdapter2;
+import com.tanhd.rollingclass.views.MultiItemEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChaptersFragment extends Fragment implements ExpandableListView.OnChildClickListener {
-    private ExpandableListView mExpandableListView;
-    private ChaptersAdapter mAdapter;
+/**
+ * 左侧-年级类别等
+ */
+public class ChaptersFragment extends Fragment implements ChaptersAdapter2.SelectListener {
+    //private ExpandableListView mExpandableListView;
+    private RecyclerView recyclerView;
+    //    private ChaptersAdapter mAdapter;
+    private ChaptersAdapter2 mAdapter;
     private ChapterListener mListener;
     private UserData userData;
     private TeacherData teacherData;
     private StudentData studentData;
+    private TextView teaching_material_name;
 
     public static ChaptersFragment newInstance(ChaptersFragment.ChapterListener listener) {
         ChaptersFragment page = new ChaptersFragment();
@@ -58,23 +70,30 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
     }
 
     private void iniViews(View view) {
-        mExpandableListView = view.findViewById(R.id.expandable_listview);
-        mAdapter = new ChaptersAdapter(getActivity());
-        mExpandableListView.setVerticalScrollBarEnabled(false);
-        mExpandableListView.setGroupIndicator(null);
-        mExpandableListView.setHeaderDividersEnabled(false);
-        mExpandableListView.setAdapter(mAdapter);
-        mExpandableListView.setOnChildClickListener(this);
+        recyclerView = view.findViewById(R.id.rv);
+
+//        mAdapter = new ChaptersAdapter(getActivity());
+        mAdapter = new ChaptersAdapter2(getActivity());
+//        mExpandableListView.setVerticalScrollBarEnabled(false);
+//        mExpandableListView.setGroupIndicator(null);
+//        mExpandableListView.setHeaderDividersEnabled(false);
+//        mExpandableListView.setAdapter(mAdapter);
+//        mExpandableListView.setOnChildClickListener(this);
+        mAdapter.setSelectListener(this);
+        recyclerView.setAdapter(mAdapter);
+
+        teaching_material_name = view.findViewById(R.id.teaching_material_name);
+        teaching_material_name.setSelected(true);
     }
 
     public void refreshData() {
         new InitDataTask().execute();
     }
 
-    private class InitDataTask extends AsyncTask<Void, Void, List<ChaptersResponse.Chapter>> {
+    private class InitDataTask extends AsyncTask<Void, Void, List<ChaptersResponse>> {
 
         @Override
-        protected List<ChaptersResponse.Chapter> doInBackground(Void... voids) {
+        protected List<ChaptersResponse> doInBackground(Void... voids) {
             userData = ExternalParam.getInstance().getUserData();
             List<ChaptersResponse> responseList;
             if (userData.isTeacher()) {
@@ -84,14 +103,12 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
                 studentData = (StudentData) userData.getUserData();
                 responseList = ScopeServer.getInstance().QueryTeachingMaterialByGradeID(studentData.SchoolID, studentData.GradeID);
             }
-            return getChapterDatas(responseList);
+            return responseList;
         }
 
         @Override
-        protected void onPostExecute(List<ChaptersResponse.Chapter> chapterList) {
-            mAdapter.setDataList(chapterList);
-            mAdapter.notifyDataSetChanged();
-            if (mAdapter.getGroupCount() == 0) {
+        protected void onPostExecute(List<ChaptersResponse> chapterList) {
+            if (chapterList == null || chapterList.isEmpty()) {
                 try {
                     Toast.makeText(getActivity().getApplicationContext(), "没有找到章节!", Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
@@ -99,22 +116,55 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
                 return;
             }
 
-            // 将第一章设置成默认展开,设置默认选中第一节
-            ChaptersResponse.Chapter chapter = mAdapter.getGroup(0);
-            if (mAdapter.getGroupCount() > 0 && chapter != null) {
-                mExpandableListView.expandGroup(0);
-                if (chapter.getChildren().size() > 0) {
-                    mAdapter.resetCheckItem(0, 0);
-                    ChaptersResponse.Section section = chapter.getChildren().get(0);
-                    if (mListener != null) {
-                        if (teacherData != null) {
-                            mListener.onTeacherCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chapter.teachingMaterial.SubjectCode, chapter.teachingMaterial.SubjectName, section.TeachingMaterialID);
-                        } else if (studentData != null) {
-                            mListener.onTeacherCheckChapter(studentData.SchoolID, studentData.ClassID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chapter.teachingMaterial.SubjectCode, chapter.teachingMaterial.SubjectName, section.TeachingMaterialID);
+            //数据请求成功
+            List<MultiItemEntity> list = new ArrayList<>();
+            for (ChaptersResponse chaptersResponse : chapterList) { //1
+                Course course = new Course();
+                course.setGradeName(chaptersResponse.GradeName);
+
+                if (chaptersResponse.Chapters != null) { //2
+                    for (ChaptersResponse.Chapter chaptersBean : chaptersResponse.Chapters) {
+                        Course.ChaptersBean cc = new Course.ChaptersBean();
+                        cc.setChapterName(chaptersBean.ChapterName);
+                        course.addSubItem(cc);
+
+                        if (chaptersBean.Sections != null) {
+                            for (ChaptersResponse.Section sectionsBean : chaptersBean.Sections) {
+                                Course.ChaptersBean.SectionsBean ccs = new Course.ChaptersBean.SectionsBean();
+                                ccs.setSectionName(sectionsBean.SectionName);
+
+                                String schollId = teacherData != null ? teacherData.SchoolID : studentData.SchoolID;
+                                String teacherId = teacherData != null ? teacherData.TeacherID : studentData.ClassID;
+                                KnowledgeModel knowledgeModel = new KnowledgeModel(schollId, teacherId, chaptersBean.ChapterID, chaptersBean.ChapterName, sectionsBean.SectionID, sectionsBean.SectionName, chaptersResponse.SubjectCode, chaptersResponse.SubjectName, sectionsBean.TeachingMaterialID, "");
+                                ccs.setKnowledgeModel(knowledgeModel);
+                                cc.addSubItem(ccs);
+                            }
                         }
                     }
                 }
-                mAdapter.notifyDataSetChanged();
+                list.add(course);
+            }
+
+            mAdapter.setDataList(list);
+            mAdapter.expandAllOne(0, false, false);
+
+            // 将第一章设置成默认展开,设置默认选中第一节
+            ChaptersResponse chaptersResponse = chapterList.get(0);
+            if (chaptersResponse != null && chaptersResponse.Chapters != null && chaptersResponse.Chapters.size() > 0) {
+                //mExpandableListView.expandGroup(0);
+                teaching_material_name.setText(chaptersResponse.TeachingMaterialName + "——" + chaptersResponse.StudySectionName + "-" + chaptersResponse.SubjectName);
+
+                if (chaptersResponse.Chapters != null && !chaptersResponse.Chapters.isEmpty()) {
+                    ChaptersResponse.Chapter chapter = chaptersResponse.Chapters.get(0);
+                    ChaptersResponse.Section section = chapter.Sections.get(0);
+                    if (mListener != null) {
+                        if (teacherData != null) {
+                            mListener.onTeacherCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chaptersResponse.SubjectCode, chaptersResponse.SubjectName, section.TeachingMaterialID);
+                        } else if (studentData != null) {
+                            mListener.onTeacherCheckChapter(studentData.SchoolID, studentData.ClassID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chaptersResponse.SubjectCode, chaptersResponse.SubjectName, section.TeachingMaterialID);
+                        }
+                    }
+                }
             }
         }
     }
@@ -130,7 +180,7 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
                 if (chaptersResponse.Chapters != null && chaptersResponse.Chapters.size() > 0) {
                     for (int j = 0; j < chaptersResponse.Chapters.size(); j++) {
                         ChaptersResponse.Chapter chapter = chaptersResponse.Chapters.get(j);
-                        if(j==0) {
+                        if (j == 0) {
                             chapter.teachingMaterial = teachingMaterial;
                         }
                         lastChapters.add(chapter);
@@ -142,26 +192,11 @@ public class ChaptersFragment extends Fragment implements ExpandableListView.OnC
     }
 
     @Override
-    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        ChaptersResponse.Chapter chapter = mAdapter.getGroup(groupPosition);
-        if (chapter != null && chapter.getChildren() != null) {
-            if (childPosition < mAdapter.getGroup(groupPosition).getChildren().size()) {
-                for (int i = 0; i < mAdapter.getGroupCount(); i++) {
-                    mExpandableListView.collapseGroup(i);
-                }
-                mExpandableListView.expandGroup(groupPosition);
-                mAdapter.resetCheckItem(groupPosition, childPosition);
-                ChaptersResponse.Section section = mAdapter.getGroup(groupPosition).getChildren().get(childPosition);
-                if (mListener != null) {
-                    if (teacherData != null) {
-                        mListener.onTeacherCheckChapter(teacherData.SchoolID, teacherData.TeacherID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chapter.teachingMaterial.SubjectCode, chapter.teachingMaterial.SubjectName, section.TeachingMaterialID);
-                    } else if (studentData != null) {
-                        mListener.onTeacherCheckChapter(studentData.SchoolID, studentData.ClassID, chapter.ChapterID, chapter.ChapterName, section.SectionID, section.SectionName, chapter.teachingMaterial.SubjectCode, chapter.teachingMaterial.SubjectName, section.TeachingMaterialID);
-                    }
-                }
-            }
+    public void select(View view, int pos, Course.ChaptersBean.SectionsBean item) {
+        KnowledgeModel kd = item.getKnowledgeModel();
+        if (mListener != null && kd != null) {
+            mListener.onTeacherCheckChapter(kd.school_id, kd.teacher_id, kd.chapter_id, kd.chapter_name, kd.section_id, kd.section_name, kd.subject_code, kd.subject_name,kd.teaching_material_id);
         }
-        return false;
     }
 
     public interface ChapterListener {

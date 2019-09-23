@@ -4,46 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-
     <TextView
-        android:id="@+id/teaching_material_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:paddingLeft="12dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="10dp"
-        android:textColor="@color/chapter_menu_text"
-        android:textSize="18sp"
-        android:visibility="visible"
-        tools:text="七年级上" />
-
-    <LinearLayout
+        android:id="@+id/tv_material_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="30dp"
-        android:paddingLeft="25dp"
-        android:paddingTop="8dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="8dp">
-
-        <ImageView
-            android:id="@+id/expand_imageview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="8dp"
-            android:src="@drawable/chapter_selector" />
-
-        <TextView
-            android:id="@+id/chapter_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:textColor="@color/chapter_menu_text"
-            android:textSize="16sp"
-            tools:text="第一章" />
-    </LinearLayout>
+        android:textColor="@color/chapter_menu_text"
+        android:paddingTop="@dimen/dp_15"
+        android:paddingBottom="@dimen/dp_15"
+        android:paddingLeft="@dimen/dp_35"
+        android:textSize="@dimen/text_size_16"
+        android:visibility="visible"
+        tools:text="七年级上" />
 </LinearLayout>

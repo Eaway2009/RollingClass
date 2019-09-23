@@ -1,23 +1,25 @@
 package com.tanhd.rollingclass.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
-import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.db.Message;
 import com.tanhd.rollingclass.fragments.ChatFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.InBoxFragment;
 import com.tanhd.rollingclass.fragments.kowledge.KnowledgeControllerFragment;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.views.TopbarView;
 
-public class DocumentEditActivity extends AppCompatActivity implements KnowledgeControllerFragment.Callback {
+/**
+ * 新建or编辑学案
+ */
+public class DocumentEditActivity extends BaseActivity implements KnowledgeControllerFragment.Callback {
 
     private static final String TAG = "DocumentEditActivity";
 

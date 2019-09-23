@@ -47,6 +47,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * 老师
+ */
 public class TeacherFragment extends Fragment implements View.OnClickListener {
     private BackListener mListener;
     private ImageView mClassPageView;
@@ -154,13 +157,13 @@ public class TeacherFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.class_page_view:
+            case R.id.class_page_view: //备课
                 DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_DOCUMENTS);
                 break;
-            case R.id.resource_page_view:
+            case R.id.resource_page_view: //资源
                 DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_RESOURCES);
                 break;
-            case R.id.statics_page_view:
+            case R.id.statics_page_view: //学情况
                 DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_STATISTICS);
                 break;
         }

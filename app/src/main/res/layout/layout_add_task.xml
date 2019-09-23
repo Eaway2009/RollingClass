@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_add_task"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,29 +9,35 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/task_light_frame"
+        android:background="@drawable/task_light_frame_top"
         android:gravity="center_vertical"
         android:paddingLeft="12dp"
         android:paddingTop="8dp"
         android:paddingRight="12dp"
-        android:paddingBottom="8dp">
+        android:paddingBottom="@dimen/dp_10">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/enter_task_name"
+            android:textStyle="normal"
             android:textColor="@color/knowledge_add_title"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_size_15" />
 
         <EditText
             android:id="@+id/task_name_et"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_130"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:background="@drawable/task_name_edit_bg"
-            android:paddingLeft="4dp"
-            android:textColor="@color/knowledge_add_title"
-            android:textSize="12sp" />
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_5"
+            android:hint="任务一"
+            android:paddingBottom="@dimen/dp_5"
+            android:textColorHint="#333B3B3B"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_12" />
 
         <RadioGroup
             android:id="@+id/edit_type_rg"
@@ -71,6 +78,7 @@
         android:background="@drawable/task_dark_frame"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        tools:visibility="visible"
         android:visibility="gone">
 
         <ImageView
@@ -131,19 +139,18 @@
         android:id="@+id/upload_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/task_dark_frame"
-        android:paddingLeft="10dp"
+        android:background="@drawable/task_light_frame_bottom"
+        android:paddingLeft="@dimen/dp_68"
         android:paddingRight="10dp">
 
         <TextView
             android:id="@+id/upload_ppt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:drawableLeft="@drawable/upload_ppt"
-            android:drawablePadding="12dp"
+            android:drawableTop="@drawable/upload_ppt"
+            android:drawablePadding="@dimen/dp_6"
+            android:padding="@dimen/dp_6"
             android:gravity="center"
-            android:padding="8dp"
             android:text="@string/ppt"
             android:textColor="@color/frame_upload_text" />
 
@@ -151,11 +158,11 @@
             android:id="@+id/upload_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:drawableLeft="@drawable/upload_video"
-            android:drawablePadding="8dp"
+            android:drawableTop="@drawable/upload_video"
+            android:layout_marginLeft="@dimen/dp_55"
+            android:drawablePadding="@dimen/dp_6"
+            android:padding="@dimen/dp_6"
             android:gravity="center"
-            android:padding="8dp"
             android:text="@string/micro_course"
             android:textColor="@color/frame_upload_text" />
 
@@ -163,11 +170,11 @@
             android:id="@+id/upload_exercises"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:drawableLeft="@drawable/upload_exercises"
-            android:drawablePadding="8dp"
+            android:layout_marginLeft="@dimen/dp_55"
+            android:drawablePadding="@dimen/dp_6"
+            android:padding="@dimen/dp_6"
+            android:drawableTop="@drawable/upload_xiti"
             android:gravity="center"
-            android:padding="8dp"
             android:text="@string/exercises"
             android:textColor="@color/frame_upload_text" />
 
@@ -175,11 +182,11 @@
             android:id="@+id/upload_documents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:drawableLeft="@drawable/upload_document"
-            android:drawablePadding="8dp"
+            android:drawableTop="@drawable/upload_document"
             android:gravity="center"
-            android:padding="8dp"
+            android:layout_marginLeft="@dimen/dp_55"
+            android:drawablePadding="@dimen/dp_6"
+            android:padding="@dimen/dp_6"
             android:text="@string/documents"
             android:textColor="@color/frame_upload_text" />
 
@@ -187,11 +194,11 @@
             android:id="@+id/upload_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:drawableLeft="@drawable/upload_photo"
-            android:drawablePadding="8dp"
+            android:layout_marginLeft="@dimen/dp_55"
+            android:drawablePadding="@dimen/dp_6"
+            android:padding="@dimen/dp_6"
+            android:drawableTop="@drawable/upload_photo"
             android:gravity="center"
-            android:padding="8dp"
             android:text="@string/photo"
             android:textColor="@color/frame_upload_text" />
     </LinearLayout>
@@ -223,17 +230,19 @@
             android:background="@drawable/task_add_cancel_button"
             android:gravity="center"
             android:text="@string/cancel"
+            android:textSize="@dimen/text_size_12"
             android:textColor="@color/frame_cancel_text" />
 
         <TextView
             android:id="@+id/task_add_save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="@dimen/dp_24"
             android:layout_marginRight="30dp"
             android:background="@drawable/task_add_save_button"
             android:gravity="center"
             android:text="@string/save"
+            android:textSize="@dimen/text_size_12"
             android:textColor="@color/white" />
     </LinearLayout>
 

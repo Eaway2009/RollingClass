@@ -16,9 +16,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:padding="10dp"
-            android:drawablePadding="8dp"
-            android:drawableLeft="@drawable/back_icon"
+            android:padding="@dimen/dp_14"
+            android:textColor="#989898"
+            android:drawableLeft="@mipmap/back_icon"
+            android:drawablePadding="@dimen/dp_8"
+            android:textSize="@dimen/text_size_11"
             android:text="@string/back" />
 
         <RelativeLayout
@@ -26,11 +28,15 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/black_round_bg"
+            android:paddingLeft="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_7"
+            android:paddingBottom="@dimen/dp_7"
             android:gravity="center">
 
             <View
                 android:id="@+id/white_line"
-                android:layout_width="230dp"
+                android:layout_width="@dimen/dp_275"
                 android:layout_height="3dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/white_line"/>
@@ -39,14 +45,12 @@
                 android:id="@+id/fre_class_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/white_line"
                 android:background="@drawable/knowledge_icon_selector"
-                android:layout_marginRight="-2dp"
                 android:enabled="false"
                 android:gravity="center"
                 android:text="@string/fre_class"
                 android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/at_class_item"
@@ -57,19 +61,19 @@
                 android:background="@drawable/knowledge_icon_selector"
                 android:text="@string/at_class"
                 android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textSize="@dimen/text_size_12" />
 
             <TextView
                 android:id="@+id/after_class_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/white_line"
+                android:layout_alignRight="@+id/white_line"
                 android:layout_marginLeft="-2dp"
                 android:background="@drawable/knowledge_icon_selector"
                 android:gravity="center"
                 android:text="@string/after_class"
                 android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textSize="@dimen/text_size_12" />
         </RelativeLayout>
     </RelativeLayout>
 

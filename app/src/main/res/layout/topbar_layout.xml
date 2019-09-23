@@ -3,202 +3,210 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/topbar_background">
 
-    <ImageView
-        android:id="@+id/back_button"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center_vertical"
-        android:paddingBottom="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="10dp"
-        android:visibility="gone"
-        android:clickable="false"
-        android:src="@drawable/back" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_11"
+        android:paddingBottom="@dimen/dp_11"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:layout_marginLeft="80dp"
-            android:gravity="center_vertical">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/logo" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="智慧课堂系统"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-        </LinearLayout>
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:clickable="false"
+            android:paddingLeft="20dp"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingRight="20dp"
+            android:paddingBottom="@dimen/dp_8"
+            android:src="@drawable/back"
+            android:visibility="gone" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_90"
+            android:paddingRight="@dimen/dp_90">
 
-            <TextView
-                android:id="@+id/datetext"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/weektext"
+                <ImageView
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_21"
+                    android:src="@mipmap/logo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:text="智慧课堂系统"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_15" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/datetext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_15" />
+
+                <TextView
+                    android:id="@+id/weektext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_15" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/inbox"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <com.tanhd.rollingclass.views.CornerImageView
+                    android:id="@+id/count_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/logo"
+                    app:cornerBackground="@android:color/holo_red_light"
+                    app:cornerTextColor="@color/white"
+                    app:cornerTextSize="11dp"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="我的消息"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_15" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/userinfo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|right">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dp_5"
+                    android:src="@drawable/sample_person"
+                    app:civ_border_color="#FFCACACA"
+                    app:civ_border_width="0.1dp" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_3"
+                    android:text="老师"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_10" />
+
+                <ImageView
+                    android:layout_width="0.5dp"
+                    android:layout_height="@dimen/dp_12"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:background="#33000000" />
+
+                <ImageView
+                    android:id="@+id/home_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dp_9"
+                    android:paddingTop="@dimen/dp_9"
+                    android:paddingRight="@dimen/dp_9"
+                    android:paddingBottom="@dimen/dp_9"
+                    android:src="@drawable/home_icon" />
+
+                <ImageView
+                    android:layout_width="0.5dp"
+                    android:layout_height="@dimen/dp_12"
+                    android:background="#33000000" />
+
+                <ImageView
+                    android:id="@+id/message_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dp_9"
+                    android:paddingTop="@dimen/dp_9"
+                    android:paddingRight="@dimen/dp_9"
+                    android:paddingBottom="@dimen/dp_9"
+                    android:src="@drawable/message_icon" />
+
+                <ImageView
+                    android:layout_width="0.5dp"
+                    android:layout_height="@dimen/dp_12"
+                    android:background="#33000000" />
+
+                <ImageView
+                    android:id="@+id/setting_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dp_9"
+                    android:paddingTop="@dimen/dp_9"
+                    android:paddingRight="@dimen/dp_9"
+                    android:paddingBottom="@dimen/dp_9"
+                    android:src="@drawable/setting_icon" />
+
+                <ImageView
+                    android:layout_width="0.5dp"
+                    android:layout_height="@dimen/dp_12"
+                    android:src="#33000000" />
+
+                <ImageView
+                    android:id="@+id/power_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="7dp"
+                    android:src="@drawable/power_icon" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/more"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/more_icon" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/inbox"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:visibility="gone">
-
-            <com.tanhd.rollingclass.views.CornerImageView
-                android:id="@+id/count_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/logo"
-                app:cornerBackground="@android:color/holo_red_light"
-                app:cornerTextColor="@color/white"
-                app:cornerTextSize="11dp"
-                tools:ignore="MissingPrefix" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="我的消息"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/userinfo"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:layout_marginRight="80dp"
-            android:gravity="center_vertical|right">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/sample_person"
-                android:padding="7dp"
-                app:civ_border_color="#FFCACACA"
-                app:civ_border_width="0.1dp" />
-
-            <TextView
-                android:id="@+id/username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="老师"
-                android:textColor="@color/white"
-                android:textSize="18sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:padding="4dp"
-                android:src="@drawable/bar_line" />
-
-            <ImageView
-                android:id="@+id/home_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:padding="7dp"
-                android:src="@drawable/home_icon" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:padding="4dp"
-                android:src="@drawable/bar_line" />
-
-            <ImageView
-                android:id="@+id/message_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="7dp"
-                android:src="@drawable/message_icon" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:padding="4dp"
-                android:src="@drawable/bar_line" />
-
-            <ImageView
-                android:id="@+id/setting_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="7dp"
-                android:src="@drawable/setting_icon" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:padding="4dp"
-                android:src="@drawable/bar_line" />
-
-            <ImageView
-                android:id="@+id/power_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:padding="7dp"
-                android:src="@drawable/power_icon" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/more"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:visibility="gone"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/more_icon" />
-
-        </LinearLayout>
-
-
     </LinearLayout>
 
 </com.tanhd.rollingclass.views.TopbarView>

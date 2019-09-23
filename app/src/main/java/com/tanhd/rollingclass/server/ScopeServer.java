@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.db.model.Course;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;

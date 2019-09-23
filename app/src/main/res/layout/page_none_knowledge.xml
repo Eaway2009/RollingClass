@@ -11,12 +11,14 @@
         android:id="@+id/knowledge_name_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="@dimen/dp_24"
         android:background="@drawable/knowledge_name_edit_bg"
         android:hint="@string/enter_knowledge_name"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:textSize="15sp" />
+        android:paddingTop="@dimen/dp_13"
+        android:paddingBottom="@dimen/dp_13"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
+        android:textSize="@dimen/text_size_12" />
 
     <TextView
         android:id="@+id/knowledge_add_button"
@@ -25,6 +27,9 @@
         android:background="@drawable/knowledge_add_button"
         android:gravity="center"
         android:text="@string/add_knowledge"
+        android:paddingTop="@dimen/dp_13"
+        android:paddingBottom="@dimen/dp_13"
+        android:textSize="@dimen/text_size_12"
         android:textColor="@color/knowledge_add_text" />
 
     <LinearLayout
@@ -36,47 +41,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/dp_24"
             android:background="@drawable/knowledge_add_button_2"
             android:gravity="center"
+            android:text="@string/add_knowledge"
+            android:paddingTop="@dimen/dp_13"
+            android:paddingBottom="@dimen/dp_13"
+            android:textColor="@color/knowledge_add_text_2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:background="@drawable/knowledge_add_button_2"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp_13"
+            android:paddingBottom="@dimen/dp_13"
             android:text="@string/add_knowledge"
             android:textColor="@color/knowledge_add_text_2" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/dp_24"
             android:background="@drawable/knowledge_add_button_2"
             android:gravity="center"
+            android:paddingTop="@dimen/dp_13"
+            android:paddingBottom="@dimen/dp_13"
             android:text="@string/add_knowledge"
             android:textColor="@color/knowledge_add_text_2" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/knowledge_add_button_2"
-            android:gravity="center"
-            android:text="@string/add_knowledge"
-            android:textColor="@color/knowledge_add_text_2" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/knowledge_add_button_2"
-            android:gravity="center"
-            android:text="@string/add_knowledge"
-            android:textColor="@color/knowledge_add_text_2" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/knowledge_add_button_2"
-            android:gravity="center"
-            android:text="@string/add_knowledge"
-            android:textColor="@color/knowledge_add_text_2" />
     </LinearLayout>
 
 </LinearLayout>

@@ -23,6 +23,7 @@ import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.library.smartpen.SmartPenService;
+import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.MSG_TYPE;
 import com.tanhd.rollingclass.db.Message;
@@ -48,7 +49,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
     private static final int REQUEST_PERMISSION = 1;

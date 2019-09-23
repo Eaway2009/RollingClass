@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:gravity="center">
+    android:gravity="center_horizontal"
+    android:paddingTop="@dimen/dp_71">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -21,7 +22,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/resource_page"
             android:layout_toRightOf="@+id/class_page_view"
-            android:layout_marginLeft="15dp"/>
+            android:layout_marginLeft="@dimen/dp_14"/>
 
         <ImageView
             android:id="@+id/statics_page_view"

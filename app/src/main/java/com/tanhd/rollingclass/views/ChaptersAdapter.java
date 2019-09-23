@@ -10,6 +10,7 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.ChaptersResponse;
 import com.tanhd.rollingclass.server.data.GroupData;
 
+@Deprecated
 public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter, ChaptersResponse.Section> {
 
     //                用于存放Indicator的集合
@@ -24,8 +25,8 @@ public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter,
     protected void convertGroup(ViewHolder viewHolder, ChaptersResponse.Chapter item, int groupPosition, boolean isExpanded) {
         TextView teachingMaterialNameView = viewHolder.getView(R.id.teaching_material_name);
         ImageView iconView = viewHolder.getView(R.id.expand_imageview);
-        TextView chapterName = viewHolder.getView(R.id.chapter_name);
-        chapterName.setText(item.ChapterName);
+//        TextView chapterName = viewHolder.getView(R.id.chapter_name);
+//        chapterName.setText(item.ChapterName);
         //      把位置和图标添加到Map
         mIndicators.put(groupPosition, iconView);
         setIndicatorState(groupPosition, isExpanded);
@@ -40,9 +41,9 @@ public class ChaptersAdapter extends MultiLevelAdapter<ChaptersResponse.Chapter,
 
     @Override
     protected void convertChild(ViewHolder viewHolder, ChaptersResponse.Section item, int groupPosition, int childPosition, boolean isLastChild) {
-        TextView chapterName = viewHolder.getView(R.id.chapter_name);
-        chapterName.setEnabled(!item.isChecked);
-        chapterName.setText(item.SectionName);
+//        TextView chapterName = viewHolder.getView(R.id.chapter_name);
+//        chapterName.setEnabled(!item.isChecked);
+//        chapterName.setText(item.SectionName);
     }
 
     //            根据分组的展开闭合状态设置指示器

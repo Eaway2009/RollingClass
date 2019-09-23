@@ -19,6 +19,9 @@ import com.tanhd.rollingclass.fragments.pages.DocumentsPageFragment;
 import com.tanhd.rollingclass.fragments.resource.ResourcesPageFragment;
 import com.tanhd.rollingclass.fragments.statistics.StatisticsPageFragment;
 
+/**
+ * 学案|资源|学情
+ */
 public class ShowPageFragment extends Fragment implements View.OnClickListener, ChaptersFragment.ChapterListener {
 
     private PagesListener mListener;

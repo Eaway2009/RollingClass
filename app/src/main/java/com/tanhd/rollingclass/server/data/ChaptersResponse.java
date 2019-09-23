@@ -1,13 +1,10 @@
 package com.tanhd.rollingclass.server.data;
 
-import com.tanhd.library.mqtthttp.PushMessage;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ChaptersResponse extends BaseJsonClass {

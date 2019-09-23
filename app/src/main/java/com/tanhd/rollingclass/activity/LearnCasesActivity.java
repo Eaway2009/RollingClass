@@ -19,6 +19,7 @@ import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.Message;
 import com.tanhd.rollingclass.fragments.ChatFragment;
@@ -48,7 +49,7 @@ import org.greenrobot.eventbus.ThreadMode;
 /**
  * 学案界面
  */
-public class LearnCasesActivity extends AppCompatActivity {
+public class LearnCasesActivity extends BaseActivity {
 
     public static final String PARAM_CLASS_STUDENT_PAGE = "PARAM_CLASS_STUDENT_PAGE";
     public static final String PARAM_TEACHING_MATERIAL_ID = "PARAM_TEACHING_MATERIAL_ID";

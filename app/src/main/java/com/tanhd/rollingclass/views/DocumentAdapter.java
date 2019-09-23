@@ -102,26 +102,26 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                         }
                         break;
                     case R.id.more_bottom:
-                        moreBottomView.setVisibility(View.GONE);
+                        moreBottomView.setVisibility(View.INVISIBLE);
                         break;
                     case R.id.document_more_ib:
                         moreBottomView.setVisibility(View.VISIBLE);
                         break;
                     case R.id.more_copy_iv:
-                        moreBottomView.setVisibility(View.GONE);
+                        moreBottomView.setVisibility(View.INVISIBLE);
                         ScopeServer.getInstance().DumpKnowledge(data.knowledge_id, DocumentAdapter.this);
                         break;
                     case R.id.more_share_iv:
-                        moreBottomView.setVisibility(View.GONE);
+                        moreBottomView.setVisibility(View.INVISIBLE);
                         new TeacherListTask(data.knowledge_id).execute();
                         break;
                     case R.id.more_edit_iv:
-                        moreBottomView.setVisibility(View.GONE);
+                        moreBottomView.setVisibility(View.INVISIBLE);
                         KnowledgeModel knowledgeModel = new KnowledgeModel(data.school_id, data.teacher_id, data.chapter_id, data.chapter_name, data.section_id, data.section_name, data.subject_code, data.subject_name, data.teaching_material_id, null);
                         DocumentEditActivity.startMe(mContext, DocumentEditActivity.PAGE_ID_EDIT_DOCUMENTS, knowledgeModel, data);
                         break;
                     case R.id.more_delete_iv:
-                        moreBottomView.setVisibility(View.GONE);
+                        moreBottomView.setVisibility(View.INVISIBLE);
                         showDeleteDialog(data);
                         break;
                     case R.id.document_status_tv:
