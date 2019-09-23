@@ -153,7 +153,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         Fragment moduleFragment = null;
-        if (moduleId == MODULE_ID_DOCUMENTS) {
+        if (moduleId == MODULE_ID_DOCUMENTS) { //学案
             if (mDocumentsFragment == null) {
                 mDocumentsFragment = DocumentsPageFragment.newInstance(new DocumentsPageFragment.DocumentListener() {
                     @Override
@@ -170,7 +170,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
             if (mStatisticsFragment != null) {
                 transaction.hide(mStatisticsFragment);
             }
-        } else if (moduleId == MODULE_ID_RESOURCES) {
+        } else if (moduleId == MODULE_ID_RESOURCES) {  //资源
             if (mResourcesFragment == null) {
                 mResourcesFragment = ResourcesPageFragment.newInstance(mKnowledgeModel);
                 transaction.add(ROOT_LAYOUT_ID, mResourcesFragment);
@@ -182,7 +182,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
             if (mStatisticsFragment != null) {
                 transaction.hide(mStatisticsFragment);
             }
-        } else if (moduleId == MODULE_ID_STATISTICS) {
+        } else if (moduleId == MODULE_ID_STATISTICS) {  //学情
             if (mStatisticsFragment == null) {
                 mStatisticsFragment = StatisticsPageFragment.newInstance(mKnowledgeModel);
                 transaction.add(ROOT_LAYOUT_ID, mStatisticsFragment);

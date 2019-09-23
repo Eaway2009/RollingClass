@@ -54,6 +54,7 @@ import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.BitmapUtils;
 import com.tanhd.rollingclass.utils.GetFileHelper;
 import com.tanhd.rollingclass.utils.StringUtils;
+import com.tanhd.rollingclass.views.PopUploadFile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -547,40 +548,17 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
     @SuppressLint("RestrictedApi")
     private void showPopupMenu(View view, final int resourceCode, final boolean isImage) {
-        // 这里的view代表popupMenu需要依附的view
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
-        try {
-            Field field = popupMenu.getClass().getDeclaredField("mPopup");
-            field.setAccessible(true);
-            MenuPopupHelper mHelper = (MenuPopupHelper) field.get(popupMenu);
-            mHelper.setForceShowIcon(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // 获取布局文件
-        popupMenu.getMenuInflater().inflate(R.menu.upload_file, popupMenu.getMenu());
-        // 通过上面这几行代码，就可以把控件显示出来了
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        new PopUploadFile(getActivity()).setLocalListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.from_local:
-                        uploadFile(resourceCode, isImage);
-                        break;
-                    case R.id.from_resource:
-                        selectResourceFromServer(resourceCode);
-                        break;
-                }
-                return true;
+            public void onClick(View v) { //本地
+                uploadFile(resourceCode, isImage);
             }
-        });
-        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+        }).setResourceListener(new View.OnClickListener() {
             @Override
-            public void onDismiss(PopupMenu menu) {
-                // 控件消失时的事件
+            public void onClick(View v) { //资源库
+                selectResourceFromServer(resourceCode);
             }
-        });
-        popupMenu.show();
+        }).showAsDropDown(view);
 
     }
 

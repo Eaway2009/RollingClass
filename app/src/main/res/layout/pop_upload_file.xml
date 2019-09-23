@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="@dimen/dp_160"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/pop_bg"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/from_local"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@mipmap/upload_local_icon"
+        android:text="本地导入"
+        android:paddingLeft="@dimen/dp_18"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:drawablePadding="@dimen/dp_11"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/from_resource"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_18"
+        android:drawableLeft="@mipmap/upload_res_icon"
+        android:text="资源库导入"
+        android:paddingRight="@dimen/dp_17"
+        android:drawablePadding="@dimen/dp_11"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_12"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16" />
+
+</LinearLayout>
