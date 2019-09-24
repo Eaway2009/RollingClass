@@ -139,14 +139,17 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
             mTvClassBegin.setVisibility(View.GONE);
             mTvClassStatus.setVisibility(View.GONE);
             mLearningButtonsLayout.setVisibility(View.VISIBLE);
+            mTvInsertResource.setVisibility(View.GONE);
         } else if (mClassPageType == KeyConstants.ClassPageType.TEACHER_CLASS_PAGE) {
             mTvClassBegin.setVisibility(View.VISIBLE);
             mTvClassStatus.setVisibility(View.GONE);
             mLearningButtonsLayout.setVisibility(View.GONE);
+            mTvInsertResource.setVisibility(View.VISIBLE);
         } else {
             mTvClassBegin.setVisibility(View.GONE);
             mTvClassStatus.setVisibility(View.GONE);
             mLearningButtonsLayout.setVisibility(View.GONE);
+            mTvInsertResource.setVisibility(View.GONE);
         }
     }
 

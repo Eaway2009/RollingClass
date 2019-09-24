@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
@@ -40,6 +42,7 @@ public class AnswerListFragment extends Fragment {
     private int mPageType;
     private Button mCommitButton;
     private String mQuestionSetId;
+    private View mShowAnswerButton;
 
     public static AnswerListFragment getInstance(int pageType, String knowledgeId, String knowledgeName) {
         AnswerListFragment answerListFragment = new AnswerListFragment();
@@ -90,6 +93,15 @@ public class AnswerListFragment extends Fragment {
         }
         mAdapter = new AnswerCardAdapter(getActivity(), mPageType != KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
         mAnswerListView.setAdapter(mAdapter);
+
+        mShowAnswerButton = contentView.findViewById(R.id.show_answers_button);
+        UserData userData = ExternalParam.getInstance().getUserData();
+        if (userData.isTeacher()) {
+            mShowAnswerButton.setVisibility(View.VISIBLE);
+        } else {
+            mShowAnswerButton.setVisibility(View.GONE);
+        }
+        mShowAnswerButton.setOnClickListener(onClickListener);
     }
 
     public void setShowAnswer(boolean setShowAnswer){
@@ -127,6 +139,9 @@ public class AnswerListFragment extends Fragment {
             switch (v.getId()) {
                 case R.id.commit_button:
                     new CommitAnswerTask(mAdapter.getData()).execute();
+                    break;
+                case R.id.show_answers_button:
+                    MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, (List<String>) null, null);
                     break;
             }
         }

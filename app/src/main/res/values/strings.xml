@@ -20,6 +20,7 @@
     <string name="back">返回</string>
     <string name="document_title">学案</string>
     <string name="add_document">新建学案</string>
+    <string name="wrong_answer_book">错题本</string>
     <string name="resource_title">资源</string>
     <string name="statistics_title">学情</string>
     <string name="learning_seft">自学</string>

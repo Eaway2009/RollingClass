@@ -88,14 +88,6 @@ public class QuestionDisplayFragment extends Fragment {
         mAnswerListFragment = AnswerListFragment.getInstance(mPageType, getArguments().getString("KnowledgeID"), getArguments().getString("KnowledgeName"), mLessonSampleId, mLessonSampleName);
         getFragmentManager().beginTransaction().replace(R.id.answer_fragment, mAnswerListFragment).commit();
 
-        mShowAnswerButton = view.findViewById(R.id.show_answers_button);
-        UserData userData = ExternalParam.getInstance().getUserData();
-        if (userData.isTeacher() && ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.CLASSING) {
-            mShowAnswerButton.setVisibility(View.VISIBLE);
-        } else {
-            mShowAnswerButton.setVisibility(View.GONE);
-        }
-        mShowAnswerButton.setOnClickListener(onClickListener);
     }
 
     public void resetData(ResourceModel resourceModel) {
@@ -130,13 +122,4 @@ public class QuestionDisplayFragment extends Fragment {
             mAnswerListFragment.clearListData();
         }
     }
-
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v.getId() == R.id.show_answers_button) {
-                MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, (List<String>) null, null);
-            }
-        }
-    };
 }

@@ -35,6 +35,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
     private GridView mGridView;
     private DocumentAdapter mAdapter;
     private KnowledgeModel mKnowledgeModel;
+    private View mWrongAnswerView;
 
     public static DocumentsPageFragment newInstance(DocumentsPageFragment.DocumentListener listener) {
         Bundle args = new Bundle();
@@ -78,6 +79,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
 
     private void initViews(View view) {
         mAddDocumentView = view.findViewById(R.id.add_document_view);
+        mWrongAnswerView = view.findViewById(R.id.wrong_answer_view);
         mGridView = view.findViewById(R.id.grid_view);
 
         UserData userData = ExternalParam.getInstance().getUserData();
@@ -86,6 +88,13 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         mAddDocumentView.setOnClickListener(this);
         if (mKnowledgeModel == null) {
             mAddDocumentView.setEnabled(false);
+        }
+        if(userData.isTeacher()){
+            mWrongAnswerView.setVisibility(View.GONE);
+            mAddDocumentView.setVisibility(View.VISIBLE);
+        }else{
+            mWrongAnswerView.setVisibility(View.VISIBLE);
+            mAddDocumentView.setVisibility(View.GONE);
         }
     }
 

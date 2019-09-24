@@ -140,7 +140,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         statusView.setOnClickListener(onClickListener);
 
         StringBuffer publishStatus = new StringBuffer();
-        if (data.class_before == 1 && data.class_process == 1 && data.class_after == 1) {
+        if (!mIsTeacher||(data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
             publishStatus.append(mContext.getResources().getString(R.string.class_record));
         } else {
             if (data.class_before == 0) {
@@ -164,7 +164,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
             publishStatus.append(mContext.getResources().getString(R.string.to_publish));
         }
         statusView.setText(publishStatus);
-        if(data.class_before == 1 && data.class_process == 1 && data.class_after == 1) {
+        if(!mIsTeacher||(data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
             statusView.setBackgroundResource(R.drawable.document_status);
         }else {
             statusView.setBackgroundResource(R.drawable.document_status_disssable);
@@ -185,7 +185,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
     }
 
     private void classStatusClick(KnowledgeDetailMessage data){
-        if(data.class_before==1&&data.class_process==1&&data.class_after==1) {
+        if(!mIsTeacher||(data.class_before==1&&data.class_process==1&&data.class_after==1)) {
             if(data.records!=null&&data.records.size()>0){
                 Toast.makeText(mContext.getContext(), R.string.no_class_records_warning, Toast.LENGTH_SHORT).show();
             }else {

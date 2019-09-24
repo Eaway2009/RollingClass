@@ -10,33 +10,50 @@
     android:paddingBottom="20dp">
 
     <LinearLayout
-        android:id="@+id/add_document_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/add_document_button_bg"
         android:gravity="center">
 
         <TextView
+            android:id="@+id/add_document_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/add_icon"
+            android:background="@drawable/add_document_button_bg"
+            android:drawableStart="@drawable/add_icon"
             android:drawablePadding="5dp"
             android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:text="@string/add_document"
+            android:textColor="@color/chapter_menu_text"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/wrong_answer_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/wrong_answer_book_bg"
+            android:drawableLeft="@drawable/wrong_answer_book"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/wrong_answer_book"
+            android:textColor="@color/white"
             android:textSize="@dimen/text_size_14"
-            android:textColor="@color/chapter_menu_text" />
+            android:visibility="gone" />
     </LinearLayout>
 
     <GridView
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:overScrollMode="never"
         android:layout_marginTop="@dimen/dp_14"
         android:layout_weight="1"
         android:fadingEdge="none"
-        android:verticalSpacing="@dimen/dp_15"
         android:horizontalSpacing="@dimen/dp_15"
         android:numColumns="3"
-        android:scrollbars="none" />
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:verticalSpacing="@dimen/dp_15" />
 </LinearLayout>
