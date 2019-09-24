@@ -259,18 +259,24 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         showFragment(resourceModel.resource_type, resourceModel);
     }
 
-    public void showExercises(ResourceModel resourceModel,String knowledgeId, String knowledgeName,  String lessonSampleId, String lessonSampleName) {
+    public void showExercises(ResourceModel resourceModel, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName) {
         mKnowledgeId = knowledgeId;
         mKnowledgeName = knowledgeName;
         if (mQuestionFragment == null) {
             mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName, lessonSampleId, lessonSampleName);
         } else {
-            mQuestionFragment.resetData(resourceModel,lessonSampleId, lessonSampleName);
+            mQuestionFragment.resetData(resourceModel, lessonSampleId, lessonSampleName);
         }
         if (mCurrentShowModuleId != KeyConstants.ResourceType.QUESTION_TYPE) {
             getChildFragmentManager().beginTransaction().replace(R.id.container_layout, mQuestionFragment).commit();
         }
         mCurrentShowModuleId = KeyConstants.ResourceType.QUESTION_TYPE;
+    }
+
+    public void showAnswer(boolean showAnswer) {
+        if (mQuestionFragment != null) {
+            mQuestionFragment.showAnswer(showAnswer);
+        }
     }
 
     /**

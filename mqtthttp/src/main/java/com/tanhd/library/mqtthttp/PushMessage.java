@@ -49,6 +49,7 @@ public class PushMessage {
         ANSWER_COMPLETED,//完成回答
 
         HAND_UP,//学生举手
+        SHOW_RIGHT_ANSWER,//显示正确答案
 
         PING,
         PING_OK,

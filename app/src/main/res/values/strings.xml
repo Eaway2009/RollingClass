@@ -91,6 +91,7 @@
     <string name="statics_result">统计结果：</string>
     <string name="login_layout_text">欢迎登陆智慧课堂系统</string>
     <string name="class_exercise_result">课堂练习结果</string>
+    <string name="show_right_answers">公布正确答案</string>
     <string name="class_started_warning">%1$s老师正在上课中，请立即进入！</string>
     <string name="class_started">%1$s正在上课</string>
     <string name="insert_resources">插入资源</string>
@@ -111,6 +112,7 @@
     <string name="delete_success">删除成功</string>
     <string name="operate_success">操作已完成</string>
     <string name="learn_case_ppt">教案PPT</string>
+    <string name="check_no_questions">查询不到题目</string>
     <string name="target_guidance">目标导学</string>
     <string name="self_study">教材自学</string>
     <string name="assist_study">微课助学</string>

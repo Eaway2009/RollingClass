@@ -19,6 +19,7 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/task_add_save_button"
         android:text="@string/sure"
+        android:visibility="gone"
         android:textColor="@color/white"
         android:textSize="20sp" />
 </LinearLayout>

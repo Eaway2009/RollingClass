@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
@@ -234,10 +235,9 @@ public class LearnCasesActivity extends BaseActivity {
                         classData.setStudentState(message.from, (message.command == PushMessage.COMMAND.ONLINE ? 1 : 0));
                     }
                     break;
-                case CLASS_END: {
-//                    classEnd(message.from);
+                case CLASS_END:
+                    finish();
                     break;
-                }
                 case OPEN_DOCUMENT: {
                     if (ExternalParam.getInstance().getStatus() == 2 && !mUserData.isTeacher()) {
                         String lesson_sample_id = message.parameters.get(PushMessage.PARAM_LESSON_SAMPLE_ID);
@@ -275,6 +275,12 @@ public class LearnCasesActivity extends BaseActivity {
                 }
                 case SERVER_PING: {
                     FrameDialog.show(getSupportFragmentManager(), ServerTesterFragment.newInstance());
+                    break;
+                }
+                case SHOW_RIGHT_ANSWER: {
+                    if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.CLASSING && !mUserData.isTeacher() && mLearnCasesFragment != null) {
+                        mLearnCasesFragment.showAnswers(true);
+                    }
                     break;
                 }
                 case QUERY_CLASS:

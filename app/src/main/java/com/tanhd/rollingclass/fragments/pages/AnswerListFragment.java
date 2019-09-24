@@ -92,6 +92,10 @@ public class AnswerListFragment extends Fragment {
         mAnswerListView.setAdapter(mAdapter);
     }
 
+    public void setShowAnswer(boolean setShowAnswer){
+        mAdapter.setShowAnswer(setShowAnswer);
+    }
+
     public void resetData(String questionSetId, List<QuestionModel> questionModelList) {
         mQuestionSetId = questionSetId;
         mQuestionModelList = questionModelList;

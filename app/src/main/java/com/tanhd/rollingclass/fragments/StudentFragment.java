@@ -1,6 +1,5 @@
 package com.tanhd.rollingclass.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,23 +16,14 @@ import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DatasActivity;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
-import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.KeyConstants;
-import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
-import com.tanhd.rollingclass.server.data.KnowledgeData;
-import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
-import com.tanhd.rollingclass.server.data.LessonSampleData;
-import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.utils.AppUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
 
 public class StudentFragment extends Fragment implements View.OnClickListener {
@@ -98,28 +88,34 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                         mClassStartedWarningView.setText(getResources().getString(R.string.class_started_warning, teacherName));
                         mClassStartedWarningView.setVisibility(View.VISIBLE);
                     }
-                    if (ExternalParam.getInstance().getStatus() == 0) {
-                        ExternalParam.getInstance().setStatus(1);
+                    if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.REST) {
+                        mClassPageView.callOnClick();
+                        ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.CLASSING);
                     }
                     break;
                 }
-                case CLASS_END: {
-//                    classEnd(message.from);
+                case CLASS_END:
+                    mClassPageView.setEnabled(false);
+                    MQTT.publishMessage(PushMessage.COMMAND.OFFLINE, message.from, null);
+                    ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.REST);
+                    if (mPushMessage != null && message.from == mPushMessage.from) {
+                        mClassStartedWarningView.setVisibility(View.GONE);
+                    }
+                    mPushMessage = message;
                     break;
-                }
                 case SERVER_PING: {
                     FrameDialog.show(getChildFragmentManager(), ServerTesterFragment.newInstance());
                     break;
                 }
                 case PING: {
-                    MyMqttService.publishMessage(PushMessage.COMMAND.QUERY_CLASS,  (List<String>) null, null);
+                    MyMqttService.publishMessage(PushMessage.COMMAND.QUERY_CLASS, (List<String>) null, null);
                     break;
                 }
                 case QUERY_STATUS: {
                     if (ExternalParam.getInstance().getStatus() == 2)
-                        MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE,  (List<String>) null, null);
+                        MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
                     else
-                        MyMqttService.publishMessage(PushMessage.COMMAND.OFFLINE,  (List<String>) null, null);
+                        MyMqttService.publishMessage(PushMessage.COMMAND.OFFLINE, (List<String>) null, null);
                     break;
                 }
             }
@@ -141,7 +137,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                     String knowledgeId = mPushMessage.parameters.get(PushMessage.KNOWLEDGE_ID);
                     String knowledgeName = mPushMessage.parameters.get(PushMessage.KnowledgePointName);
                     String teacherName = mPushMessage.parameters.get(PushMessage.TEACHER_NAME);
-                    LearnCasesActivity.startMe(getActivity(), knowledgeId, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE,teacherName);
+                    LearnCasesActivity.startMe(getActivity(), knowledgeId, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, teacherName);
                 }
                 break;
             case R.id.knowledge_page_view:

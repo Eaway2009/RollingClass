@@ -31,6 +31,12 @@ public class KeyConstants {
         public static final int PRIVATE_LEVEL = 2;
         public static final int PUBLIC_LEVEL = 3;
     }
+    //0: 空闲    1:提示上课    2:上课中
+    public static class ClassLearningStatus {
+        public static final int REST = 0;
+        public static final int WARNING_UP = 1;
+        public static final int CLASSING = 2;
+    }
 
     public static enum SYNC_MODE {
         NONE,

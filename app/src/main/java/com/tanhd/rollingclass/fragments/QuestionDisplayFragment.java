@@ -11,8 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.pages.AnswerListFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -33,8 +36,9 @@ public class QuestionDisplayFragment extends Fragment {
     private int mPageType;
     private String mLessonSampleName;
     private String mLessonSampleId;
+    private View mShowAnswerButton;
 
-    public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel,String knowledgeId, String knowledgeName) {
+    public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel, String knowledgeId, String knowledgeName) {
         QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
         Bundle args = new Bundle();
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, typeId);
@@ -46,7 +50,7 @@ public class QuestionDisplayFragment extends Fragment {
         return QuestionDisplayFragment;
     }
 
-    public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel,String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName) {
+    public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName) {
         QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
         Bundle args = new Bundle();
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, typeId);
@@ -81,25 +85,41 @@ public class QuestionDisplayFragment extends Fragment {
     private void initViews(View view) {
         mQuestionResourceFragment = QuestionResourceFragment.newInstance();
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
-        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, getArguments().getString("KnowledgeID"), getArguments().getString("KnowledgeName"),mLessonSampleId, mLessonSampleName);
+        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, getArguments().getString("KnowledgeID"), getArguments().getString("KnowledgeName"), mLessonSampleId, mLessonSampleName);
         getFragmentManager().beginTransaction().replace(R.id.answer_fragment, mAnswerListFragment).commit();
+
+        mShowAnswerButton = view.findViewById(R.id.show_answers_button);
+        UserData userData = ExternalParam.getInstance().getUserData();
+        if (userData.isTeacher() && ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.CLASSING) {
+            mShowAnswerButton.setVisibility(View.VISIBLE);
+        } else {
+            mShowAnswerButton.setVisibility(View.GONE);
+        }
+        mShowAnswerButton.setOnClickListener(onClickListener);
     }
 
     public void resetData(ResourceModel resourceModel) {
-        if(resourceModel!=null){
+        if (resourceModel != null) {
             mResourceModel = resourceModel;
             initData();
         }
     }
 
+    public void showAnswer(boolean show) {
+        if (mAnswerListFragment != null) {
+            mAnswerListFragment.setShowAnswer(show);
+        }
+    }
+
     public void resetData(ResourceModel resourceModel, String lessonSampleId, String lessonSampleName) {
-        if(resourceModel!=null){
+        if (resourceModel != null) {
             mResourceModel = resourceModel;
             mLessonSampleId = lessonSampleId;
             mLessonSampleName = lessonSampleName;
             initData();
         }
     }
+
     private void initData() {
         List<QuestionModel> questionDataList = mResourceModel.mResourceList;
         if (questionDataList != null && questionDataList.size() > 0) {
@@ -110,4 +130,13 @@ public class QuestionDisplayFragment extends Fragment {
             mAnswerListFragment.clearListData();
         }
     }
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.show_answers_button) {
+                MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, (List<String>) null, null);
+            }
+        }
+    };
 }

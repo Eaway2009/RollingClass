@@ -225,7 +225,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
 //                        MQTT.getInstance().subscribe(classData.ClassID);
                         mClassData = classData;
                         MyMqttService.subscribe(classData.ClassID);
-                        ExternalParam.getInstance().setStatus(2);
+                        ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.CLASSING);
                         ScopeServer.getInstance().UpdateKnowledgeStatus(2, mClassData.ClassID, mKnowledgeId, new RequestCallback() {
                             @Override
                             public void onProgress(boolean b) {
@@ -260,6 +260,12 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                     mListener.onBack();
                 }
                 break;
+        }
+    }
+
+    public void showAnswers(boolean showAnswer){
+        if (mLearnCasesContainerFragment != null) {
+            mLearnCasesContainerFragment.showAnswer(showAnswer);
         }
     }
 
@@ -388,6 +394,10 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         for (int i = 0; i < mAdapter.getGroupCount(); i++) {
             KnowledgeLessonSample group = mAdapter.getGroup(i);
             if (group.lesson_sample_id.equals(lesson_sample_id)) {
+                if (TextUtils.isEmpty(resource_id)) {
+                    mLearnCasesContainerFragment.showExercises(new ResourceModel(group.question_set, "习题"), mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name);
+                    return;
+                }
                 for (int j = 0; j < group.getChildren().size(); j++) {
                     ResourceModel resourceModel = group.getChildren().get(j);
                     if (resourceModel.resource_id.equals(resource_id)) {

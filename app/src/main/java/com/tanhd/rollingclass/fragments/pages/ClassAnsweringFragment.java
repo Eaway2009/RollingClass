@@ -121,6 +121,8 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
             } else {
                 mQuestionResourceFragment.clearListData();
                 mAnswerListFragment.clearListData();
+
+                Toast.makeText(getContext(), R.string.check_no_questions, Toast.LENGTH_SHORT).show();
             }
         }
     }
