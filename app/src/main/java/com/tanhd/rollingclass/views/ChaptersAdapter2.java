@@ -12,6 +12,8 @@ import com.tanhd.rollingclass.db.model.Course;
 import com.tanhd.rollingclass.server.data.ChaptersResponse;
 import com.tanhd.rollingclass.utils.Logger;
 
+import java.util.List;
+
 /**
  * 左侧三级目录
  */
@@ -20,6 +22,9 @@ public class ChaptersAdapter2 extends BaseMultiAdapter<MultiItemEntity> {
     public static final int TYPE_LEVEL_CHAPTER = 1; //章
     public static final int TYPE_LEVEL_SECTION = 2; //节
     private SelectListener selectListener;
+
+    private int sectionPos = 2;
+    private Course.ChaptersBean.SectionsBean sectionsBean;
 
     public ChaptersAdapter2(Context context) {
         super(context);
@@ -68,6 +73,17 @@ public class ChaptersAdapter2 extends BaseMultiAdapter<MultiItemEntity> {
     private void bindChapter(BaseViewHolder holder, final int position, final Course.ChaptersBean item) {
         TextView tv_chapter_name = holder.getTextView(R.id.tv_chapter_name);
         tv_chapter_name.setText(item.getChapterName());
+
+//        List<Course.ChaptersBean.SectionsBean> sectionsBeanList = item.getSubItems();
+////        boolean status = false;
+////        for (int i = 0;i<sectionsBeanList.size();i++){
+////            if (sectionsBean != null && sectionsBean.getSectionID().equals(sectionsBeanList.get(i).getSectionID())){
+////                status = true;
+////                break;
+////            }
+////        }
+//        tv_chapter_name.setSelected(status);
+
         tv_chapter_name.setSelected(item.isExpanded());
 
         tv_chapter_name.setOnClickListener(new View.OnClickListener() {
@@ -87,10 +103,15 @@ public class ChaptersAdapter2 extends BaseMultiAdapter<MultiItemEntity> {
         tv_section_name.setText(item.getSectionName());
         tv_section_name.setSelected(item.isSelect());
 
+        tv_section_name.setSelected(sectionPos == position);
+
         tv_section_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (selectListener != null) selectListener.select(v,position,item);
+                sectionPos = position;
+                sectionsBean = item;
+                if (selectListener != null) selectListener.select(v, position, item);
+                notifyDataSetChanged();
             }
         });
     }
@@ -99,8 +120,8 @@ public class ChaptersAdapter2 extends BaseMultiAdapter<MultiItemEntity> {
         this.selectListener = selectListener;
     }
 
-    public interface SelectListener{
-        void select(View view,int pos,Course.ChaptersBean.SectionsBean item);
+    public interface SelectListener {
+        void select(View view, int pos, Course.ChaptersBean.SectionsBean item);
     }
 
 }

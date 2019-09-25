@@ -13,12 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.view.menu.MenuPopupHelper;
-import android.support.v7.widget.PopupMenu;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -32,6 +28,7 @@ import android.widget.Toast;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.db.model.EventTag;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.pages.ResourceSelectorFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionModelFragment;
@@ -41,33 +38,31 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
-import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
-import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceBaseModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
-import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.GetFileHelper;
 import com.tanhd.rollingclass.utils.StringUtils;
+import com.tanhd.rollingclass.views.DefaultDialog;
+import com.tanhd.rollingclass.views.PopFliterRes;
+import com.tanhd.rollingclass.views.PopUploadFile;
+import com.tanhd.rollingclass.views.SynPointDialog;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static android.content.DialogInterface.BUTTON_NEGATIVE;
-import static android.content.DialogInterface.BUTTON_POSITIVE;
-
 /**
- * 编辑|新增任务
+ * 编辑 课前| 新增任务
  */
 public class KnowledgeEditingFragment extends Fragment implements View.OnClickListener, KnowledgeAddTaskFragment.Callback {
 
@@ -164,6 +159,54 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mSyncFreClassCheckBox = view.findViewById(R.id.sync_fre_class_cb);
         mSyncInClassCheckBox = view.findViewById(R.id.sync_in_class_cb);
         mSyncAfterClassCheckBox = view.findViewById(R.id.sync_after_class_cb);
+
+        refreshStautsView();
+
+        mSyncFreClassCheckBox.setOnClickListener(this);
+        mSyncInClassCheckBox.setOnClickListener(this);
+        mSyncAfterClassCheckBox.setOnClickListener(this);
+
+        mPublishButton.setOnClickListener(this);
+        mFinishButton.setOnClickListener(this);
+        mKnowledgeNameEditView.setOnClickListener(this);
+        mKnowledgeAddButton.setOnClickListener(this);
+        setViewStatus();
+    }
+
+    /**
+     * 刷新状态 View
+     */
+    private void refreshStautsView() {
+        if (mStatus == KeyConstants.KnowledgeStatus.FRE_CLASS) { //前
+            mSyncFreClassCheckBox.setVisibility(View.GONE);
+            mSyncInClassCheckBox.setVisibility(View.VISIBLE);
+            mSyncAfterClassCheckBox.setVisibility(View.VISIBLE);
+        }
+        if (mStatus == KeyConstants.KnowledgeStatus.AT_CLASS) { //中
+            mSyncFreClassCheckBox.setVisibility(View.VISIBLE);
+            mSyncInClassCheckBox.setVisibility(View.GONE);
+            mSyncAfterClassCheckBox.setVisibility(View.VISIBLE);
+        }
+        if (mStatus == KeyConstants.KnowledgeStatus.AFTER_CLASS) { //后
+            mSyncFreClassCheckBox.setVisibility(View.VISIBLE);
+            mSyncInClassCheckBox.setVisibility(View.VISIBLE);
+            mSyncAfterClassCheckBox.setVisibility(View.GONE);
+        }
+        if (mKnowledgeDetailMessage.class_before == 1) {
+            mSyncFreClassCheckBox.setEnabled(false);
+        } else {
+            mSyncFreClassCheckBox.setEnabled(true);
+        }
+        if (mKnowledgeDetailMessage.class_process == 1) {
+            mSyncFreClassCheckBox.setEnabled(false);
+        } else {
+            mSyncFreClassCheckBox.setEnabled(true);
+        }
+        if (mKnowledgeDetailMessage.class_after == 1) {
+            mSyncFreClassCheckBox.setEnabled(false);
+        } else {
+            mSyncFreClassCheckBox.setEnabled(true);
+        }
         mSyncFreClassCheckBox.setOnClickListener(this);
         mSyncInClassCheckBox.setOnClickListener(this);
         mSyncAfterClassCheckBox.setOnClickListener(this);
@@ -237,6 +280,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         setArguments(args);
 
         initParams();
+        refreshStautsView();
         initData();
     }
 
@@ -282,26 +326,26 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                 }
                 break;
             case R.id.sync_fre_class_cb:
-                mSyncFreClassCheckBox.setChecked(true);
                 if (mAddFragmentView.getVisibility() == View.VISIBLE) {
                     showDialog(getString(R.string.adding_task_warning));
                 } else {
+                    mSyncFreClassCheckBox.setChecked(true);
                     showLessonSampleDialog(KeyConstants.KnowledgeStatus.FRE_CLASS);
                 }
                 break;
             case R.id.sync_in_class_cb:
-                mSyncInClassCheckBox.setChecked(true);
                 if (mAddFragmentView.getVisibility() == View.VISIBLE) {
                     showDialog(getString(R.string.adding_task_warning));
                 } else {
+                    mSyncInClassCheckBox.setChecked(true);
                     showLessonSampleDialog(KeyConstants.KnowledgeStatus.AT_CLASS);
                 }
                 break;
             case R.id.sync_after_class_cb:
-                mSyncAfterClassCheckBox.setChecked(true);
                 if (mAddFragmentView.getVisibility() == View.VISIBLE) {
                     showDialog(getString(R.string.adding_task_warning));
                 } else {
+                    mSyncAfterClassCheckBox.setChecked(true);
                     showLessonSampleDialog(KeyConstants.KnowledgeStatus.AFTER_CLASS);
                 }
                 break;
@@ -315,35 +359,12 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     }
 
     private void showDeleteDialog(final View v) {
-        final Dialog[] mNetworkDialog = new Dialog[1];
-        DialogInterface.OnClickListener onDialogClickListener = new DialogInterface.OnClickListener() {
+        new DefaultDialog(getResources().getString(R.string.dialog_tile), getResources().getString(R.string.delete_task_warning), "", "",null, new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case BUTTON_POSITIVE:
-                        deleteFile(v);
-                        break;
-                    case BUTTON_NEGATIVE:
-                        mNetworkDialog[0].dismiss();
-                        mNetworkDialog[0] = null;
-                        break;
-                }
+            public void onClick(View view) {
+                deleteFile(v);
             }
-        };
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
-                .setMessage(R.string.delete_task_warning)
-                .setTitle(R.string.dialog_tile)
-                .setPositiveButton(R.string.sure, onDialogClickListener)
-                .setNegativeButton(R.string.cancel, onDialogClickListener)
-                .setCancelable(false)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mNetworkDialog[0] = null;
-                    }
-                });
-        mNetworkDialog[0] = builder.create();
-        mNetworkDialog[0].show();
+        }).show(getChildFragmentManager(),"DefaultDialog");
     }
 
     private void editFile(View v) {
@@ -534,48 +555,37 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             sampleIdItems[i] = mDataList.get(i).lesson_sample_id;
             checkedItems[i] = true;
         }
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.please_check_knowledge)
-                .setMultiChoiceItems(sampleNameItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        if (isChecked) {
-                            sampleIdItems[which] = mDataList.get(which).lesson_sample_id;
-                        } else {
-                            sampleIdItems[which] = "";
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                })
-                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        for (int i = 0; i < sampleIdItems.length; i++) {
-                            if (!TextUtils.isEmpty(sampleIdItems[i])) {
-                                checkedIdList.add(sampleIdItems[i]);
-                            }
-                        }
-                        SyncSampleToClassRequest request = new SyncSampleToClassRequest();
-                        switch (syncTo) {
-                            case KeyConstants.KnowledgeStatus.AFTER_CLASS:
-                                request.class_after_task = checkedIdList;
-                                break;
-                            case KeyConstants.KnowledgeStatus.AT_CLASS:
-                                request.class_process_task = checkedIdList;
-                                break;
-                            case KeyConstants.KnowledgeStatus.FRE_CLASS:
-                                request.class_before_task = checkedIdList;
-                                break;
-                        }
-                        request.cur_status = mStatus;
-                        new RequestSyncTask(request).execute();
-                    }
-                }).show();
+        final SynPointDialog synPointDialog = new SynPointDialog(mDataList);
+        synPointDialog.setOkListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<KnowledgeLessonSample> selectData = synPointDialog.getSelectData();
+                if (selectData.isEmpty()) {
+                    Toast.makeText(getActivity(), "请至少选择一项进行同步", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                for (int i = 0; i < selectData.size(); i++) {
+                    checkedIdList.add(selectData.get(i).lesson_sample_id);
+                }
+                SyncSampleToClassRequest request = new SyncSampleToClassRequest();
+                switch (syncTo) {
+                    case KeyConstants.KnowledgeStatus.AFTER_CLASS:
+                        request.class_after_task = checkedIdList;
+                        break;
+                    case KeyConstants.KnowledgeStatus.AT_CLASS:
+                        request.class_process_task = checkedIdList;
+                        break;
+                    case KeyConstants.KnowledgeStatus.FRE_CLASS:
+                        request.class_before_task = checkedIdList;
+                        break;
+                }
+                request.cur_status = mStatus;
+                new RequestSyncTask(request).execute();
+            }
+        });
+        synPointDialog.show(getChildFragmentManager(),"synPointDialog");
     }
 
     public boolean isEditing() {
@@ -592,6 +602,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             @Override
             public void onResponse(String body) {
                 mKnowledgeNameEditView.setText(R.string.edit);
+                EventBus.getDefault().post(new EventTag(EventTag.REFRESH_CASE));
             }
 
             @Override
@@ -669,6 +680,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             if (!TextUtils.isEmpty(resultCode)) {
                 Toast.makeText(getActivity(), resultCode, Toast.LENGTH_SHORT).show();
             } else {
+                EventBus.getDefault().post(new EventTag(EventTag.REFRESH_CASE));
                 Toast.makeText(getActivity(), R.string.publish_success, Toast.LENGTH_SHORT).show();
                 mListener.onBack();
             }
@@ -696,7 +708,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         @Override
         protected void onPostExecute(String resultCode) {
             changeLoading(false);
-            if (!TextUtils.isEmpty(resultCode)) {
+            if (TextUtils.isEmpty(resultCode)) {
                 Toast.makeText(getActivity(), R.string.sync_success, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getActivity(), resultCode, Toast.LENGTH_SHORT).show();
@@ -858,53 +870,30 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         linearLayout.addView(resourceLayout);
     }
 
+    private PopFliterRes popFliterRes;
     @SuppressLint("RestrictedApi")
     private void showPopupMenu(View view) {
-        // 这里的view代表popupMenu需要依附的view
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
-        try {
-            Field field = popupMenu.getClass().getDeclaredField("mPopup");
-            field.setAccessible(true);
-            MenuPopupHelper mHelper = (MenuPopupHelper) field.get(popupMenu);
-            mHelper.setForceShowIcon(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // 获取布局文件
-        popupMenu.getMenuInflater().inflate(R.menu.upload_file, popupMenu.getMenu());
-
-        // 通过上面这几行代码，就可以把控件显示出来了
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        new PopUploadFile(getActivity()).setLocalListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.from_local:
-                        GetFileHelper.fileSelector(getActivity(), KnowledgeEditingFragment.this, false, false);
-                        break;
-                    case R.id.from_resource:
-                        FrameDialog.show(getChildFragmentManager(), ResourceSelectorFragment.newInstance(new ResourceSelectorFragment.Callback() {
-                            @Override
-                            public void cancel() {
-
-                            }
-
-                            @Override
-                            public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
-                                editFileView(resourceModel);
-                            }
-                        }, ((ResourceModel) mEditingResourceModel).resource_type));
-                        break;
-                }
-                return true;
+            public void onClick(View v) { //本地
+                GetFileHelper.fileSelector(getActivity(), KnowledgeEditingFragment.this, false, false);
             }
-        });
-        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+        }).setResourceListener(new View.OnClickListener() {
             @Override
-            public void onDismiss(PopupMenu menu) {
-                // 控件消失时的事件
+            public void onClick(View v) { //资源库
+                FrameDialog.show(getChildFragmentManager(), ResourceSelectorFragment.newInstance(new ResourceSelectorFragment.Callback() {
+                    @Override
+                    public void cancel() {
+
+                    }
+
+                    @Override
+                    public void resourceChecked(ResourceModel resourceModel, QuestionModel questionModel) {
+                        editFileView(resourceModel);
+                    }
+                }, ((ResourceModel) mEditingResourceModel).resource_type));
             }
-        });
-        popupMenu.show();
+        }).showAsDropDown(view);
 
     }
 

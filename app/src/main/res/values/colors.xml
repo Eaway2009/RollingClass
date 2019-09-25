@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#6CB0DF</color>
+    <color name="colorPrimary">#329CF8</color>
+    <color name="colorPrimaryDark">#329CF8</color>
+    <color name="colorAccent">#329CF8</color>
 
     <color name="dialog_background">#A0000000</color>
     <color name="topbar_background">#329CF8</color>
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
+    <color name="gray">#666666</color>
+    <color name="blue">#3BA0F8</color>
+    <color name="cut_color">#f3f3f3</color>
     <color name="login_text_color">#888888</color>
     <color name="student_select_color">#666666</color>
     <color name="class_title">#212121</color>
@@ -79,4 +82,7 @@
 
     <color name="learn_menu_bg1">#EEF9FF</color>
     <color name="learn_menu_bg2">#E7F2F9</color>
+    <!-- 小节选中颜色 -->
+    <color name="section_select">#83C1F7</color>
+    <color name="section_select_bg">#33363d</color>
 </resources>

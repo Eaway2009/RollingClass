@@ -7,19 +7,6 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/from_local"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@mipmap/upload_local_icon"
-        android:text="本地导入"
-        android:paddingLeft="@dimen/dp_18"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10"
-        android:drawablePadding="@dimen/dp_11"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_16" />
-
-    <TextView
         android:id="@+id/from_resource"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +16,20 @@
         android:paddingRight="@dimen/dp_17"
         android:drawablePadding="@dimen/dp_11"
         android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/from_local"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@mipmap/upload_local_icon"
+        android:text="本地导入"
+        android:paddingLeft="@dimen/dp_18"
+        android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_12"
+        android:drawablePadding="@dimen/dp_11"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_16" />
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,7 +39,7 @@ public class TaskDisplayView implements View.OnClickListener {
     private LinearLayout mLinearLayout;
     private KnowledgeLessonSample mData;
     private LinearLayout mFilesLayout;
-    private Activity mContext;
+    private AppCompatActivity mContext;
     private TaskDisplayEditListener mListener;
 
     private List<String> mExercisesList = new ArrayList<>();
@@ -47,7 +48,7 @@ public class TaskDisplayView implements View.OnClickListener {
     private List<String> mImageList = new ArrayList<>();
     private List<String> mVideoList = new ArrayList<>();
 
-    public TaskDisplayView(Activity activity, LinearLayout linearLayout, TaskDisplayEditListener listener) {
+    public TaskDisplayView(AppCompatActivity activity, LinearLayout linearLayout, TaskDisplayEditListener listener) {
         mLinearLayout = linearLayout;
         mListener = listener;
         mContext = activity;
@@ -147,36 +148,13 @@ public class TaskDisplayView implements View.OnClickListener {
     }
 
     private void showDeleteDialog(View v) {
-        final Dialog[] mNetworkDialog = new Dialog[1];
         final ResourceBaseModel data = (ResourceBaseModel) v.getTag();
-        DialogInterface.OnClickListener onDialogClickListener = new DialogInterface.OnClickListener() {
+        new DefaultDialog(v.getResources().getString(R.string.dialog_tile), v.getResources().getString(R.string.delete_task_warning), "", "",null, new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case BUTTON_POSITIVE:
-                        deleteSample(data, null);
-                        break;
-                    case BUTTON_NEGATIVE:
-                        mNetworkDialog[0].dismiss();
-                        mNetworkDialog[0] = null;
-                        break;
-                }
+            public void onClick(View view) {
+                deleteSample(data, null);
             }
-        };
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
-                .setMessage(R.string.delete_task_warning)
-                .setTitle(R.string.dialog_tile)
-                .setPositiveButton(R.string.sure, onDialogClickListener)
-                .setNegativeButton(R.string.cancel, onDialogClickListener)
-                .setCancelable(false)
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        mNetworkDialog[0] = null;
-                    }
-                });
-        mNetworkDialog[0] = builder.create();
-        mNetworkDialog[0].show();
+        }).show(mContext.getSupportFragmentManager(),"DefaultDialog");
     }
 
     public void editFile(ResourceBaseModel toRemoveModel, ResourceBaseModel newModel) {

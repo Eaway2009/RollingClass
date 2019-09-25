@@ -13,6 +13,7 @@ import android.widget.GridView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.db.model.EventTag;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
@@ -20,6 +21,10 @@ import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.DocumentAdapter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -64,6 +69,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.page_documents, container, false);
+        EventBus.getDefault().register(this);
         initParams();
         initViews(view);
         refreshData();
@@ -71,6 +77,13 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
 
         return view;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
 
     private void initParams() {
         Bundle args = getArguments();
@@ -208,6 +221,14 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
             case RESULT_OK:
                 refreshData();
                 break;
+        }
+    }
+
+    //刷新学案列表
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshList(EventTag eventTag){
+        if (EventTag.REFRESH_CASE.equals(eventTag.getTag())){
+            refreshData();
         }
     }
 }

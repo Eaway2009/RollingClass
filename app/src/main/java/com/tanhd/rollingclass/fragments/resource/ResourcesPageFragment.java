@@ -19,6 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
@@ -31,7 +32,10 @@ import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.views.OnItemClickListener;
+import com.tanhd.rollingclass.views.PopFliterRes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResourcesPageFragment extends Fragment implements View.OnClickListener, ResourceBaseFragment.Callback {
@@ -43,7 +47,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     private View mQuestionTitleView;
     private View mUploadFileTitleView;
     private KnowledgeModel mKnowledgeModel;
-    private Spinner mSpinnerSimple;
+    private TextView tv_spinner;
     Animation myAnimation;
     private boolean mIsRequesting;
 
@@ -56,6 +60,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     private ResourceBaseFragment.Callback mListener;
     private Handler mHandler = new Handler();
     private int resourceType = -1;
+    private PopFliterRes popFliterRes;
 
     public static ResourcesPageFragment newInstance(KnowledgeModel knowledgeModel) {
         Bundle args = new Bundle();
@@ -143,7 +148,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         mQuestionTitleView = view.findViewById(R.id.question_resource_view);
         mImageTitleView = view.findViewById(R.id.image_resource_view);
         mUploadFileTitleView = view.findViewById(R.id.upload_file_resource_view);
-        mSpinnerSimple = view.findViewById(R.id.resource_level_spinner);
+        tv_spinner = view.findViewById(R.id.tv_spinner);
 
         mPptTitleView.setOnClickListener(this);
         mMicroCourseTitleView.setOnClickListener(this);
@@ -151,6 +156,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         mQuestionTitleView.setOnClickListener(this);
         mImageTitleView.setOnClickListener(this);
         mUploadFileTitleView.setOnClickListener(this);
+        tv_spinner.setOnClickListener(this);
 
         //若带有指定类型进来则选中指定类型，其余类型不可点击
         if(resourceType != -1) {
@@ -193,49 +199,22 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     }
 
     private void initSpinner() {
-        myAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_anim);
-        mSpinnerSimple.setDropDownWidth(400); //下拉宽度
-        mSpinnerSimple.setDropDownHorizontalOffset(100); //下拉的横向偏移
-        mSpinnerSimple.setDropDownVerticalOffset(100); //下拉的纵向偏移
-        //mSpinnerSimple.setBackgroundColor(AppUtil.getColor(instance,R.color.wx_bg_gray)); //下拉的背景色
-        //spinner mode ： dropdown or dialog , just edit in layout xml
-
         final String[] spinnerItems = {"全部", "校本资源", "我的收藏", "公共资源"};
-        //自定义选择填充后的字体样式
-        //只能是textview样式，否则报错：ArrayAdapter requires the resource ID to be a TextView
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, spinnerItems);
-        //自定义下拉的字体样式
-        spinnerAdapter.setDropDownViewResource(R.layout.spinner_resource_dropdown);
-        //这个在不同的Theme下，显示的效果是不同的
-        //spinnerAdapter.setDropDownViewTheme(Theme.LIGHT);
-
-        mSpinnerSimple.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int arg2, long arg3) {
-                /**
-                 * 1.初始化会执行一次
-                 * 2.两次点一样会取消重复次
-                 */
-                mSpinnerSimple.setPrompt(spinnerItems[arg2]);
+        List<String> listStr = new ArrayList<>();
+        for (int i = 0;i<spinnerItems.length;i++){
+            listStr.add(spinnerItems[i]);
+        }
+        popFliterRes = new PopFliterRes(getActivity());
+        popFliterRes.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                tv_spinner.setText(popFliterRes.getDatas().get(position));
                 if (mCurrentFragment != null) {
-                    request(mDefaultPage, arg2, mResourceType);
+                    request(mDefaultPage, position, mResourceType);
                 }
             }
-
-            public void onNothingSelected(AdapterView<?> arg0) {
-                mSpinnerSimple.setPrompt(spinnerItems[0]);
-            }
         });
-        /* 下拉菜单弹出的内容选项触屏事件处理 */
-        mSpinnerSimple.setOnTouchListener(new Spinner.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-//                v.startAnimation(myAnimation);
-                return false;
-            }
-        });
-
-        mSpinnerSimple.setAdapter(spinnerAdapter);
+        popFliterRes.setDatas(listStr);
     }
 
     @Override
@@ -453,6 +432,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
                 break;
             case R.id.upload_file_resource_view:
 
+                break;
+            case R.id.tv_spinner: //筛选
+                popFliterRes.showMask(false).showAsDropDown(v);
                 break;
         }
     }

@@ -8,10 +8,13 @@ import android.view.WindowManager;
 
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
+import com.tanhd.rollingclass.db.model.EventTag;
 import com.tanhd.rollingclass.utils.AutoHideKeyboard;
 import com.tanhd.rollingclass.utils.BarTextColorUtils;
 import com.tanhd.rollingclass.utils.Logger;
 import com.tanhd.rollingclass.utils.StatusBarUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 基础Activity
@@ -32,6 +35,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Logger.i("onResume",TAG);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     /**

@@ -14,8 +14,9 @@
         android:paddingLeft="@dimen/dp_65"
         android:paddingTop="@dimen/dp_15"
         android:paddingBottom="@dimen/dp_15"
-        android:drawableLeft="@drawable/chapter_selector"
-        android:textColor="@color/chapter_menu_text"
+        android:background="@drawable/bg_section_selector"
+        android:drawableLeft="@drawable/dot_section_selector"
+        android:textColor="@color/section_text_selector"
         android:textSize="@dimen/text_size_16"
         tools:text="第一章" />
 </LinearLayout>

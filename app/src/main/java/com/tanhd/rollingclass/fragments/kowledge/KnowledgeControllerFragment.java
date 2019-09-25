@@ -180,7 +180,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                     }
                 }
                 break;
-            case R.id.fre_class_item:
+            case R.id.fre_class_item: //课前
                 if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS && mKnowledgeEditingFragment.isEditing()) {
                     Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
                     return;
@@ -188,7 +188,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                 changeClassStatus(KeyConstants.KnowledgeStatus.FRE_CLASS);
                 resetStatus();
                 break;
-            case R.id.at_class_item:
+            case R.id.at_class_item: //课中
                 if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS && mKnowledgeEditingFragment.isEditing()) {
                     Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
                     return;
@@ -196,7 +196,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                 changeClassStatus(KeyConstants.KnowledgeStatus.AT_CLASS);
                 resetStatus();
                 break;
-            case R.id.after_class_item:
+            case R.id.after_class_item: //课后
                 if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS && mKnowledgeEditingFragment.isEditing()) {
                     Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
                     return;

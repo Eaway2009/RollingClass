@@ -3,71 +3,93 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:paddingTop="@dimen/dp_25"
+    android:background="@drawable/bg_white_radius5"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingLeft="50dp"
-        android:paddingTop="10dp"
-        android:paddingRight="50dp"
-        android:paddingBottom="10dp"
-        android:layout_marginBottom="10dp"
+        android:paddingLeft="@dimen/dp_66"
+        android:paddingRight="@dimen/dp_66"
+        android:lineSpacingExtra="@dimen/dp_6"
         android:text="@string/publish_warning"
         android:textColor="@color/class_title"
-        android:textSize="24sp" />
+        android:textSize="@dimen/text_size_15" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:padding="@dimen/dp_22">
 
         <CheckBox
             android:id="@+id/publish_pre_class"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:button="@drawable/publish_checkbox"
-            android:padding="20dp"
-            android:layout_marginLeft="@dimen/dp_30"
+            android:checked="true"
+            android:gravity="center"
+            android:paddingLeft="8dp"
             android:text="@string/publish_sync_fre_class"
             android:textColor="@color/publish_item"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_size_12" />
 
         <CheckBox
             android:id="@+id/publish_in_class"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:gravity="center"
             android:button="@drawable/publish_checkbox"
-            android:padding="20dp"
-            android:layout_marginLeft="@dimen/dp_30"
+            android:checked="true"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:paddingLeft="8dp"
             android:text="@string/publish_sync_in_class"
             android:textColor="@color/publish_item"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_size_12" />
 
         <CheckBox
             android:id="@+id/publish_after_class"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:gravity="center"
             android:button="@drawable/publish_checkbox"
-            android:padding="20dp"
-            android:layout_marginLeft="@dimen/dp_30"
+            android:checked="true"
+            android:paddingLeft="8dp"
             android:text="@string/publish_sync_after_class"
             android:textColor="@color/publish_item"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
         android:background="@color/gray_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/commit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:text="@string/yes"
+            android:textColor="@color/dialog_button_text"
+            android:textSize="@dimen/text_size_15" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/gray_line" />
 
         <TextView
             android:id="@+id/cancel_button"
@@ -75,29 +97,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:text="@string/cancel"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:text="@string/no"
             android:textColor="@color/dialog_button_text"
-            android:textSize="22dp" />
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:background="@color/gray_line" />
-
-        <TextView
-            android:id="@+id/commit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:text="@string/sure"
-            android:textColor="@color/dialog_button_text"
-            android:textSize="22dp" />
+            android:textSize="@dimen/text_size_15" />
     </LinearLayout>
 
 </LinearLayout>

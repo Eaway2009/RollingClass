@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +65,7 @@ public class FrameDialog extends DialogFragment {
         if (!mIsFullMode) {
             if (!mIsLittleMode) {
                 view = inflater.inflate(R.layout.dialog_frame, container, false);
-                getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.dialog_background)));
+                //getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.dialog_background)));
                 view.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -102,9 +103,15 @@ public class FrameDialog extends DialogFragment {
             if (dialog != null) {
                 Window window = dialog.getWindow();
                 if (window != null) {
-                    int width = ViewGroup.LayoutParams.MATCH_PARENT;
-                    int height = ViewGroup.LayoutParams.MATCH_PARENT;
-                    window.setLayout(width, height);
+//                    int width = ViewGroup.LayoutParams.MATCH_PARENT;
+//                    int height = ViewGroup.LayoutParams.MATCH_PARENT;
+//                    window.setLayout(width, height);
+
+                    window = dialog.getWindow();
+
+                    DisplayMetrics dm = new DisplayMetrics();
+                    getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+                    window.setLayout((int) (dm.widthPixels * 0.85), ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
             }
         }

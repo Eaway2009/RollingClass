@@ -24,6 +24,9 @@ public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelMo
     public String create_time;
     public String update_time;
     private List<ResourceModel> resourceModelList = new ArrayList<>();
+    public boolean isSelect = true;
+
+
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {

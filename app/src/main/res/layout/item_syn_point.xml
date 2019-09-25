@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <CheckBox
+        android:id="@+id/cb_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_26"
+        android:background="@null"
+        android:foreground="@null"
+        android:paddingRight="@dimen/dp_29"
+        android:paddingTop="@dimen/dp_14"
+        android:paddingBottom="@dimen/dp_12"
+        android:textSize="@dimen/text_size_12"
+        android:textColor="@color/blue"
+        android:checked="true"
+        android:button="@null"
+        android:drawableRight="@drawable/publish_checkbox"
+        tools:text="教案PPT" />
+</LinearLayout>

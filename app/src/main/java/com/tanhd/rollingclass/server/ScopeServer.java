@@ -522,6 +522,12 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
+    /**
+     * 获取老师学案列表
+     * @param teacherId
+     * @param teaching_material_id
+     * @return
+     */
     public List<KnowledgeDetailMessage> QureyKnowledgeByChapterAndTeacherID(String teacherId, String teaching_material_id) {
         HashMap<String, String> params = new HashMap<>();
         params.put("teaching_material_id", "" + teaching_material_id);
@@ -538,7 +544,6 @@ public class ScopeServer extends ServerRequest {
 
     /**
      * 学生查询已经发布的课时
-     *
      * @param classID
      * @param teaching_material_id
      * @return
@@ -722,7 +727,7 @@ public class ScopeServer extends ServerRequest {
                 json = new JSONObject(response);
                 int result = json.getInt("errorCode");
                 if (result == 0) {
-                    return null;
+                    return "";
                 } else {
                     return json.getString("errorMessage");
                 }

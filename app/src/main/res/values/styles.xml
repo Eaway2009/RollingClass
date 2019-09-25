@@ -78,4 +78,10 @@
         <item name="android:windowEnterAnimation">@anim/pop_top_in</item>
         <item name="android:windowExitAnimation">@anim/pop_top_out</item>
     </style>
+
+    <!-- dialog出入动画 -->
+    <style name="dialogAnim" mce_bogus="1" parent="android:Animation">
+<!--        <item name="android:windowEnterAnimation">@anim/dialog_push_in</item>-->
+        <item name="android:windowExitAnimation">@anim/dialog_push_out</item>
+    </style>
 </resources>

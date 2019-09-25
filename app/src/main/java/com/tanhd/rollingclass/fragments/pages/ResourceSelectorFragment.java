@@ -21,6 +21,9 @@ import com.tanhd.rollingclass.server.data.QuestionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 
+/**
+ * 资源选择
+ */
 public class ResourceSelectorFragment extends Fragment implements View.OnClickListener, ChaptersFragment.ChapterListener, ResourceBaseFragment.Callback {
 
     private ChaptersFragment mChapterFragment;

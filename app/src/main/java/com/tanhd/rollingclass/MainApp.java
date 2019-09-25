@@ -78,7 +78,7 @@ public class MainApp extends Application {
     private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024;
     private static final int CONNECTION_TIME_OUT = 5 * 1000;
     private static final int READ_TIME_OUT = 30 * 1000;
-    private Context mInstance;
+    private static Application mInstance;
 
     @Override
     public void onCreate() {
@@ -88,6 +88,10 @@ public class MainApp extends Application {
         initImageLoader(getApplicationContext());
         
         Logger.i(TAG,"分辨率>>>" + ScreenUtils.getScreenHeight(this) + "x" + ScreenUtils.getScreenWidth(this) + "|sw:" + getString(R.string.base_dpi));
+    }
+
+    public static Context getInstance() {
+        return mInstance;
     }
 
     @Override

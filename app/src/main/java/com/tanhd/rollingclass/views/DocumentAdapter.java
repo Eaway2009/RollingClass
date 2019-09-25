@@ -106,7 +106,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                     case R.id.more_bottom:
                         moreBottomView.setVisibility(View.INVISIBLE);
                         break;
-                    case R.id.document_more_ib:
+                    case R.id.document_more_ib: //更多
                         moreBottomView.setVisibility(View.VISIBLE);
                         break;
                     case R.id.more_copy_iv:
@@ -122,7 +122,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                         KnowledgeModel knowledgeModel = new KnowledgeModel(data.school_id, data.teacher_id, data.chapter_id, data.chapter_name, data.section_id, data.section_name, data.subject_code, data.subject_name, data.teaching_material_id, null);
                         DocumentEditActivity.startMe(mContext, DocumentEditActivity.PAGE_ID_EDIT_DOCUMENTS, knowledgeModel, data);
                         break;
-                    case R.id.more_delete_iv:
+                    case R.id.more_delete_iv: //删除
                         moreBottomView.setVisibility(View.INVISIBLE);
                         showDeleteDialog(data);
                         break;
@@ -200,20 +200,13 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
     }
 
     private void showDeleteDialog(final KnowledgeDetailMessage data) {
-        new AlertDialog.Builder(mContext.getContext())
-                .setMessage(R.string.delete_knowledge_warning)
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ScopeServer.getInstance().DeleteKnowledge(data.teaching_material_id, data.knowledge_id, DocumentAdapter.this);
-                    }
-                }).show();
+        String content = String.format(mContext.getResources().getString(R.string.delete_knowledge_warning),data.knowledge_point_name);
+        new YesNoDialog(content, "", "", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ScopeServer.getInstance().DeleteKnowledge(data.teaching_material_id, data.knowledge_id, DocumentAdapter.this);
+            }
+        }, null).show(mContext.getChildFragmentManager(),"YesNoDialog");
     }
 
     private class TeacherListTask extends AsyncTask<Void, Void, List<TeacherData>> {

@@ -86,9 +86,9 @@
     <string name="publish_sync_fre_class">课前同时发布</string>
     <string name="publish_sync_in_class">课中同时发布</string>
     <string name="publish_sync_after_class">课后同时发布</string>
-    <string name="publish_warning">发布后将不可再次修改是否确定发布此学案？</string>
+    <string name="publish_warning">发布后将不可再次修改是否\n确定发布此学案？</string>
     <string name="please_check_knowledge">请选择要同步的知识点</string>
-    <string name="delete_knowledge_warning">是否确定删除此备课？</string>
+    <string name="delete_knowledge_warning">是否确定删除学案“%s”？</string>
     <string name="class_on_knowledge_warning">课中未发布</string>
     <string name="no_class_records_warning">暂无上课记录</string>
     <string name="into_class">进入课堂</string>

@@ -14,6 +14,9 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 
+/**
+ * 发布弹窗
+ */
 public class KnowledgePublishFragment extends Fragment {
 
     private static final String PARAM_CURRENT_STATUS = "PARAM_CURRENT_STATUS";
