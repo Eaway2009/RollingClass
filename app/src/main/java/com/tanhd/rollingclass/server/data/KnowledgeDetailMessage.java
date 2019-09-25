@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class KnowledgeDetailMessage extends BaseJsonClass {
@@ -86,7 +87,7 @@ public class KnowledgeDetailMessage extends BaseJsonClass {
     public class Record extends BaseJsonClass{
         public String class_id;
         public String class_name;
-        public String time_record;
+        public Date time_record;
     }
 
     @Override

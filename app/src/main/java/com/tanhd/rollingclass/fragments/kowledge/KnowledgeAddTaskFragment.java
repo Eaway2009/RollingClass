@@ -291,18 +291,51 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
             mQuestionModes.remove(resourceModel);
         }
         LinearLayout resourceLayout = (LinearLayout) v.getParent();
-        LinearLayout displayLayout = (LinearLayout) resourceLayout.getParent();
-        int count = displayLayout.getChildCount();
-        displayLayout.removeView(resourceLayout);
-        if (count == 1) {
-            LinearLayout parenLayout = (LinearLayout) displayLayout.getParent();
-            mUploadFilesLayout.removeView(parenLayout);
-        }
-        answerDisplayLayout.resetData(mQuestionModes);
-        if (mQuestionModes.size() == 0) {
-            answerDisplayLayout.setVisibility(View.GONE);
-            LinearLayout view = (LinearLayout) answerDisplayLayout.getParent().getParent();
-            mUploadFilesLayout.removeView(view);
+        LinearLayout resourceDisplayLayout = (LinearLayout) resourceLayout.getParent();
+        resourceDisplayLayout.removeView(resourceLayout);
+
+        int count = mUploadFilesLayout.getChildCount();
+        for (int i = 0; count > i; i++) {
+            LinearLayout displayLayout = (LinearLayout) mUploadFilesLayout.getChildAt(i);
+            if (resourceBaseModel instanceof ResourceModel) {
+                ResourceModel resourceModel = (ResourceModel) resourceBaseModel;
+                if ((int) displayLayout.getTag() == resourceModel.resource_type) {
+                    switch (resourceModel.resource_type) {
+                        case ResourceType.PPT_TYPE:
+                            if (mPPTList.size() == 0) {
+                                displayLayout.setVisibility(View.GONE);
+                            }
+                            break;
+                        case ResourceType.IMAGE_TYPE:
+                            if (mImageList.size() == 0) {
+                                displayLayout.setVisibility(View.GONE);
+                            }
+                            break;
+                        case ResourceType.WORD_TYPE:
+                            if (mWordList.size() == 0) {
+                                displayLayout.setVisibility(View.GONE);
+                            }
+                            break;
+                        case ResourceType.VIDEO_TYPE:
+                            if (mVideoList.size() == 0) {
+                                displayLayout.setVisibility(View.GONE);
+                            }
+                            break;
+                    }
+                }
+            } else {
+                if ((int) displayLayout.getTag() == ResourceType.QUESTION_TYPE) {
+                    if (mExercisesList.size() == 0) {
+                        displayLayout.setVisibility(View.GONE);
+                    }
+                    answerDisplayLayout.resetData(mQuestionModes);
+                    if (mQuestionModes.size() == 0) {
+                        answerDisplayLayout.setVisibility(View.GONE);
+                        LinearLayout view = (LinearLayout) answerDisplayLayout.getParent().getParent();
+                        mUploadFilesLayout.removeView(view);
+                    }
+                }
+            }
         }
     }
 
@@ -443,12 +476,14 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                     LinearLayout displayLayout = (LinearLayout) mUploadFilesLayout.getChildAt(i);
                     if (result instanceof ResourceModel) {
                         if ((int) displayLayout.getTag() == ((ResourceModel) result).resource_type) {
+                            displayLayout.setVisibility(View.VISIBLE);
                             LinearLayout resourcesLayout = (LinearLayout) displayLayout.getChildAt(1);
                             addFileView((ResourceModel) result, resourcesLayout);
                             return;
                         }
                     } else {
                         if ((int) displayLayout.getTag() == ResourceType.QUESTION_TYPE) {
+                            displayLayout.setVisibility(View.VISIBLE);
                             LinearLayout resourcesLayout = (LinearLayout) displayLayout.getChildAt(1);
                             onCheckQuestion((QuestionModel) result, resourcesLayout);
 //                            answerListFragment.addData((QuestionModel) result);

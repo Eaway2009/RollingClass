@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_120"
+    android:paddingTop="@dimen/dp_80"
+    android:paddingRight="@dimen/dp_120"
+    android:paddingBottom="@dimen/dp_80">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="center|right">
+
+        <LinearLayout
+            android:id="@+id/year_spinner_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/records_bg">
+
+            <TextView
+                android:id="@+id/year_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="22dp"
+                android:paddingRight="10dp"
+                android:text="2019年"
+                android:textColor="@color/button_gray"
+                android:textSize="@dimen/dp_24" />
+
+            <Spinner
+                android:id="@+id/year_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+            </Spinner>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/month_spinner_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_80"
+            android:background="@drawable/records_bg">
+
+            <TextView
+                android:id="@+id/month_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="22dp"
+                android:paddingRight="10dp"
+                android:text="9月"
+                android:textColor="@color/button_gray"
+                android:textSize="@dimen/dp_24" />
+
+            <Spinner
+                android:id="@+id/month_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+            </Spinner>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_50"
+        android:background="@drawable/shape_records_bg"
+        android:weightSum="3">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:minWidth="@dimen/dp_200"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="@string/learning_the_class"
+            android:textColor="@color/button_gray"
+            android:textSize="@dimen/dp_24" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/button_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:minWidth="@dimen/dp_200"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="@string/learning_the_date"
+            android:textColor="@color/button_gray"
+            android:textSize="@dimen/dp_24" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/button_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:minWidth="@dimen/dp_200"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="@string/learning_the_time"
+            android:textColor="@color/button_gray"
+            android:textSize="@dimen/dp_24" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/records_listview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"></ListView>
+</LinearLayout>

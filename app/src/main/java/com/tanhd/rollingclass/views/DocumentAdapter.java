@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.fragments.ClassRecordsFragment;
+import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
@@ -147,18 +149,18 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                 publishStatus.append(mContext.getResources().getString(R.string.fre_class));
             }
             if (data.class_process == 0) {
-                if(publishStatus.length()>0) {
+                if (publishStatus.length() > 0) {
                     publishStatus.append(mContext.getResources().getString(R.string.comma));
                 }
                 publishStatus.append(mContext.getResources().getString(R.string.at_class));
             }
             if (data.class_after == 0) {
-                if(publishStatus.length()>0) {
+                if (publishStatus.length() > 0) {
                     publishStatus.append(mContext.getResources().getString(R.string.comma));
                 }
                 publishStatus.append(mContext.getResources().getString(R.string.after_class));
             }
-            if(publishStatus.toString().startsWith(mContext.getResources().getString(R.string.comma))) {
+            if (publishStatus.toString().startsWith(mContext.getResources().getString(R.string.comma))) {
                 publishStatus.substring(1, publishStatus.length() - 1);
             }
             publishStatus.append(mContext.getResources().getString(R.string.to_publish));
@@ -166,7 +168,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         statusView.setText(publishStatus);
         if(!mIsTeacher||(data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
             statusView.setBackgroundResource(R.drawable.document_status);
-        }else {
+        } else {
             statusView.setBackgroundResource(R.drawable.document_status_disssable);
         }
         moreCopyView.setVisibility(data.class_before == 1 && data.class_process == 1 && data.class_after == 1 ? View.VISIBLE : View.GONE);
@@ -176,8 +178,8 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         return view;
     }
 
-    private void teacherOnclickItem(KnowledgeDetailMessage data){
-        if(data.class_process==1) {
+    private void teacherOnclickItem(KnowledgeDetailMessage data) {
+        if (data.class_process == 1) {
             LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, data.teaching_material_id, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
         } else {
             Toast.makeText(mContext.getContext(), R.string.class_on_knowledge_warning, Toast.LENGTH_SHORT).show();
@@ -188,8 +190,8 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         if(!mIsTeacher||(data.class_before==1&&data.class_process==1&&data.class_after==1)) {
             if(data.records!=null&&data.records.size()>0){
                 Toast.makeText(mContext.getContext(), R.string.no_class_records_warning, Toast.LENGTH_SHORT).show();
-            }else {
-
+            } else {
+                FrameDialog.showLittleDialog(mContext.getFragmentManager(), ClassRecordsFragment.getInstance(data));
             }
         } else {
             KnowledgeModel knowledgeModel = new KnowledgeModel(data.school_id, data.teacher_id, data.chapter_id, data.chapter_name, data.section_id, data.section_name, data.subject_code, data.subject_name, data.teaching_material_id, null);

@@ -14,15 +14,14 @@
         android:paddingTop="10dp"
         android:paddingRight="50dp"
         android:paddingBottom="10dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/publish_warning"
         android:textColor="@color/class_title"
         android:textSize="24sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:padding="40dp">
+        android:layout_height="wrap_content">
 
         <CheckBox
             android:id="@+id/publish_pre_class"
@@ -30,8 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:button="@drawable/publish_checkbox"
-            android:checked="true"
-            android:paddingLeft="8dp"
+            android:padding="20dp"
+            android:layout_marginLeft="@dimen/dp_30"
             android:text="@string/publish_sync_fre_class"
             android:textColor="@color/publish_item"
             android:textSize="20sp" />
@@ -42,8 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:button="@drawable/publish_checkbox"
-            android:checked="true"
-            android:paddingLeft="8dp"
+            android:padding="20dp"
+            android:layout_marginLeft="@dimen/dp_30"
             android:text="@string/publish_sync_in_class"
             android:textColor="@color/publish_item"
             android:textSize="20sp" />
@@ -54,8 +53,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:button="@drawable/publish_checkbox"
-            android:checked="true"
-            android:paddingLeft="8dp"
+            android:padding="20dp"
+            android:layout_marginLeft="@dimen/dp_30"
             android:text="@string/publish_sync_after_class"
             android:textColor="@color/publish_item"
             android:textSize="20sp" />

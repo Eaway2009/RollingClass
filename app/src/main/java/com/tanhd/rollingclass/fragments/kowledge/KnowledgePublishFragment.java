@@ -16,6 +16,8 @@ import com.tanhd.rollingclass.fragments.FrameDialog;
 
 public class KnowledgePublishFragment extends Fragment {
 
+    private static final String PARAM_CURRENT_STATUS = "PARAM_CURRENT_STATUS";
+    private static final String PARAM_ALL_STATUS = "PARAM_ALL_STATUS";
     private PublishCallback mListener;
     private int mStatus;
     private CheckBox mPreClassCheckBox;
@@ -25,11 +27,12 @@ public class KnowledgePublishFragment extends Fragment {
     private View mCancelButton;
     private View mCommitButton;
 
-    public static KnowledgePublishFragment newInstance(int status, PublishCallback callback) {
+    public static KnowledgePublishFragment newInstance(int status, int[] checkItem, PublishCallback callback) {
         KnowledgePublishFragment knowledgePublishFragment = new KnowledgePublishFragment();
         knowledgePublishFragment.setListener(callback);
         Bundle args = new Bundle();
-        args.putInt("Status", status);
+        args.putInt(PARAM_CURRENT_STATUS, status);
+        args.putIntArray(PARAM_ALL_STATUS, checkItem);
         knowledgePublishFragment.setArguments(args);
         return knowledgePublishFragment;
     }
@@ -37,7 +40,7 @@ public class KnowledgePublishFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_publish, container,false);
+        View contentView = inflater.inflate(R.layout.fragment_publish, container, false);
         initParams();
         initViews(contentView);
         return contentView;
@@ -56,23 +59,34 @@ public class KnowledgePublishFragment extends Fragment {
         mCancelButton.setOnClickListener(onClickListener);
         mCommitButton.setOnClickListener(onClickListener);
 
-        switch (mStatus) {
-            case KeyConstants.KnowledgeStatus.FRE_CLASS:
-                mPreClassCheckBox.setVisibility(View.GONE);
-                break;
-            case KeyConstants.KnowledgeStatus.AT_CLASS:
-                mInClassCheckBox.setVisibility(View.GONE);
-                break;
-            case KeyConstants.KnowledgeStatus.AFTER_CLASS:
-                mAfterClassCheckBox.setVisibility(View.GONE);
-                break;
+        getStatusCheckBox(mStatus).setVisibility(View.GONE);
+        for (int i = 1; i <= checkItem.length; i++) {
+            int status = checkItem[i - 1];
+            if (status == 1) {
+                getStatusCheckBox(i).setVisibility(View.GONE);
+            } else {
+                getStatusCheckBox(i).setChecked(true);
+            }
         }
+        checkItem[mStatus - 1] = 1;
+    }
+
+    private CheckBox getStatusCheckBox(int status) {
+        switch (status) {
+            case KeyConstants.KnowledgeStatus.FRE_CLASS:
+                return mPreClassCheckBox;
+            case KeyConstants.KnowledgeStatus.AT_CLASS:
+                return mInClassCheckBox;
+            case KeyConstants.KnowledgeStatus.AFTER_CLASS:
+                return mAfterClassCheckBox;
+        }
+        return null;
     }
 
     private void initParams() {
         Bundle args = getArguments();
-        mStatus = args.getInt("Status");
-        checkItem = new int[]{1, 1, 1};
+        mStatus = args.getInt(PARAM_CURRENT_STATUS);
+        checkItem = args.getIntArray(PARAM_ALL_STATUS);
     }
 
     CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {

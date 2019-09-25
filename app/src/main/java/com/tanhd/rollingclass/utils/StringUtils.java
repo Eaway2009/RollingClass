@@ -70,4 +70,36 @@ public class StringUtils {
         }
         return "";
     }
+
+    public static String getFormatYear(Date resourse) {
+        if (resourse != null) {
+            SimpleDateFormat time = new SimpleDateFormat("yyyy年");
+            return time.format(resourse);
+        }
+        return "";
+    }
+
+    public static String getFormatMonth(Date resourse) {
+        if (resourse != null) {
+            SimpleDateFormat time = new SimpleDateFormat("MM月");
+            return time.format(resourse);
+        }
+        return "";
+    }
+
+    public static String getFormatDate2(Date resourse) {
+        if (resourse != null) {
+            SimpleDateFormat time = new SimpleDateFormat("MM月dd日");
+            return time.format(resourse);
+        }
+        return "";
+    }
+
+    public static String getFormatTime(Date resourse) {
+        if (resourse != null) {
+            SimpleDateFormat time = new SimpleDateFormat("HH : mm");
+            return time.format(resourse);
+        }
+        return "";
+    }
 }

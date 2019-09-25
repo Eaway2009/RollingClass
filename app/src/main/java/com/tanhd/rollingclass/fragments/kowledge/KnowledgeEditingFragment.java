@@ -53,7 +53,6 @@ import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.GetFileHelper;
 import com.tanhd.rollingclass.utils.StringUtils;
-import com.tanhd.rollingclass.views.TaskDisplayView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -175,16 +174,16 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mKnowledgeAddButton.setOnClickListener(this);
     }
 
-    private void setViewStatus(){
-        if((mStatus==KeyConstants.KnowledgeStatus.FRE_CLASS&&mKnowledgeDetailMessage.class_before ==1)
-                ||(mStatus==KeyConstants.KnowledgeStatus.AT_CLASS&&mKnowledgeDetailMessage.class_process ==1)
-                ||(mStatus==KeyConstants.KnowledgeStatus.AFTER_CLASS&&mKnowledgeDetailMessage.class_after ==1)){
+    private void setViewStatus() {
+        if ((mStatus == KeyConstants.KnowledgeStatus.FRE_CLASS && mKnowledgeDetailMessage.class_before == 1)
+                || (mStatus == KeyConstants.KnowledgeStatus.AT_CLASS && mKnowledgeDetailMessage.class_process == 1)
+                || (mStatus == KeyConstants.KnowledgeStatus.AFTER_CLASS && mKnowledgeDetailMessage.class_after == 1)) {
             mKnowledgeAddButton.setVisibility(View.GONE);
             mSyncAfterClassCheckBox.setVisibility(View.GONE);
             mSyncInClassCheckBox.setVisibility(View.GONE);
             mSyncFreClassCheckBox.setVisibility(View.GONE);
             mKnowledgeNameEditView.setVisibility(View.GONE);
-        }else{
+        } else {
             mKnowledgeAddButton.setVisibility(View.VISIBLE);
             mSyncAfterClassCheckBox.setVisibility(View.VISIBLE);
             mSyncInClassCheckBox.setVisibility(View.VISIBLE);
@@ -444,7 +443,15 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
             QuestionModel resourceModel = (QuestionModel) resourceBaseModel;
             knowledgeLessonSample.question_set.remove(resourceModel);
         }
-        requestEdit(knowledgeLessonSample);
+        if ((knowledgeLessonSample.ppt_set != null && knowledgeLessonSample.ppt_set.size() > 0)
+                || (knowledgeLessonSample.image_set != null && knowledgeLessonSample.image_set.size() > 0)
+                || (knowledgeLessonSample.doc_set != null && knowledgeLessonSample.doc_set.size() > 0)
+                || (knowledgeLessonSample.video_set != null && knowledgeLessonSample.video_set.size() > 0)
+                || (knowledgeLessonSample.question_set != null && knowledgeLessonSample.question_set.size() > 0)) {
+            requestEdit(knowledgeLessonSample);
+        } else {
+            ScopeServer.getInstance().DeleteLessonSample(knowledgeLessonSample.lesson_sample_id, requestCallback);
+        }
     }
 
     private void requestEdit(KnowledgeLessonSample knowledgeLessonSample) {
@@ -505,12 +512,13 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     };
 
     private void initFilterDialog() {
-        FrameDialog.showLittleDialog(getChildFragmentManager(), KnowledgePublishFragment.newInstance(mStatus, new KnowledgePublishFragment.PublishCallback() {
-            @Override
-            public void publish(int[] checkedPublish) {
-                new RequestPublishTask(checkedPublish).execute();
-            }
-        }));
+        FrameDialog.showLittleDialog(getChildFragmentManager(), KnowledgePublishFragment.newInstance(mStatus, new int[]{mKnowledgeDetailMessage.class_before, mKnowledgeDetailMessage.class_process, mKnowledgeDetailMessage.class_after},
+                new KnowledgePublishFragment.PublishCallback() {
+                    @Override
+                    public void publish(int[] checkedPublish) {
+                        new RequestPublishTask(checkedPublish).execute();
+                    }
+                }));
     }
 
     private void showLessonSampleDialog(final int syncTo) {
@@ -802,9 +810,9 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         editView.setTag(questionModel);
         editView.setOnClickListener(this);
 
-        if((mStatus==KeyConstants.KnowledgeStatus.FRE_CLASS&&mKnowledgeDetailMessage.class_before ==1)
-                ||(mStatus==KeyConstants.KnowledgeStatus.AT_CLASS&&mKnowledgeDetailMessage.class_process ==1)
-                ||(mStatus==KeyConstants.KnowledgeStatus.AFTER_CLASS&&mKnowledgeDetailMessage.class_after ==1)){
+        if ((mStatus == KeyConstants.KnowledgeStatus.FRE_CLASS && mKnowledgeDetailMessage.class_before == 1)
+                || (mStatus == KeyConstants.KnowledgeStatus.AT_CLASS && mKnowledgeDetailMessage.class_process == 1)
+                || (mStatus == KeyConstants.KnowledgeStatus.AFTER_CLASS && mKnowledgeDetailMessage.class_after == 1)) {
             deleteView.setVisibility(View.GONE);
             editView.setVisibility(View.GONE);
         }
@@ -827,9 +835,9 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         editView.setOnClickListener(this);
         nameView.setText(result.name);
 
-        if((mStatus==KeyConstants.KnowledgeStatus.FRE_CLASS&&mKnowledgeDetailMessage.class_before ==1)
-                ||(mStatus==KeyConstants.KnowledgeStatus.AT_CLASS&&mKnowledgeDetailMessage.class_process ==1)
-                ||(mStatus==KeyConstants.KnowledgeStatus.AFTER_CLASS&&mKnowledgeDetailMessage.class_after ==1)){
+        if ((mStatus == KeyConstants.KnowledgeStatus.FRE_CLASS && mKnowledgeDetailMessage.class_before == 1)
+                || (mStatus == KeyConstants.KnowledgeStatus.AT_CLASS && mKnowledgeDetailMessage.class_process == 1)
+                || (mStatus == KeyConstants.KnowledgeStatus.AFTER_CLASS && mKnowledgeDetailMessage.class_after == 1)) {
             deleteView.setVisibility(View.GONE);
             editView.setVisibility(View.GONE);
         }

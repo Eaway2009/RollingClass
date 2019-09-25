@@ -65,6 +65,9 @@
     <string name="not_publish">待发布</string>
     <string name="hand_up_request">举手提问</string>
     <string name="pre_class_learning">课前学习</string>
+    <string name="learning_the_class">上课班级</string>
+    <string name="learning_the_date">上课日期</string>
+    <string name="learning_the_time">上课时间</string>
     <string name="after_class_learning">课后复习</string>
     <string name="class_record">上课记录</string>
     <string name="toast_crash">程序出错了, 错误报告提交, 我们将尽快修复该问题, 谢谢合作!</string>
