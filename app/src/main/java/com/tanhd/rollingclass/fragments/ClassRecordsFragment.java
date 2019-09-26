@@ -50,7 +50,7 @@ public class ClassRecordsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_class_answering, null);
+        View contentView = inflater.inflate(R.layout.fragment_class_records, null);
         initParams();
         initViews(contentView);
         initData();
