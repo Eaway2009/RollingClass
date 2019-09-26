@@ -109,13 +109,13 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.document_textview:
+            case R.id.document_textview: //学案
                 changeToFragment(MODULE_ID_DOCUMENTS);
                 break;
-            case R.id.resource_textview:
+            case R.id.resource_textview: //资源
                 changeToFragment(MODULE_ID_RESOURCES);
                 break;
-            case R.id.statistics_textview:
+            case R.id.statistics_textview: //学情
                 changeToFragment(MODULE_ID_STATISTICS);
                 break;
             case R.id.back_button:

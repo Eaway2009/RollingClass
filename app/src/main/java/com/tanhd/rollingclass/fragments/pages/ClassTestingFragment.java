@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 测学
+ */
 public class ClassTestingFragment extends Fragment implements View.OnClickListener {
 
     private static final String PARAM_CLASS_DATA = "PARAM_CLASS_DATA";

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
         android:id="@+id/rl_setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="30dp">
+        android:layout_marginBottom="@dimen/dp_13">
 
         <View
             android:id="@+id/v_line"
@@ -33,6 +34,7 @@
             android:layout_marginLeft="25dp"
             android:layout_toRightOf="@+id/v_line"
             android:visibility="gone"
+            tools:visibility="visible"
             android:background="@drawable/icon_setting" />
     </RelativeLayout>
 
@@ -55,7 +57,7 @@
         android:background="@drawable/student_handsup_bg"
         android:paddingLeft="6dp"
         android:gravity="center_vertical"
-        android:visibility="visible">
+        android:visibility="gone">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,9 +66,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textSize="@dimen/text_size_25"
             android:gravity="center"
             android:text="@string/hand_up_request" />
     </LinearLayout>
@@ -79,7 +81,7 @@
         android:layout_marginBottom="180dp"
         android:background="@drawable/handsup_simple"
         android:paddingLeft="6dp"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <LinearLayout
         android:id="@+id/handsup_layout"
@@ -110,6 +112,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:orientation="vertical">
 
             <TextView
@@ -142,7 +145,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_marginRight="35dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_13"
         android:background="@drawable/icon_fullscreen_enable" />
 </FrameLayout>

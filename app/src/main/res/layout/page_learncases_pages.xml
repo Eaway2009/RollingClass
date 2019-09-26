@@ -5,24 +5,31 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rl_cases_menu"
-        android:layout_width="160dp"
-        android:layout_height="match_parent">
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="match_parent"
+        android:background="@color/learn_menu_bg1"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/ll_menu_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/knowledge_name_tv"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
+                android:paddingLeft="@dimen/dp_9"
+                android:paddingRight="@dimen/dp_9"
+                android:paddingTop="@dimen/dp_17"
+                android:paddingBottom="@dimen/dp_8"
                 android:textColor="@color/knowledge_add_title"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_size_15"
                 tools:text="标题" />
 
             <View
@@ -38,7 +45,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/ll_bottom_view"
-                android:background="@color/learn_menu_bg1"
                 android:divider="@null"
                 android:indicatorStart="15dp"
                 android:indicatorLeft="10dp"
@@ -52,22 +58,22 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/learn_menu_bg2"
             android:gravity="center">
 
             <TextView
                 android:id="@+id/tv_insert_resource"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_bg_blue_round"
-                android:paddingLeft="20dp"
-                android:paddingTop="5dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="5dp"
+                android:background="@drawable/blue_border_radius_shape"
+                android:paddingLeft="@dimen/dp_11"
+                android:paddingTop="@dimen/dp_5"
+                android:paddingRight="@dimen/text_size_12"
+                android:paddingBottom="@dimen/dp_4"
                 android:text="@string/insert_resources"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_12" />
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -87,11 +93,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:drawableLeft="@drawable/back_icon"
-                android:drawablePadding="12dp"
-                android:textSize="18sp"
-                android:text="@string/back" />
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
+                android:drawableLeft="@mipmap/back_icon"
+                android:drawablePadding="@dimen/dp_10"
+                android:text="@string/back"
+                android:textSize="@dimen/text_size_12" />
 
             <LinearLayout
                 android:id="@+id/learning_buttons_layout"
@@ -104,21 +113,21 @@
                     android:id="@+id/pre_class_learning_tv"
                     android:layout_width="120dp"
                     android:layout_height="30dp"
-                    android:text="@string/pre_class_learning"
-                    android:textSize="18sp"
                     android:layout_marginRight="50dp"
+                    android:background="@drawable/learning_status_selector"
                     android:enabled="false"
+                    android:text="@string/pre_class_learning"
                     android:textColor="@color/white"
-                    android:background="@drawable/learning_status_selector"/>
+                    android:textSize="@dimen/text_size_16" />
 
                 <Button
                     android:id="@+id/after_class_learning_tv"
                     android:layout_width="120dp"
                     android:layout_height="30dp"
+                    android:background="@drawable/learning_status_selector"
                     android:text="@string/after_class_learning"
-                    android:textSize="18sp"
                     android:textColor="@color/white"
-                    android:background="@drawable/learning_status_selector"/>
+                    android:textSize="@dimen/text_size_16" />
             </LinearLayout>
 
             <TextView
@@ -144,12 +153,13 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="18dp"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:visibility="gone"
                 android:background="@drawable/start_class_bg"
-                android:text="@string/class_begin" />
+                android:gravity="center"
+                android:text="@string/class_begin"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_13"
+                tools:visibility="visible"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_in_class"
@@ -158,11 +168,11 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="18dp"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:textColor="@color/button_blue"
                 android:background="@drawable/class_started_bg"
-                android:text="@string/class_started" />
+                android:gravity="center"
+                android:text="@string/class_started"
+                android:textColor="@color/button_blue"
+                android:textSize="@dimen/text_size_15" />
         </RelativeLayout>
 
         <FrameLayout

@@ -1,6 +1,5 @@
 package com.tanhd.rollingclass.views;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.ClassRecordsFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
@@ -23,17 +23,19 @@ import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
-import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
-import com.tanhd.rollingclass.server.data.UserData;
-import com.tanhd.rollingclass.utils.StringUtils;
 import com.tanhd.rollingclass.server.data.RequestShareKnowledge;
 import com.tanhd.rollingclass.server.data.SchoolData;
 import com.tanhd.rollingclass.server.data.TeacherData;
+import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 学案适配器
+ */
 public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
     private boolean mIsTeacher;
@@ -113,7 +115,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                         moreBottomView.setVisibility(View.INVISIBLE);
                         ScopeServer.getInstance().DumpKnowledge(data.knowledge_id, DocumentAdapter.this);
                         break;
-                    case R.id.more_share_iv:
+                    case R.id.more_share_iv: //分享
                         moreBottomView.setVisibility(View.INVISIBLE);
                         new TeacherListTask(data.knowledge_id).execute();
                         break;
@@ -278,44 +280,30 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         boolean[] checkedItems = new boolean[teacherDataList.size()];
         final List<String> checkedIdList = new ArrayList<>();
 
-        for (int i = 0; i < teacherDataList.size(); i++) {
-            teacherNameItems[i] = teacherDataList.get(i).Username;
-            teacherIdItems[i] = teacherDataList.get(i).TeacherID;
-            checkedItems[i] = false;
-        }
-        new AlertDialog.Builder(mContext.getContext())
-                .setMultiChoiceItems(teacherNameItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        if (isChecked) {
-                            teacherIdItems[which] = teacherDataList.get(which).TeacherID;
-                        } else {
-                            teacherIdItems[which] = "";
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        final ShareDocumentDialog shareDocumentDialog = new ShareDocumentDialog(teacherDataList);
+        shareDocumentDialog.show(mContext.getChildFragmentManager(),"shareDocumentDialog");
+        shareDocumentDialog.setOkListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<TeacherData> selectList = shareDocumentDialog.getSelectData();
+                if (selectList.isEmpty()){
+                    Toast.makeText(mContext.getContext(), "请至少选择一个", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                    }
-                })
-                .setPositiveButton(R.string.sure, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        for (int i = 0; i < teacherIdItems.length; i++) {
-                            if (!TextUtils.isEmpty(teacherIdItems[i])) {
-                                checkedIdList.add(teacherIdItems[i]);
-                            }
-                        }
-                        RequestShareKnowledge request = new RequestShareKnowledge();
-                        request.knowledge_id = knowledge_id;
-                        request.teachers = checkedIdList;
-                        if (checkedIdList.size() > 0) {
-                            ScopeServer.getInstance().ShareKnowledgeToTeachers(request, shareCallback);
-                        }
-                    }
-                }).show();
+                for (int i = 0;i<selectList.size();i++){
+                    checkedIdList.add(selectList.get(i).TeacherID);
+                }
+                RequestShareKnowledge request = new RequestShareKnowledge();
+                request.knowledge_id = knowledge_id;
+                request.teachers = checkedIdList;
+                if (checkedIdList.size() > 0) {
+                    ScopeServer.getInstance().ShareKnowledgeToTeachers(request, shareCallback);
+                }
+
+            }
+        });
+
     }
 
     @Override

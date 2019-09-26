@@ -27,6 +27,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * 学生选择
+ */
 public class StudentSelectorFragment extends Fragment {
     private ClassData mClassData;
     private LinearLayout mLayoutView;

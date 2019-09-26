@@ -8,7 +8,7 @@
     <color name="topbar_background">#329CF8</color>
 
     <color name="white">#FFFFFFFF</color>
-    <color name="black">#FF000000</color>
+    <color name="black">#333333</color>
     <color name="gray">#666666</color>
     <color name="blue">#3BA0F8</color>
     <color name="cut_color">#f3f3f3</color>
@@ -75,7 +75,7 @@
     <color name="knowledge_edit_text">#45ADE3</color>
     <color name="knowledge_add_text_2">#8851C1FF</color>
     <color name="knowledge_add_title">#3B3B3B</color>
-    <color name="resource_name">#A1A1A1</color>
+    <color name="resource_name">#696969</color>
 
     <color name="online">#FF12FF12</color>
     <color name="offline">#FFFF1212</color>
@@ -85,4 +85,6 @@
     <!-- 小节选中颜色 -->
     <color name="section_select">#83C1F7</color>
     <color name="section_select_bg">#33363d</color>
+    <!-- 任务选中颜色 -->
+    <color name="task_select">#63B1F3</color>
 </resources>

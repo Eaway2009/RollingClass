@@ -49,7 +49,7 @@
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_17"
             android:paddingBottom="@dimen/dp_5"
-            android:text="取消"
+            android:text="@string/cancel"
             android:textColor="@color/frame_cancel_text"
             android:textSize="@dimen/text_size_15" />
 
@@ -67,7 +67,7 @@
             android:paddingTop="@dimen/dp_5"
             android:paddingRight="@dimen/dp_17"
             android:paddingBottom="@dimen/dp_5"
-            android:text="确定"
+            android:text="@string/sure"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_15" />
     </LinearLayout>

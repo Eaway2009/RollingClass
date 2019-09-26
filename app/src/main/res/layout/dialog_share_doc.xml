@@ -6,19 +6,33 @@
     android:background="@drawable/bg_white_radius5"
     android:orientation="vertical">
 
-    <TextView
+    <com.tanhd.rollingclass.views.ClearEditText
+        android:id="@+id/et_content"
         android:layout_width="wrap_content"
+        android:singleLine="true"
+        android:layout_marginRight="@dimen/dp_20"
+        android:imeOptions="actionDone"
+        android:minWidth="@dimen/dp_130"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_17"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_6"
-        android:text="请选择要同步的知识点"
+        android:background="@drawable/gray_empty_raduis5"
+        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_14"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_18"
+        android:drawableLeft="@mipmap/ic_search"
+        android:paddingTop="@dimen/dp_7"
+        android:paddingBottom="@dimen/dp_7"
+        android:hint="@string/search_hint"
         android:textColor="@color/gray"
+        android:drawablePadding="@dimen/dp_10"
         android:textSize="@dimen/text_size_15" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:background="@color/cut_color" />
 
     <android.support.v7.widget.RecyclerView
@@ -37,10 +51,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginBottom="@dimen/dp_6"
+        android:layout_marginLeft="@dimen/dp_44"
+        android:layout_marginRight="@dimen/dp_44"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_23"
         android:orientation="horizontal">
 
         <TextView

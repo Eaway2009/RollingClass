@@ -10,10 +10,10 @@
         android:layout_height="wrap_content"
         android:background="@drawable/class_selector_title_bg"
         android:gravity="center"
-        android:padding="16dp"
+        android:padding="@dimen/dp_8"
         android:text="@string/start_class_check"
-        android:textColor="@color/class_title"
-        android:textSize="20sp" />
+        android:textColor="#99212121"
+        android:textSize="@dimen/text_size_12" />
 
     <ListView
         android:id="@+id/list"

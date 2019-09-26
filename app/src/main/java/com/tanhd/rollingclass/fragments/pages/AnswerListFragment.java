@@ -173,8 +173,12 @@ public class AnswerListFragment extends Fragment {
         @Override
         protected Integer doInBackground(Void... voids) {
             UserData userData = ExternalParam.getInstance().getUserData();
-            String userID = userData.getOwnerID();
-            String userName = userData.getOwnerName();
+            String userID = "";
+            String userName = "";
+            if (userData!=null){
+                userID = userData.getOwnerID();
+                userName = userData.getOwnerName();
+            }
             ArrayList<AnswerData> answerList = new ArrayList<>();
             for (int i = 0; i < mQuestionList.size(); i++) {
                 ResultClass resultClass = mQuestionList.get(i).context.resultClass;

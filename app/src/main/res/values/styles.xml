@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -9,6 +9,8 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:screenOrientation">landscape</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="WhiteCheckBox" parent="Theme.AppCompat.Light">
@@ -69,7 +71,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-    <style name="MyPopupMenu" >
+
+    <style name="MyPopupMenu">
         <item name="android:popupBackground">@color/black</item>
     </style>
 
@@ -81,7 +84,7 @@
 
     <!-- dialog出入动画 -->
     <style name="dialogAnim" mce_bogus="1" parent="android:Animation">
-<!--        <item name="android:windowEnterAnimation">@anim/dialog_push_in</item>-->
+        <!--        <item name="android:windowEnterAnimation">@anim/dialog_push_in</item>-->
         <item name="android:windowExitAnimation">@anim/dialog_push_out</item>
     </style>
 </resources>

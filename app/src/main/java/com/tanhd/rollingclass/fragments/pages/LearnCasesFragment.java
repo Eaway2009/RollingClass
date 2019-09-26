@@ -47,10 +47,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 
-public class LearnCasesFragment extends Fragment implements OnClickListener, ExpandableListView.OnChildClickListener {
+public class LearnCasesFragment extends Fragment implements OnClickListener, ExpandableListView.OnChildClickListener, ExpandableListView.OnGroupClickListener {
 
     private RelativeLayout mRlInnerTitle;
-    private RelativeLayout mRlMenuLayout;
+    private View mRlMenuLayout;
     private LinearLayout mLlMenuContainer;
     private TextView mTvInsertResource;
     private TextView mTvExerciseResult;
@@ -161,6 +161,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         mExpandableListView.setHeaderDividersEnabled(false);
         mExpandableListView.setAdapter(mAdapter);
         mExpandableListView.setOnChildClickListener(this);
+        mExpandableListView.setOnGroupClickListener(this);
     }
 
 
@@ -221,7 +222,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 init = true;
                 new InitDataTask().execute();
                 break;
-            case R.id.tv_class_begin:
+            case R.id.tv_class_begin: //开始上课
                 FrameDialog.showLittleDialog(getChildFragmentManager(), ClassSelectorFragment.newInstance(new ClassSelectorFragment.OnClassListener() {
                     @Override
                     public void onClassSelected(ClassData classData) {
@@ -359,9 +360,17 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, studentID, params);
     }
 
+    //group点击
+    @Override
+    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+        mAdapter.setSelectPos(groupPosition);
+        return false;
+    }
+
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         if (groupPosition < mAdapter.getGroupCount() && mAdapter.getGroup(groupPosition) != null) {
+            mAdapter.setSelectPos(groupPosition);
             callClickItem(groupPosition, childPosition);
         }
         return true;
@@ -411,6 +420,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
             }
         }
     }
+
 
     private class InitDataTask extends AsyncTask<Void, Void, List<KnowledgeLessonSample>> {
 

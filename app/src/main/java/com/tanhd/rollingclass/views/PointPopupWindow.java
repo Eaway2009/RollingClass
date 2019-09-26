@@ -43,7 +43,7 @@ public class PointPopupWindow {
     }
 
     public void showPopup(View view) {
-        int offsetY = (int) (view.getHeight() * 3.1f);
+        int offsetY = (int) (view.getHeight() * 2.7f);
         int offsetX = view.getWidth();
         Log.e("mmc", "offsetX:" + offsetX + "   offsetY:" + offsetY);
         popupWindow.showAsDropDown(view, -offsetX +30, -offsetY, Gravity.START);

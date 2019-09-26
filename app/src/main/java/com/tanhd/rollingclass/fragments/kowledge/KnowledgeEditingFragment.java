@@ -22,11 +22,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.base.BaseFragment;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.model.EventTag;
 import com.tanhd.rollingclass.fragments.FrameDialog;
@@ -64,7 +66,7 @@ import java.util.List;
 /**
  * 编辑 课前| 新增任务
  */
-public class KnowledgeEditingFragment extends Fragment implements View.OnClickListener, KnowledgeAddTaskFragment.Callback {
+public class KnowledgeEditingFragment extends BaseFragment implements View.OnClickListener, KnowledgeAddTaskFragment.Callback {
 
     public static final String PARAM_KNOWLEDGE_DETAIL_DATA = "PARAM_KNOWLEDGE_DETAIL_DATA";
     public static final String PARAM_KNOWLEDGE_DETAIL_STATUS = "PARAM_KNOWLEDGE_DETAIL_STATUS";
@@ -79,6 +81,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
     private TextView mKnowledgeAddButton;
     private LinearLayout mKnowledgeTasksLayout;
     private View mAddFragmentView;
+    private ScrollView scrollView;
 
     private KnowledgeModel mKnowledgeModel;
     private KnowledgeDetailMessage mKnowledgeDetailMessage;
@@ -155,6 +158,7 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
         mKnowledgeAddButton = view.findViewById(R.id.knowledge_add_button);
         mAddFragmentView = view.findViewById(R.id.fragment_add_task);
         mProgressBar = view.findViewById(R.id.progressbar);
+        scrollView = view.findViewById(R.id.scrollView);
 
         mSyncFreClassCheckBox = view.findViewById(R.id.sync_fre_class_cb);
         mSyncInClassCheckBox = view.findViewById(R.id.sync_in_class_cb);
@@ -318,12 +322,18 @@ public class KnowledgeEditingFragment extends Fragment implements View.OnClickLi
                     editTitle();
                 }
                 break;
-            case R.id.knowledge_add_button:
+            case R.id.knowledge_add_button: //+任务
                 if (mAddFragmentView.getVisibility() == View.VISIBLE) {
                     showDialog(getString(R.string.adding_task_warning));
                 } else {
                     addEditingFragment();
                 }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
                 break;
             case R.id.sync_fre_class_cb:
                 if (mAddFragmentView.getVisibility() == View.VISIBLE) {

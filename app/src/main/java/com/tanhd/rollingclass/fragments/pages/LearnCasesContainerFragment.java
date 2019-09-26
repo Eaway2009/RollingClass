@@ -1,16 +1,9 @@
 package com.tanhd.rollingclass.fragments.pages;
 
-import static com.tanhd.rollingclass.activity.LearnCasesActivity.PARAM_KNOWLEDGE_ID;
-import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_ANSWER;
-import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_EXRCISE;
-import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_LOCK;
-import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_MUTE;
-
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,13 +20,13 @@ import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.db.KeyConstants.SYNC_MODE;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.ImageShowFragment;
 import com.tanhd.rollingclass.fragments.QuestionDisplayFragment;
 import com.tanhd.rollingclass.fragments.ShowDocumentFragment;
 import com.tanhd.rollingclass.fragments.ShowPptFragment;
 import com.tanhd.rollingclass.fragments.VideoPlayerFragment;
-import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.ResourceModel;
@@ -42,15 +35,18 @@ import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.views.PointPopupWindow;
 import com.tanhd.rollingclass.views.PointPopupWindow.PopupClickCallBack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import com.tanhd.rollingclass.db.KeyConstants.SYNC_MODE;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_ANSWER;
+import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_EXRCISE;
+import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_LOCK;
+import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_MUTE;
 
 public class LearnCasesContainerFragment extends Fragment implements OnClickListener {
 
@@ -188,12 +184,12 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         @Override
         public void onClick(int type, boolean isClick) {
             switch (type) {
-                case ITEM_ANSWER:
+                case ITEM_ANSWER: //抢答
                     if (mClassData != null) {
                         FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId, true));
                     }
                     break;
-                case ITEM_EXRCISE:
+                case ITEM_EXRCISE:  //测学
                     if (mClassData != null) {
                         FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId, false));
                     }

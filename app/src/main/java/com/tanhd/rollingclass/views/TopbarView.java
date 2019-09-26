@@ -74,7 +74,9 @@ public class TopbarView extends CardView {
 
         refreshMessageCount();
         UserData userData = ExternalParam.getInstance().getUserData();
-        mUserNameView.setText(userData.getOwnerName());
+        if (userData!=null){
+            mUserNameView.setText(userData.getOwnerName());
+        }
 
         findViewById(R.id.userinfo).setOnClickListener(new OnClickListener() {
             @Override

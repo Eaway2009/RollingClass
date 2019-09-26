@@ -277,6 +277,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:textSize="26sp"
-        android:text="确定"/>
+        android:text="@string/sure"/>
 
 </LinearLayout>

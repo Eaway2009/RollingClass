@@ -38,6 +38,9 @@ import com.tanhd.rollingclass.views.PopFliterRes;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 资源
+ */
 public class ResourcesPageFragment extends Fragment implements View.OnClickListener, ResourceBaseFragment.Callback {
 
     private View mPptTitleView;
@@ -335,7 +338,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         ResourceBaseFragment moduleFragment = null;
-        if (type == ResourceType.PPT_TYPE) {
+        if (type == ResourceType.PPT_TYPE) { //PPT
             if (mPPTFragment == null) {
                 if (mListener != null) {
                     mPPTFragment = ResourceGrideFragment.newInstance(true, mListener);
@@ -347,7 +350,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             }
             moduleFragment = mPPTFragment;
 
-        } else if (type == ResourceType.VIDEO_TYPE) {
+        } else if (type == ResourceType.VIDEO_TYPE) { //微课
             if (mVideoFragment == null) {
                 if (mListener != null) {
                     mVideoFragment = ResourceGrideFragment.newInstance(true, mListener);

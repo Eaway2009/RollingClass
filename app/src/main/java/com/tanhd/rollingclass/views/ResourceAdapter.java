@@ -25,6 +25,9 @@ import com.tanhd.rollingclass.server.data.ResourceModel;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 资源适配器
+ */
 public class ResourceAdapter extends BaseAdapter {
 
     private static final String TAG = "ResourceAdapter";

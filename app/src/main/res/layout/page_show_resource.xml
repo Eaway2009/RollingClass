@@ -2,75 +2,79 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="20dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:orientation="vertical"
     android:paddingLeft="25dp"
     android:paddingRight="25dp"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:paddingBottom="20dp">
 
     <LinearLayout
         android:id="@+id/resource_change_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="5">
+
         <TextView
             android:id="@+id/ppt_resource_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:paddingTop="@dimen/dp_15"
             android:paddingBottom="@dimen/dp_15"
-            android:textSize="@dimen/text_size_18"
-            android:gravity="center"
             android:text="@string/ppt_u"
-            android:textColor="@color/resource_title_selector" />
+            android:textColor="@color/resource_title_selector"
+            android:textSize="@dimen/text_size_17" />
+
         <TextView
             android:id="@+id/micro_course_resource_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_15"
-            android:paddingBottom="@dimen/dp_15"
             android:layout_weight="1"
             android:gravity="center"
+            android:paddingTop="@dimen/dp_15"
+            android:paddingBottom="@dimen/dp_15"
             android:text="@string/micro_course"
             android:textColor="@color/resource_title_selector"
-            android:textSize="@dimen/text_size_18" />
+            android:textSize="@dimen/text_size_17" />
+
         <TextView
             android:id="@+id/question_resource_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/exercises"
             android:paddingTop="@dimen/dp_15"
             android:paddingBottom="@dimen/dp_15"
-            android:textSize="@dimen/text_size_18"
+            android:text="@string/exercises"
             android:textColor="@color/resource_title_selector"
-             />
+            android:textSize="@dimen/text_size_17" />
+
         <TextView
             android:id="@+id/word_resource_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:paddingTop="@dimen/dp_15"
             android:paddingBottom="@dimen/dp_15"
-            android:textSize="@dimen/text_size_18"
-            android:gravity="center"
             android:text="@string/documents"
             android:textColor="@color/resource_title_selector"
-             />
+            android:textSize="@dimen/text_size_17" />
+
         <TextView
             android:id="@+id/image_resource_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/photo"
             android:paddingTop="@dimen/dp_15"
             android:paddingBottom="@dimen/dp_15"
-            android:textSize="@dimen/text_size_18"
+            android:text="@string/photo"
             android:textColor="@color/resource_title_selector"
-            />
+            android:textSize="@dimen/text_size_17" />
+
         <TextView
             android:id="@+id/upload_file_resource_view"
             android:layout_width="wrap_content"
@@ -79,9 +83,10 @@
             android:gravity="center"
             android:paddingTop="@dimen/dp_15"
             android:paddingBottom="@dimen/dp_15"
-            android:textSize="@dimen/text_size_18"
             android:text="@string/upload_from_local_title"
-            android:textColor="@color/group_name"
+            tools:visibility="visible"
+            android:textColor="#78E7E0"
+            android:textSize="@dimen/text_size_17"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -95,21 +100,21 @@
         android:id="@+id/tv_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="@dimen/dp_100"
-        android:textColor="@color/black"
-        android:gravity="right|center"
-        android:drawablePadding="@dimen/dp_6"
-        android:padding="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_5"
         android:layout_gravity="right"
+        android:layout_marginTop="@dimen/dp_5"
         android:drawableRight="@drawable/down_detail"
-        android:text="全部" />
+        android:drawablePadding="@dimen/dp_6"
+        android:gravity="right|center"
+        android:minWidth="@dimen/dp_100"
+        android:padding="@dimen/dp_10"
+        android:text="全部"
+        android:textColor="@color/black" />
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="25dp" />
+        android:layout_marginTop="25dp"
+        android:layout_weight="1" />
 
 </LinearLayout>
