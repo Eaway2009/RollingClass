@@ -1,6 +1,5 @@
 package com.tanhd.rollingclass.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,11 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.fragments.pages.ErrorQuestionPage;
-import com.tanhd.rollingclass.fragments.pages.MarkAnswerPage;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ClassData;
@@ -27,7 +24,7 @@ import com.tanhd.rollingclass.server.data.CountClassLessonSampleData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
-import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,7 +127,7 @@ public class WrongQuestionShowFragment extends Fragment {
         protected void onPostExecute(Integer ret) {
             mProgressBar.setVisibility(View.GONE);
             if (ret != 0) {
-                Toast.makeText(getContext().getApplicationContext(), "未获得错题记录!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_wrong_recod_empty);
                 DialogFragment dialog = (DialogFragment) getParentFragment();
                 dialog.dismiss();
                 return;

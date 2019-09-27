@@ -13,6 +13,7 @@
         android:id="@+id/resource_change_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
         android:weightSum="5">
 
         <TextView
@@ -98,17 +99,21 @@
 
     <TextView
         android:id="@+id/tv_spinner"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_90"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginTop="@dimen/dp_5"
-        android:drawableRight="@drawable/down_detail"
+        android:layout_marginTop="@dimen/dp_24"
+        android:drawableRight="@mipmap/ic_down"
         android:drawablePadding="@dimen/dp_6"
-        android:gravity="right|center"
-        android:minWidth="@dimen/dp_100"
-        android:padding="@dimen/dp_10"
+        android:gravity="left|center"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_6"
+        android:paddingBottom="@dimen/dp_6"
+        android:background="@drawable/bg_spinner"
+        android:textSize="@dimen/text_size_12"
         android:text="全部"
-        android:textColor="@color/black" />
+        android:textColor="@color/resource_name" />
 
     <FrameLayout
         android:id="@+id/fragment_container"

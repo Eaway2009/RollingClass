@@ -3,6 +3,7 @@ package com.tanhd.rollingclass.views;
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.base.BaseListAdapter;
@@ -19,6 +20,7 @@ public class PopFliterRes extends TopPushPopupWindow<Void> {
     private RecyclerView rv;
     private BaseListAdapter<String> adapter;
     private OnItemClickListener onItemClickListener;
+    private int nowPos = 0;
 
     public PopFliterRes(Activity activity) {
         super(activity, activity, null);
@@ -42,7 +44,9 @@ public class PopFliterRes extends TopPushPopupWindow<Void> {
 
             @Override
             public void onBindItemHolder(BaseViewHolder holder, int position) {
-                holder.getTextView(R.id.tv_name).setText(mDataList.get(position));
+                TextView tv_name = holder.getTextView(R.id.tv_name);
+                tv_name.setText(mDataList.get(position));
+                tv_name.setSelected(position == nowPos);
             }
         };
         rv.setAdapter(adapter);
@@ -50,7 +54,9 @@ public class PopFliterRes extends TopPushPopupWindow<Void> {
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                nowPos = position;
                 if (onItemClickListener != null) onItemClickListener.onItemClick(view,position);
+                adapter.notifyDataSetChanged();
                 dismiss();
             }
         });

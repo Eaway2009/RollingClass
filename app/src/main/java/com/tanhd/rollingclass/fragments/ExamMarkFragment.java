@@ -25,6 +25,7 @@ import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.utils.ResultClass;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -172,7 +173,7 @@ public class ExamMarkFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             mProgressBar.setVisibility(View.GONE);
             if (mQuestionList == null || mQuestionList.size() == 0) {
-                Toast.makeText(getContext().getApplicationContext(), "未找到数据", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_no_data);
                 DialogFragment dialog = (DialogFragment) getParentFragment();
                 dialog.dismiss();
                 return;

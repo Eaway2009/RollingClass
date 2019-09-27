@@ -21,6 +21,7 @@ import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,7 @@ public class TeacherMicroCourseSelectorFragment extends Fragment {
 
             if (mItemList.size() == 0 && getContext() != null) {
                 try {
-                    Toast.makeText(getActivity().getApplicationContext(), "没有找到相关的微课资源!", Toast.LENGTH_LONG).show();
+                    ToastUtil.show(R.string.toast_video_empty);
                 } catch (Exception e) {
                 }
                 DialogFragment dialog = (DialogFragment) getParentFragment();

@@ -26,6 +26,7 @@ import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.StudentData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -218,7 +219,7 @@ public class WaitAnswerFragment extends Fragment {
         @Override
         protected void onPostExecute(Integer result) {
             if (result != 0) {
-                Toast.makeText(getContext().getApplicationContext(), "加载数据失败!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_load_fail);
                 return;
             }
 

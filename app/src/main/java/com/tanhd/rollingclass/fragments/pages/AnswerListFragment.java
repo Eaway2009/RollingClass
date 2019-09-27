@@ -28,6 +28,7 @@ import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.ResultClass;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,10 +164,10 @@ public class AnswerListFragment extends Fragment {
         @Override
         protected void onPostExecute(Integer result) {
             if (result == 0) {
-                Toast.makeText(getActivity().getApplicationContext(), "提交答案成功!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_answer_ok);
                 mCommitButton.setVisibility(View.GONE);
             } else {
-                Toast.makeText(getActivity().getApplicationContext(), "提交失败! ErrorCode:" + result, Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_answer_fail);
             }
         }
 

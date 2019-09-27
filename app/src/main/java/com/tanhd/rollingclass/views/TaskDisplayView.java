@@ -21,6 +21,7 @@ import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceBaseModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,7 +177,7 @@ public class TaskDisplayView implements View.OnClickListener {
 
             @Override
             public void onError(String code, String message) {
-                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                ToastUtil.show(message);
             }
         };
         LessonSampleModel lessonSampleModel = new LessonSampleModel();

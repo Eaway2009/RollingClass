@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
+    android:orientation="vertical" android:layout_width="@dimen/dp_90"
     android:layout_height="wrap_content">
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="全部"
-        android:paddingLeft="@dimen/dp_18"
-        android:paddingRight="@dimen/dp_18"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10"
-        android:drawablePadding="@dimen/dp_11"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_16" />
+        android:background="@drawable/bg_blue_trans_selector"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_7"
+        android:paddingBottom="@dimen/dp_7"
+        android:textColor="@color/text_white_gray"
+        android:textSize="@dimen/text_size_12" />
 </LinearLayout>

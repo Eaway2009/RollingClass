@@ -1,10 +1,12 @@
 package com.tanhd.rollingclass.fragments.resource;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -20,19 +22,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.base.BaseListAdapter;
+import com.tanhd.rollingclass.base.BaseViewHolder;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.views.AnalysisDialog;
+import com.tanhd.rollingclass.views.OnItemClickListener;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 习题-页面
+ */
 public class QuestionResourceFragment extends ResourceBaseFragment {
     private List<QuestionModel> mQuestionList = new ArrayList<>();
     private List<QuestionModel> mCheckedQuestionList = new ArrayList<>();
 
-    private ListView mListView;
+    private RecyclerView recyclerView;
     private QuestionAdapter mAdapter;
     private ListCallback mListListener;
     private Callback mListener;
@@ -68,9 +77,18 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
         view.findViewById(R.id.question_list_title).setVisibility(View.GONE);
         view.findViewById(R.id.lesson_sample).setVisibility(View.GONE);
         view.findViewById(R.id.commit).setVisibility(View.GONE);
-        mListView = view.findViewById(R.id.list);
-        mAdapter = new QuestionAdapter();
-        mListView.setAdapter(mAdapter);
+        recyclerView = view.findViewById(R.id.list);
+        mAdapter = new QuestionAdapter(getActivity());
+        recyclerView.setAdapter(mAdapter);
+
+        //解析
+        mAdapter.setAnalysisListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                QuestionModel questionModel = mAdapter.getDataList().get(position);
+                AnalysisDialog.newInstance(questionModel.context.Answer,questionModel.context.Analysis).show(getChildFragmentManager(),"AnalysisDialog");
+            }
+        });
     }
 
     public void setListener(ResourceBaseFragment.ListCallback callback) {
@@ -84,7 +102,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
     public void setListData(List resourceList) {
         mQuestionList = resourceList;
         if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
+            mAdapter.setDataList(resourceList);
         }else{
             mHandler.postDelayed(new Runnable() {
                 @Override
@@ -99,7 +117,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
 
     public void clearListData() {
         if (mAdapter != null) {
-            mListView.smoothScrollToPosition(0);
+            recyclerView.smoothScrollToPosition(0);
             mQuestionList.clear();
             mAdapter.notifyDataSetChanged();
         }
@@ -110,36 +128,42 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
         return mQuestionList;
     }
 
-    private class QuestionAdapter extends BaseAdapter {
+    /**
+     * 适配器
+     */
+    private class QuestionAdapter extends BaseListAdapter<QuestionModel> {
+        private OnItemClickListener analysisListener;
 
-        @Override
-        public int getCount() {
-            return mQuestionList.size();
+        public QuestionAdapter(Context context) {
+            super(context);
         }
 
         @Override
-        public Object getItem(int position) {
-            return mQuestionList.get(position);
+        public int getLayoutId() {
+            return R.layout.item_question_resource;
+        }
+
+        public void setAnalysisListener(OnItemClickListener analysisListener) {
+            this.analysisListener = analysisListener;
         }
 
         @Override
-        public long getItemId(int position) {
-            return position;
-        }
+        public void onBindItemHolder(BaseViewHolder holder, final int position) {
+            final QuestionModel question = mDataList.get(position);
 
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            final QuestionModel question = mQuestionList.get(position);
-            View view = convertView;
-            if (view == null) {
-                view = getLayoutInflater().inflate(R.layout.item_question_resource, parent, false);
-            }
+            TextView typeView = holder.getView(R.id.type);
+            TextView noView = holder.getView(R.id.no);
+            WebView stemView = holder.getView(R.id.stem);
+            View overView = holder.getView(R.id.over);
+            TextView tv_analysis = holder.getView(R.id.tv_analysis);
+            tv_analysis.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (analysisListener != null) analysisListener.onItemClick(v,position);
+                }
+            });
 
-            TextView typeView = view.findViewById(R.id.type);
-            TextView noView = view.findViewById(R.id.no);
-            WebView stemView = view.findViewById(R.id.stem);
-            View overView = view.findViewById(R.id.over);
-            CheckBox itemCheckBox = view.findViewById(R.id.check_item_cb);
+            CheckBox itemCheckBox = holder.getView(R.id.check_item_cb);
             if (mListener != null || mListListener != null) {
                 itemCheckBox.setVisibility(View.VISIBLE);
             } else {
@@ -152,7 +176,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
                 String html = AppUtils.dealHtmlText(question.context.Stem);
                 stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
-                LinearLayout optionsLayout = view.findViewById(R.id.options);
+                LinearLayout optionsLayout = holder.getView(R.id.options);
                 if (question.context.QuestionCategoryId == 1 && question.context.Options != null) {
                     optionsLayout.setVisibility(View.VISIBLE);
                     optionsLayout.removeAllViews();
@@ -194,9 +218,11 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
                     }
                 }
             });
-            return view;
+
         }
     }
+
+
 
     //这里面的resource就是fromhtml函数的第一个参数里面的含有的url
     Html.ImageGetter imgGetter = new Html.ImageGetter() {

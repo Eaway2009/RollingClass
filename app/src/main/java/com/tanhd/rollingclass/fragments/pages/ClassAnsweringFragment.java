@@ -30,6 +30,7 @@ import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,7 +123,7 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
                 mQuestionResourceFragment.clearListData();
                 mAnswerListFragment.clearListData();
 
-                Toast.makeText(getContext(), R.string.check_no_questions, Toast.LENGTH_SHORT).show();
+                ToastUtil.show(R.string.check_no_questions);
             }
         }
     }

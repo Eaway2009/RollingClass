@@ -17,6 +17,7 @@ import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 public class ClassBeginFragment extends Fragment {
     public static interface ClassBeginListener {
@@ -90,7 +91,7 @@ public class ClassBeginFragment extends Fragment {
                 if (mListener != null)
                     mListener.onCompleted();
             } else {
-                Toast.makeText(getContext().getApplicationContext(), "加载数据失败!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_load_fail);
             }
 
             if (showStudentState) {

@@ -1,50 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_example_bord"
+    android:layout_marginBottom="@dimen/dp_16"
     android:gravity="center">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/bottom_selector_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:paddingLeft="30dp"
-            android:paddingTop="10dp"
-            android:paddingRight="30dp"
-            android:paddingBottom="10dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:text="@string/collect"
-                android:textColor="@color/resource_name"
-                android:textSize="9sp" />
-
-            <CheckBox
-                android:id="@+id/check_item_cb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:button="@drawable/resource_check_selector"
-                android:text="@string/check"
-                android:textColor="@color/resource_name"
-                android:textSize="9sp"
-                android:visibility="gone" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,6 +21,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_15"
+                android:paddingTop="@dimen/dp_10"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -67,7 +37,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/button_blue"
-                        android:textSize="18sp" />
+                        android:textSize="@dimen/text_size_15"
+                        tools:text="[单选题]" />
 
                     <TextView
                         android:id="@+id/no"
@@ -75,7 +46,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="@dimen/text_size_15"
+                        tools:text="第一题" />
 
                 </LinearLayout>
 
@@ -84,17 +56,100 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
-                    android:layout_marginTop="5dp" />
+                    android:layout_marginTop="@dimen/dp_5" />
 
             </LinearLayout>
 
+            <!-- 选项 -->
             <LinearLayout
                 android:id="@+id/options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:paddingLeft="@dimen/dp_30"
+                android:paddingRight="@dimen/dp_30"
+                android:layout_marginBottom="@dimen/dp_24"
                 android:orientation="vertical" />
 
+            <LinearLayout
+                android:id="@+id/bottom_selector_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_example_bottom"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dp_20"
+                android:paddingRight="@dimen/dp_40">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lbl_example_class"
+                    android:textSize="@dimen/text_size_10"
+                    android:textColor="@color/resource_name" />
+                <com.tanhd.rollingclass.views.RatingBar
+                    android:id="@+id/rb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_18"
+                    android:minWidth="120dp"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    app:starCount="5"
+                    app:starEmpty="@mipmap/ic_start_empty"
+                    app:starFill="@mipmap/ic_start_full"
+                    app:starHalf="@mipmap/ic_start_full"
+                    app:starImageSize="@dimen/dp_15"
+                    app:starPadding="@dimen/dp_8"
+                    app:starStep="3"
+                    app:stepSize="Full" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/tv_collect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:drawableLeft="@drawable/icon_unlike"
+                    android:drawablePadding="@dimen/dp_12"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:text="@string/collect"
+                    android:textColor="@color/resource_name"
+                    android:textSize="@dimen/text_size_10" />
+
+                <TextView
+                    android:id="@+id/tv_analysis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_60"
+                    android:drawableLeft="@mipmap/ic_analysis"
+                    android:drawablePadding="@dimen/dp_12"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:text="@string/lbl_analysis"
+                    android:textColor="@color/resource_name"
+                    android:textSize="@dimen/text_size_10" />
+
+                <CheckBox
+                    android:id="@+id/check_item_cb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_60"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
+                    android:button="@drawable/resource_check_selector"
+                    android:text="@string/check"
+                    tools:visibility="visible"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_10"
+                    android:textColor="@color/resource_name"
+                    android:textSize="@dimen/text_size_10"
+                    android:visibility="gone" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

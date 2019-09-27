@@ -41,6 +41,7 @@ import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.GlobalWork;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.TopbarView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -101,7 +102,7 @@ public class MainActivity extends BaseActivity {
         mUserData = ExternalParam.getInstance().getUserData();
         if (mUserData == null) {
             Log.i(TAG, "onCreate: on UserData");
-            Toast.makeText(getApplicationContext(), "获取用户信息失败, 请重新登录!", Toast.LENGTH_LONG).show();
+            ToastUtil.show(R.string.toast_token_lose);
             finish();
             return;
         } else {
@@ -256,7 +257,7 @@ public class MainActivity extends BaseActivity {
             if (msg.what == RECEIVE_MESSAGE_CODE) {
                 PushMessage pushMessage = (PushMessage) msg.obj;
                 if (pushMessage != null) {
-                    Toast.makeText(MainActivity.this, "收到2：" + pushMessage.toString(), Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(getString(R.string.toast_receive_two) + pushMessage.toString());
                     Log.i("DemoLog", "客户端收到Service的消息: " + pushMessage.toString());
                 }
             }

@@ -30,6 +30,7 @@ import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,11 +145,11 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
                 break;
             case R.id.commit_button:
                 if(mQuestionList==null||mQuestionList.size()==0){
-                    Toast.makeText(getActivity(), "请先选择题目",Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(R.string.toast_select_topic);
                     return;
                 }
                 if(mStudentList==null||mStudentList.size()==0){
-                    Toast.makeText(getActivity(), "请选择需要参与测评的学生",Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(R.string.toast_select_student);
                     return;
                 }
                 new NewSetTask(mQuestionList, mStudentList).execute();

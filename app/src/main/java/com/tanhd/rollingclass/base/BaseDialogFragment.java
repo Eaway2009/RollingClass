@@ -16,6 +16,7 @@ import android.view.Window;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.utils.KeyboardUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.utils.annotate.ViewAnnotationUtil;
 
 /**
@@ -26,12 +27,14 @@ public abstract class BaseDialogFragment extends DialogFragment {
     protected Handler handler = new Handler();
     protected Window window;
     protected View contentView;
+    private double widthHold = 0.26; //默认宽度占比 0.26
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         contentView = createContentView(getContentView());
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        widthHold = getWidthHold();
         return contentView;
     }
 
@@ -63,7 +66,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
             DisplayMetrics dm = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-            window.setLayout((int) (dm.widthPixels * 0.26), ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setLayout((int) (dm.widthPixels * widthHold), ViewGroup.LayoutParams.WRAP_CONTENT);
             setAnim();
         }
     }
@@ -112,6 +115,14 @@ public abstract class BaseDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Toast
+     * @param toast
+     */
+    protected void showToast(String toast){
+        ToastUtil.show(toast);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -132,4 +143,12 @@ public abstract class BaseDialogFragment extends DialogFragment {
      * 初始化数据
      */
     protected abstract void initData();
+
+    /**
+     * 弹框宽度
+     * @return
+     */
+    protected double getWidthHold(){
+        return widthHold;
+    }
 }

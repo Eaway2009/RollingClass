@@ -29,6 +29,7 @@ import com.tanhd.rollingclass.server.UpdateHelper;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.PopMenu;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.popmenu.MenuItem;
 
 import java.security.acl.LastOwnerException;
@@ -84,7 +85,7 @@ public class TopbarView extends CardView {
                 UserData userData = ExternalParam.getInstance().getUserData();
                 if (!userData.isTeacher()) {
                     if (ExternalParam.getInstance().getStatus() != 0) {
-                        Toast.makeText(getContext().getApplicationContext(), "正在上课中...", Toast.LENGTH_LONG).show();
+                        ToastUtil.show(R.string.toast_class_ing);
                         return;
                     }
                 }
@@ -118,7 +119,7 @@ public class TopbarView extends CardView {
                 } else if (menuItem.itemId == R.id.network_ping) {
                     if (ExternalParam.getInstance().getUserData().isTeacher()) {
                         if (ExternalParam.getInstance().getClassData() == null) {
-                            Toast.makeText(getContext().getApplicationContext(), "请先选择班级", Toast.LENGTH_LONG).show();
+                            ToastUtil.show(R.string.toast_class_no);
                             return;
                         }
                     }

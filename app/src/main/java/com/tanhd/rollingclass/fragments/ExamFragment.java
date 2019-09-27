@@ -34,6 +34,7 @@ import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.ResultClass;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.QuestionAnswerView;
 
 import java.io.Serializable;
@@ -262,10 +263,10 @@ public class ExamFragment extends Fragment {
         protected void onPostExecute(Integer result) {
             mProgressBar.setVisibility(View.GONE);
             if (result == 0) {
-                Toast.makeText(getActivity().getApplicationContext(), "提交答案成功!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_answer_ok);
                 dismiss();
             } else {
-                Toast.makeText(getActivity().getApplicationContext(), "提交失败! ErrorCode:" + result, Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_answer_fail);
             }
         }
 

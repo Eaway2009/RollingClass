@@ -45,7 +45,7 @@ public class PopMenu {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id, MenuItem menuItem) {
                 if (mListener == null)
-                    Toast.makeText(context.getApplicationContext(), "正在建设中...", Toast.LENGTH_LONG).show();
+                    ToastUtil.show(R.string.toast_ing);
                 else
                     mListener.onItemClick(adapterView, view, position, id, menuItem);
             }

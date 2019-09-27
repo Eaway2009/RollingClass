@@ -29,6 +29,7 @@ import com.tanhd.rollingclass.server.data.SchoolData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.StringUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +185,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         if (data.class_process == 1) {
             LearnCasesActivity.startMe(mContext, data.knowledge_id, data.knowledge_point_name, data.teaching_material_id, KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
         } else {
-            Toast.makeText(mContext.getContext(), R.string.class_on_knowledge_warning, Toast.LENGTH_SHORT).show();
+            ToastUtil.show(R.string.class_on_knowledge_warning);
         }
     }
 
@@ -249,7 +250,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                     showTeacherListDialog(knowledge_id, teacherDataList);
                 }
             } else {
-                Toast.makeText(mContext.getContext(), R.string.check_teacher_list_fail, Toast.LENGTH_SHORT).show();
+                ToastUtil.show(R.string.check_teacher_list_fail);
             }
         }
     }
@@ -268,7 +269,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
             @Override
             public void onError(String code, String message) {
-                Toast.makeText(mContext.getContext(), message, Toast.LENGTH_SHORT).show();
+                ToastUtil.show(message);
             }
         };
 
@@ -313,7 +314,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
     @Override
     public void onResponse(String body) {
-        Toast.makeText(mContext.getContext(), R.string.operate_success, Toast.LENGTH_SHORT).show();
+        ToastUtil.show(R.string.operate_success);
         mListener.refreshData();
     }
 

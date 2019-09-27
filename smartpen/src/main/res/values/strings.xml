@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">smartpen</string>
+    <string name="toast_usb_no">未获取USB权限</string>
 </resources>

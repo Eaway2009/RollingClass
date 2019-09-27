@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.StudentData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.MicroCourseBarChartView;
 import com.tanhd.rollingclass.views.MicroCourseListView;
 import com.tanhd.rollingclass.views.StudentListView;
@@ -58,7 +59,7 @@ public class LearningStaticsFragment extends Fragment {
             @Override
             public void onSelectedItem(StudentData studentData) {
                 if (mSelectedCourseData == null) {
-                    Toast.makeText(getContext().getApplicationContext(), "请先选择微课!", Toast.LENGTH_LONG).show();
+                    ToastUtil.show(R.string.toast_select_video);
                     return;
                 }
 

@@ -54,6 +54,7 @@ import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.BitmapUtils;
 import com.tanhd.rollingclass.utils.GetFileHelper;
 import com.tanhd.rollingclass.utils.StringUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.PopUploadFile;
 
 import org.json.JSONException;
@@ -192,11 +193,11 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 break;
             case R.id.task_add_save_button:
                 if (mTaskNameEditText.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(getActivity(), "请输入任务名称再点保存", Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(R.string.toast_task_name_empty);
                     return;
                 }
                 if (mPPTList.size() == 0 && mExercisesList.size() == 0 && mWordList.size() == 0 && mImageList.size() == 0 && mVideoList.size() == 0) {
-                    Toast.makeText(getActivity(), "请先上传文件再点保存", Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(R.string.toast_file_empty);
                     return;
                 }
                 LessonSampleModel lessonSampleModel = new LessonSampleModel();
@@ -230,7 +231,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
                             mListener.onAddSuccess(sampleId);
                         } catch (JSONException e) {
-                            Toast.makeText(getContext(), "添加任务失败，请稍后重试", Toast.LENGTH_SHORT).show();
+                            ToastUtil.show(R.string.toast_add_task_fail);
                             e.printStackTrace();
                         }
                     }
@@ -373,7 +374,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
     private void receiveFilePathCallback(String imagePath) {
         if (imagePath == null) {
-            Toast.makeText(getActivity(), R.string.select_pic_again, Toast.LENGTH_SHORT).show();
+            ToastUtil.show(R.string.select_pic_again);
             return;
         }
         File file = new File(imagePath);
@@ -441,7 +442,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
                 JSONObject json = new JSONObject(response);
                 String errorCode = json.optString("errorCode");
                 if (!TextUtils.isEmpty(errorCode) && !errorCode.equals("0")) {
-                    Toast.makeText(KnowledgeAddTaskFragment.this.getContext(), json.optString("errorMessage"), Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(json.optString("errorMessage"));
                 } else {
                     ResourceModel model = new ResourceModel();
                     model.parse(model, json.optString("result"));
@@ -455,7 +456,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
 
     private void onCheckFile(ResourceBaseModel result, String filePath) {
         if (result == null) {
-            Toast.makeText(getActivity(), R.string.upload_fail, Toast.LENGTH_SHORT).show();
+            ToastUtil.show(R.string.upload_fail);
         } else {
             mEnterTypeRadioGroup.setEnabled(false);
             if (mEnterRadioButton.isChecked()) {

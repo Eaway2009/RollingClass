@@ -419,7 +419,7 @@ public class SmartPenService {
                         searchDevicesAndConnect(vendorId, productId);
                     }
                 } else {
-                    Toast.makeText(mContext.getApplicationContext(), "未获取USB权限", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext.getApplicationContext(), R.string.toast_usb_no, Toast.LENGTH_SHORT).show();
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action) || UsbManager.ACTION_USB_ACCESSORY_ATTACHED.equals(action)) {//usb连接
                 searchDevicesAndConnect(vendorId, productId);

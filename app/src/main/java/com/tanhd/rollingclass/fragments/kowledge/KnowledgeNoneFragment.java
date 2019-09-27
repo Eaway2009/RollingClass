@@ -18,6 +18,7 @@ import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 /**
  * 新建学案-课前
@@ -80,7 +81,7 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
 
     private void onClickAddTask() {
         if (TextUtils.isEmpty(mKnowledgeNameEditText.getText().toString().trim())) {
-            Toast.makeText(getActivity(), "请先输入课时名称再添加任务，谢谢", Toast.LENGTH_LONG).show();
+            ToastUtil.show(R.string.toast_class_name_empty);
         } else {
             mKnowledgeModel.knowledge_point_name = mKnowledgeNameEditText.getText().toString();
             mKnowledgeAddButton.setEnabled(false);

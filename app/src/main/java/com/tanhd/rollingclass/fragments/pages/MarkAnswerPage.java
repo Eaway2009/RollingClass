@@ -26,6 +26,7 @@ import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.QuestionAnswerView;
 import com.tanhd.rollingclass.views.ScoreView;
 
@@ -91,9 +92,9 @@ public class MarkAnswerPage extends Fragment {
         @Override
         protected void onPostExecute(Integer integer) {
             if (integer == 0)
-                Toast.makeText(getContext().getApplicationContext(), "评分成功!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_mark_ok);
             else
-                Toast.makeText(getContext().getApplicationContext(), "评分失败! ErrorCode:" + integer, Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_mark_fail);
         }
 
         @Override

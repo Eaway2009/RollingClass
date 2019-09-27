@@ -43,6 +43,7 @@ import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.ResultClass;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.ObjectiveAnswerView;
 import com.tanhd.rollingclass.views.QuestionAnswerView;
 import com.tanhd.rollingclass.views.ScoreView;
@@ -207,8 +208,7 @@ public class CommentAnswerPage extends Fragment {
             if (integer == 0) {
                 notifyCommentMessage();
                 if (getContext() != null)
-                    Toast.makeText(getContext().getApplicationContext(), "点评成功!", Toast.LENGTH_LONG).show();
-
+                    ToastUtil.show( R.string.toast_comment_ok);
                 if (getParentFragment() instanceof FrameDialog) {
                     FrameDialog dialog = (FrameDialog) getParentFragment();
                     dialog.dismiss();

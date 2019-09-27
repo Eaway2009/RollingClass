@@ -19,6 +19,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.GroupData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.StudentData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +45,7 @@ public class ShowQuestionResultFragment extends Fragment {
         ViewGroup layoutView = view.findViewById(R.id.layout);
         ClassData classData = ExternalParam.getInstance().getClassData();
         if (classData == null) {
-            Toast.makeText(getContext().getApplicationContext(), "请先选择班级后再进行操作!", Toast.LENGTH_SHORT).show();
+            ToastUtil.show(R.string.toast_select_class);
             return;
         }
 

@@ -22,6 +22,7 @@ import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.ChaptersAdapter;
 import com.tanhd.rollingclass.views.ChaptersAdapter2;
 import com.tanhd.rollingclass.views.MultiItemEntity;
@@ -110,7 +111,7 @@ public class ChaptersFragment extends Fragment implements ChaptersAdapter2.Selec
         protected void onPostExecute(List<ChaptersResponse> chapterList) {
             if (chapterList == null || chapterList.isEmpty()) {
                 try {
-                    Toast.makeText(getActivity().getApplicationContext(), "没有找到章节!", Toast.LENGTH_LONG).show();
+                    ToastUtil.show(R.string.toast_no_chapters);
                 } catch (Exception e) {
                 }
                 return;

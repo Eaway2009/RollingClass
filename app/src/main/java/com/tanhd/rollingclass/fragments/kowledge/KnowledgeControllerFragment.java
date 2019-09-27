@@ -15,6 +15,7 @@ import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 /**
  * 课前 课中 课后
@@ -172,7 +173,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                     }
                 } else {
                     if (mKnowledgeEditingFragment.isEditing()) {
-                        Toast.makeText(getActivity(), getString(R.string.adding_task_warning), Toast.LENGTH_SHORT).show();
+                        ToastUtil.show(R.string.adding_task_warning);
                     } else {
                         if (mCallback != null) {
                             mCallback.onBack();
@@ -190,7 +191,7 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
                 break;
             case R.id.at_class_item: //课中
                 if (mCurrentShowModuleId == MODULE_ID_EDIT_TASKS && mKnowledgeEditingFragment.isEditing()) {
-                    Toast.makeText(getActivity(), R.string.adding_task_warning, Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(R.string.adding_task_warning);
                     return;
                 }
                 changeClassStatus(KeyConstants.KnowledgeStatus.AT_CLASS);

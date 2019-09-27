@@ -17,12 +17,12 @@ public class KeyConstants {
         public static final int CLASS_ING = 2;
     }
     public class ResourceType {
-        public static final int PPT_TYPE = 1;
-        public static final int IMAGE_TYPE = 3;
-        public static final int WORD_TYPE = 2;
-        public static final int VIDEO_TYPE = 4;
-        public static final int QUESTION_TYPE = 5;
-        public static final int ANSWER_TYPE = 6;
+        public static final int PPT_TYPE = 1; //PPT
+        public static final int IMAGE_TYPE = 3; //图片
+        public static final int WORD_TYPE = 2; //文档
+        public static final int VIDEO_TYPE = 4; //视频
+        public static final int QUESTION_TYPE = 5; //习题
+        public static final int ANSWER_TYPE = 6; //答案
     }
 
     public static class LevelType {

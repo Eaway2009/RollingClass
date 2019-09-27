@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
@@ -13,6 +14,7 @@ import com.tanhd.rollingclass.utils.AutoHideKeyboard;
 import com.tanhd.rollingclass.utils.BarTextColorUtils;
 import com.tanhd.rollingclass.utils.Logger;
 import com.tanhd.rollingclass.utils.StatusBarUtil;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -40,6 +42,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    /**
+     * Toast
+     * @param toast
+     */
+    protected void showToast(String toast){
+        ToastUtil.show(toast);
     }
 
     /**

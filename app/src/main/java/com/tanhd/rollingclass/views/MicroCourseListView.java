@@ -19,6 +19,7 @@ import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.List;
 
@@ -141,7 +142,7 @@ public class MicroCourseListView extends LinearLayout {
             mAdapter = new MicroCourseAdapter();
             mListView.setAdapter(mAdapter);
             if (dataList == null || dataList.size() == 0) {
-                Toast.makeText(getContext().getApplicationContext(), "没有找到相关的微课资源!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_video_empty);
                 return;
             }
             mAdapter.setData(dataList);

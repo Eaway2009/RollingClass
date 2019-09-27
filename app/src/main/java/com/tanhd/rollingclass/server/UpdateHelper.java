@@ -15,7 +15,9 @@ import android.widget.Toast;
 
 import com.parkingwang.okhttp3.LogInterceptor.LogInterceptor;
 import com.tanhd.rollingclass.BuildConfig;
+import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.VersionMessage;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -219,12 +221,12 @@ public class UpdateHelper {
             VersionMessage versionMessage = UpdateHelper.getVersion(body);
             if (versionMessage == null) {
                 if(!mAutoCheck) {
-                    Toast.makeText(mContext, "检查新版本出错，请稍后重试", Toast.LENGTH_LONG).show();
+                    ToastUtil.show(R.string.toast_new_version);
                 }
                 return;
             }
             if(BuildConfig.VERSION_CODE > Integer.valueOf(versionMessage.versionCode)) {
-                Toast.makeText(mContext, "已安装最新版本", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_version_alreay);
             } else {
                 if(!mAutoCheck) {
                     warningUpdate(mContext, versionMessage.apkUrl);
@@ -291,7 +293,7 @@ public class UpdateHelper {
         @Override
         public void onError(String code, String message) {
             mDownloading = false;
-            Toast.makeText(mContext, "下载新版本出错，请稍后重试", Toast.LENGTH_LONG).show();
+            ToastUtil.show(R.string.toast_version_err);
         }
     }
 

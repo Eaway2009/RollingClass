@@ -38,6 +38,7 @@ import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.TopbarView;
 
 import java.util.HashMap;
@@ -203,7 +204,7 @@ public class LearnCasesActivity extends BaseActivity {
             if (msg.what == RECEIVE_MESSAGE_CODE) {
                 PushMessage pushMessage = (PushMessage) msg.obj;
                 if (pushMessage != null) {
-                    Toast.makeText(LearnCasesActivity.this, "收到2：" + pushMessage.toString(), Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(getString(R.string.toast_receive_two) + pushMessage.toString());
                     Log.i("DemoLog", "客户端收到Service的消息: " + pushMessage.toString());
                 }
             }

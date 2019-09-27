@@ -25,6 +25,7 @@ import com.tanhd.rollingclass.server.data.SubjectData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.List;
 
@@ -166,12 +167,12 @@ public class UserInfoFragment extends Fragment {
         String newPassword2 = mPassword3View.getText().toString();
 
         if (!newPassword1.equals(newPassword2)) {
-            Toast.makeText(getActivity().getApplicationContext(), "输入的密码不一致!", Toast.LENGTH_LONG).show();
+            ToastUtil.show(R.string.toast_pwd_no_fit);
             return;
         }
 
         if (TextUtils.isEmpty(newPassword1)) {
-            Toast.makeText(getActivity().getApplicationContext(), "输入的密码不能为空!", Toast.LENGTH_LONG).show();
+            ToastUtil.show(R.string.toast_pwd_empty);
             return;
         }
 
@@ -193,7 +194,7 @@ public class UserInfoFragment extends Fragment {
 
             @Override
             public void onError(String code, String message) {
-                Toast.makeText(getActivity().getApplicationContext(), "密码修改失败! " + message, Toast.LENGTH_LONG).show();
+                ToastUtil.show(getString(R.string.toast_edit_pwd_fail) + message);
             }
         };
 

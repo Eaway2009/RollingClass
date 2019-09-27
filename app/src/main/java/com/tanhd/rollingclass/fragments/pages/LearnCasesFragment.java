@@ -39,6 +39,7 @@ import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.LessonItemAdapter;
 
 import org.json.JSONException;
@@ -288,7 +289,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
             @Override
             public void onError(String code, String message) {
                 if (!TextUtils.isEmpty(message)) {
-                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(message);
                 }
             }
         });

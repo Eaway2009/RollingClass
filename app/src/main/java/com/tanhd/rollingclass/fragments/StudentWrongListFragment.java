@@ -30,6 +30,7 @@ import com.tanhd.rollingclass.server.data.GroupData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.QuestionAnswerView;
 import com.tanhd.rollingclass.views.StudentListView;
 
@@ -121,7 +122,7 @@ public class StudentWrongListFragment extends Fragment {
             mProgressBar.setVisibility(View.GONE);
             mQuestionAdapter.notifyDataSetChanged();
             if (integer < 0) {
-                Toast.makeText(getContext().getApplicationContext(), "没有找到该学生的错题记录!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_wrong_emtpy);
                 return;
             }
         }

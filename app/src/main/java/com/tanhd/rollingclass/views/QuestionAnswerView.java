@@ -30,6 +30,7 @@ import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,7 +90,7 @@ public class QuestionAnswerView extends ScrollView {
 
     public void requestStudentToMark(FragmentManager manager) {
         if (mAnswerData == null) {
-            Toast.makeText(getContext().getApplicationContext(), "该题未作答或查找回答失败, 无法发起点评!", Toast.LENGTH_LONG).show();
+            ToastUtil.show(R.string.toast_question_fail);
             return;
         }
     }

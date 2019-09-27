@@ -207,7 +207,9 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         for (int i = 0;i<spinnerItems.length;i++){
             listStr.add(spinnerItems[i]);
         }
-        popFliterRes = new PopFliterRes(getActivity());
+        if (popFliterRes == null){
+            popFliterRes = new PopFliterRes(getActivity());
+        }
         popFliterRes.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -424,10 +426,10 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
             case R.id.micro_course_resource_view:
                 showModulePage(ResourceType.VIDEO_TYPE, v);
                 break;
-            case R.id.question_resource_view:
+            case R.id.question_resource_view://习题
                 showModulePage(ResourceType.QUESTION_TYPE, v);
                 break;
-            case R.id.word_resource_view:
+            case R.id.word_resource_view:  //文档
                 showModulePage(ResourceType.WORD_TYPE, v);
                 break;
             case R.id.image_resource_view:

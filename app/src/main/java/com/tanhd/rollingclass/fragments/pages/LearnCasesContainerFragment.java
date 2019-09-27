@@ -32,6 +32,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.PointPopupWindow;
 import com.tanhd.rollingclass.views.PointPopupWindow.PopupClickCallBack;
 
@@ -352,7 +353,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                         }
                     }
                     mHandsupStudentName.add(studentName);
-                    Toast.makeText(getActivity(), studentName + "举手提问", Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(studentName + getString(R.string.toast_raise_quiz));
                     TextView handUpNameView = (TextView) getLayoutInflater().inflate(R.layout.view_handsup_name, null);
                     handUpNameView.setText(studentName);
                     mHandsupListLayout.addView(handUpNameView);

@@ -24,6 +24,7 @@ import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.StudentListView;
 
 import java.io.Serializable;
@@ -110,8 +111,8 @@ public class CountExamPage extends Fragment {
                 //第二个参数是要显示的字符串；
                 //第三个参数是显示的时间长短；
                 KnowledgeDetailMessage lessonSampleData = (KnowledgeDetailMessage) parent.getItemAtPosition(position);
-                Toast.makeText(getActivity(), "您选择了：" + lessonSampleData.knowledge_point_name, Toast.LENGTH_LONG)
-                        .show();
+
+                ToastUtil.show(getString(R.string.toast_select_hint) + lessonSampleData.knowledge_point_name);
                 checkData(lessonSampleData);
             }
 

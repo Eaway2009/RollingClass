@@ -18,6 +18,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.ClassStudentsAdapter;
 
 import java.util.List;
@@ -100,7 +101,7 @@ public class ClassStudentsFragment extends Fragment implements ExpandableListVie
     private void refreshTeachingClass(List<ClassData> classDataList) {
         if (classDataList == null || classDataList.size() == 0) {
             try {
-                Toast.makeText(getActivity().getApplicationContext(), "没有找到章节!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_no_chapters);
             } catch (Exception e) {
             }
             return;

@@ -38,7 +38,6 @@
 //
 //            @Override
 //            public void onResponse(String body) {
-//                Toast.makeText(mContext, "分享成功", Toast.LENGTH_SHORT).show();
 //            }
 //
 //            @Override

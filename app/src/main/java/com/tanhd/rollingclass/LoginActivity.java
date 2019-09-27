@@ -30,6 +30,7 @@ import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import org.json.JSONObject;
 
@@ -76,7 +77,7 @@ public class LoginActivity extends BaseActivity {
                 String username = mUserView.getText().toString();
                 String password = mPasswordView.getText().toString();
                 if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-                    Toast.makeText(getApplicationContext(), "用户名和密码不能为空!", Toast.LENGTH_LONG).show();
+                    ToastUtil.show(R.string.toast_name_pwd_empty);
                     return;
                 }
 
@@ -314,9 +315,9 @@ public class LoginActivity extends BaseActivity {
             } else {
                 changeViewsStatus(false);
                 if (result < 0) {
-                    Toast.makeText(getApplicationContext(), "连接超时，请检查服务器是否工作!", Toast.LENGTH_LONG).show();
+                    ToastUtil.show(R.string.toast_net_timeout);
                 } else {
-                    Toast.makeText(getApplicationContext(), mErrorMessage, Toast.LENGTH_LONG).show();
+                    ToastUtil.show(mErrorMessage);
                 }
             }
         }

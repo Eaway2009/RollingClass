@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.MSG_TYPE;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.ShowAnswerCommentFragment;
@@ -32,7 +33,7 @@ public class GlobalWork {
         QuestionModel questionData = new QuestionModel();
         questionData.parse(questionData, question);
         if (questionData.question_id == null) {
-            Toast.makeText(mContext, "读取数据失败!", Toast.LENGTH_LONG).show();
+            ToastUtil.show(R.string.toast_read_fail);
             return;
         }
 
@@ -50,14 +51,14 @@ public class GlobalWork {
         QuestionModel questionData = new QuestionModel();
         questionData.parse(questionData, question);
         if (questionData.question_id == null) {
-            Toast.makeText(mContext, "读取数据失败!", Toast.LENGTH_LONG).show();
+            ToastUtil.show(R.string.toast_read_fail);
             return;
         }
 
         AnswerData answerData = new AnswerData();
         answerData.parse(answerData, answer);
         if (answerData.AnswerUserID == null) {
-            Toast.makeText(mContext, "读取数据失败!", Toast.LENGTH_LONG).show();
+            ToastUtil.show(R.string.toast_read_fail);
             return;
         }
 

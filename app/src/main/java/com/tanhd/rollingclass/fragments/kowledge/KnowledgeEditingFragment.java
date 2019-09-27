@@ -49,8 +49,8 @@ import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.GetFileHelper;
 import com.tanhd.rollingclass.utils.StringUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.DefaultDialog;
-import com.tanhd.rollingclass.views.PopFliterRes;
 import com.tanhd.rollingclass.views.PopUploadFile;
 import com.tanhd.rollingclass.views.SynPointDialog;
 
@@ -537,7 +537,7 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
 
         @Override
         public void onError(String code, String message) {
-            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            ToastUtil.show(message);
             requestData();
         }
     };
@@ -617,7 +617,7 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
 
             @Override
             public void onError(String code, String message) {
-                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                ToastUtil.show(message);
             }
         });
     }
@@ -691,7 +691,7 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
                 Toast.makeText(getActivity(), resultCode, Toast.LENGTH_SHORT).show();
             } else {
                 EventBus.getDefault().post(new EventTag(EventTag.REFRESH_CASE));
-                Toast.makeText(getActivity(), R.string.publish_success, Toast.LENGTH_SHORT).show();
+                ToastUtil.show(R.string.publish_success);
                 mListener.onBack();
             }
         }
@@ -719,9 +719,9 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
         protected void onPostExecute(String resultCode) {
             changeLoading(false);
             if (TextUtils.isEmpty(resultCode)) {
-                Toast.makeText(getActivity(), R.string.sync_success, Toast.LENGTH_SHORT).show();
+                ToastUtil.show(R.string.sync_success);
             } else {
-                Toast.makeText(getActivity(), resultCode, Toast.LENGTH_SHORT).show();
+                ToastUtil.show(resultCode);
             }
 
         }
@@ -880,7 +880,6 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
         linearLayout.addView(resourceLayout);
     }
 
-    private PopFliterRes popFliterRes;
     @SuppressLint("RestrictedApi")
     private void showPopupMenu(View view) {
         new PopUploadFile(getActivity()).setLocalListener(new View.OnClickListener() {
@@ -977,7 +976,7 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
                 JSONObject json = new JSONObject(response);
                 String errorCode = json.optString("errorCode");
                 if (!TextUtils.isEmpty(errorCode) && !errorCode.equals("0")) {
-                    Toast.makeText(KnowledgeEditingFragment.this.getContext(), json.optString("errorMessage"), Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(json.optString("errorMessage"));
                 } else {
                     ResourceModel model = new ResourceModel();
                     model.parse(model, response);

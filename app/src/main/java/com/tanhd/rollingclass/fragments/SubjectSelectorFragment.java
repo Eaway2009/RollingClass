@@ -29,6 +29,7 @@ import com.tanhd.rollingclass.server.data.SubjectData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ public class SubjectSelectorFragment extends Fragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             if (mItemList == null) {
-                Toast.makeText(getContext().getApplicationContext(), "没有科目!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(R.string.toast_subject_no);
                 DialogFragment dialog = (DialogFragment) getParentFragment();
                 dialog.dismiss();
                 return;
