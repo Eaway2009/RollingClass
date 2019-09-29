@@ -15,7 +15,7 @@
         <ImageView
             android:id="@+id/iv_thumb"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_130"
+            android:layout_height="@dimen/dp_120"
             android:scaleType="centerCrop"
             android:background="@color/black" />
 

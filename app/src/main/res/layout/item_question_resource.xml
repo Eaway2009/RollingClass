@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/question_fragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -141,11 +142,12 @@
                     android:layout_marginLeft="@dimen/dp_60"
                     android:paddingTop="@dimen/dp_10"
                     android:paddingBottom="@dimen/dp_10"
-                    android:button="@drawable/resource_check_selector"
+                    android:button="@null"
+                    android:drawableRight="@drawable/check_selector"
                     android:text="@string/check"
                     tools:visibility="visible"
                     android:gravity="center"
-                    android:paddingLeft="@dimen/dp_10"
+                    android:drawablePadding="@dimen/dp_10"
                     android:textColor="@color/resource_name"
                     android:textSize="@dimen/text_size_10"
                     android:visibility="gone" />

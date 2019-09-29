@@ -11,11 +11,12 @@ import com.tanhd.rollingclass.base.BaseViewHolder;
 import com.tanhd.rollingclass.db.model.Course;
 import com.tanhd.rollingclass.server.data.ChaptersResponse;
 import com.tanhd.rollingclass.utils.Logger;
+import com.tanhd.rollingclass.views.interfaces.SelectListener;
 
 import java.util.List;
 
 /**
- * 左侧三级目录
+ * 左侧三级目录-黑色背景
  */
 public class ChaptersAdapter2 extends BaseMultiAdapter<MultiItemEntity> {
     public static final int TYPE_LEVEL_CLASS = 0; //年级
@@ -118,10 +119,6 @@ public class ChaptersAdapter2 extends BaseMultiAdapter<MultiItemEntity> {
 
     public void setSelectListener(SelectListener selectListener) {
         this.selectListener = selectListener;
-    }
-
-    public interface SelectListener {
-        void select(View view, int pos, Course.ChaptersBean.SectionsBean item);
     }
 
 }

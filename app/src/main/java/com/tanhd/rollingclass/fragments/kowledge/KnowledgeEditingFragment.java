@@ -445,8 +445,9 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
         editView.setOnClickListener(this);
         resourceLayout.findViewById(R.id.bottom_selector_layout).setVisibility(View.GONE);
         View questionView = resourceLayout.findViewById(R.id.question_fragment);
+        questionView.setBackgroundColor(getResources().getColor(R.color.transparent));
         QuestionModelFragment.showQuestionModel(getLayoutInflater(), questionView, questionModel);
-        resourceLayout.findViewById(R.id.question_fragment).setVisibility(View.VISIBLE);
+        questionView.setVisibility(View.VISIBLE);
         requestEdit(knowledgeLessonSample);
     }
 
@@ -840,8 +841,9 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
         }
         resourceLayout.findViewById(R.id.bottom_selector_layout).setVisibility(View.GONE);
         View questionView = resourceLayout.findViewById(R.id.question_fragment);
+        questionView.setBackgroundColor(getResources().getColor(R.color.transparent));
         QuestionModelFragment.showQuestionModel(getLayoutInflater(), questionView, questionModel);
-        resourceLayout.findViewById(R.id.question_fragment).setVisibility(View.VISIBLE);
+        questionView.setVisibility(View.VISIBLE);
         linearLayout.addView(resourceLayout);
     }
 

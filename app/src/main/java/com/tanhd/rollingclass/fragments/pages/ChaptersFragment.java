@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +24,11 @@ import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.ToastUtil;
+import com.tanhd.rollingclass.views.BaseMultiAdapter;
 import com.tanhd.rollingclass.views.ChaptersAdapter;
 import com.tanhd.rollingclass.views.ChaptersAdapter2;
 import com.tanhd.rollingclass.views.MultiItemEntity;
+import com.tanhd.rollingclass.views.interfaces.SelectListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,20 +36,35 @@ import java.util.List;
 /**
  * 左侧-年级类别等
  */
-public class ChaptersFragment extends Fragment implements ChaptersAdapter2.SelectListener {
+public class ChaptersFragment extends Fragment implements SelectListener {
     //private ExpandableListView mExpandableListView;
     private RecyclerView recyclerView;
-    //    private ChaptersAdapter mAdapter;
-    private ChaptersAdapter2 mAdapter;
+    //白色背景
+    private ChaptersAdapter whiteAdapter;
+    //黑色背景
+    private ChaptersAdapter2 blackAdapter;
+
+    private BaseMultiAdapter mAdapter;
     private ChapterListener mListener;
     private UserData userData;
     private TeacherData teacherData;
     private StudentData studentData;
     private TextView teaching_material_name;
+    private LinearLayout root;
+    private boolean isWhiteBg; //是否白色背景
 
     public static ChaptersFragment newInstance(ChaptersFragment.ChapterListener listener) {
         ChaptersFragment page = new ChaptersFragment();
         Bundle args = new Bundle();
+        page.setArguments(args);
+        page.setListener(listener);
+        return page;
+    }
+
+    public static ChaptersFragment newInstance(ChaptersFragment.ChapterListener listener,boolean isWhiteBg) {
+        ChaptersFragment page = new ChaptersFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("isWhiteBg",isWhiteBg);
         page.setArguments(args);
         page.setListener(listener);
         return page;
@@ -68,23 +86,36 @@ public class ChaptersFragment extends Fragment implements ChaptersAdapter2.Selec
 
     private void initParams() {
         Bundle args = getArguments();
+        if (args != null){
+            if (args.containsKey("isWhiteBg")){
+                isWhiteBg = args.getBoolean("isWhiteBg");
+            }
+
+        }
+
     }
 
     private void iniViews(View view) {
+        root = view.findViewById(R.id.root);
         recyclerView = view.findViewById(R.id.rv);
-
-//        mAdapter = new ChaptersAdapter(getActivity());
-        mAdapter = new ChaptersAdapter2(getActivity());
-//        mExpandableListView.setVerticalScrollBarEnabled(false);
-//        mExpandableListView.setGroupIndicator(null);
-//        mExpandableListView.setHeaderDividersEnabled(false);
-//        mExpandableListView.setAdapter(mAdapter);
-//        mExpandableListView.setOnChildClickListener(this);
-        mAdapter.setSelectListener(this);
-        recyclerView.setAdapter(mAdapter);
-
         teaching_material_name = view.findViewById(R.id.teaching_material_name);
         teaching_material_name.setSelected(true);
+
+//        mAdapter = new ChaptersAdapter(getActivity());
+        if (isWhiteBg){
+            root.setBackgroundResource(R.color.transparent);
+            teaching_material_name.setTextColor(getResources().getColor(R.color.black));
+            whiteAdapter = new ChaptersAdapter(getActivity());
+            whiteAdapter.setSelectListener(this);
+            mAdapter = whiteAdapter;
+        }else{
+            root.setBackgroundResource(R.color.chapter_menu_background);
+            teaching_material_name.setTextColor(getResources().getColor(R.color.chapter_menu_text));
+            blackAdapter = new ChaptersAdapter2(getActivity());
+            blackAdapter.setSelectListener(this);
+            mAdapter = blackAdapter;
+        }
+        recyclerView.setAdapter(mAdapter);
     }
 
     public void refreshData() {
@@ -196,7 +227,7 @@ public class ChaptersFragment extends Fragment implements ChaptersAdapter2.Selec
     public void select(View view, int pos, Course.ChaptersBean.SectionsBean item) {
         KnowledgeModel kd = item.getKnowledgeModel();
         if (mListener != null && kd != null) {
-            mListener.onTeacherCheckChapter(kd.school_id, kd.teacher_id, kd.chapter_id, kd.chapter_name, kd.section_id, kd.section_name, kd.subject_code, kd.subject_name,kd.teaching_material_id);
+            mListener.onTeacherCheckChapter(kd.school_id, kd.teacher_id, kd.chapter_id, kd.chapter_name, kd.section_id, kd.section_name, kd.subject_code, kd.subject_name, kd.teaching_material_id);
         }
     }
 

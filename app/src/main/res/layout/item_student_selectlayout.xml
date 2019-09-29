@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CheckBox xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/check_student"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:button="@drawable/student_selector"
+    android:paddingTop="@dimen/dp_5"
+    android:paddingBottom="@dimen/dp_5"
+    android:button="@null"
+    android:gravity="center"
+    android:background="@drawable/student_child_selector"
     android:paddingLeft="12dp"
-    android:textColor="@color/student_select_color"
-    android:textSize="16sp" />
+    tools:text="@string/app_name"
+    android:textColor="@color/text_group_student"
+    android:textSize="@dimen/text_size_12" />

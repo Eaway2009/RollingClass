@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
     android:orientation="vertical">
 
-    <CheckBox
-        android:id="@+id/group_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:textSize="16sp"
-        android:button="@drawable/student_selector"
-        android:textColor="@color/student_select_color"/>
+        android:gravity="center|left"
+        android:orientation="horizontal">
+        <CheckBox
+            android:id="@+id/cb_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/student_selector"
+            android:paddingLeft="@dimen/dp_6"
+            android:textColor="@color/student_select_color"
+            android:textSize="@dimen/text_size_12" />
+
+        <TextView
+            android:id="@+id/group_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            tools:text="第一组" />
+    </LinearLayout>
+
 
     <GridView
         android:id="@+id/student_list_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:numColumns="4"
-        android:visibility="gone"
+        android:verticalSpacing="@dimen/dp_9"
+        android:horizontalSpacing="@dimen/dp_9"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:numColumns="4"
+        android:orientation="vertical"
+        android:visibility="gone">
 
     </GridView>
 

@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.ClassData;
@@ -115,7 +116,7 @@ public class StudentSelectorFragment extends Fragment {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     for (GroupData groupData : mClassData.Groups) {
                         for (StudentData studentData : groupData.StudentList) {
-                            studentData.check = true;
+                            studentData.check = isChecked;
                         }
                     }
                     notifyDatasChange();
@@ -150,10 +151,11 @@ public class StudentSelectorFragment extends Fragment {
         for (int i = 0; i < mClassData.Groups.size(); i++) {
             GroupData groupData = mClassData.Groups.get(i);
             ViewGroup viewGroup = (ViewGroup) getLayoutInflater().inflate(R.layout.item_student_selector_group, mLayoutView, false);
-            CheckBox groupName = viewGroup.findViewById(R.id.group_name);
+            CheckBox cb_select = viewGroup.findViewById(R.id.cb_select);
+            TextView groupName = viewGroup.findViewById(R.id.group_name);
             final GridView studentListLayout = viewGroup.findViewById(R.id.student_list_layout);
             groupName.setText(groupData.GroupName);
-            groupName.setTag(i);
+            cb_select.setTag(i);
             groupName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -164,7 +166,7 @@ public class StudentSelectorFragment extends Fragment {
                     }
                 }
             });
-            groupName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            cb_select.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Integer index = (Integer) buttonView.getTag();
@@ -185,10 +187,10 @@ public class StudentSelectorFragment extends Fragment {
     private void notifyDatasChange() {
         for (int i = 0; i < mLayoutView.getChildCount(); i++) {
             View groupView = mLayoutView.getChildAt(i);
-            CheckBox groupName = groupView.findViewById(R.id.group_name);
-            if(groupName!=null){
-                int index = (int) groupName.getTag();
-                groupName.setChecked(groupIsChecked(index));
+            CheckBox cb_select = groupView.findViewById(R.id.cb_select);
+            if(cb_select!=null){
+                int index = (int) cb_select.getTag();
+                cb_select.setChecked(groupIsChecked(index));
 
                 GridView studentListLayout = groupView.findViewById(R.id.student_list_layout);
                 StudentAdapter studentAdapter = (StudentAdapter) studentListLayout.getAdapter();
@@ -208,6 +210,9 @@ public class StudentSelectorFragment extends Fragment {
         return true;
     }
 
+    /**
+     * 分组学生Child
+     */
     private class StudentAdapter extends BaseAdapter {
 
         List<StudentData> mData;

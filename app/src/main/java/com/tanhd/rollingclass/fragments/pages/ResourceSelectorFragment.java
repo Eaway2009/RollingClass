@@ -74,7 +74,7 @@ public class ResourceSelectorFragment extends Fragment implements View.OnClickLi
     }
 
     private void initFragments() {
-        mChapterFragment = ChaptersFragment.newInstance(this);
+        mChapterFragment = ChaptersFragment.newInstance(this,true);
         getFragmentManager().beginTransaction().replace(R.id.chapters_layout, mChapterFragment).commit();
 
         mResourceFragment = ResourcesPageFragment.newInstance(mKnowledgeFragment, resourceType,this);

@@ -253,7 +253,7 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
             case R.id.upload_video:
                 showPopupMenu(v, KeyConstants.ResourceType.VIDEO_TYPE, false);
                 break;
-            case R.id.upload_exercises:
+            case R.id.upload_exercises: //习题添加
                 selectResourceFromServer(KeyConstants.ResourceType.QUESTION_TYPE);
                 break;
             case R.id.upload_documents:
@@ -627,8 +627,9 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         editView.setVisibility(View.GONE);
         resourceLayout.findViewById(R.id.bottom_selector_layout).setVisibility(View.GONE);
         View questionView = resourceLayout.findViewById(R.id.question_fragment);
+        questionView.setBackgroundColor(getResources().getColor(R.color.transparent));
         QuestionModelFragment.showQuestionModel(getLayoutInflater(), questionView, questionModel);
-        resourceLayout.findViewById(R.id.question_fragment).setVisibility(View.VISIBLE);
+        questionView.setVisibility(View.VISIBLE);
         mExercisesList.add(questionModel.question_id);
         linearLayout.addView(resourceLayout);
     }
