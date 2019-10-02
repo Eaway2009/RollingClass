@@ -19,6 +19,7 @@ import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.LoginActivity;
+import com.tanhd.rollingclass.MainActivity;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.fragments.FrameDialog;
@@ -30,6 +31,8 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.PopMenu;
 import com.tanhd.rollingclass.utils.ToastUtil;
+import com.tanhd.rollingclass.utils.langeuage.LanguageType;
+import com.tanhd.rollingclass.utils.langeuage.MultiLanguageUtil;
 import com.tanhd.rollingclass.views.popmenu.MenuItem;
 
 import java.security.acl.LastOwnerException;
@@ -44,6 +47,7 @@ public class TopbarView extends CardView {
     private PopMenu mPopMenu;
     private Callback mCallback;
     private TextView mUserNameView;
+    private int selectedLanguage = LanguageType.LANGUAGE_CHINESE_SIMPLIFIED;
 
     public TopbarView(Context context) {
         super(context);
@@ -65,12 +69,48 @@ public class TopbarView extends CardView {
         mMessageView = findViewById(R.id.count_text);
         mUserNameView = findViewById(R.id.username);
 
+        //中英文切换
+        findViewById(R.id.iv_en).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ( MultiLanguageUtil.getInstance().getLanguageType() == LanguageType.LANGUAGE_EN){
+                    return;
+                }
+
+                selectedLanguage = LanguageType.LANGUAGE_EN;
+                MultiLanguageUtil.getInstance().updateLanguage(selectedLanguage);
+                Intent intent = new Intent(getContext(),MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                getContext().startActivity(intent);
+                ToastUtil.show(R.string.toast_change_ok);
+            }
+        });
+        findViewById(R.id.iv_cn).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ( MultiLanguageUtil.getInstance().getLanguageType() == LanguageType.LANGUAGE_CHINESE_SIMPLIFIED){
+                    return;
+                }
+                selectedLanguage = LanguageType.LANGUAGE_CHINESE_SIMPLIFIED;
+                MultiLanguageUtil.getInstance().updateLanguage(selectedLanguage);
+                Intent intent = new Intent(getContext(),MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                getContext().startActivity(intent);
+                ToastUtil.show(R.string.toast_change_ok);
+            }
+        });
+
         Calendar calendar = Calendar.getInstance();
         String text = String.format("%04d.%02d.%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
         mDateView.setText(text);
 
-        String[] week = new String[] {"日", "一", "二", "三", "四", "五", "六"};
-        text = String.format("星期%s", week[calendar.get(Calendar.DAY_OF_WEEK ) - 1]);
+        String[] week = new String[] {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+        if (MultiLanguageUtil.getInstance().getLanguageType() == LanguageType.LANGUAGE_EN){ //英文
+            week = new String[]{"Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        }
+
+        int weekIndex = calendar.get(Calendar.DAY_OF_WEEK ) - 1;
+        text = week[weekIndex];
         mWeekView.setText(text);
 
         refreshMessageCount();

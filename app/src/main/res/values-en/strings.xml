@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Smart classroom</string>
+    <string name="app_title">Smart classroom system</string>
+    <string name="toast_change_ok">Success</string>
+    <string name="hint_input_account">Please enter user name</string>
+    <string name="hint_input_password">Please enter your password</string>
+    <string name="login_layout_text">Welcome\nthe Smart Classroom System</string>
+    <string name="sign_button">log in</string>
+</resources>

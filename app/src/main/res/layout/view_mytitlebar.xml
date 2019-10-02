@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/topbar_background"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/dp_7"
+    android:paddingBottom="@dimen/dp_7">
+
+
+    <ImageView
+        android:id="@+id/back_button"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:clickable="false"
+        android:paddingLeft="20dp"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingRight="20dp"
+        android:paddingBottom="@dimen/dp_8"
+        android:src="@drawable/back"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dp_34"
+        android:paddingRight="@dimen/dp_20">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="@dimen/dp_36"
+                android:layout_height="@dimen/dp_31"
+                android:src="@mipmap/logo" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:text="@string/app_title"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_18"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- 时间 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_ymd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_16"
+                tools:text="上午 10:13" />
+
+            <TextView
+                android:id="@+id/tv_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_16"
+                tools:text="星期二" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_user"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_head"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/sample_person"
+                app:civ_border_color="#FFCACACA"
+                app:civ_border_width="0.1dp" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_11"
+                android:text="老师"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_12" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="0.5dp"
+            android:layout_height="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_14"
+            android:background="#33000000" />
+
+        <ImageView
+            android:id="@+id/iv_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_14"
+            android:paddingTop="@dimen/dp_14"
+            android:paddingRight="@dimen/dp_14"
+            android:paddingBottom="@dimen/dp_14"
+            android:src="@drawable/home_icon" />
+
+        <ImageView
+            android:layout_width="0.5dp"
+            android:layout_height="@dimen/dp_12"
+            android:background="#33000000" />
+
+        <ImageView
+            android:id="@+id/iv_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_14"
+            android:paddingTop="@dimen/dp_14"
+            android:paddingRight="@dimen/dp_14"
+            android:paddingBottom="@dimen/dp_14"
+            android:src="@drawable/message_icon" />
+
+        <ImageView
+            android:layout_width="0.5dp"
+            android:layout_height="@dimen/dp_12"
+            android:background="#33000000" />
+
+        <ImageView
+            android:id="@+id/iv_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_14"
+            android:paddingTop="@dimen/dp_14"
+            android:paddingRight="@dimen/dp_14"
+            android:paddingBottom="@dimen/dp_14"
+            android:src="@drawable/setting_icon" />
+
+        <ImageView
+            android:layout_width="0.5dp"
+            android:layout_height="@dimen/dp_12"
+            android:src="#33000000" />
+
+        <ImageView
+            android:id="@+id/iv_pown"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="7dp"
+            android:src="@drawable/power_icon" />
+
+        <ImageView
+            android:layout_width="0.5dp"
+            android:layout_height="@dimen/dp_12"
+            android:src="#33000000" />
+
+        <ImageView
+            android:id="@+id/iv_en"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="7dp"
+            android:src="@mipmap/ic_en" />
+
+        <ImageView
+            android:id="@+id/iv_cn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_9"
+            android:padding="7dp"
+            android:src="@mipmap/ic_cn" />
+
+    </LinearLayout>
+</LinearLayout>

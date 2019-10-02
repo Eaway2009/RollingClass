@@ -92,8 +92,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_layout_text"
-            android:textSize="@dimen/text_size_16"
-            android:textColor="@color/black" />
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_16" />
 
         <EditText
             android:id="@+id/acc"

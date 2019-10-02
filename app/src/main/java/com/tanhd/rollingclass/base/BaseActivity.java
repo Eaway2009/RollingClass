@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.base;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import com.tanhd.rollingclass.utils.BarTextColorUtils;
 import com.tanhd.rollingclass.utils.Logger;
 import com.tanhd.rollingclass.utils.StatusBarUtil;
 import com.tanhd.rollingclass.utils.ToastUtil;
+import com.tanhd.rollingclass.utils.langeuage.MultiLanguageUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,6 +33,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         TAG = this.getClass().getSimpleName();
         AutoHideKeyboard.init(this);
         setStatusBar();
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(MultiLanguageUtil.attachBaseContext(newBase));
     }
 
     @Override

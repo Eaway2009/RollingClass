@@ -24,6 +24,7 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.tanhd.rollingclass.utils.Logger;
 import com.tanhd.rollingclass.utils.ScreenUtils;
+import com.tanhd.rollingclass.utils.langeuage.MultiLanguageUtil;
 
 @ReportsCrashes(
         logcatArguments = { "-t", "1000", "-v", "long", "*:S", "LogEng"},
@@ -86,6 +87,8 @@ public class MainApp extends Application {
         mInstance = this;
         Logger.setDebug(BuildConfig.DEBUG);
         initImageLoader(getApplicationContext());
+        //多语言初始化
+        MultiLanguageUtil.init(this);
         
         Logger.i(TAG,"分辨率>>>" + ScreenUtils.getScreenHeight(this) + "x" + ScreenUtils.getScreenWidth(this) + "|sw:" + getString(R.string.base_dpi));
     }

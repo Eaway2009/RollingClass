@@ -27,9 +27,11 @@
 
         <EditText
             android:id="@+id/task_name_et"
-            android:layout_width="@dimen/dp_130"
+            android:minWidth="@dimen/dp_130"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
+            android:maxWidth="@dimen/dp_600"
             android:background="@drawable/task_name_edit_bg"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
