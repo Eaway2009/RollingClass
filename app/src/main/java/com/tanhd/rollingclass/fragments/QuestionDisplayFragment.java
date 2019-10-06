@@ -37,15 +37,17 @@ public class QuestionDisplayFragment extends Fragment {
     private String mLessonSampleName;
     private String mLessonSampleId;
     private View mShowAnswerButton;
+    private String mKnowledgeName;
+    private String mKnowledgeId;
 
     public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel, String knowledgeId, String knowledgeName) {
         QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
         Bundle args = new Bundle();
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, typeId);
-        args.putSerializable("resourceModel", resourceModel);
+        args.putSerializable(LearnCasesActivity.PARAM_RESOURCE_MODEL, resourceModel);
 
-        args.putString("KnowledgeID", knowledgeId);
-        args.putString("KnowledgeName", knowledgeName);
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_ID, knowledgeId);
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME, knowledgeName);
         QuestionDisplayFragment.setArguments(args);
         return QuestionDisplayFragment;
     }
@@ -54,12 +56,12 @@ public class QuestionDisplayFragment extends Fragment {
         QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
         Bundle args = new Bundle();
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, typeId);
-        args.putSerializable("resourceModel", resourceModel);
+        args.putSerializable(LearnCasesActivity.PARAM_RESOURCE_MODEL, resourceModel);
 
-        args.putString("KnowledgeID", knowledgeId);
-        args.putString("KnowledgeName", knowledgeName);
-        args.putString("lessonSampleId", lessonSampleId);
-        args.putString("lessonSampleName", lessonSampleName);
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_ID, knowledgeId);
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME, knowledgeName);
+        args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_ID, lessonSampleId);
+        args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_NAME, lessonSampleName);
         QuestionDisplayFragment.setArguments(args);
         return QuestionDisplayFragment;
     }
@@ -76,16 +78,19 @@ public class QuestionDisplayFragment extends Fragment {
 
     private void initParams() {
         Bundle args = getArguments();
-        mResourceModel = (ResourceModel) args.getSerializable("resourceModel");
+        mResourceModel = (ResourceModel) args.getSerializable(LearnCasesActivity.PARAM_RESOURCE_MODEL);
         mPageType = args.getInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE);
-        mLessonSampleName = args.getString("lessonSampleName");
-        mLessonSampleId = args.getString("lessonSampleId");
+        mLessonSampleName = args.getString(LearnCasesActivity.PARAM_LESSON_SAMPLE_NAME);
+        mLessonSampleId = args.getString(LearnCasesActivity.PARAM_LESSON_SAMPLE_ID);
+        mKnowledgeId = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_ID);
+        mKnowledgeName = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME);
     }
 
     private void initViews(View view) {
-        mQuestionResourceFragment = QuestionResourceFragment.newInstance();
+        List<QuestionModel> questionDataList = mResourceModel.mResourceList;
+        mQuestionResourceFragment = QuestionResourceFragment.newInstance(questionDataList);
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
-        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, getArguments().getString("KnowledgeID"), getArguments().getString("KnowledgeName"), mLessonSampleId, mLessonSampleName);
+        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, mKnowledgeId, mKnowledgeName, mLessonSampleId, mLessonSampleName);
         getFragmentManager().beginTransaction().replace(R.id.answer_fragment, mAnswerListFragment).commit();
 
     }

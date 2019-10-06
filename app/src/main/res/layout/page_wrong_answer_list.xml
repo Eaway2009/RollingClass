@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/title_bar_background">
+
+            <TextView
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="left"
+                android:drawableLeft="@mipmap/back_icon"
+                android:drawablePadding="@dimen/dp_8"
+                android:padding="@dimen/dp_24"
+                android:text="@string/back"
+                android:textColor="#989898"
+                android:textSize="@dimen/text_size_11" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <TextView
+                    android:id="@+id/question_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:paddingLeft="@dimen/dp_50"
+                    android:paddingTop="@dimen/dp_14"
+                    android:paddingRight="@dimen/dp_50"
+                    android:paddingBottom="@dimen/dp_14"
+                    android:text="@string/wrong_answer_question"
+                    android:textColor="@color/wrong_answer_title_selector"
+                    android:textSize="@dimen/text_size_18" />
+
+                <TextView
+                    android:id="@+id/photo_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="@dimen/dp_50"
+                    android:paddingTop="@dimen/dp_14"
+                    android:paddingRight="@dimen/dp_50"
+                    android:paddingBottom="@dimen/dp_14"
+                    android:text="@string/wrong_answer_photo"
+                    android:textColor="@color/wrong_answer_title_selector"
+                    android:textSize="@dimen/text_size_18" />
+            </LinearLayout>
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_50"
+            android:paddingBottom="@dimen/dp_10">
+
+
+            <LinearLayout
+                android:id="@+id/knowledge_spinner_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@drawable/records_bg">
+
+                <TextView
+                    android:id="@+id/spinner_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:paddingLeft="5dp"
+                    android:text="@string/no_knowledge"
+                    android:textColor="@color/button_gray"
+                    android:textSize="@dimen/dp_16" />
+
+                <Spinner
+                    android:id="@+id/knowledge_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"></Spinner>
+            </LinearLayout>
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</LinearLayout>

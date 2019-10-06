@@ -149,7 +149,7 @@ public class MyMqttService extends Service {
             }
         } else {
             for (String topic : to) {
-                publish(topic, 1, text);
+                publish(PREF_TOPIC + topic, 1, text);
             }
         }
     }

@@ -29,12 +29,14 @@ public class StatisticsPageFragment extends Fragment implements View.OnClickList
     private KnowledgeModel mKnowledgeModel;
     private View mWeikeView;
     private View mXitiView;
+    private Callback mCallback;
 
-    public static StatisticsPageFragment newInstance(KnowledgeModel knowledgeModel) {
+    public static StatisticsPageFragment newInstance(KnowledgeModel knowledgeModel, Callback callback) {
         Bundle args = new Bundle();
         args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
         StatisticsPageFragment page = new StatisticsPageFragment();
         page.setArguments(args);
+        page.setCallback(callback);
         return page;
     }
 
@@ -45,6 +47,10 @@ public class StatisticsPageFragment extends Fragment implements View.OnClickList
         initParams();
         initViews(view);
         return view;
+    }
+
+    public void setCallback(Callback callback) {
+        mCallback = callback;
     }
 
     private void initParams() {
@@ -82,8 +88,19 @@ public class StatisticsPageFragment extends Fragment implements View.OnClickList
                         }));
                 break;
             case R.id.xiti_view:
-                StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_QUESTION, mKnowledgeModel.teaching_material_id);
+                UserData userData = ExternalParam.getInstance().getUserData();
+                if (userData.isTeacher()) {
+                    StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_QUESTION, mKnowledgeModel.teaching_material_id);
+                } else {
+                    if (mCallback != null) {
+                        mCallback.onOpenStatistics(mKnowledgeModel);
+                    }
+                }
                 break;
         }
+    }
+
+    public interface Callback {
+        void onOpenStatistics(KnowledgeModel model);
     }
 }

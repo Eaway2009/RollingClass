@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.model.Course;
+import com.tanhd.rollingclass.server.data.AnswerModel;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
@@ -21,9 +22,11 @@ import com.tanhd.rollingclass.server.data.KnowledgeData;
 import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.LessonSampleModel;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
+import com.tanhd.rollingclass.server.data.QuestionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
+import com.tanhd.rollingclass.server.data.QuestionStatistics;
 import com.tanhd.rollingclass.server.data.RequestShareKnowledge;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.ResourceUpload;
@@ -36,6 +39,7 @@ import com.tanhd.rollingclass.server.data.SyncSampleToClassRequest;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.TeachingMaterialData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.server.data.WrongAnswerList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -374,6 +378,14 @@ public class ScopeServer extends ServerRequest {
         new RequestTask(getHostUrl() + "/teacher/UpdataTeacherPasswd/" + mToken, METHOD.POST, params, null, callback).execute();
     }
 
+    public void StoreResource(String teacherID, String resourceID, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teacherID", teacherID);
+        params.put("resourceID", resourceID);
+
+        new RequestTask(getHostUrl() + "/resource/StoreResource/" + mToken, METHOD.POST, params, null, callback).execute();
+    }
+
     public Map<String, String> refreshExpiration(String token) {
         HashMap<String, String> params = new HashMap<>();
         params.put("token", token);
@@ -595,6 +607,34 @@ public class ScopeServer extends ServerRequest {
                 appenUrl(page + "") + appenUrl(pagesize + "") + appenUrl(mToken), METHOD.GET, params);
         if (response != null) {
             List<QuestionModel> list = jsonToList(QuestionModel.class.getName(), response);
+            return list;
+        }
+        return null;
+    }
+
+    public WrongAnswerList QureyAnswerv2ByStudentIDAndCourseID(String studentID, String knowlegeID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("studentID", "" + studentID);
+        params.put("knowlegeID", "" + knowlegeID);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/answer/QureyAnswerv2ByStudentIDAndCourseID/" +
+               appenUrl(mToken), METHOD.GET, params);
+        if (response != null) {
+            WrongAnswerList list = (WrongAnswerList) jsonToModel(WrongAnswerList.class.getName(), response);
+            return list;
+        }
+        return null;
+    }
+
+    public QuestionStatistics QureyAnswerv2ByClassIDAndCourseID(String classID, String knowlegeID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("classID", "" + classID);
+        params.put("knowlegeID", "" + knowlegeID);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/answer/QureyAnswerv2ByClassIDAndCourseID/" +
+               appenUrl(mToken), METHOD.GET, params);
+        if (response != null) {
+            QuestionStatistics list = (QuestionStatistics) jsonToModel(QuestionStatistics.class.getName(), response);
             return list;
         }
         return null;
@@ -1072,6 +1112,18 @@ public class ScopeServer extends ServerRequest {
         String response = sendRequest(getHostUrl() + "/question/QureyQuestionByID/" + mToken, METHOD.GET, params);
         if (response != null) {
             List<QuestionModel> list = jsonToList(QuestionModel.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    public List<QuestionData> QureyQuestionByID2(String questionID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("questionID", questionID);
+        String response = sendRequest(getHostUrl() + "/question/QureyQuestionByID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<QuestionData> list = jsonToList(QuestionData.class.getName(), response);
             return list;
         }
 

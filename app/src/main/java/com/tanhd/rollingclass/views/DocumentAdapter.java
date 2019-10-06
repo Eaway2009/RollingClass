@@ -144,8 +144,16 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         moreDeleteView.setOnClickListener(onClickListener);
         statusView.setOnClickListener(onClickListener);
 
+        if(mIsTeacher){
+            moreView.setVisibility(View.VISIBLE);
+        }else{
+            moreView.setVisibility(View.GONE);
+        }
+
         StringBuffer publishStatus = new StringBuffer();
-        if (!mIsTeacher||(data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
+        if (!mIsTeacher) {
+            publishStatus.append(mContext.getResources().getString(R.string.learning_record));
+        } else if ((data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
             publishStatus.append(mContext.getResources().getString(R.string.class_record));
         } else {
             if (data.class_before == 0) {
@@ -169,7 +177,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
             publishStatus.append(mContext.getResources().getString(R.string.to_publish));
         }
         statusView.setText(publishStatus);
-        if(!mIsTeacher||(data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
+        if (!mIsTeacher || (data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
             statusView.setBackgroundResource(R.drawable.document_status);
         } else {
             statusView.setBackgroundResource(R.drawable.document_status_disssable);
@@ -189,10 +197,14 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         }
     }
 
-    private void classStatusClick(KnowledgeDetailMessage data){
-        if(!mIsTeacher||(data.class_before==1&&data.class_process==1&&data.class_after==1)) {
-            if(data.records!=null&&data.records.size()>0){
-                Toast.makeText(mContext.getContext(), R.string.no_class_records_warning, Toast.LENGTH_SHORT).show();
+    private void classStatusClick(KnowledgeDetailMessage data) {
+        if (!mIsTeacher || (data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
+            if (data.records != null && data.records.size() > 0) {
+                if(mIsTeacher) {
+                    Toast.makeText(mContext.getContext(), R.string.no_class_records_warning, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mContext.getContext(), R.string.no_learning_records_warning, Toast.LENGTH_SHORT).show();
+                }
             } else {
                 FrameDialog.showLittleDialog(mContext.getFragmentManager(), ClassRecordsFragment.getInstance(data));
             }
@@ -203,13 +215,13 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
     }
 
     private void showDeleteDialog(final KnowledgeDetailMessage data) {
-        String content = String.format(mContext.getResources().getString(R.string.delete_knowledge_warning),data.knowledge_point_name);
+        String content = String.format(mContext.getResources().getString(R.string.delete_knowledge_warning), data.knowledge_point_name);
         new YesNoDialog(content, "", "", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ScopeServer.getInstance().DeleteKnowledge(data.teaching_material_id, data.knowledge_id, DocumentAdapter.this);
             }
-        }, null).show(mContext.getChildFragmentManager(),"YesNoDialog");
+        }, null).show(mContext.getChildFragmentManager(), "YesNoDialog");
     }
 
     private class TeacherListTask extends AsyncTask<Void, Void, List<TeacherData>> {
@@ -282,17 +294,17 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         final List<String> checkedIdList = new ArrayList<>();
 
         final ShareDocumentDialog shareDocumentDialog = new ShareDocumentDialog(teacherDataList);
-        shareDocumentDialog.show(mContext.getChildFragmentManager(),"shareDocumentDialog");
+        shareDocumentDialog.show(mContext.getChildFragmentManager(), "shareDocumentDialog");
         shareDocumentDialog.setOkListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<TeacherData> selectList = shareDocumentDialog.getSelectData();
-                if (selectList.isEmpty()){
+                if (selectList.isEmpty()) {
                     Toast.makeText(mContext.getContext(), "请至少选择一个", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                for (int i = 0;i<selectList.size();i++){
+                for (int i = 0; i < selectList.size(); i++) {
                     checkedIdList.add(selectList.get(i).TeacherID);
                 }
                 RequestShareKnowledge request = new RequestShareKnowledge();

@@ -110,4 +110,9 @@ public class KnowledgeDetailMessage extends BaseJsonClass {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return knowledge_point_name;
+    }
 }

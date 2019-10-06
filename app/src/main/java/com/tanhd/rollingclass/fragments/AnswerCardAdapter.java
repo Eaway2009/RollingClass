@@ -25,6 +25,7 @@ public class AnswerCardAdapter extends BaseAdapter {
     private final String mDot;
     private final String mClosingCheron;
     private final String mOpeningCheron;
+    private String mAnswer;
 
     public AnswerCardAdapter(Activity context, boolean answer) {
         mContext = context;
@@ -116,6 +117,9 @@ public class AnswerCardAdapter extends BaseAdapter {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if(mAnswerCommitted){
+                return;
+            }
             OptionData option = (OptionData) v.getTag();
             View parentView = (View) v.getParent();
             int index = (int) parentView.getTag();
@@ -124,8 +128,13 @@ public class AnswerCardAdapter extends BaseAdapter {
 
             resultClass.mode = 1;
             resultClass.text = AppUtils.OPTION_NO[option.OrderIndex - 1];
+            mAnswer = resultClass.text;
             question.context.resultClass = resultClass;
             notifyDataSetChanged();
         }
     };
+
+    public String getAnswer(){
+        return mAnswer;
+    }
 }

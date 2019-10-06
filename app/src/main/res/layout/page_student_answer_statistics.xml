@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/title_bar_background">
+
+            <TextView
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="left"
+                android:drawableLeft="@mipmap/back_icon"
+                android:drawablePadding="@dimen/dp_8"
+                android:padding="@dimen/dp_24"
+                android:text="@string/back"
+                android:textColor="#989898"
+                android:textSize="@dimen/text_size_11" />
+
+            <RadioGroup
+                android:id="@+id/statistics_type_rg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/micro_course"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/left_top_button_background"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="微课数据"
+                    android:textColor="@color/count_class_title"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/question"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/left_top_button_background"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="习题数据"
+                    android:textColor="@color/count_class_title"
+                    android:textSize="14sp" />
+
+            </RadioGroup>
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_50"
+            android:paddingLeft="@dimen/dp_50"
+            android:paddingBottom="@dimen/dp_10">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/knowledge"
+                android:paddingRight="@dimen/dp_10"
+                android:layout_gravity="center"
+                android:textColor="@color/button_gray"
+                android:textSize="@dimen/dp_16" />
+
+            <LinearLayout
+                android:id="@+id/knowledge_spinner_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="@drawable/records_bg">
+
+                <TextView
+                    android:id="@+id/spinner_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:paddingLeft="5dp"
+                    android:text="@string/no_knowledge"
+                    android:textColor="@color/button_gray"
+                    android:textSize="@dimen/dp_16" />
+
+                <Spinner
+                    android:id="@+id/knowledge_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"></Spinner>
+            </LinearLayout>
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</LinearLayout>

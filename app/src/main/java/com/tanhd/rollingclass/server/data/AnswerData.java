@@ -41,7 +41,7 @@ public class AnswerData extends BaseJsonClass {
     public QuestionCoordinate QuestionCoordinate;
 
     public static class QuestionCoordinate{
-        public List region;
+        public List<Region> region;
 
 
     }

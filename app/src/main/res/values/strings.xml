@@ -28,6 +28,8 @@
     <string name="document_title">学案</string>
     <string name="add_document">新建学案</string>
     <string name="wrong_answer_book">错题本</string>
+    <string name="wrong_answer_question">题目</string>
+    <string name="wrong_answer_photo">图片</string>
     <string name="resource_title">资源</string>
     <string name="statistics_title">学情</string>
     <string name="learning_seft">自学</string>
@@ -68,6 +70,9 @@
     <string name="sure">确定</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="no2">无</string>
+    <string name="check_knowledge">请选择课时</string>
+    <string name="no_knowledge">无对应课时</string>
     <string name="add_knowledge">+任务</string>
     <string name="not_publish">待发布</string>
     <string name="hand_up_request">举手提问</string>
@@ -77,6 +82,7 @@
     <string name="learning_the_time">上课时间</string>
     <string name="after_class_learning">课后复习</string>
     <string name="class_record">上课记录</string>
+    <string name="learning_record">学习记录</string>
     <string name="toast_crash">程序出错了, 错误报告提交, 我们将尽快修复该问题, 谢谢合作!</string>
     <string name="update_prompt">发现新版本，是否需要更新？</string>
     <string name="check_teacher_list_fail">获取教师列表失败，请重试</string>
@@ -98,6 +104,7 @@
     <string name="delete_knowledge_warning">是否确定删除学案“%s”？</string>
     <string name="class_on_knowledge_warning">课中未发布</string>
     <string name="no_class_records_warning">暂无上课记录</string>
+    <string name="no_learning_records_warning">暂无学习记录</string>
     <string name="into_class">进入课堂</string>
     <string name="statics_result">统计结果：</string>
     <string name="login_layout_text">欢迎登陆智慧课堂系统</string>
@@ -132,6 +139,9 @@
     <string name="difficult_break">疑难突破</string>
     <string name="class_summary">课堂总结</string>
     <string name="relevant_info">相关资料</string>
+    <string name="my_answer">我的答案： %1$s</string>
+    <string name="answer_right">［正确］</string>
+    <string name="answer_wrong">［错误］</string>
     <string name="collect">收藏</string>
     <string name="check">选用</string>
     <string name="pop_res_lbl">资源库导入</string>
@@ -140,6 +150,7 @@
     <string name="lbl_all_student">提问所有学生</string>
     <string name="lbl_example_class">难度</string>
     <string name="lbl_analysis">解析</string>
+    <string name="check_analysis">查看解析</string>
     <string name="lbl_answer">答案:</string>
     <string name="toast_answer_ok">提交答案成功!</string>
     <string name="toast_answer_fail">提交失败!</string>

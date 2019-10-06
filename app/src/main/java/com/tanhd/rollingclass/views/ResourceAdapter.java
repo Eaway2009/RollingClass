@@ -17,10 +17,13 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
+import com.tanhd.rollingclass.server.data.TeacherData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,9 +91,13 @@ public class ResourceAdapter extends BaseAdapter {
 
         TextView nameView = view.findViewById(R.id.tv_name);
         ImageView thumbView = view.findViewById(R.id.iv_thumb);
-        ImageView likeView = view.findViewById(R.id.iv_like);
-        LinearLayout collect = view.findViewById(R.id.ll_collect);
-
+        final ImageView likeView = view.findViewById(R.id.iv_like);
+        final LinearLayout collect = view.findViewById(R.id.ll_collect);
+        if(data.level == KeyConstants.LevelType.PRIVATE_LEVEL){
+            likeView.setImageResource(R.drawable.icon_like);
+        }else {
+            likeView.setImageResource(R.drawable.icon_unlike);
+        }
         nameView.setText(data.name);
         if (data.isChecked && mCheckItem) {
             view.setBackgroundColor(mContext.getResources().getColor(R.color.button_blue_item_checked_transparent));
@@ -106,7 +113,27 @@ public class ResourceAdapter extends BaseAdapter {
         collect.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2019/8/31 收藏请求
+                TeacherData teacherData = (TeacherData) ExternalParam.getInstance().getUserData().getUserData();
+                ScopeServer.getInstance().StoreResource(teacherData.TeacherID, data.resource_id, new RequestCallback() {
+                    @Override
+                    public void onProgress(boolean b) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String body) {
+                        if(data.level==KeyConstants.LevelType.PRIVATE_LEVEL){
+                            likeView.setImageResource(R.drawable.icon_unlike);
+                        }else {
+                            likeView.setImageResource(R.drawable.icon_like);
+                        }
+                    }
+
+                    @Override
+                    public void onError(String code, String message) {
+
+                    }
+                });
             }
         });
         return view;

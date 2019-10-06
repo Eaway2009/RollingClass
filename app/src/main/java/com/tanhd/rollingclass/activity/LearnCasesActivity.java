@@ -30,6 +30,9 @@ import com.tanhd.rollingclass.fragments.InBoxFragment;
 import com.tanhd.rollingclass.fragments.ServerTesterFragment;
 import com.tanhd.rollingclass.fragments.pages.ClassAnsweringFragment;
 import com.tanhd.rollingclass.fragments.pages.LearnCasesFragment;
+import com.tanhd.rollingclass.fragments.pages.StudentResponderFragment;
+import com.tanhd.rollingclass.server.RequestCallback;
+import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeData;
@@ -55,8 +58,11 @@ public class LearnCasesActivity extends BaseActivity {
 
     public static final String PARAM_CLASS_STUDENT_PAGE = "PARAM_CLASS_STUDENT_PAGE";
     public static final String PARAM_TEACHING_MATERIAL_ID = "PARAM_TEACHING_MATERIAL_ID";
+    public static final String PARAM_RESOURCE_MODEL = "PARAM_RESOURCE_MODEL";
     public static final String PARAM_KNOWLEDGE_ID = "PARAM_KNOWLEDGE_ID";
     public static final String PARAM_KNOWLEDGE_NAME = "PARAM_KNOWLEDGE_NAME";
+    public static final String PARAM_LESSON_SAMPLE_ID = "PARAM_LESSON_SAMPLE_ID";
+    public static final String PARAM_LESSON_SAMPLE_NAME = "PARAM_LESSON_SAMPLE_NAME";
     public static final String PARAM_TEACHER_NAME = "PARAM_TEACHER_NAME";
 
     private LearnCasesFragment mLearnCasesFragment;
@@ -151,7 +157,7 @@ public class LearnCasesActivity extends BaseActivity {
 
             @Override
             public void onBack() {
-                finish();
+                onFinish();
             }
         });
         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mLearnCasesFragment).commit();
@@ -252,12 +258,7 @@ public class LearnCasesActivity extends BaseActivity {
                     if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
                         String examID = message.parameters.get("examID");
                         final String teacherID = message.parameters.get("teacherID");
-                        FrameDialog.show(getSupportFragmentManager(), ClassAnsweringFragment.getInstance(mPageType, mKnowledgeId, mKnowledgeName, teacherID, examID, new ClassAnsweringFragment.ExamListener() {
-                            @Override
-                            public void onFinished() {
-                                MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
-                            }
-                        }));
+                        FrameDialog.show(getSupportFragmentManager(), ClassAnsweringFragment.getInstance(mPageType, mKnowledgeId, mKnowledgeName, teacherID, examID, null));
                     }
                     break;
                 }
@@ -265,10 +266,14 @@ public class LearnCasesActivity extends BaseActivity {
                     if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
                         String examID = message.parameters.get("examID");
                         final String teacherID = message.parameters.get("teacherID");
-                        FrameDialog.show(getSupportFragmentManager(), ClassAnsweringFragment.getInstance(mPageType, mKnowledgeId, mKnowledgeName, teacherID, examID, new ClassAnsweringFragment.ExamListener() {
+
+                        FrameDialog.showLittleDialog(getSupportFragmentManager(), StudentResponderFragment.newInstance(examID, new StudentResponderFragment.ExamListener() {
                             @Override
-                            public void onFinished() {
-                                MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, null);
+                            public void onFinished(String answer) {
+                                message.parameters.put("answer", answer);
+                                StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+                                message.parameters.put("askName", studentData.Username);
+                                MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, message.parameters);
                             }
                         }));
                     }
@@ -366,6 +371,37 @@ public class LearnCasesActivity extends BaseActivity {
             Log.i("DemoLog", "客户端 onServiceDisconnected");
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        onFinish();
+    }
+
+    private void onFinish() {
+        UserData userData = ExternalParam.getInstance().getUserData();
+        if (userData.isTeacher() && ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.CLASSING) {
+            MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_END, (List<String>) null, null);
+
+            ClassData classData = ExternalParam.getInstance().getClassData();
+            ScopeServer.getInstance().UpdateKnowledgeStatus(KeyConstants.ClassLearningStatus.REST, classData.ClassID, mKnowledgeId, new RequestCallback() {
+                @Override
+                public void onProgress(boolean b) {
+
+                }
+
+                @Override
+                public void onResponse(String body) {
+
+                }
+
+                @Override
+                public void onError(String code, String message) {
+
+                }
+            });
+        }
+        finish();
+    }
 
     @Override
     protected void onDestroy() {

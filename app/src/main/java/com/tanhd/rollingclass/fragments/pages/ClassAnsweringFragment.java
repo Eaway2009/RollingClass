@@ -48,12 +48,30 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
     private String mKnowledgeID;
     private String mKnowledgeName;
     private int mPageType;
+    private String mLessonSampleID;
+    private String mLessonSampleName;
 
     public static ClassAnsweringFragment getInstance(int pageType, String KnowledgeID, String KnowledgeName, String teacherID, String questionSetID, ExamListener examListener) {
         ClassAnsweringFragment classAnsweringFragment = new ClassAnsweringFragment();
         Bundle args = new Bundle();
         args.putInt("pageType", pageType);
         args.putString("teacherID", teacherID);
+        args.putString("KnowledgeName", KnowledgeName);
+        args.putString("KnowledgeID", KnowledgeID);
+        if (questionSetID != null)
+            args.putString("questionSetID", questionSetID);
+        classAnsweringFragment.setArguments(args);
+        classAnsweringFragment.setListener(examListener);
+        return classAnsweringFragment;
+    }
+
+    public static ClassAnsweringFragment getInstance(int pageType, String KnowledgeID, String KnowledgeName, String teacherID, String lessonSampleID, String lessonSampleName, String questionSetID, ExamListener examListener) {
+        ClassAnsweringFragment classAnsweringFragment = new ClassAnsweringFragment();
+        Bundle args = new Bundle();
+        args.putInt("pageType", pageType);
+        args.putString("teacherID", teacherID);
+        args.putString("LessonSampleID", lessonSampleID);
+        args.putString("LessonSampleName", lessonSampleName);
         args.putString("KnowledgeName", KnowledgeName);
         args.putString("KnowledgeID", KnowledgeID);
         if (questionSetID != null)
@@ -77,6 +95,8 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
         Bundle args = getArguments();
         mPageType = args.getInt("pageType");
         mTeacherID = args.getString("teacherID");
+        mLessonSampleID = args.getString("LessonSampleID");
+        mLessonSampleName = args.getString("LessonSampleName");
         mQuestionSetID = args.getString("questionSetID");
         mKnowledgeID = args.getString("KnowledgeID");
         mKnowledgeName = args.getString("KnowledgeName");
@@ -88,7 +108,15 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
 
         mQuestionResourceFragment = QuestionResourceFragment.newInstance();
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
-        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, mKnowledgeID, mKnowledgeName);
+        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, mKnowledgeID, mKnowledgeName, mLessonSampleID, mLessonSampleName, new AnswerListFragment.ExamListener() {
+            @Override
+            public void onFinished(String answer) {
+                if (mListener != null) {
+                    mListener.onFinished(answer);
+                }
+                dismiss();
+            }
+        });
         getFragmentManager().beginTransaction().replace(R.id.answer_fragment, mAnswerListFragment).commit();
     }
 
@@ -132,9 +160,6 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.commit_button:
-                if (mListener != null) {
-                    mListener.onFinished();
-                }
                 dismiss();
                 break;
         }
@@ -150,6 +175,6 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
     }
 
     public static interface ExamListener {
-        void onFinished();
+        void onFinished(String answer);
     }
 }

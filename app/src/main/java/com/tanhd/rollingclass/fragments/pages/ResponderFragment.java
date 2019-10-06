@@ -18,7 +18,6 @@ import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.StudentSelectorFragment;
-import com.tanhd.rollingclass.fragments.WaitAnswerFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
 import com.tanhd.rollingclass.fragments.resource.ResourceBaseFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -27,7 +26,6 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionSetData;
 import com.tanhd.rollingclass.server.data.ResourceModel;
-import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.ToastUtil;
@@ -36,10 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * 测学
- */
-public class ClassTestingFragment extends Fragment implements View.OnClickListener {
+public class ResponderFragment extends Fragment implements View.OnClickListener {
 
     private static final String PARAM_CLASS_DATA = "PARAM_CLASS_DATA";
     private static final String PARAM_TEACHING_MATERIAL_ID = "PARAM_TEACHING_MATERIAL_ID";
@@ -52,28 +47,26 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
     private QuestionResourceFragment mQuestionResourceFragment;
     private List<QuestionModel> mQuestionList;
     private String mTeachingMaterialId;
-    private StudentSelectorFragment mStudentSelectorFragment;
-    private List<QuestionSetData.Group> mStudentList;
     private Button mCancelButton;
     private Button mCommitButton;
     private String mKnowledgeId;
     private boolean mIsResponder;
 
-    public static ClassTestingFragment getInstance(ClassData classData, String teachingMaterialId, String knowledgeId, boolean isResponder) {
-        ClassTestingFragment classTestingFragment = new ClassTestingFragment();
+    public static ResponderFragment getInstance(ClassData classData, String teachingMaterialId, String knowledgeId, boolean isResponder) {
+        ResponderFragment responderFragment = new ResponderFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(PARAM_CLASS_DATA, classData);
         bundle.putString(PARAM_TEACHING_MATERIAL_ID, teachingMaterialId);
         bundle.putString(PARAM_KNOWLEDGE_ID, knowledgeId);
         bundle.putBoolean(PARAM_IS_RESPONDER, isResponder);
-        classTestingFragment.setArguments(bundle);
-        return classTestingFragment;
+        responderFragment.setArguments(bundle);
+        return responderFragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_class_testing, null);
+        View contentView = inflater.inflate(R.layout.fragment_responder, null);
         initParams();
         initViews(contentView);
         return contentView;
@@ -107,16 +100,9 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
             }
         });
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
-
-        mStudentSelectorFragment = StudentSelectorFragment.newInstance(false, null, mClassData, new StudentSelectorFragment.StudentSelectListener() {
-            @Override
-            public void onStudentSelected(ArrayList<QuestionSetData.Group> studentList) {
-                mStudentList = studentList;
-            }
-        });
-        getFragmentManager().beginTransaction().replace(R.id.student_select_layout_fragment, mStudentSelectorFragment).commit();
         resetData(KeyConstants.LevelType.SCHOOL_LEVEL);
     }
+
 
     @Override
     public void onClick(View v) {
@@ -147,65 +133,13 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
                     ToastUtil.show(R.string.toast_select_topic);
                     return;
                 }
-                if(mStudentList==null||mStudentList.size()==0){
-                    ToastUtil.show(R.string.toast_select_student);
-                    return;
-                }
-                new NewSetTask(mQuestionList, mStudentList).execute();
+                QuestionModel questionModel = mQuestionList.get(0);
+                HashMap<String, String> params = new HashMap<>();
+                params.put("examID", questionModel.question_id);
+                params.put("teacherID", ExternalParam.getInstance().getUserData().getOwnerID());
+                MyMqttService.publishMessage(PushMessage.COMMAND.RESPONDER, (List<String>) null, params);
+                dismiss();
                 break;
-        }
-    }
-    private class NewSetTask extends AsyncTask<List, Void, String> {
-        private List<QuestionSetData.Group> groupList;
-        private List<QuestionModel> questionList;
-
-        NewSetTask(List<QuestionModel> questionModelList, List<QuestionSetData.Group> groups){
-            groupList = groups;
-            questionList = questionModelList;
-        }
-
-        @Override
-        protected String doInBackground(List... lists) {
-
-            QuestionSetData questionSetData = new QuestionSetData();
-            questionSetData.TeacherID = ExternalParam.getInstance().getUserData().getOwnerID();
-            questionSetData.SetName = getResources().getString(R.string.lbl_ask);
-
-            questionSetData.QuestionList = new ArrayList<>();
-            for (int i=0; i<questionList.size(); i++) {
-                QuestionModel questionData = (QuestionModel) questionList.get(i);
-                questionSetData.QuestionList.add(questionData.question_id);
-            }
-
-            questionSetData.groups = groupList;
-            questionSetData.knowledge_id = mKnowledgeId;
-            questionSetData.class_id = mClassData.ClassID;
-            String result = ScopeServer.getInstance().InsertQuestionSet(questionSetData.toJSON().toString());
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            if (result == null) {
-                Toast.makeText(getContext().getApplicationContext(), "发起提问失败!", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            List<String> to = new ArrayList<>();
-            for (QuestionSetData.Group group : groupList) {
-                to.addAll(group.students);
-            }
-            HashMap<String, String> params = new HashMap<>();
-            params.put("examID", result);
-            params.put("teacherID", ExternalParam.getInstance().getUserData().getOwnerID());
-            if(mIsResponder) {
-                MyMqttService.publishMessage(PushMessage.COMMAND.RESPONDER, to, params);
-            } else {
-                MyMqttService.publishMessage(PushMessage.COMMAND.QUESTIONING, (List<String>) null, params);
-            }
-            ExternalParam.getInstance().setQuestionSetID(result);
-//            showFragment(WaitAnswerFragment.newInstance(result));
-            dismiss();
         }
     }
 
@@ -215,7 +149,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
     }
 
     private void resetData(int level) {
-        new InitQuestionDataTask(level).execute();
+        new ResponderFragment.InitQuestionDataTask(level).execute();
     }
 
     private class InitQuestionDataTask extends AsyncTask<Void, Void, List<QuestionModel>> {

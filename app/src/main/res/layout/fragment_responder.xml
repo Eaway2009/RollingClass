@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/dp_32">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/school_resource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:paddingLeft="@dimen/dp_28"
+            android:paddingTop="@dimen/dp_9"
+            android:paddingRight="@dimen/dp_28"
+            android:paddingBottom="@dimen/dp_9"
+            android:text="@string/school_resource"
+            android:textColor="@color/resource_select_title"
+            android:textSize="@dimen/text_size_15" />
+
+        <TextView
+            android:id="@+id/public_resource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_28"
+            android:paddingTop="@dimen/dp_9"
+            android:paddingRight="@dimen/dp_28"
+            android:paddingBottom="@dimen/dp_9"
+            android:text="@string/public_resource"
+            android:textColor="@color/resource_select_title"
+            android:textSize="@dimen/text_size_15" />
+
+        <TextView
+            android:id="@+id/my_resource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_28"
+            android:paddingTop="@dimen/dp_9"
+            android:paddingRight="@dimen/dp_28"
+            android:paddingBottom="@dimen/dp_9"
+            android:text="@string/my_resource"
+            android:textColor="@color/resource_select_title"
+            android:textSize="@dimen/text_size_15" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/cut_color" />
+
+    <FrameLayout
+        android:id="@+id/question_layout_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_17"
+        android:layout_weight="1" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_10"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:text="@string/cancel"
+            android:textColor="@color/button_blue_item_checked"
+            android:textSize="@dimen/text_size_15"
+            android:background="@drawable/task_add_cancel_button" />
+
+        <Button
+            android:id="@+id/commit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textSize="20sp"
+            android:text="@string/sure"
+            android:textColor="@color/white"
+            android:background="@drawable/task_add_save_button" />
+    </LinearLayout>
+</LinearLayout>

@@ -65,7 +65,7 @@
             android:layout_weight="1"/>
 
     </LinearLayout>
-    
+
     <View
         android:id="@+id/view_cut"
         android:layout_width="1dp"

@@ -99,6 +99,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         mAdapter = new DocumentAdapter(DocumentsPageFragment.this, userData.isTeacher(), this);
         mGridView.setAdapter(mAdapter);
         mAddDocumentView.setOnClickListener(this);
+        mWrongAnswerView.setOnClickListener(this);
         if (mKnowledgeModel == null) {
             mAddDocumentView.setEnabled(false);
         }
@@ -142,76 +143,24 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         }
     }
 
-
-//    private void showLessonSampleDialog(final int syncTo) {
-//        if (mDataList == null) {
-//            return;
-//        }
-//        String[] sampleNameItems = new String[mDataList.size()];
-//        final String[] sampleIdItems = new String[mDataList.size()];
-//        boolean[] checkedItems = new boolean[mDataList.size()];
-//        final List<String> checkedIdList = new ArrayList<>();
-//        for (int i = 0; i < mDataList.size(); i++) {
-//            sampleNameItems[i] = mDataList.get(i).lesson_sample_name;
-//            sampleIdItems[i] = mDataList.get(i).lesson_sample_id;
-//            checkedItems[i] = true;
-//        }
-//        new AlertDialog.Builder(getActivity())
-//                .setTitle(R.string.publish_warning)
-//                .setMultiChoiceItems(sampleNameItems, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-//                        if (isChecked) {
-//                            sampleIdItems[which] = mDataList.get(which).lesson_sample_id;
-//                        } else {
-//                            sampleIdItems[which] = "";
-//                        }
-//                    }
-//                })
-//                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                })
-//                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        for (int i = 0; i < sampleIdItems.length; i++) {
-//                            if (!TextUtils.isEmpty(sampleIdItems[i])) {
-//                                checkedIdList.add(sampleIdItems[i]);
-//                            }
-//                        }
-//                        SyncSampleToClassRequest request = new SyncSampleToClassRequest();
-//                        switch (syncTo) {
-//                            case KeyConstants.KnowledgeStatus.AFTER_CLASS:
-//                                request.class_after_task = checkedIdList;
-//                                break;
-//                            case KeyConstants.KnowledgeStatus.AT_CLASS:
-//                                request.class_process_task = checkedIdList;
-//                                break;
-//                            case KeyConstants.KnowledgeStatus.FRE_CLASS:
-//                                request.class_before_task = checkedIdList;
-//                                break;
-//                        }
-//                        request.cur_status = mStatus;
-//                        new RequestSyncTask(request).execute();
-//                    }
-//                }).show();
-//    }
-
     @Override
     public void onClick(View v) {
+        KnowledgeModel model = (KnowledgeModel) getArguments().getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
         switch (v.getId()) {
             case R.id.add_document_view:
-                KnowledgeModel model = (KnowledgeModel) getArguments().getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
                 DocumentEditActivity.startMe(DocumentsPageFragment.this, DocumentEditActivity.PAGE_ID_ADD_DOCUMENTS, model);
+                break;
+            case R.id.wrong_answer_view:
+                if(mListener!=null){
+                    mListener.onOpenWrongListBook(model);
+                }
                 break;
         }
     }
 
     public interface DocumentListener {
         void onDocumentClicked(int documentId);
+        void onOpenWrongListBook(KnowledgeModel model);
     }
 
     @Override

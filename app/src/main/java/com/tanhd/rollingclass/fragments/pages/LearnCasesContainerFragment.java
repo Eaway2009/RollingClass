@@ -187,7 +187,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
             switch (type) {
                 case ITEM_ANSWER: //抢答
                     if (mClassData != null) {
-                        FrameDialog.show(getFragmentManager(), ClassTestingFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId, true));
+                        FrameDialog.show(getFragmentManager(), ResponderFragment.getInstance(mClassData, mTeachingMaterialId, mKnowledgeId, true));
                     }
                     break;
                 case ITEM_EXRCISE:  //测学

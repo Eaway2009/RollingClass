@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DatasActivity;
+import com.tanhd.rollingclass.fragments.statistics.StudentStatisticsFragment;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.fragments.pages.ChaptersFragment;
 import com.tanhd.rollingclass.fragments.pages.DocumentsPageFragment;
@@ -28,18 +29,25 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
     private TextView mDocumentView;
     private TextView mResourceView;
     private TextView mStatisticsView;
+    private View mTitleView;
+    private View mWrongAnswerTitleView;
     private ChaptersFragment mChapterFragment;
     private int mCurrentShowModuleId = -1;
     private static final int MODULE_ID_DOCUMENTS = 0;
     private static final int MODULE_ID_RESOURCES = 1;
     private static final int MODULE_ID_STATISTICS = 2;
+    private static final int MODULE_ID_WRONG_ANSWER = 3;
+    private static final int MODULE_ID_ANSWER_STATISTICS = 4;
     private static final int ROOT_LAYOUT_ID = R.id.content_layout;
     private DocumentsPageFragment mDocumentsFragment;
     private ResourcesPageFragment mResourcesFragment;
     private StatisticsPageFragment mStatisticsFragment;
+    private WrongAnswerListFragment mWrongAnswerListFragment;
+    private StudentStatisticsFragment mStudentStatisticsFragment;
     private int mPageId;
     private boolean mIsStudentPage;
     private KnowledgeModel mKnowledgeModel;
+    private Fragment mModuleFragment;
 
     public static ShowPageFragment newInstance(int pageId, boolean student, ShowPageFragment.PagesListener listener) {
         Bundle args = new Bundle();
@@ -71,6 +79,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void initViews(View view) {
+        mTitleView = view.findViewById(R.id.title_view);
         mDocumentView = view.findViewById(R.id.document_textview);
         mResourceView = view.findViewById(R.id.resource_textview);
         mStatisticsView = view.findViewById(R.id.statistics_textview);
@@ -152,55 +161,85 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
             return;
         }
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        Fragment moduleFragment = null;
         if (moduleId == MODULE_ID_DOCUMENTS) { //学案
             if (mDocumentsFragment == null) {
                 mDocumentsFragment = DocumentsPageFragment.newInstance(new DocumentsPageFragment.DocumentListener() {
                     @Override
                     public void onDocumentClicked(int documentId) {
+                    }
 
+                    @Override
+                    public void onOpenWrongListBook(KnowledgeModel model) {
+                        mTitleView.setVisibility(View.GONE);
+                        showModulePage(MODULE_ID_WRONG_ANSWER);
                     }
                 });
                 transaction.add(ROOT_LAYOUT_ID, mDocumentsFragment);
             }
-            moduleFragment = mDocumentsFragment;
-            if (mResourcesFragment != null) {
-                transaction.hide(mResourcesFragment);
+            if(mModuleFragment!=null) {
+                transaction.hide(mModuleFragment);
             }
-            if (mStatisticsFragment != null) {
-                transaction.hide(mStatisticsFragment);
-            }
+            mModuleFragment = mDocumentsFragment;
         } else if (moduleId == MODULE_ID_RESOURCES) {  //资源
             if (mResourcesFragment == null) {
                 mResourcesFragment = ResourcesPageFragment.newInstance(mKnowledgeModel);
                 transaction.add(ROOT_LAYOUT_ID, mResourcesFragment);
             }
-            moduleFragment = mResourcesFragment;
-            if (mDocumentsFragment != null) {
-                transaction.hide(mDocumentsFragment);
+            if(mModuleFragment!=null) {
+                transaction.hide(mModuleFragment);
             }
-            if (mStatisticsFragment != null) {
-                transaction.hide(mStatisticsFragment);
-            }
+            mModuleFragment = mResourcesFragment;
         } else if (moduleId == MODULE_ID_STATISTICS) {  //学情
             if (mStatisticsFragment == null) {
-                mStatisticsFragment = StatisticsPageFragment.newInstance(mKnowledgeModel);
+                mStatisticsFragment = StatisticsPageFragment.newInstance(mKnowledgeModel, new StatisticsPageFragment.Callback() {
+                    @Override
+                    public void onOpenStatistics(KnowledgeModel model) {
+                        mTitleView.setVisibility(View.GONE);
+                        showModulePage(MODULE_ID_ANSWER_STATISTICS);
+                    }
+                });
                 transaction.add(ROOT_LAYOUT_ID, mStatisticsFragment);
             }
-            moduleFragment = mStatisticsFragment;
-            if (mDocumentsFragment != null) {
-                transaction.hide(mDocumentsFragment);
+            if(mModuleFragment!=null) {
+                transaction.hide(mModuleFragment);
             }
-            if (mResourcesFragment != null) {
-                transaction.hide(mResourcesFragment);
+            mModuleFragment = mStatisticsFragment;
+        } else if (moduleId == MODULE_ID_WRONG_ANSWER) {  //错题本
+            if (mWrongAnswerListFragment == null) {
+                mWrongAnswerListFragment = WrongAnswerListFragment.newInstance(mKnowledgeModel, new WrongAnswerListFragment.Callback() {
+                    @Override
+                    public void onBack() {
+                        mTitleView.setVisibility(View.VISIBLE);
+                        changeToFragment(MODULE_ID_DOCUMENTS);
+                    }
+                });
+                transaction.add(ROOT_LAYOUT_ID, mWrongAnswerListFragment);
             }
+            if(mModuleFragment!=null) {
+                transaction.hide(mModuleFragment);
+            }
+            mModuleFragment = mWrongAnswerListFragment;
+        }else if (moduleId == MODULE_ID_ANSWER_STATISTICS) {  //习题数据
+            if (mStudentStatisticsFragment == null) {
+                mStudentStatisticsFragment = StudentStatisticsFragment.newInstance(mKnowledgeModel, new StudentStatisticsFragment.Callback() {
+                    @Override
+                    public void onBack(){
+                        mTitleView.setVisibility(View.GONE);
+                        changeToFragment(MODULE_ID_STATISTICS);
+                    }
+                });
+                transaction.add(ROOT_LAYOUT_ID, mStudentStatisticsFragment);
+            }
+            if(mModuleFragment!=null) {
+                transaction.hide(mModuleFragment);
+            }
+            mModuleFragment = mStudentStatisticsFragment;
         }
-        transaction.show(moduleFragment);
+        transaction.show(mModuleFragment);
         transaction.commitAllowingStateLoss();
 
         mCurrentShowModuleId = moduleId;
     }
-
 
     @Override
     public void onTeacherCheckChapter(String school_id, String teacher_id, String chapter_id, String chapter_name, String section_id, String section_name, int subject_code, String subject_name, String teaching_material_id) {
@@ -229,6 +268,9 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
         }
         if (mStatisticsFragment != null) {
             mStatisticsFragment.resetData(mKnowledgeModel);
+        }
+        if (mWrongAnswerListFragment != null) {
+            mWrongAnswerListFragment.resetData(mKnowledgeModel);
         }
     }
 

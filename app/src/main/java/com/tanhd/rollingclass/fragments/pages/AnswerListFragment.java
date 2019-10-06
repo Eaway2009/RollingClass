@@ -31,7 +31,10 @@ import com.tanhd.rollingclass.utils.ResultClass;
 import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AnswerListFragment extends Fragment {
     private ListView mAnswerListView;
@@ -44,14 +47,20 @@ public class AnswerListFragment extends Fragment {
     private Button mCommitButton;
     private String mQuestionSetId;
     private View mShowAnswerButton;
+    private Map<String, String> mParameters;
+    private ExamListener mListener;
+    private String mLessonSampleId;
+    private String mLessonSampleName;
+    private String mKnowledgeId;
+    private String mKnowledgeName;
 
     public static AnswerListFragment getInstance(int pageType, String knowledgeId, String knowledgeName) {
         AnswerListFragment answerListFragment = new AnswerListFragment();
         Bundle args = new Bundle();
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, pageType);
 
-        args.putString("KnowledgeID", knowledgeId);
-        args.putString("KnowledgeName", knowledgeName);
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_ID, knowledgeId);
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME, knowledgeName);
         answerListFragment.setArguments(args);
         return answerListFragment;
     }
@@ -61,11 +70,25 @@ public class AnswerListFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, pageType);
 
-        args.putString("KnowledgeID", knowledgeId);
-        args.putString("KnowledgeName", knowledgeName);
-        args.putString("LessonSampleID", lessonSampleId);
-        args.putString("LessonSampleName", lessonSampleName);
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_ID, knowledgeId);
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME, knowledgeName);
+        args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_ID, lessonSampleId);
+        args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_NAME, lessonSampleName);
         answerListFragment.setArguments(args);
+        return answerListFragment;
+    }
+
+    public static AnswerListFragment getInstance(int pageType, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName, ExamListener listener) {
+        AnswerListFragment answerListFragment = new AnswerListFragment();
+        Bundle args = new Bundle();
+        args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, pageType);
+
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_ID, knowledgeId);
+        args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME, knowledgeName);
+        args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_ID, lessonSampleId);
+        args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_NAME, lessonSampleName);
+        answerListFragment.setArguments(args);
+        answerListFragment.setListener(listener);
         return answerListFragment;
     }
 
@@ -81,6 +104,10 @@ public class AnswerListFragment extends Fragment {
     private void initParams() {
         Bundle args = getArguments();
         mPageType = args.getInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE);
+        mLessonSampleId = args.getString(LearnCasesActivity.PARAM_LESSON_SAMPLE_ID);
+        mLessonSampleName = args.getString(LearnCasesActivity.PARAM_LESSON_SAMPLE_NAME);
+        mKnowledgeId = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_ID);
+        mKnowledgeName = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME);
     }
 
     private void initViews(View contentView) {
@@ -105,11 +132,17 @@ public class AnswerListFragment extends Fragment {
         mShowAnswerButton.setOnClickListener(onClickListener);
     }
 
+    public void setListener(ExamListener listener){
+        mListener = listener;
+    }
+
     public void setShowAnswer(boolean setShowAnswer){
         mAdapter.setShowAnswer(setShowAnswer);
     }
 
     public void resetData(String questionSetId, List<QuestionModel> questionModelList) {
+        mParameters = new HashMap<>();
+        mParameters.put(PushMessage.PARAM_LESSON_SAMPLE_ID, mLessonSampleId);
         mQuestionSetId = questionSetId;
         mQuestionModelList = questionModelList;
         if (mAdapter != null) {
@@ -140,9 +173,12 @@ public class AnswerListFragment extends Fragment {
             switch (v.getId()) {
                 case R.id.commit_button:
                     new CommitAnswerTask(mAdapter.getData()).execute();
+                    if(mListener!=null){
+                        mListener.onFinished(mAdapter.getAnswer());
+                    }
                     break;
                 case R.id.show_answers_button:
-                    MyMqttService.publishMessage(PushMessage.COMMAND.CLASS_BEGIN, (List<String>) null, null);
+                    MyMqttService.publishMessage(PushMessage.COMMAND.SHOW_RIGHT_ANSWER, (List<String>) null, mParameters);
                     break;
             }
         }
@@ -165,6 +201,7 @@ public class AnswerListFragment extends Fragment {
         protected void onPostExecute(Integer result) {
             if (result == 0) {
                 ToastUtil.show(R.string.toast_answer_ok);
+                mAdapter.setAnswerCommitted(true);
                 mCommitButton.setVisibility(View.GONE);
             } else {
                 ToastUtil.show(R.string.toast_answer_fail);
@@ -209,19 +246,20 @@ public class AnswerListFragment extends Fragment {
                 answerData.AnswerUserID = userID;
                 answerData.AnswerType = 2;
                 answerData.AnswerUserName = userName;
-                answerData.KnowledgeID = getArguments().getString("KnowledgeID");
-                answerData.KnowledgeName = getArguments().getString("KnowledgeName");
-                answerData.LessonSampleID = getArguments().getString("LessonSampleID");
-                answerData.LessonSampleName = getArguments().getString("LessonSampleName");
+                answerData.KnowledgeID = mKnowledgeId;
+                answerData.KnowledgeName = mKnowledgeName;
+                answerData.LessonSampleID = TextUtils.isEmpty(mLessonSampleId)?"":mLessonSampleId;;
+                answerData.LessonSampleName = mLessonSampleName;
                 answerData.TeacherID = questionData.teacher_id;
                 answerData.TeacherName = questionData.teacher_name;
                 answerData.ClassID = ExternalParam.getInstance().getClassData().ClassID;
                 answerData.QuestionCategoryName = questionData.context.QuestionCategoryName;
                 answerData.QuestionCategoryId = questionData.context.QuestionCategoryId;
                 answerData.QuestionType = questionData.QuestionType;
-                answerData.QuestionSetID = mQuestionSetId;
+                answerData.QuestionSetID = TextUtils.isEmpty(mQuestionSetId)?"undefine":mQuestionSetId;
                 answerData.GoodAnswer = questionData.context.Answer;
                 answerData.Analysis = questionData.context.Analysis;
+                answerData.Modify = 2;
 
                 if (isUrl) {
                     answerData.AnswerUrl = result;
@@ -242,5 +280,10 @@ public class AnswerListFragment extends Fragment {
 
             return 0;
         }
+    }
+
+
+    public static interface ExamListener {
+        void onFinished(String answer);
     }
 }

@@ -24,6 +24,8 @@ import android.widget.TextView;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.base.BaseListAdapter;
 import com.tanhd.rollingclass.base.BaseViewHolder;
+import com.tanhd.rollingclass.server.data.AnswerData;
+import com.tanhd.rollingclass.server.data.AnswerModel;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.AppUtils;
@@ -35,39 +37,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 习题-页面
+ * 错题-页面
  */
-public class QuestionResourceFragment extends ResourceBaseFragment {
-    private List<QuestionModel> mQuestionList = new ArrayList<>();
-    private List<QuestionModel> mCheckedQuestionList = new ArrayList<>();
+public class AnswerDisplayFragment extends ResourceBaseFragment {
+    private static final String PARAM_TYPE = "PARAM_TYPE";
+    private List<AnswerData> mQuestionList = new ArrayList<>();
 
     private RecyclerView recyclerView;
     private QuestionAdapter mAdapter;
-    private ListCallback mListListener;
-    private Callback mListener;
 
     private Handler mHandler = new Handler();
+    private int mType;
 
-    public static QuestionResourceFragment newInstance() {
-        QuestionResourceFragment page = new QuestionResourceFragment();
-        return page;
-    }
-
-    public static QuestionResourceFragment newInstance(List<QuestionModel> questionList) {
-        QuestionResourceFragment page = new QuestionResourceFragment();
-        page.setListData(questionList);
-        return page;
-    }
-
-    public static QuestionResourceFragment newInstance(ResourceBaseFragment.Callback callback) {
-        QuestionResourceFragment page = new QuestionResourceFragment();
-        page.setListener(callback);
-        return page;
-    }
-
-    public static QuestionResourceFragment newInstance(ResourceBaseFragment.ListCallback callback) {
-        QuestionResourceFragment page = new QuestionResourceFragment();
-        page.setListener(callback);
+    public static AnswerDisplayFragment newInstance(int type) {
+        AnswerDisplayFragment page = new AnswerDisplayFragment();
+        Bundle args = new Bundle();
+        args.putInt(PARAM_TYPE, type);
+        page.setArguments(args);
         return page;
     }
 
@@ -75,8 +61,14 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_question_selector, container, false);
+        initParams();
         initViews(view);
         return view;
+    }
+
+    private void initParams() {
+        Bundle args = getArguments();
+        mType = args.getInt(PARAM_TYPE);
     }
 
     private void initViews(View view) {
@@ -91,18 +83,10 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
         mAdapter.setAnalysisListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                QuestionModel questionModel = mAdapter.getDataList().get(position);
-                AnalysisDialog.newInstance(questionModel.context.Answer,questionModel.context.Analysis).show(getChildFragmentManager(),"AnalysisDialog");
+                AnswerModel answerModel = mAdapter.getDataList().get(position);
+                AnalysisDialog.newInstance(answerModel.context.Answer,answerModel.context.Analysis).show(getChildFragmentManager(),"AnalysisDialog");
             }
         });
-    }
-
-    public void setListener(ResourceBaseFragment.ListCallback callback) {
-        mListListener = callback;
-    }
-
-    public void setListener(ResourceBaseFragment.Callback callback) {
-        mListener = callback;
     }
 
     public void setListData(final List resourceList) {
@@ -138,7 +122,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
     /**
      * 适配器
      */
-    private class QuestionAdapter extends BaseListAdapter<QuestionModel> {
+    private class QuestionAdapter extends BaseListAdapter<AnswerModel> {
         private OnItemClickListener analysisListener;
 
         public QuestionAdapter(Context context) {
@@ -147,7 +131,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
 
         @Override
         public int getLayoutId() {
-            return R.layout.item_question_resource;
+            return R.layout.item_wrong_answer_display;
         }
 
         public void setAnalysisListener(OnItemClickListener analysisListener) {
@@ -156,40 +140,48 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
 
         @Override
         public void onBindItemHolder(BaseViewHolder holder, final int position) {
-            final QuestionModel question = mDataList.get(position);
+            final AnswerModel answerModel = mDataList.get(position);
 
             TextView typeView = holder.getView(R.id.type);
             TextView noView = holder.getView(R.id.no);
             WebView stemView = holder.getView(R.id.stem);
             View overView = holder.getView(R.id.over);
             TextView tv_analysis = holder.getView(R.id.tv_analysis);
+            TextView tv_my_answer = holder.getView(R.id.tv_my_answer);
+            TextView answerResultTextview = holder.getView(R.id.answer_result_textview);
             tv_analysis.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (analysisListener != null) analysisListener.onItemClick(v,position);
                 }
             });
-
-            CheckBox itemCheckBox = holder.getView(R.id.check_item_cb);
-            if (mListener != null || mListListener != null) {
-                itemCheckBox.setVisibility(View.VISIBLE);
-            } else {
-                itemCheckBox.setVisibility(View.GONE);
-            }
-
-            if (question.context != null) {
-                typeView.setText(String.format("[%s]", question.context.QuestionCategoryName));
-                noView.setText(String.format("第%d题:", question.context.OrderIndex));
-                String html = AppUtils.dealHtmlText(question.context.Stem);
+            if (answerModel.context != null) {
+                tv_my_answer.setText(getString(R.string.my_answer, answerModel.context.Answer));
+                typeView.setText(String.format("[%s]", answerModel.context.QuestionCategoryName));
+                noView.setText(String.format("第%d题:", answerModel.context.OrderIndex));
+                String html = AppUtils.dealHtmlText(answerModel.context.Stem);
                 stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
+                if(mType == 1){
+                    tv_my_answer.setVisibility(View.VISIBLE);
+                    answerResultTextview.setVisibility(View.GONE);
+                }else{
+                    tv_my_answer.setVisibility(View.GONE);
+                    answerResultTextview.setVisibility(View.VISIBLE);
+                    if(answerModel.answer_right) {
+                        answerResultTextview.setText(R.string.answer_right);
+                    }else{
+                        answerResultTextview.setText(R.string.answer_wrong);
+                    }
+                }
+
                 LinearLayout optionsLayout = holder.getView(R.id.options);
-                if (question.context.QuestionCategoryId == 1 && question.context.Options != null) {
+                if (answerModel.context.QuestionCategoryId == 1 && answerModel.context.Options != null) {
                     optionsLayout.setVisibility(View.VISIBLE);
                     optionsLayout.removeAllViews();
 
                     try {
-                        for (OptionData optionData : question.context.Options) {
+                        for (OptionData optionData : answerModel.context.Options) {
                             View optionView = getLayoutInflater().inflate(R.layout.layout_question_option, optionsLayout, false);
                             noView = optionView.findViewById(R.id.no);
                             WebView textView = optionView.findViewById(R.id.option_text);
@@ -207,24 +199,6 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
                     optionsLayout.setVisibility(View.GONE);
                 }
             }
-            itemCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (mListListener != null) {
-                        if (isChecked) {
-                            mCheckedQuestionList.add(question);
-                        } else {
-                            if (mCheckedQuestionList.contains(question)) {
-                                mCheckedQuestionList.remove(question);
-                            }
-                        }
-                        mListListener.onListChecked(null, mCheckedQuestionList);
-                    }
-                    if (mListener != null) {
-                        mListener.itemChecked(null, question);
-                    }
-                }
-            });
 
         }
     }
