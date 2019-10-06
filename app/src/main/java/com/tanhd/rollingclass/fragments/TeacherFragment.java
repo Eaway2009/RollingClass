@@ -52,9 +52,9 @@ import java.util.UUID;
  */
 public class TeacherFragment extends Fragment implements View.OnClickListener {
     private BackListener mListener;
-    private ImageView mClassPageView;
-    private ImageView mResourcePageView;
-    private ImageView mStaticsPageView;
+    private View mClassPageView;
+    private View mResourcePageView;
+    private View mStaticsPageView;
 
     public static TeacherFragment newInstance(BackListener listener) {
         TeacherFragment fragment = new TeacherFragment();

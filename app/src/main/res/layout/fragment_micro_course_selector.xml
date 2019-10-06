@@ -14,7 +14,7 @@
         android:textSize="26sp"
         android:gravity="center"
         android:background="@color/micro_course_selector_title"
-        android:text="请选择要查看的微课"/>
+        android:text="@string/lbl_please_look_wk"/>
 
     <ListView
         android:id="@+id/list"

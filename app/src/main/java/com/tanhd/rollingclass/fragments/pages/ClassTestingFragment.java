@@ -170,7 +170,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
 
             QuestionSetData questionSetData = new QuestionSetData();
             questionSetData.TeacherID = ExternalParam.getInstance().getUserData().getOwnerID();
-            questionSetData.SetName = "提问";
+            questionSetData.SetName = getResources().getString(R.string.lbl_ask);
 
             questionSetData.QuestionList = new ArrayList<>();
             for (int i=0; i<questionList.size(); i++) {

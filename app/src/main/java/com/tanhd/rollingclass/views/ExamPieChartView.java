@@ -77,7 +77,7 @@ public class ExamPieChartView extends LinearLayout {
         chart.setExtraOffsets(5, 10, 5, 5);
 
         chart.setDragDecelerationFrictionCoef(0.95f);
-        chart.setCenterText("答题情况");
+        chart.setCenterText(getResources().getString(R.string.lbl_answer_situation));
 
         chart.setDrawHoleEnabled(true);
         chart.setHoleColor(Color.WHITE);
@@ -128,19 +128,19 @@ public class ExamPieChartView extends LinearLayout {
         List errorArray = (List) map.get("ErrorArray");
         List unAnswerArray = (List) map.get("UnAnswerArray");
 
-        PieEntry entry = new PieEntry(correctArray.size(), "正确");
+        PieEntry entry = new PieEntry(correctArray.size(), getResources().getString(R.string.lbl_exactness));
         entry.setData(correctArray);
         entries.add(entry);
 
-        entry = new PieEntry(errorArray.size(), "错误");
+        entry = new PieEntry(errorArray.size(), getResources().getString(R.string.lbl_err));
         entry.setData(errorArray);
         entries.add(entry);
 
-        entry = new PieEntry(unAnswerArray.size(), "未答");
+        entry = new PieEntry(unAnswerArray.size(), getContext().getResources().getString(R.string.lbl_unanswered));
         entry.setData(unAnswerArray);
         entries.add(entry);
 
-        PieDataSet dataSet = new PieDataSet(entries, "答题统计");
+        PieDataSet dataSet = new PieDataSet(entries, getContext().getResources().getString(R.string.lbl_answer_tj));
 
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);

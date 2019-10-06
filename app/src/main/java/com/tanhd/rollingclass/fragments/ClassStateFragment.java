@@ -89,10 +89,10 @@ public class ClassStateFragment extends Fragment {
         TextView statusView = v.findViewById(R.id.status);
         if (studentData.Status == 1) {
             statusView.setBackgroundColor(getResources().getColor(R.color.online));
-            statusView.setText("在线");
+            statusView.setText(getResources().getString(R.string.lbl_online));
         } else {
             statusView.setBackgroundColor(getResources().getColor(R.color.offline));
-            statusView.setText("离线");
+            statusView.setText(getResources().getString(R.string.lbl_offline));
         }
     }
 

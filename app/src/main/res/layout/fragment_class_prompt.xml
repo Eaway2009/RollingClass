@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="36sp"
-        android:text="上课了"/>
+        android:text="@string/lbl_class_begins"/>
 
     <LinearLayout
         android:layout_width="400dp"
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="24sp"
-                android:text="班级:" />
+                android:text="@string/lbl_class" />
 
             <TextView
                 android:id="@+id/class_name"
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="24sp"
-                android:text="任课教师:" />
+                android:text="@string/lbl_course_teachers" />
 
             <TextView
                 android:id="@+id/teacher_name"
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="24sp"
-                android:text="学案:" />
+                android:text="@string/lbl_studies_doc" />
 
             <TextView
                 android:id="@+id/lesson_sample"

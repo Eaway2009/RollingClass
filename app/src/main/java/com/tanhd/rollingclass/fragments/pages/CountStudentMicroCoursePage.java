@@ -73,7 +73,7 @@ public class CountStudentMicroCoursePage extends Fragment {
             if (list == null || list.size() == 0)
                 return;
 
-            mBarChartView.setData("", null, list, new MyValueFormatter("第", "次"), new MyValueFormatter("", "秒"), "秒");
+            mBarChartView.setData("", null, list, new MyValueFormatter(getResources().getString(R.string.lbl_di), getResources().getString(R.string.lbl_ci)), new MyValueFormatter("", getResources().getString(R.string.lbl_second)), getResources().getString(R.string.lbl_second));
         }
     }
 }

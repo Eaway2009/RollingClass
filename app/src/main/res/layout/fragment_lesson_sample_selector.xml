@@ -14,7 +14,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginLeft="48dp"
         android:layout_marginBottom="32dp"
-        android:text="学案列表："/>
+        android:text="@string/lbl_xalb"/>
 
     <ListView
         android:id="@+id/list"

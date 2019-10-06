@@ -3,34 +3,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:gravity="center_horizontal"
-    android:paddingTop="@dimen/dp_71">
+    android:paddingTop="@dimen/dp_71"
+    android:gravity="center_horizontal">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/class_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/teacher_class_page"/>
+            android:background="@drawable/class_page">
 
-        <ImageView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/class_page_icon"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_35"
+                android:paddingRight="@dimen/dp_30"
+                android:text="@string/page_teacher_one"
+                android:textColor="@color/white"
+                android:textSize="23sp" />
+
+        </FrameLayout>
+
+        <LinearLayout
             android:id="@+id/resource_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/resource_page"
+            android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/class_page_view"
-            android:layout_marginLeft="@dimen/dp_14"/>
+            android:background="@drawable/learning_page">
 
-        <ImageView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/learning_page_icon"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_35"
+                android:paddingRight="@dimen/dp_30"
+                android:text="@string/page_teacher_two"
+                android:textColor="@color/white"
+                android:textSize="23sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/statics_page_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/statistics_page"
+            android:layout_alignRight="@+id/resource_page_view"
             android:layout_alignBottom="@+id/class_page_view"
-            android:layout_alignRight="@+id/resource_page_view"/>
+            android:background="@drawable/statistics_page">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/statistics_page_icon"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dp_35"
+                android:paddingRight="@dimen/dp_30"
+                android:text="@string/page_teacher_three"
+                android:textColor="@color/white"
+                android:textSize="23sp" />
+        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>

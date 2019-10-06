@@ -43,7 +43,7 @@
                 android:button="@null"
                 android:checked="true"
                 android:gravity="center"
-                android:text="微课数据"
+                android:text="@string/lbl_wk_data"
                 android:textColor="@color/white"
                 android:textSize="26sp" />
 
@@ -56,7 +56,7 @@
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
-                android:text="习题数据"
+                android:text="@string/lbl_xt_data"
                 android:textColor="@color/white"
                 android:textSize="26sp" />
 

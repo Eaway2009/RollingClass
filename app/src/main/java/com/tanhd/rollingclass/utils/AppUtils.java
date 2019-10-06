@@ -14,6 +14,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 
+import com.tanhd.rollingclass.MainApp;
+import com.tanhd.rollingclass.R;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,11 +45,12 @@ public class AppUtils {
 
     /**
      * 使用SharedPreferences保存用户登录信息
+     *
      * @param context
      * @param username
      * @param password
      */
-    public static void saveLoginInfo(Context context,String username,String password){
+    public static void saveLoginInfo(Context context, String username, String password) {
         //获取SharedPreferences对象
         SharedPreferences sharedPre = context.getSharedPreferences("config", MODE_PRIVATE);
         //获取Editor对象
@@ -160,111 +164,89 @@ public class AppUtils {
     public static String getStudySectionNameByCode(int code) {
         switch (code) {
             case 1:
-                return "小学";
+                return MainApp.getInstance().getString(R.string.class_primary);
             case 2:
-                return "初中";
+                return MainApp.getInstance().getString(R.string.class_middle);
             case 3:
-                return "高中";
+                return MainApp.getInstance().getString(R.string.class_senior);
         }
 
         return "Unknown";
-    }
-
-    public static int getStudySectionCodeByName(String name) {
-        switch (name) {
-            case "小学":
-                return 1;
-            case "初中":
-                return 2;
-            case "高中":
-                return 3;
-        }
-
-        return 0;
     }
 
     public static String getSubjectNameByCode(int code) {
         switch (code) {
             case 1:
-                return "语文";
+                return MainApp.getInstance().getString(R.string.subject_cn);
             case 2:
-                return "数学";
+                return MainApp.getInstance().getString(R.string.subject_mathematics);
             case 3:
-                return "英语";
+                return MainApp.getInstance().getString(R.string.subject_en);
             case 4:
-                return "音乐";
+                return MainApp.getInstance().getString(R.string.subject_music);
             case 5:
-                return "美术";
+                return MainApp.getInstance().getString(R.string.subject_fine);
             case 6:
-                return "体育";
+                return MainApp.getInstance().getString(R.string.subject_physical);
             case 7:
-                return "信息技术";
+                return MainApp.getInstance().getString(R.string.subject_information);
             case 8:
-                return "综合";
+                return MainApp.getInstance().getString(R.string.subject_synthesize);
             case 9:
-                return "书法";
+                return MainApp.getInstance().getString(R.string.subject_calligraphy);
             case 10:
-                return "科学";
+                return MainApp.getInstance().getString(R.string.subject_science);
             case 11:
-                return "思想品德";
+                return MainApp.getInstance().getString(R.string.subject_thought);
             case 12:
-                return "生物";
+                return MainApp.getInstance().getString(R.string.subject_sw);
             case 13:
-                return "政治";
+                return MainApp.getInstance().getString(R.string.subject_zj);
             case 14:
-                return "物理";
+                return MainApp.getInstance().getString(R.string.subject_wl);
             case 15:
-                return "化学";
+                return MainApp.getInstance().getString(R.string.subject_hx);
             case 16:
-                return "信息";
+                return MainApp.getInstance().getString(R.string.subject_xx);
             case 17:
-                return "历史";
+                return MainApp.getInstance().getString(R.string.subject_ls);
             case 18:
-                return "地理";
+                return MainApp.getInstance().getString(R.string.subject_dl);
             case 19:
-                return "心里健康";
+                return MainApp.getInstance().getString(R.string.subject_xljk);
             case 20:
-                return "道德与法制";
+                return MainApp.getInstance().getString(R.string.subject_ddfz);
         }
         return "Unknown";
     }
 
-    public static int getSubjectCodeByName(String name) {
-        switch (name) {
-            case "语文":
-                return 1;
-            case "数学":
-                return 2;
-        }
-        return 0;
-    }
 
     public static String getGradeNameByCode(int code) {
         switch (code) {
             case 1:
-                return "一年级";
+                return MainApp.getInstance().getString(R.string.class_one);
             case 2:
-                return "二年级";
+                return MainApp.getInstance().getString(R.string.class_two);
             case 3:
-                return "三年级";
+                return MainApp.getInstance().getString(R.string.class_three);
             case 4:
-                return "四年级";
+                return MainApp.getInstance().getString(R.string.class_four);
             case 5:
-                return "五年级";
+                return MainApp.getInstance().getString(R.string.class_five);
             case 6:
-                return "六年级";
+                return MainApp.getInstance().getString(R.string.class_six);
             case 7:
-                return "初一";
+                return MainApp.getInstance().getString(R.string.class_middle_one);
             case 8:
-                return "初二";
+                return MainApp.getInstance().getString(R.string.class_middle_two);
             case 9:
-                return "初三";
+                return MainApp.getInstance().getString(R.string.class_middle_three);
             case 10:
-                return "高一";
+                return MainApp.getInstance().getString(R.string.class_hight_one);
             case 11:
-                return "高二";
+                return MainApp.getInstance().getString(R.string.class_hight_two);
             case 12:
-                return "高三";
+                return MainApp.getInstance().getString(R.string.class_hight_three);
         }
         return "Unknown";
     }
@@ -300,7 +282,7 @@ public class AppUtils {
 
         try {
             FileInputStream fis = new FileInputStream(savePath);
-            Bitmap bitmap  = BitmapFactory.decodeStream(fis);
+            Bitmap bitmap = BitmapFactory.decodeStream(fis);
             return bitmap;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -368,16 +350,16 @@ public class AppUtils {
         }
     }
 
-    public static boolean isTeacher(Context context){
+    public static boolean isTeacher(Context context) {
         SharedPreferences sharedPre = context.getSharedPreferences("config", MODE_PRIVATE);
-        boolean isTeacher = sharedPre.getBoolean("isTeacher",false);
+        boolean isTeacher = sharedPre.getBoolean("isTeacher", false);
         return isTeacher;
     }
 
-    public static void changeTeacherOrStudent(Context context, boolean isTeacher){
+    public static void changeTeacherOrStudent(Context context, boolean isTeacher) {
         SharedPreferences sharedPre = context.getSharedPreferences("config", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPre.edit();
-        editor.putBoolean("isTeacher",isTeacher);
+        editor.putBoolean("isTeacher", isTeacher);
         editor.commit();
     }
 }

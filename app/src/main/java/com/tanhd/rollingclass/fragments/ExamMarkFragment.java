@@ -111,7 +111,7 @@ public class ExamMarkFragment extends Fragment {
         if (currentPage == mQuestionList.size()) {
             mPositionView.setVisibility(View.GONE);
             mTotalView.setVisibility(View.GONE);
-            mTypeNameView.setText("答题情况");
+            mTypeNameView.setText(getResources().getString(R.string.lbl_answer_situation));
             return;
         }
 

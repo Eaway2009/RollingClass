@@ -218,7 +218,7 @@ public class CornerImageView extends  android.support.v7.widget.AppCompatImageVi
             canvas.drawRect(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom() - (getHeight() * ((float) currentProgress / 100)), mFloatPaint);
             String progress = currentProgress + "%";
             if (currentProgress < 0)
-                progress = "上传失败";
+                progress = getResources().getString(R.string.lbl_upload_fail);
             float progressWidth = mTextPaint.measureText(progress);
 
             canvas.drawText(progress, (getWidth() - progressWidth) / 2, (getHeight() + textHeight) / 2, mTextPaint);

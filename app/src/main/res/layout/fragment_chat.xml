@@ -38,13 +38,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="在这输入信息"/>
+                android:hint="@string/lbl_input_information"/>
 
             <Button
                 android:id="@+id/send"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="发送"/>
+                android:text="@string/lbl_send"/>
 
         </LinearLayout>
 

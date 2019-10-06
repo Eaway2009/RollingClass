@@ -218,7 +218,7 @@ public class CommentAnswerPage extends Fragment {
             }
             else {
                 if (getContext() != null)
-                    Toast.makeText(getContext().getApplicationContext(), "上传失败! ErrorCode:" + integer, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext().getApplicationContext(), "ErrorCode:" + integer, Toast.LENGTH_LONG).show();
             }
         }
 

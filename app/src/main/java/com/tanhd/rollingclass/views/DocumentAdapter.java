@@ -264,7 +264,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
             @Override
             public void onResponse(String body) {
-                Toast.makeText(mContext.getContext(), "分享成功", Toast.LENGTH_SHORT).show();
+                ToastUtil.show(R.string.toast_share_success);
             }
 
             @Override

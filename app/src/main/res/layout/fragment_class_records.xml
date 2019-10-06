@@ -27,7 +27,7 @@
                 android:layout_weight="1"
                 android:paddingLeft="22dp"
                 android:paddingRight="10dp"
-                android:text="2019年"
+                android:text="@string/lbl_current_year"
                 android:textColor="@color/button_gray"
                 android:textSize="@dimen/dp_24" />
 

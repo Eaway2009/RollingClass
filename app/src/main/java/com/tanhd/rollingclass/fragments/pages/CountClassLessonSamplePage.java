@@ -85,7 +85,7 @@ public class CountClassLessonSamplePage extends Fragment {
                     mLayoutItemView0 = getLayoutInflater().inflate(R.layout.item_count_class_lessonsample0, parent, false);
 
                     mBarChartView = mLayoutItemView0.findViewById(R.id.chartView);
-                    mBarChartView.setData(null, new String[]{"正确", "错误", "未提交"}, yVals, new MyValueFormatter("第", "题"), new MyValueFormatter("", "人"), "人");
+                    mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter("第", "题"), new MyValueFormatter("", "人"), "人");
                     mBarChartView.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                         @Override
                         public void onValueSelected(Entry e, Highlight h) {
@@ -124,7 +124,7 @@ public class CountClassLessonSamplePage extends Fragment {
 
             CountClassLessonSampleData data = queryCountData(questionData.question_id);
             if (data != null) {
-                String text = String.format("【%d人正确, %d人错误, %d人未提交】", data.CorrectTotal, data.ErrorTotal, data.NoAnswerTotal);
+                String text = String.format(getResources().getString(R.string.lbl_class_lesson_tj), data.CorrectTotal, data.ErrorTotal, data.NoAnswerTotal);
                 descriptionView.setText(text);
             } else {
                 descriptionView.setText(null);

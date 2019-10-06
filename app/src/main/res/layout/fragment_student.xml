@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:gravity="center">
+    android:paddingTop="@dimen/dp_71"
+    android:gravity="center_horizontal">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -20,6 +21,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/class_page_icon"
                 android:gravity="center"
+                android:paddingLeft="@dimen/dp_35"
+                android:paddingRight="@dimen/dp_30"
                 android:text="@string/learning_class"
                 android:textColor="@color/white"
                 android:textSize="23sp" />
@@ -53,6 +56,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/learning_page_icon"
                 android:gravity="center"
+                android:paddingLeft="@dimen/dp_35"
+                android:paddingRight="@dimen/dp_30"
                 android:text="@string/learning_seft"
                 android:textColor="@color/white"
                 android:textSize="23sp" />
@@ -71,6 +76,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/statistics_page_icon"
                 android:gravity="center"
+                android:paddingLeft="@dimen/dp_35"
+                android:paddingRight="@dimen/dp_30"
                 android:text="@string/statistics_title"
                 android:textColor="@color/white"
                 android:textSize="23sp" />

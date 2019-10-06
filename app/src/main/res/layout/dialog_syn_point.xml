@@ -12,7 +12,7 @@
         android:paddingLeft="@dimen/dp_17"
         android:paddingTop="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_6"
-        android:text="请选择要同步的知识点"
+        android:text="@string/lbl_please_synchronization"
         android:textColor="@color/gray"
         android:textSize="@dimen/text_size_15" />
 

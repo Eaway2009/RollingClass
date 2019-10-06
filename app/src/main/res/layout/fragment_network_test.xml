@@ -18,6 +18,6 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="开始测试"/>
+        android:text="@string/lbl_start_test"/>
 
 </LinearLayout>

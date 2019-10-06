@@ -84,7 +84,7 @@ public class ChartStudentListView extends LinearLayout {
         if (classData.Groups == null)
             return;
         TextView classNameView = findViewById(R.id.class_name);
-        classNameView.setText(classData.ClassName + "学生列表");
+        classNameView.setText(classData.ClassName + getContext().getResources().getString(R.string.lbl_student_list));
 
         mStudentList = new ArrayList<>();
         for (GroupData groupData : classData.Groups) {
