@@ -36,7 +36,7 @@
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:paddingTop="@dimen/dp_5"
-            android:hint="任务一"
+            android:hint="@string/lbl_task_hint"
             android:paddingBottom="@dimen/dp_5"
             android:textColorHint="#333B3B3B"
             android:textColor="@color/black"

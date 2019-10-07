@@ -202,7 +202,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
     }
 
     private void initSpinner() {
-        final String[] spinnerItems = {"全部", "校本资源", "我的收藏", "公共资源"};
+        final String[] spinnerItems = {getResources().getString(R.string.lbl_all), getResources().getString(R.string.lbl_res_school), getResources().getString(R.string.lbl_my_collect),getResources().getString(R.string.lbl_res_public)};
         List<String> listStr = new ArrayList<>();
         for (int i = 0;i<spinnerItems.length;i++){
             listStr.add(spinnerItems[i]);

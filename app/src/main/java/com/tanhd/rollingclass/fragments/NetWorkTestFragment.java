@@ -45,15 +45,15 @@ public class NetWorkTestFragment extends Fragment {
             public void onClick(View v) {
                 Button button = (Button) v;
                 String text = button.getText().toString();
-                if (text.equals("停止")) {
-                    button.setText("开始测试");
+                if (text.equals(getResources().getString(R.string.lbl_stop))) {
+                    button.setText(getResources().getString(R.string.lbl_start_test));
                     mIsRun = false;
                     mSequenceNo = 0;
                     mReceiveNo = 0;
                     mMissCount = 0;
                     mHandler.removeMessages(0);
                 } else {
-                    button.setText("停止");
+                    button.setText(getResources().getString(R.string.lbl_stop));
                     mIsRun = true;
                     mHandler.sendEmptyMessage(0);
                 }

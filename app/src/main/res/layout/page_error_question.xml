@@ -49,7 +49,7 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:text="试题分析"/>
+            android:text="@string/lbl_topic_analyze"/>
 
         <TextView
             android:id="@+id/teacher_mark"
@@ -65,7 +65,7 @@
             android:visibility="gone"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:text="老师点评"/>
+            android:text="@string/lbl_teacger_dp"/>
 
     </LinearLayout>
 

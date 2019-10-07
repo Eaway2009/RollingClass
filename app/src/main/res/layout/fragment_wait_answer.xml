@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="做答结果"
+        android:text="@string/lbl_respondence_result"
         android:textSize="26sp"
         android:textColor="@color/black"/>
 
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:textSize="20sp"
-            android:text="排行榜"/>
+            android:text="@string/lbl_rank_now"/>
 
         <View
             android:layout_width="0dp"
@@ -66,6 +66,6 @@
         android:textColor="@color/white"
         android:background="@drawable/blue_button_selector"
         android:textSize="20sp"
-        android:text="关闭"/>
+        android:text="@string/lbl_close"/>
 
 </LinearLayout>

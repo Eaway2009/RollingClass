@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:clickable="false"
             android:maxLines="1"
-            android:text="文字"
+            android:text="@string/lbl_string"
             android:textColor="@android:color/white"
             android:textSize="@dimen/drop_pop_menu_text_size" />
 

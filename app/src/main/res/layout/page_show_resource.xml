@@ -112,7 +112,7 @@
         android:paddingBottom="@dimen/dp_6"
         android:background="@drawable/bg_spinner"
         android:textSize="@dimen/text_size_12"
-        android:text="全部"
+        android:text="@string/lbl_all"
         android:textColor="@color/resource_name" />
 
     <FrameLayout

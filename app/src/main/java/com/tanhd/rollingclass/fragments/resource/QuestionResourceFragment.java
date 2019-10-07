@@ -179,7 +179,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
 
             if (question.context != null) {
                 typeView.setText(String.format("[%s]", question.context.QuestionCategoryName));
-                noView.setText(String.format("第%d题:", question.context.OrderIndex));
+                noView.setText(String.format(getResources().getString(R.string.lbl_question_no), question.context.OrderIndex));
                 String html = AppUtils.dealHtmlText(question.context.Stem);
                 stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 

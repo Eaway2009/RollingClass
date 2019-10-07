@@ -346,7 +346,7 @@ public class ExamFragment extends Fragment {
         protected void onPostExecute(List list) {
             mProgressBar.setVisibility(View.GONE);
             if (list == null) {
-                Toast.makeText(getContext().getApplicationContext(), "读取题目失败!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext().getApplicationContext(), getResources().getString(R.string.toast_read_err), Toast.LENGTH_LONG).show();
                 DialogFragment dialog = (DialogFragment) getParentFragment();
                 dialog.dismiss();
                 return;

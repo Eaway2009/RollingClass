@@ -408,7 +408,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
             KnowledgeLessonSample group = mAdapter.getGroup(i);
             if (group.lesson_sample_id.equals(lesson_sample_id)) {
                 if (TextUtils.isEmpty(resource_id)) {
-                    mLearnCasesContainerFragment.showExercises(new ResourceModel(group.question_set, "习题"), mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name);
+                    mLearnCasesContainerFragment.showExercises(new ResourceModel(group.question_set, getResources().getString(R.string.exercises)), mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name);
                     return;
                 }
                 for (int j = 0; j < group.getChildren().size(); j++) {

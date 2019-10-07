@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/handsup_bg"
                 android:gravity="center"
-                android:text="举手情况"
+                android:text="@string/lbl_jsqk"
                 android:textSize="16sp"
                 android:textColor="@color/white" />
 

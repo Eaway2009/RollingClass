@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -129,21 +130,22 @@ public class MicroCourseBarChartView extends LinearLayout {
             }
         }
 
+        @SuppressLint({"DefaultLocale", "SetTextI18n"})
         @Override
         protected void onPostExecute(List list) {
 
             initClassView(list);
             if(mLargestValue>0){
                 if (mStudentData == null) {
-                    mStaticsResultView.setText("同学们在" + mTime + "区间停顿多，达到" + mLargestValue + "人次");
+                    mStaticsResultView.setText(String.format(getContext().getResources().getString(R.string.lbl_micro_interval_statistics),mTime,mLargestValue));
                 } else {
-                    mStaticsResultView.setText(mStudentData.Username + "同学在" + mTime + "区间停顿多，达到" + mLargestValue + "次");
+                    mStaticsResultView.setText(String.format(getContext().getResources().getString(R.string.lbl_user_interval_statistics),mStudentData.Username,mTime,mLargestValue));
                 }
             }else{
                 if (mStudentData == null) {
-                    mStaticsResultView.setText("同学们不曾看过此微课");
+                    mStaticsResultView.setText(getContext().getResources().getString(R.string.lbl_look_wk_empty));
                 } else {
-                    mStaticsResultView.setText(mStudentData.Username + "同学不曾看过此微课");
+                    mStaticsResultView.setText(String.format(getContext().getResources().getString(R.string.lbl_only_unlook_wk),mStudentData.Username));
                 }
             }
         }
@@ -156,7 +158,7 @@ public class MicroCourseBarChartView extends LinearLayout {
         studentChartLayout.setVisibility(GONE);
 
         ClassData classData = ExternalParam.getInstance().getClassData();
-        lineChartView.setData(classData.ClassName + "微课情况统计", entries);
+        lineChartView.setData(classData.ClassName + getContext().getResources().getString(R.string.lbl_wk_statistics), entries);
     }
 
     private void initStudentView(List entries) {
@@ -166,7 +168,7 @@ public class MicroCourseBarChartView extends LinearLayout {
         studentChartLayout.setVisibility(GONE);
 
         ClassData classData = ExternalParam.getInstance().getClassData();
-        lineChartView.setData(classData.ClassName + "微课情况统计", entries);
+        lineChartView.setData(classData.ClassName + getContext().getResources().getString(R.string.lbl_wk_statistics), entries);
     }
 
     private void initStudentVieww(List entries, List lineValues) {
@@ -176,7 +178,7 @@ public class MicroCourseBarChartView extends LinearLayout {
         studentChartLayout.setVisibility(VISIBLE);
 
         BarChartView barChartView = findViewById(R.id.barchart_view);
-        barChartView.setData(mStudentData.Username + "微课情况统计", null, entries, new MyValueFormatter("第", "次"), new MyValueFormatter("", "秒"), "秒");
+        barChartView.setData(mStudentData.Username + getContext().getResources().getString(R.string.lbl_wk_statistics), null, entries, new MyValueFormatter(getContext().getResources().getString(R.string.lbl_di), getContext().getResources().getString(R.string.lbl_ci)), new MyValueFormatter("", getContext().getResources().getString(R.string.lbl_second)), getContext().getResources().getString(R.string.lbl_second));
 
         MultiLineChartView multiLineChartView = findViewById(R.id.multi_linechart_view);
         multiLineChartView.clearData();

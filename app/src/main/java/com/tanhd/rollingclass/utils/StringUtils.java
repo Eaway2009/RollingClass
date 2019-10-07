@@ -1,5 +1,8 @@
 package com.tanhd.rollingclass.utils;
 
+import com.tanhd.rollingclass.MainApp;
+import com.tanhd.rollingclass.R;
+
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -50,7 +53,7 @@ public class StringUtils {
     }
 
     public static String secondToDate(long second) {
-        return secondToDate(second, "yyyy年MM月dd日");
+        return secondToDate(second, MainApp.getInstance().getString(R.string.lbl_ymd));
     }
 
     public static String secondToDate(long second,String patten) {
@@ -81,7 +84,7 @@ public class StringUtils {
 
     public static String getFormatMonth(Date resourse) {
         if (resourse != null) {
-            SimpleDateFormat time = new SimpleDateFormat("MM月");
+            SimpleDateFormat time = new SimpleDateFormat(MainApp.getInstance().getString(R.string.lbl_moneth));
             return time.format(resourse);
         }
         return "";
@@ -89,7 +92,7 @@ public class StringUtils {
 
     public static String getFormatDate2(Date resourse) {
         if (resourse != null) {
-            SimpleDateFormat time = new SimpleDateFormat("MM月dd日");
+            SimpleDateFormat time = new SimpleDateFormat(MainApp.getInstance().getString(R.string.lbl_m_d));
             return time.format(resourse);
         }
         return "";

@@ -573,7 +573,7 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
             public void onClick(View v) {
                 List<KnowledgeLessonSample> selectData = synPointDialog.getSelectData();
                 if (selectData.isEmpty()) {
-                    Toast.makeText(getActivity(), "请至少选择一项进行同步", Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(getResources().getString(R.string.toast_min_one));
                     return;
                 }
 
@@ -644,7 +644,7 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
         final Dialog[] mNetworkDialog = new Dialog[1];
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setMessage(message)
-                .setPositiveButton("关闭", null)
+                .setPositiveButton(getResources().getString(R.string.lbl_close), null)
                 .setCancelable(false)
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override

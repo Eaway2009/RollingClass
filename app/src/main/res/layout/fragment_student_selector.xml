@@ -68,7 +68,7 @@
             android:background="@drawable/orange_button_selector"
             android:textSize="@dimen/text_size_18"
             android:textColor="@color/white"
-            android:text="随机提问"/>
+            android:text="@string/lbl_random_questions"/>
 
         <View
             android:layout_width="wrap_content"

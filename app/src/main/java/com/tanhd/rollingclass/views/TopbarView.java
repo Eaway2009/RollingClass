@@ -137,15 +137,15 @@ public class TopbarView extends CardView {
 
         mPopMenu = new PopMenu(findViewById(R.id.more));
         mPopMenu.addItem(R.drawable.menu_save_icon, R.id.server_test, getResources().getString(R.string.menu_server_test));
-        mPopMenu.addItem(R.drawable.menu_update_icon, R.id.network_ping, "网络测试");
-        mPopMenu.addItem(R.drawable.menu_update_icon, R.id.app_update, "版本更新");
+        mPopMenu.addItem(R.drawable.menu_update_icon, R.id.network_ping, getContext().getResources().getString(R.string.lbl_net_test));
+        mPopMenu.addItem(R.drawable.menu_update_icon, R.id.app_update, getContext().getResources().getString(R.string.lbl_brank_update));
         mPopMenu.addItem(R.drawable.menu_save_icon, R.id.logout, getResources().getString(R.string.menu_logout));
 
         mPopMenu.setOnItemClickListener(new PopMenu.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id, MenuItem menuItem) {
                 if (!ExternalParam.getInstance().getUserData().isTeacher() && ExternalParam.getInstance().getStatus() == 2) {
-                    Toast.makeText(getContext().getApplicationContext(), "正在上课中...", Toast.LENGTH_LONG).show();
+                    ToastUtil.show(getResources().getString(R.string.toast_class_ing));
                     return;
                 }
 

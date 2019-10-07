@@ -21,6 +21,6 @@
         android:textColor="@color/white"
         android:background="@drawable/blue_button_selector"
         android:textSize="20sp"
-        android:text="完成"/>
+        android:text="@string/finish"/>
 
 </LinearLayout>

@@ -19,7 +19,7 @@
             android:gravity="center"
             android:textSize="20sp"
             android:textColor="@color/white"
-            android:text="得分"/>
+            android:text="@string/lbl_defeng"/>
 
         <TextView
             android:id="@+id/score0"
@@ -118,7 +118,7 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:text="点评"/>
+            android:text="@string/lbl_dianping"/>
 
         <TextView
             android:id="@+id/student_mark"
@@ -129,7 +129,7 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:text="授权点评"/>
+            android:text="@string/lbl_allow_dp"/>
 
 
     </LinearLayout>

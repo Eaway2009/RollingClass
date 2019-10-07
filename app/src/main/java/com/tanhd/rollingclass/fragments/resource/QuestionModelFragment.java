@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tanhd.rollingclass.MainApp;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.ExamFragment;
@@ -60,7 +61,7 @@ public class QuestionModelFragment extends Fragment {
 
         if (question.context != null) {
             typeView.setText(String.format("[%s]", question.context.QuestionCategoryName));
-            noView.setText(String.format("第%d题:", question.context.OrderIndex));
+            noView.setText(String.format(getResources().getString(R.string.lbl_question_no), question.context.OrderIndex));
             String html = AppUtils.dealHtmlText(question.context.Stem);
             stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
@@ -101,7 +102,7 @@ public class QuestionModelFragment extends Fragment {
 
         if (question.context != null) {
             typeView.setText(String.format("[%s]", question.context.QuestionCategoryName));
-            noView.setText(String.format("第%d题:", question.context.OrderIndex));
+            noView.setText(String.format(MainApp.getInstance().getResources().getString(R.string.lbl_question_no),question.context.OrderIndex));
             String html = AppUtils.dealHtmlText(question.context.Stem);
             stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 

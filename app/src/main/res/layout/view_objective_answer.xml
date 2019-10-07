@@ -29,7 +29,7 @@
                 android:button="@null"
                 android:textColor="@drawable/radiobutton_textcolor"
                 android:textSize="20sp"
-                android:text="软键盘输入"/>
+                android:text="@string/lbl_soft_input"/>
 
             <RadioButton
                 android:id="@+id/usb_pen"
@@ -42,7 +42,7 @@
                 android:button="@null"
                 android:textColor="@drawable/radiobutton_textcolor"
                 android:textSize="20sp"
-                android:text="智能笔"/>
+                android:text="@string/lbl_smart_pen"/>
 
             <RadioButton
                 android:id="@+id/load_image"
@@ -55,7 +55,7 @@
                 android:button="@null"
                 android:textColor="@drawable/radiobutton_textcolor"
                 android:textSize="20sp"
-                android:text="图片"/>
+                android:text="@string/lbl_img"/>
 
         </RadioGroup>
 

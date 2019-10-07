@@ -21,6 +21,6 @@
         android:textColor="@color/white"
         android:background="@drawable/blue_button_selector"
         android:textSize="20sp"
-        android:text="提交答案"/>
+        android:text="@string/commit_answer"/>
 
 </LinearLayout>

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.parkingwang.okhttp3.LogInterceptor.LogInterceptor;
 import com.tanhd.rollingclass.BuildConfig;
+import com.tanhd.rollingclass.MainApp;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.data.VersionMessage;
 import com.tanhd.rollingclass.utils.ToastUtil;
@@ -237,22 +238,22 @@ public class UpdateHelper {
         @Override
         public void onError(String code, String message) {
             mChecking = false;
-            Toast.makeText(mContext, "检查新版本出错，请稍后重试", Toast.LENGTH_LONG).show();
+            ToastUtil.show(MainApp.getInstance().getString(R.string.toast_new_version));
         }
     }
 
     public void warningUpdate(final Context context, final String url){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                .setTitle("版本更新")
-                .setMessage("检查到有新版本，是否下载更新")
-                .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+                .setTitle(MainApp.getInstance().getString(R.string.lbl_brank_update))
+                .setMessage(MainApp.getInstance().getString(R.string.lbl_check_update))
+                .setPositiveButton(MainApp.getInstance().getString(R.string.lbl_down), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         downloadApk(context, url);
                     }
                 })
-                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                .setNegativeButton(MainApp.getInstance().getString(R.string.lbl_close), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mDownDialog.dismiss();

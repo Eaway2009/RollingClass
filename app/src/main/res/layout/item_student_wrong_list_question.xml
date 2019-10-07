@@ -23,7 +23,7 @@
             android:layout_marginTop="3dp"
             android:textSize="18sp"
             android:textColor="@color/white"
-            android:text="点评"/>
+            android:text="@string/lbl_dianping"/>
 
         <Button
             android:id="@+id/btn_comment"
@@ -35,7 +35,7 @@
             android:layout_marginTop="3dp"
             android:textSize="18sp"
             android:textColor="@color/white"
-            android:text="授权点评"/>
+            android:text="@string/lbl_allow_dp"/>
 
     </LinearLayout>
 

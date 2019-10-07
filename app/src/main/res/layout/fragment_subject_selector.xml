@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textColor="#000000"
         android:textSize="32sp"
-        android:text="选择学科"/>
+        android:text="@string/lbl_selelct_xk"/>
 
     <GridView
         android:id="@+id/grid_view"

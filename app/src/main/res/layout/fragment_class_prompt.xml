@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="24sp"
-                android:text="学科:" />
+                android:text="@string/lbl_xueke" />
 
             <TextView
                 android:id="@+id/subject"
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="24sp"
-                android:text="知识点:" />
+                android:text="@string/lbl_zhishidian" />
 
             <TextView
                 android:id="@+id/knowledage_name"

@@ -187,7 +187,7 @@ public class ClassTestingFragment extends Fragment implements View.OnClickListen
         @Override
         protected void onPostExecute(String result) {
             if (result == null) {
-                Toast.makeText(getContext().getApplicationContext(), "发起提问失败!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(getResources().getString(R.string.toast_quiz_fail));
                 return;
             }
 

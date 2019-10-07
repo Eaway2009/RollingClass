@@ -86,7 +86,7 @@ public class StudentExamStatisticsFragment extends Fragment{
 
     private void initViews(View view) {
         mBarChartView = view.findViewById(R.id.chartView);
-        mBarChartView.setData(null, new String[]{"正确", "错误", "未提交"}, yVals, new MyValueFormatter("第", "题"), new MyValueFormatter("", "人"), "人");
+        mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness),getResources().getString(R.string.lbl_err),getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter(getResources().getString(R.string.lbl_di),getResources().getString(R.string.lbl_topic)), new MyValueFormatter("", getResources().getString(R.string.lbl_people)), getResources().getString(R.string.lbl_people));
         mBarChartView.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -222,7 +222,7 @@ public class StudentExamStatisticsFragment extends Fragment{
                             BarEntry entry = new BarEntry(answerModel.context.OrderIndex, new float[]{data.correct_cnt, data.error_cnt, data.unanswer_cnt}, answerModel.context.OrderIndex + "");
                             yVals.add(entry);
                             entry.setData(answerModel.question_id);
-                            xAxisValue.add(String.format("第%d题", answerModel.context.OrderIndex));
+                            xAxisValue.add(String.format(getResources().getString(R.string.lbl_question_no_undot), answerModel.context.OrderIndex));
                         }
                     }
                 }

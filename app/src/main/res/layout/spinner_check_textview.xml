@@ -7,7 +7,7 @@
     android:background="@drawable/records_bg"
     android:padding="10dp"
     android:singleLine="true"
-    android:text="请选择课时"
+    android:text="@string/check_knowledge"
     android:textColor="@color/button_gray"
     android:textSize="@dimen/dp_16" >
 

@@ -3,6 +3,8 @@ package com.tanhd.rollingclass.server;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tanhd.rollingclass.MainApp;
+import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.model.Course;
 import com.tanhd.rollingclass.server.data.AnswerModel;
@@ -750,7 +752,7 @@ public class ScopeServer extends ServerRequest {
             }
         }
 
-        return "发布失败，请重试";
+        return MainApp.getInstance().getString(R.string.lbl_publish_fail);
     }
 
     /**
@@ -775,7 +777,7 @@ public class ScopeServer extends ServerRequest {
             }
         }
 
-        return "同步失败，请重试";
+        return MainApp.getInstance().getString(R.string.lbl_synchronization_fail);
     }
 
     /**

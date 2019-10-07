@@ -160,7 +160,7 @@ public class QuerstionTypeShow extends Fragment {
             TextView nameView = view.findViewById(R.id.name);
             nameView.setText(item.studentName);
             TextView statusView = view.findViewById(R.id.status);
-            statusView.setText(item.score + "分");
+            statusView.setText(item.score + getResources().getString(R.string.lbl_min));
 
             return view;
         }

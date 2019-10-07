@@ -20,6 +20,6 @@
         android:layout_marginStart="20dp"
         android:textSize="24sp"
         android:textColor="@color/offline"
-        android:text="状态:"/>
+        android:text="@string/lbl_status"/>
 
 </LinearLayout>

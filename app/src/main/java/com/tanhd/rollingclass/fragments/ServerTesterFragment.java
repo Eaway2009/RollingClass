@@ -129,13 +129,13 @@ public class ServerTesterFragment extends Fragment {
             TextView timeView = view.findViewById(R.id.time);
             TextView statusView = view.findViewById(R.id.status);
             if (itemData.result) {
-                statusView.setText("成功");
+                statusView.setText(getResources().getString(R.string.toast_change_ok));
                 statusView.setTextColor(0xFF12FF12);
                 timeView.setText(itemData.time + "ms");
             } else {
-                statusView.setText("失败");
+                statusView.setText(getResources().getString(R.string.lbl_fail));
                 statusView.setTextColor(0xFFFF1212);
-                timeView.setText("超时");
+                timeView.setText(getResources().getString(R.string.lbl_timeout));
             }
 
             return view;

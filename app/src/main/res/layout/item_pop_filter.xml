@@ -6,7 +6,7 @@
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="全部"
+        android:text="@string/lbl_all"
         android:background="@drawable/bg_blue_trans_selector"
         android:paddingLeft="@dimen/dp_10"
         android:paddingTop="@dimen/dp_7"

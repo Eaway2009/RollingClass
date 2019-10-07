@@ -176,7 +176,7 @@ public class LoginActivity extends BaseActivity {
             case REQUEST_PERMISSION:
                 for (int i = 0; i < grantResults.length; i++) {
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(getApplicationContext(), "请点击<允许>", Toast.LENGTH_LONG).show();
+                        ToastUtil.show(getResources().getString(R.string.toast_allow));
                         finish();
                         return;
                     }

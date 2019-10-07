@@ -28,7 +28,7 @@
 
                 <TextView
                     style="@style/UserInfoLabel"
-                    android:text="姓    名: " />
+                    android:text="@string/lbl_name" />
 
                 <EditText
                     android:id="@+id/name"
@@ -41,7 +41,7 @@
 
                 <TextView
                     style="@style/UserInfoLabel"
-                    android:text="性    别: " />
+                    android:text="@string/lbl_gender" />
 
                 <RadioGroup
                     android:layout_width="0dp"
@@ -54,7 +54,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
-                        android:text="男"/>
+                        android:text="@string/lbl_boy"/>
 
                     <RadioButton
                         android:id="@+id/female"
@@ -62,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:textSize="20sp"
-                        android:text="女"/>
+                        android:text="@string/lbl_gril"/>
 
                 </RadioGroup>
 
@@ -73,7 +73,7 @@
 
                 <TextView
                     style="@style/UserInfoLabel"
-                    android:text="账    号: " />
+                    android:text="@string/lbl_account" />
 
                 <EditText
                     android:id="@+id/username"
@@ -86,7 +86,7 @@
 
                 <TextView
                     style="@style/UserInfoLabel"
-                    android:text="手    机: " />
+                    android:text="@string/lbl_phone" />
 
                 <EditText
                     android:id="@+id/mobile"
@@ -99,7 +99,7 @@
 
                 <TextView
                     style="@style/UserInfoLabel"
-                    android:text="学    校: " />
+                    android:text="@string/lbl_school" />
 
                 <EditText
                     android:id="@+id/school"
@@ -128,7 +128,7 @@
 
                     <TextView
                         style="@style/UserInfoLabel"
-                        android:text="任教年级: " />
+                        android:text="@string/lbl_rj_class" />
 
                     <EditText
                         android:id="@+id/grade"
@@ -141,7 +141,7 @@
 
                     <TextView
                         style="@style/UserInfoLabel"
-                        android:text="任教班级: " />
+                        android:text="@string/lbl_rj_banji" />
 
                     <EditText
                         android:id="@+id/class1"
@@ -154,7 +154,7 @@
 
                     <TextView
                         style="@style/UserInfoLabel"
-                        android:text="任教学科: " />
+                        android:text="@string/lbl_rj_xk" />
 
                     <EditText
                         android:id="@+id/category"
@@ -176,7 +176,7 @@
 
                     <TextView
                         style="@style/UserInfoLabel"
-                        android:text="学    级: " />
+                        android:text="@string/lbl_xueji" />
 
                     <EditText
                         android:id="@+id/student_xj"
@@ -189,7 +189,7 @@
 
                     <TextView
                         style="@style/UserInfoLabel"
-                        android:text="年    级: " />
+                        android:text="@string/lbl_nianji" />
 
                     <EditText
                         android:id="@+id/student_grade"
@@ -202,7 +202,7 @@
 
                     <TextView
                         style="@style/UserInfoLabel"
-                        android:text="班    级: " />
+                        android:text="@string/lbl_banji" />
 
                     <EditText
                         android:id="@+id/student_class"
@@ -222,7 +222,7 @@
 
                     <TextView
                         style="@style/UserInfoLabel"
-                        android:text="修改密码: " />
+                        android:text="@string/lbl_edit_pwd" />
 
                     <EditText
                         android:id="@+id/password1"

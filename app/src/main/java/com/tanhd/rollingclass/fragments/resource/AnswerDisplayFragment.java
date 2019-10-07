@@ -158,7 +158,7 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
             if (answerModel.context != null) {
                 tv_my_answer.setText(getString(R.string.my_answer, answerModel.context.Answer));
                 typeView.setText(String.format("[%s]", answerModel.context.QuestionCategoryName));
-                noView.setText(String.format("第%d题:", answerModel.context.OrderIndex));
+                noView.setText(String.format(getResources().getString(R.string.lbl_question_no), answerModel.context.OrderIndex));
                 String html = AppUtils.dealHtmlText(answerModel.context.Stem);
                 stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 

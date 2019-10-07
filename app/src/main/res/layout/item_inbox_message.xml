@@ -37,7 +37,7 @@
                     android:layout_marginStart="3dp"
                     android:textSize="14sp"
                     android:textColor="#FF0000"
-                    android:text="提问反馈"/>
+                    android:text="@string/lbl_quiz_tickling"/>
 
                 <TextView
                     android:id="@+id/from"

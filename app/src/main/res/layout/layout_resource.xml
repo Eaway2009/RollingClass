@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_weight="1"
-        android:text="文件名"
+        android:text="@string/lbl_file_name"
         android:textColor="@color/resource_name"
         android:textSize="20sp" />
 

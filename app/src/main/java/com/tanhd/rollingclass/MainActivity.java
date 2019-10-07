@@ -139,7 +139,7 @@ public class MainActivity extends BaseActivity {
             case REQUEST_PERMISSION:
                 for (int i = 0; i < grantResults.length; i++) {
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(getApplicationContext(), "请点击<允许>", Toast.LENGTH_LONG).show();
+                        ToastUtil.show(getResources().getString(R.string.toast_allow));
                         finish();
                         return;
                     }
@@ -318,9 +318,9 @@ public class MainActivity extends BaseActivity {
                     return;
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("网络异常")
-                        .setMessage("网络连接失败, 正在进行重新连接, 请稍后...")
-                        .setPositiveButton("关闭", null)
+                        .setTitle(getResources().getString(R.string.dialog_net_err))
+                        .setMessage(getResources().getString(R.string.dialog_reconnect_hint))
+                        .setPositiveButton(getResources().getString(R.string.lbl_close), null)
                         .setCancelable(false)
                         .setOnDismissListener(new DialogInterface.OnDismissListener() {
                             @Override

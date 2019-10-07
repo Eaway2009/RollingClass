@@ -187,7 +187,7 @@ public class UserInfoFragment extends Fragment {
 
             @Override
             public void onResponse(String body) {
-                Toast.makeText(getActivity().getApplicationContext(), "密码修改成功!", Toast.LENGTH_LONG).show();
+                ToastUtil.show(getResources().getString(R.string.toast_pwd_edit_ok));
                 DialogFragment dialogFragment = (DialogFragment) getParentFragment();
                 dialogFragment.dismiss();
             }

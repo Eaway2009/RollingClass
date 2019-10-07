@@ -128,11 +128,11 @@ public class WaitAnswerFragment extends Fragment {
             TextView statusView = view.findViewById(R.id.status);
 
             if (!state) {
-                statusView.setText("未完成");
+                statusView.setText(getResources().getString(R.string.lbl_un_complete));
                 statusView.setBackgroundColor(getResources().getColor(R.color.offline));
                 view.setOnClickListener(null);
             } else {
-                statusView.setText("完成");
+                statusView.setText(getResources().getString(R.string.finish));
                 statusView.setBackgroundColor(getResources().getColor(R.color.online));
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -265,10 +265,10 @@ public class WaitAnswerFragment extends Fragment {
             TextView timeView = view.findViewById(R.id.time);
             TextView scoreView = view.findViewById(R.id.score);
 
-            noView.setText(String.format("第%d名", position + 1));
+            noView.setText(String.format(getResources().getString(R.string.lbl_rank), position + 1));
             nameView.setText(studentData.Username);
-            timeView.setText(String.format("耗时%d秒", value.time));
-            scoreView.setText(String.format("得分:%d", value.score));
+            timeView.setText(String.format(getResources().getString(R.string.lbl_expend_time), value.time));
+            scoreView.setText(String.format(getResources().getString(R.string.lbl_score), value.score));
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

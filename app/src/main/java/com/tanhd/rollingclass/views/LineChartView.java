@@ -74,7 +74,7 @@ public class LineChartView extends LinearLayout {
         chart.setScaleEnabled(true);
         chart.setDrawGridBackground(false);
         chart.setHighlightPerDragEnabled(true);
-        chart.setContentDescription("时间轴");
+        chart.setContentDescription(getContext().getResources().getString(R.string.lbl_timer_shaft));
 //        chart.setDescription("同时观看次数");
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(true);

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textSize="26sp"
         android:textColor="@color/black"
-        android:text="服务器状态测试"/>
+        android:text="@string/lbl_serveice_test"/>
 
     <ListView
         android:id="@+id/list"

@@ -99,13 +99,13 @@ public class ScantronScorePage extends Fragment {
             QuestionModel questionData = mQuestionList.get(position);
             AnswerData answerData = mAnswerMap.get(questionData.question_id);
 
-            final String title = String.format("第%d题", questionData.context.OrderIndex);
+            final String title = String.format(getResources().getString(R.string.lbl_question_no), questionData.context.OrderIndex);
             TextView titleView = view.findViewById(R.id.title);
             titleView.setText(title);
 
             if (answerData != null) {
                 TextView scoreView = view.findViewById(R.id.score_view);
-                scoreView.setText(answerData.Score + "分");
+                scoreView.setText(answerData.Score + getResources().getString(R.string.lbl_min));
                 scoreView.setTextColor(getResources().getColor(R.color.white));
 
                 if (answerData.Score == 5) {
@@ -117,7 +117,7 @@ public class ScantronScorePage extends Fragment {
                 }
             } else {
                 TextView scoreView = view.findViewById(R.id.score_view);
-                scoreView.setText("0分");
+                scoreView.setText(getResources().getString(R.string.lbl_zero));
                 scoreView.setTextColor(getResources().getColor(R.color.white));
                 scoreView.setBackgroundResource(R.drawable.circle_red_background);
             }

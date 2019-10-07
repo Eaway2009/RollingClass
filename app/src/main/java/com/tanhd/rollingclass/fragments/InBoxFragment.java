@@ -124,16 +124,16 @@ public class InBoxFragment extends Fragment {
             if (ExternalParam.getInstance().getUserData().isTeacher()) {
                 StudentData studentData = ExternalParam.getInstance().queryStudent(message.fromId);
                 if (studentData != null)
-                    fromView.setText("来自:" + studentData.Username);
+                    fromView.setText(getResources().getString(R.string.lbl_from) + studentData.Username);
             } else {
-                fromView.setText("来自:" + message.fromId);
+                fromView.setText(getResources().getString(R.string.lbl_from) + message.fromId);
                 new QueryTeacherTask(fromView).execute(message.fromId);
             }
-            timeView.setText("时间:" + AppUtils.dateToString(message.time));
+            timeView.setText(getResources().getString(R.string.lbl_time) + AppUtils.dateToString(message.time));
 
             switch (message.type) {
                 case TEXT: {
-                    titleView.setText("消息");
+                    titleView.setText(getResources().getString(R.string.lbl_message));
                     contentView.setText(message.content);
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -151,8 +151,8 @@ public class InBoxFragment extends Fragment {
                         String lessonSampleName = json.optString("LessonSampleName");
                         final JSONArray ids = json.optJSONArray("ids");
 
-                        titleView.setText(String.format("完成练习"));
-                        String text = String.format("%s已完成练习题(学案:%s), 答案已提交, 请点击进行查看!)", studentName, lessonSampleName);
+                        titleView.setText(String.format(getResources().getString(R.string.lbl_end_lx)));
+                        String text = String.format(getResources().getString(R.string.inbox_tj_hint), studentName, lessonSampleName);
                         contentView.setText(text);
 
                         view.setOnClickListener(new View.OnClickListener() {

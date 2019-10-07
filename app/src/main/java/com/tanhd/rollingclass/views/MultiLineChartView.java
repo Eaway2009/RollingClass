@@ -84,7 +84,7 @@ public class MultiLineChartView extends LinearLayout {
         leftAxis.setAxisMinimum(0);
         leftAxis.setDrawGridLines(true);
         leftAxis.setGranularityEnabled(true);
-        leftAxis.setValueFormatter(new MyValueFormatter("第", "次"));
+        leftAxis.setValueFormatter(new MyValueFormatter(getContext().getResources().getString(R.string.lbl_di),getContext().getResources().getString(R.string.lbl_ci)));
 
         YAxis rightAxis = chart.getAxisRight();
         rightAxis.setDrawAxisLine(true);

@@ -42,7 +42,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="18sp"
                         android:textColor="@color/black"
-                        android:text="回答:"/>
+                        android:text="@string/lbl_my_answer"/>
 
                     <TextView
                         android:id="@+id/answer_text"

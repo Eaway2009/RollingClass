@@ -83,7 +83,7 @@ public class QuestionAnswerView extends ScrollView {
             imageView.setVisibility(View.GONE);
             textLayout.setVisibility(View.VISIBLE);
 
-            answerTextView.setText("未答");
+            answerTextView.setText(getContext().getResources().getString(R.string.lbl_unanswered));
         }
 
     }

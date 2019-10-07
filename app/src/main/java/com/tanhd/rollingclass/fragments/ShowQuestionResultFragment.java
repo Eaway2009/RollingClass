@@ -76,15 +76,15 @@ public class ShowQuestionResultFragment extends Fragment {
                     if (result.size() > 0) {
                         if (isCompleted(studentData.StudentID, list)) {
                             statusView.setBackgroundColor(getResources().getColor(R.color.online));
-                            statusView.setText("已完成");
+                            statusView.setText(getResources().getString(R.string.lbl_already_complete));
                         } else {
                             statusView.setBackgroundColor(getResources().getColor(R.color.offline));
-                            statusView.setText("未完成");
+                            statusView.setText(getResources().getString(R.string.lbl_un_complete));
                         }
 
                     } else {
                         statusView.setBackgroundColor(getResources().getColor(R.color.button_disable));
-                        statusView.setText("未提问");
+                        statusView.setText(getResources().getString(R.string.lbl_un_tw));
                     }
 
                     layout.addView(v);

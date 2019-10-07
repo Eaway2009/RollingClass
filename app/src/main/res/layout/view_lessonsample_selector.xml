@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textSize="26sp"
         android:textColor="@color/black"
-        android:text="学案列表"/>
+        android:text="@string/lbl_xalb"/>
 
     <ListView
         android:id="@+id/lesson_list"

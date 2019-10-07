@@ -41,7 +41,7 @@
             android:background="@color/button_blue"
             android:textSize="20sp"
             android:textColor="@color/white"
-            android:text="提交"/>
+            android:text="@string/lbl_submit"/>
 
     </LinearLayout>
 

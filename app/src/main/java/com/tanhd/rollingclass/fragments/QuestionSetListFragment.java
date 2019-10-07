@@ -86,10 +86,10 @@ public class QuestionSetListFragment extends Fragment {
             final QuestionSetData setData = mSetList.get(position);
             TextView noView = view.findViewById(R.id.no);
             TextView timeView = view.findViewById(R.id.time);
-            noView.setText(String.format("第%d次课堂提问", mSetList.size() - position));
+            noView.setText(String.format(getResources().getString(R.string.lbl_tw_no), mSetList.size() - position));
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            timeView.setText("提问时间:" + simpleDateFormat.format(new Date(setData.CreateTime)));
+            timeView.setText(getResources().getString(R.string.lbl_tw_time) + simpleDateFormat.format(new Date(setData.CreateTime)));
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

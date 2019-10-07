@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:textColor="#FF000000"
-                android:text="你好!"/>
+                android:text="@string/lbl_hellow"/>
 
         </LinearLayout>
 

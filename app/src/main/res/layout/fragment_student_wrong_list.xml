@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textSize="26sp"
         android:textColor="@color/black"
-        android:text="学生错题集"/>
+        android:text="@string/lbl_student_err_topic"/>
 
     <LinearLayout
         android:layout_width="match_parent"

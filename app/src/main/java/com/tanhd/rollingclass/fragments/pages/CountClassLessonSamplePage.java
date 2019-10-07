@@ -85,7 +85,7 @@ public class CountClassLessonSamplePage extends Fragment {
                     mLayoutItemView0 = getLayoutInflater().inflate(R.layout.item_count_class_lessonsample0, parent, false);
 
                     mBarChartView = mLayoutItemView0.findViewById(R.id.chartView);
-                    mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter("第", "题"), new MyValueFormatter("", "人"), "人");
+                    mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter(getResources().getString(R.string.lbl_di), getResources().getString(R.string.lbl_topic)), new MyValueFormatter("", getResources().getString(R.string.lbl_people)), getResources().getString(R.string.lbl_people));
                     mBarChartView.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
                         @Override
                         public void onValueSelected(Entry e, Highlight h) {
@@ -179,7 +179,7 @@ public class CountClassLessonSamplePage extends Fragment {
                     BarEntry entry = new BarEntry(questionData.context.OrderIndex, new float[]{data.CorrectTotal, data.ErrorTotal, data.NoAnswerTotal}, questionData.context.OrderIndex + "");
                     yVals.add(entry);
                     entry.setData(questionData.question_id);
-                    xAxisValue.add(String.format("第%d题", questionData.context.OrderIndex));
+                    xAxisValue.add(String.format(getResources().getString(R.string.lbl_question_no), questionData.context.OrderIndex));
                 }
             }
 

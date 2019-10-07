@@ -181,7 +181,7 @@ public class WrongQuestionShowFragment extends Fragment {
 
         for (CountClassLessonSampleData data: mCountDataList) {
             if (data.QuestionID.equals(questionID)) {
-                String text = String.format("【%d人正确, %d人错误, %d人未提交】", data.CorrectTotal, data.ErrorTotal, data.NoAnswerTotal);
+                String text = String.format(getResources().getString(R.string.lbl_class_lesson_tj), data.CorrectTotal, data.ErrorTotal, data.NoAnswerTotal);
                 return text;
             }
         }

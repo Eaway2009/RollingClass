@@ -110,7 +110,7 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
 
             @Override
             public void onError(String code, String message) {
-                Toast.makeText(getActivity().getApplicationContext(), "课时名称添加失败，请稍候重试 ", Toast.LENGTH_LONG).show();
+                ToastUtil.show(getResources().getString(R.string.toast_name_err));
                 mRequesting = false;
                 mKnowledgeAddButton.setEnabled(true);
             }

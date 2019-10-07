@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tanhd.rollingclass.MainApp;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
@@ -300,7 +301,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
             public void onClick(View v) {
                 List<TeacherData> selectList = shareDocumentDialog.getSelectData();
                 if (selectList.isEmpty()) {
-                    Toast.makeText(mContext.getContext(), "请至少选择一个", Toast.LENGTH_SHORT).show();
+                    ToastUtil.show(MainApp.getInstance().getString(R.string.toast_min_select_one));
                     return;
                 }
 
