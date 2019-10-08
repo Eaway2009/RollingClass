@@ -27,6 +27,11 @@
     <string name="back">返回</string>
     <string name="document_title">学案</string>
     <string name="add_document">新建学案</string>
+    <string name="ori_password">输入原密码：</string>
+    <string name="new_password">输入新密码：</string>
+    <string name="ori_password_wrong">您输入的原密码不正确</string>
+    <string name="new_password_wrong">您输入的新密码不一致</string>
+    <string name="recheck_password">确认新密码：</string>
     <string name="wrong_answer_book">错题本</string>
     <string name="wrong_answer_question">题目</string>
     <string name="wrong_answer_photo">图片</string>
@@ -261,6 +266,8 @@
     <string name="toast_allow"><![CDATA[请点击<允许>]]></string>
     <string name="dialog_net_err">网络异常</string>
     <string name="dialog_reconnect_hint">网络连接失败, 正在进行重新连接, 请稍后...</string>
+    <string name="dialog_warning">温馨提示</string>
+    <string name="dialog_logout_warning">注销后下次需要重新登录，是否确定注销？</string>
     <string name="lbl_close">关闭</string>
     <string name="toast_read_err">读取题目失败!</string>
     <string name="lbl_from">来自:</string>

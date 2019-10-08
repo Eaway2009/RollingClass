@@ -83,7 +83,7 @@ public class ShowPptFragment extends Fragment {
         return view;
     }
 
-    private void initListView(View view){
+    private void initListView(View view) {
         mThumbsListView = view.findViewById(R.id.thumbs_listview);
         mThumbAdapter = new ThumbAdapter(getActivity());
         mThumbsListView.setAdapter(mThumbAdapter);
@@ -94,9 +94,12 @@ public class ShowPptFragment extends Fragment {
                 webView.jumpTo(position);
             }
         });
+        if (mSyncMode == SYNC_MODE.SLAVE) {
+            mThumbsListView.setVisibility(View.GONE);
+        }
     }
 
-    public void setActivity(Activity activity){
+    public void setActivity(Activity activity) {
         mActivity = activity;
     }
 
@@ -108,11 +111,14 @@ public class ShowPptFragment extends Fragment {
         downloadPDF();
     }
 
-    public void refreshPpt(String url, ArrayList<String> thumbs){
-        if(downLoadFinish || mUrl!=url){
+    public void refreshPpt(String url, ArrayList<String> thumbs) {
+        if (downLoadFinish || mUrl != url) {
             mUrl = url;
             mThumbsList.clear();
             mThumbsList.addAll(thumbs);
+            if (thumbs == null || thumbs.size() < 1) {
+                mThumbsListView.setVisibility(View.GONE);
+            }
             downloadPDF();
         }
     }

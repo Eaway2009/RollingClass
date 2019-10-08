@@ -2,31 +2,28 @@ package com.tanhd.rollingclass.views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
-import com.tanhd.rollingclass.LoginActivity;
 import com.tanhd.rollingclass.MainActivity;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.NetWorkTestFragment;
 import com.tanhd.rollingclass.fragments.ServerTesterFragment;
-import com.tanhd.rollingclass.fragments.UserInfoFragment;
-import com.tanhd.rollingclass.server.UpdateHelper;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.PopMenu;
@@ -35,7 +32,6 @@ import com.tanhd.rollingclass.utils.langeuage.LanguageType;
 import com.tanhd.rollingclass.utils.langeuage.MultiLanguageUtil;
 import com.tanhd.rollingclass.views.popmenu.MenuItem;
 
-import java.security.acl.LastOwnerException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,6 +44,7 @@ public class TopbarView extends CardView {
     private Callback mCallback;
     private TextView mUserNameView;
     private int selectedLanguage = LanguageType.LANGUAGE_CHINESE_SIMPLIFIED;
+    private AlertDialog mLogoutDialog;
 
     public TopbarView(Context context) {
         super(context);
@@ -119,21 +116,11 @@ public class TopbarView extends CardView {
             mUserNameView.setText(userData.getOwnerName());
         }
 
-        findViewById(R.id.userinfo).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserData userData = ExternalParam.getInstance().getUserData();
-                if (!userData.isTeacher()) {
-                    if (ExternalParam.getInstance().getStatus() != 0) {
-                        ToastUtil.show(R.string.toast_class_ing);
-                        return;
-                    }
-                }
-
-                AppCompatActivity activity = (AppCompatActivity) getContext();
-                FrameDialog.show(activity.getSupportFragmentManager(), new UserInfoFragment());
-            }
-        });
+        findViewById(R.id.username).setOnClickListener(onClickListener);
+        findViewById(R.id.profile_image).setOnClickListener(onClickListener);
+        findViewById(R.id.home_icon).setOnClickListener(onClickListener);
+        findViewById(R.id.setting_icon).setOnClickListener(onClickListener);
+        findViewById(R.id.power_icon).setOnClickListener(onClickListener);
 
         mPopMenu = new PopMenu(findViewById(R.id.more));
         mPopMenu.addItem(R.drawable.menu_save_icon, R.id.server_test, getResources().getString(R.string.menu_server_test));
@@ -208,6 +195,61 @@ public class TopbarView extends CardView {
 
         }
     };
+    OnClickListener onClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.profile_image:
+                case R.id.username:
+                    mCallback.showPage(MainActivity.MODULE_ID_USER_PAGE);
+//                    UserData userData = ExternalParam.getInstance().getUserData();
+//                    if (!userData.isTeacher()) {
+//                        if (ExternalParam.getInstance().getStatus() != 0) {
+//                            ToastUtil.show(R.string.toast_class_ing);
+//                            return;
+//                        }
+//                    }
+//
+//                    AppCompatActivity activity = (AppCompatActivity) getContext();
+//                    FrameDialog.show(activity.getSupportFragmentManager(), new UserInfoFragment());
+                    break;
+                case R.id.home_icon:
+                    MainActivity.startMe(getContext());
+                    break;
+                case R.id.setting_icon:
+                    mCallback.showPage(MainActivity.MODULE_ID_SETTING_PAGE);
+                    break;
+                case R.id.power_icon:
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                            .setTitle(getResources().getString(R.string.dialog_warning))
+                            .setMessage(getResources().getString(R.string.dialog_logout_warning))
+                            .setPositiveButton(getResources().getString(R.string.sure), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Activity activity = (Activity) getContext();
+                                    activity.finish();
+                                }
+                            })
+                            .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mLogoutDialog.dismiss();
+                                }
+                            })
+                            .setCancelable(false)
+                            .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    mLogoutDialog = null;
+                                }
+                            });
+                    mLogoutDialog = builder.create();
+                    mLogoutDialog.show();
+                    break;
+            }
+
+        }
+    };
 
     public void setCallback(Callback callback){
         mCallback = callback;
@@ -215,6 +257,7 @@ public class TopbarView extends CardView {
 
     public interface Callback{
         public void connect_again();
+        public void showPage(int modulePageId);
     }
 
 }

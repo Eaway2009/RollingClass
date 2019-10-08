@@ -46,8 +46,9 @@
         android:layout_above="@+id/rl_setting"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="70dp"
         android:background="@drawable/shape_bg_gray_round" />
+
     <LinearLayout
         android:id="@+id/student_handsup_layout"
         android:layout_width="wrap_content"

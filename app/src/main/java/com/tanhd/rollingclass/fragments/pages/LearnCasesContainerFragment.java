@@ -1,6 +1,7 @@
 package com.tanhd.rollingclass.fragments.pages;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -151,6 +152,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         mStudentHandsupLayout.setOnClickListener(this);
         mHandsupLayout.setOnClickListener(this);
         mHandsupHideLayout.setOnClickListener(this);
+        view.findViewById(R.id.container_layout).setOnClickListener(this);
 
         mPopupWindow1 = new PointPopupWindow();
         mPopupWindow1.create(getActivity(), PointPopupWindow.TYPE_SETTING_1);
@@ -160,7 +162,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         mPopupWindow2.setmListener(clickCallBack);
 
         if (mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) {
-            mStudentHandsupLayout.setVisibility(View.VISIBLE);
+            mStudentHandsupLayout.setVisibility(View.GONE);
             mHandsupLayout.setVisibility(View.GONE);
             mHandsupHideLayout.setVisibility(View.GONE);
             mIsFullScreen = true;
@@ -230,10 +232,21 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 StudentData studentData = (StudentData) userData.getUserData();
                 hashMap.put(PushMessage.PARAM_STUDENT_NAME, studentData.Username);
                 MyMqttService.publishMessage(PushMessage.COMMAND.HAND_UP, (List<String>) null, hashMap);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mStudentHandsupLayout.setVisibility(View.GONE);
+                    }
+                }, 3000);
                 break;
             case R.id.iv_full_screen:
                 mIsFullScreen = !mIsFullScreen;
                 fullScreen();
+                break;
+            case R.id.container_layout:
+                if (mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) {
+                    mStudentHandsupLayout.setVisibility(View.VISIBLE);
+                }
                 break;
         }
     }
@@ -291,7 +304,16 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         switch (moduleId) {
             case KeyConstants.ResourceType.PPT_TYPE:
                 if (mPptFragment == null) {
-                    mPptFragment = ShowPptFragment.newInstance(getActivity(), resourceModel.pdf_url, resourceModel.thumbs, SYNC_MODE.MASTER);
+                    SYNC_MODE sync_mode = SYNC_MODE.MASTER;
+                    switch (mPageType) {
+                        case KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE:
+                            sync_mode = SYNC_MODE.NONE;
+                            break;
+                        case KeyConstants.ClassPageType.STUDENT_CLASS_PAGE:
+                            sync_mode = SYNC_MODE.SLAVE;
+                            break;
+                    }
+                    mPptFragment = ShowPptFragment.newInstance(getActivity(), resourceModel.pdf_url, resourceModel.thumbs, sync_mode);
                 } else {
                     mPptFragment.refreshPpt(resourceModel.pdf_url, resourceModel.thumbs);
                 }
@@ -366,6 +388,8 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 
         }
     };
+
+    Handler handler = new Handler();
 
     @Override
     public void onDestroy() {

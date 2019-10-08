@@ -1,7 +1,9 @@
 package com.tanhd.rollingclass;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
@@ -12,17 +14,17 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.library.smartpen.SmartPenService;
+import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.MSG_TYPE;
@@ -33,6 +35,7 @@ import com.tanhd.rollingclass.fragments.InBoxFragment;
 import com.tanhd.rollingclass.fragments.StudentFragment;
 import com.tanhd.rollingclass.fragments.TeacherFragment;
 import com.tanhd.rollingclass.fragments.pages.ShowCommentPage;
+import com.tanhd.rollingclass.fragments.user.PasswordSettingFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
@@ -54,17 +57,32 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
     private static final int REQUEST_PERMISSION = 1;
+    public static final int MODULE_ID_MAIN_PAGE = 1;
+    public static final int MODULE_ID_SETTING_PAGE = 2;
+    public static final int MODULE_ID_USER_PAGE = 3;
 
     private TopbarView mTopbarView;
     private MediaPlayer mediaPlayer;
     private AlertDialog mNetworkDialog;
     private View mBackButton;
-    private Fragment fragment;
     private int refreshData = 1;
     private RefreshTask mRefreshTask;
 
     private Handler mHandler = new Handler();
     private UserData mUserData;
+
+    private int mCurrentShowModuleId;
+    private int mLastShowModuleId;
+
+    private Fragment mMainFragment;
+    private Fragment mModuleFragment;
+    private PasswordSettingFragment mSettingFragment;
+
+    public static void startMe(Context context) {
+        Intent intent = new Intent(context, LearnCasesActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +97,7 @@ public class MainActivity extends BaseActivity {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mMainFragment).commit();
                 mBackButton.setClickable(false);
                 mBackButton.setVisibility(View.INVISIBLE);
             }
@@ -116,12 +134,18 @@ public class MainActivity extends BaseActivity {
 //                    new ConnectMqttTask(ExternalParam.getInstance().getUserData()).execute();
                 }
             }
+
+            @Override
+            public void showPage(int modulePageId) {
+                showPage(modulePageId);
+            }
         });
         initUserUI();
         SmartPenService.getInstance().init(getApplicationContext());
         SmartPenService.getInstance().tryToConnect();
         startMqttService();
     }
+
 
     private void startMqttService() {
         if (mUserData.isTeacher()) {
@@ -159,36 +183,70 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        moveTaskToBack(true);
+        if (mCurrentShowModuleId == MODULE_ID_SETTING_PAGE) {
+            showModulePage(mLastShowModuleId);
+        } else {
+            moveTaskToBack(true);
+        }
     }
 
     private void initUserUI() {
+        showModulePage(MODULE_ID_MAIN_PAGE);
+    }
 
-        if (ExternalParam.getInstance().getUserData().isTeacher()) {
-            fragment = TeacherFragment.newInstance(new TeacherFragment.BackListener() {
-                @Override
-                public void showBack(boolean show) {
-                    if (show) {
-                        mBackButton.setVisibility(View.VISIBLE);
-                        mBackButton.setClickable(true);
-                    } else {
-                        mBackButton.setVisibility(View.INVISIBLE);
-                        mBackButton.setClickable(false);
-                    }
-                }
-            });
-        } else {
-            final StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
-            mHandler.postAtTime(new Runnable() {
-                @Override
-                public void run() {
-                    getRefreshTask(studentData.Token).execute();
-                }
-            }, 10000);
-
-            fragment = new StudentFragment();
+    /**
+     * [展示指定Id的页面]<BR>
+     */
+    public void showModulePage(int moduleId) {
+        if (mCurrentShowModuleId == moduleId) {
+            return;
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, fragment).commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (moduleId == MODULE_ID_MAIN_PAGE) { //学案
+            if (mMainFragment == null) {
+                if (ExternalParam.getInstance().getUserData().isTeacher()) {
+                    mMainFragment = TeacherFragment.newInstance(new TeacherFragment.BackListener() {
+                        @Override
+                        public void showBack(boolean show) {
+                            if (show) {
+                                mBackButton.setVisibility(View.VISIBLE);
+                                mBackButton.setClickable(true);
+                            } else {
+                                mBackButton.setVisibility(View.INVISIBLE);
+                                mBackButton.setClickable(false);
+                            }
+                        }
+                    });
+                } else {
+                    final StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+                    mHandler.postAtTime(new Runnable() {
+                        @Override
+                        public void run() {
+                            getRefreshTask(studentData.Token).execute();
+                        }
+                    }, 10000);
+
+                    mMainFragment = new StudentFragment();
+                }
+            }
+            if (mModuleFragment != null) {
+                transaction.hide(mModuleFragment);
+            }
+            mModuleFragment = mMainFragment;
+        } else if (moduleId == MODULE_ID_SETTING_PAGE) {
+            if (mSettingFragment == null) {
+                mSettingFragment = PasswordSettingFragment.newInstance();
+            }
+            if (mModuleFragment != null) {
+                transaction.hide(mModuleFragment);
+            }
+            mModuleFragment = mSettingFragment;
+        }
+        transaction.show(mModuleFragment);
+        transaction.commitAllowingStateLoss();
+
+        mLastShowModuleId = mCurrentShowModuleId;
+        mCurrentShowModuleId = moduleId;
     }
 
     private void openMessage(Message message) {

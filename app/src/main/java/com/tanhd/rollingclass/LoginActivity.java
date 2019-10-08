@@ -228,8 +228,8 @@ public class LoginActivity extends BaseActivity {
         CheckBox checkBox = findViewById(R.id.save_pwd);
         checkBox.setChecked(true);
         mUserView.setText(username);
-        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
-        mSignButtonView.performClick();
+//        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
+//        mSignButtonView.performClick();
     }
 
     private class LoginTask extends AsyncTask<Void, Void, Integer> {

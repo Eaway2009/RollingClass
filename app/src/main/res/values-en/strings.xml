@@ -27,6 +27,9 @@
     <string name="back">返回</string>
     <string name="document_title">学案</string>
     <string name="add_document">新建学案</string>
+    <string name="ori_password">输入原密码：</string>
+    <string name="new_password">输入新密码：</string>
+    <string name="recheck_password">确认新密码：</string>
     <string name="wrong_answer_book">错题本</string>
     <string name="wrong_answer_question">题目</string>
     <string name="wrong_answer_photo">图片</string>
