@@ -208,23 +208,19 @@ public class TopbarView extends CardView {
             switch (v.getId()){
                 case R.id.profile_image:
                 case R.id.username:
-                    mCallback.showPage(MainActivity.MODULE_ID_USER_PAGE);
-//                    UserData userData = ExternalParam.getInstance().getUserData();
-//                    if (!userData.isTeacher()) {
-//                        if (ExternalParam.getInstance().getStatus() != 0) {
-//                            ToastUtil.show(R.string.toast_class_ing);
-//                            return;
-//                        }
-//                    }
-//
-//                    AppCompatActivity activity = (AppCompatActivity) getContext();
-//                    FrameDialog.show(activity.getSupportFragmentManager(), new UserInfoFragment());
+                    if(mCallback!=null) {
+                        mCallback.showPage(MainActivity.MODULE_ID_USER_PAGE);
+                    }
                     break;
                 case R.id.home_icon: //回到首页
-                    MainActivity.startMe(getContext());
+                    if(mCallback!=null) {
+                        mCallback.showPage(MainActivity.MODULE_ID_MAIN_PAGE);
+                    }
                     break;
                 case R.id.setting_icon:
-                    mCallback.showPage(MainActivity.MODULE_ID_SETTING_PAGE);
+                    if(mCallback!=null) {
+                        mCallback.showPage(MainActivity.MODULE_ID_SETTING_PAGE);
+                    }
                     break;
                 case R.id.power_icon: //注销
                     Context context = getContext();

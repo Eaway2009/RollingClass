@@ -3,12 +3,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    android:gravity="bottom"
+    android:gravity="center"
     android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/person"/>
+    <LinearLayout
+        style="@style/UserInfoInputLayout">
+
+        <TextView
+            style="@style/UserInfoLabel"
+            android:text="@string/lbl_name" />
+
+        <EditText
+            android:id="@+id/name"
+            style="@style/UserInfoInputEdit"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        style="@style/UserInfoInputLayout">
+
+        <TextView
+            style="@style/UserInfoLabel"
+            android:text="@string/lbl_gender" />
+
+        <RadioGroup
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/man"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="@string/lbl_boy"/>
+
+            <RadioButton
+                android:id="@+id/female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="20sp"
+                android:text="@string/lbl_gril"/>
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/UserInfoInputLayout">
+
+        <TextView
+            style="@style/UserInfoLabel"
+            android:text="@string/lbl_account" />
+
+        <EditText
+            android:id="@+id/username"
+            style="@style/UserInfoInputEdit"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/UserInfoInputLayout">
+
+        <TextView
+            style="@style/UserInfoLabel"
+            android:text="@string/lbl_banji" />
+
+        <EditText
+            android:id="@+id/student_class"
+            style="@style/UserInfoInputEdit"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -16,70 +94,6 @@
             android:layout_weight="1"
             android:gravity="center_horizontal|bottom"
             android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:src="@drawable/person"/>
-
-            <LinearLayout
-                style="@style/UserInfoInputLayout">
-
-                <TextView
-                    style="@style/UserInfoLabel"
-                    android:text="@string/lbl_name" />
-
-                <EditText
-                    android:id="@+id/name"
-                    style="@style/UserInfoInputEdit"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/UserInfoInputLayout">
-
-                <TextView
-                    style="@style/UserInfoLabel"
-                    android:text="@string/lbl_gender" />
-
-                <RadioGroup
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <RadioButton
-                        android:id="@+id/man"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:text="@string/lbl_boy"/>
-
-                    <RadioButton
-                        android:id="@+id/female"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:textSize="20sp"
-                        android:text="@string/lbl_gril"/>
-
-                </RadioGroup>
-
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/UserInfoInputLayout">
-
-                <TextView
-                    style="@style/UserInfoLabel"
-                    android:text="@string/lbl_account" />
-
-                <EditText
-                    android:id="@+id/username"
-                    style="@style/UserInfoInputEdit"/>
-
-            </LinearLayout>
 
             <LinearLayout
                 style="@style/UserInfoInputLayout">
@@ -197,19 +211,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/UserInfoInputLayout">
-
-                    <TextView
-                        style="@style/UserInfoLabel"
-                        android:text="@string/lbl_banji" />
-
-                    <EditText
-                        android:id="@+id/student_class"
-                        style="@style/UserInfoInputEdit"/>
-
-                </LinearLayout>
-
             </LinearLayout>
 
             <LinearLayout
@@ -271,12 +272,18 @@
 
     </LinearLayout>
 
+
     <Button
         android:id="@+id/confirm"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:textSize="26sp"
-        android:text="@string/sure"/>
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="@dimen/dp_50"
+        android:background="@drawable/task_add_save_button"
+        android:gravity="center"
+        android:text="@string/save"
+        android:textSize="@dimen/text_size_12"
+        android:textColor="@color/white" />
 
 </LinearLayout>

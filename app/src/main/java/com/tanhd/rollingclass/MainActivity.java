@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.os.IBinder;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -34,6 +36,7 @@ import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.InBoxFragment;
 import com.tanhd.rollingclass.fragments.StudentFragment;
 import com.tanhd.rollingclass.fragments.TeacherFragment;
+import com.tanhd.rollingclass.fragments.UserInfoFragment;
 import com.tanhd.rollingclass.fragments.pages.ShowCommentPage;
 import com.tanhd.rollingclass.fragments.user.PasswordSettingFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
@@ -63,6 +66,7 @@ public class MainActivity extends BaseActivity {
     public static final int MODULE_ID_MAIN_PAGE = 1;
     public static final int MODULE_ID_SETTING_PAGE = 2;
     public static final int MODULE_ID_USER_PAGE = 3;
+    private static final int FRAGMENT_LAYOUT_ID = R.id.framelayout;
 
     private TopbarView mTopbarView;
     private MediaPlayer mediaPlayer;
@@ -74,6 +78,8 @@ public class MainActivity extends BaseActivity {
     private Handler mHandler = new Handler();
     private UserData mUserData;
     private static MainActivity instance;
+    private UserInfoFragment mUserInfoFragment;
+
     public static MainActivity getInstance(){
         return instance;
     }
@@ -104,7 +110,7 @@ public class MainActivity extends BaseActivity {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mMainFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(FRAGMENT_LAYOUT_ID, mMainFragment).commit();
                 mBackButton.setClickable(false);
                 mBackButton.setVisibility(View.INVISIBLE);
             }
@@ -144,7 +150,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void showPage(int modulePageId) {
-                showPage(modulePageId);
+                showModulePage(modulePageId);
             }
         });
         initUserUI();
@@ -153,6 +159,12 @@ public class MainActivity extends BaseActivity {
         startMqttService();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            showModulePage(MODULE_ID_MAIN_PAGE);
+        }
+    }
 
     private void startMqttService() {
         if (mUserData.isTeacher()) {
@@ -235,6 +247,7 @@ public class MainActivity extends BaseActivity {
 
                     mMainFragment = new StudentFragment();
                 }
+                transaction.add(FRAGMENT_LAYOUT_ID, mMainFragment);
             }
             if (mModuleFragment != null) {
                 transaction.hide(mModuleFragment);
@@ -242,12 +255,32 @@ public class MainActivity extends BaseActivity {
             mModuleFragment = mMainFragment;
         } else if (moduleId == MODULE_ID_SETTING_PAGE) {
             if (mSettingFragment == null) {
-                mSettingFragment = PasswordSettingFragment.newInstance();
+                mSettingFragment = PasswordSettingFragment.newInstance(new PasswordSettingFragment.Callback() {
+                    @Override
+                    public void onBack() {
+                        showModulePage(MODULE_ID_MAIN_PAGE);
+                    }
+                });
+                transaction.add(FRAGMENT_LAYOUT_ID, mSettingFragment);
             }
             if (mModuleFragment != null) {
                 transaction.hide(mModuleFragment);
             }
             mModuleFragment = mSettingFragment;
+        } else if(moduleId == MODULE_ID_USER_PAGE) {
+            if(mUserInfoFragment == null){
+                mUserInfoFragment = UserInfoFragment.getInstance(new UserInfoFragment.Callback() {
+                    @Override
+                    public void onBack() {
+                        showModulePage(MODULE_ID_MAIN_PAGE);
+                    }
+                });
+                transaction.add(FRAGMENT_LAYOUT_ID, mUserInfoFragment);
+            }
+            if (mModuleFragment != null) {
+                transaction.hide(mModuleFragment);
+            }
+            mModuleFragment = mUserInfoFragment;
         }
         transaction.show(mModuleFragment);
         transaction.commitAllowingStateLoss();

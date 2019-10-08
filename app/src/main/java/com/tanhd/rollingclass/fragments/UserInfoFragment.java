@@ -49,6 +49,17 @@ public class UserInfoFragment extends Fragment {
     private EditText mPassword1View;
     private EditText mPassword2View;
     private EditText mPassword3View;
+    private Callback mCallback;
+
+    public static UserInfoFragment getInstance(Callback callback){
+        UserInfoFragment page = new UserInfoFragment();
+        page.setCallback(callback);
+        return page;
+    }
+
+    public void setCallback(Callback callback){
+        mCallback = callback;
+    }
 
     @Nullable
     @Override
@@ -132,7 +143,10 @@ public class UserInfoFragment extends Fragment {
         view.findViewById(R.id.confirm).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updatePassword();
+//                updatePassword();
+                if(mCallback!=null){
+                    mCallback.onBack();
+                }
             }
         });
     }
@@ -161,47 +175,8 @@ public class UserInfoFragment extends Fragment {
             }
         }
     }
-    private void updatePassword() {
-        String oldPassword = mPassword1View.getText().toString();
-        String newPassword1 = mPassword2View.getText().toString();
-        String newPassword2 = mPassword3View.getText().toString();
 
-        if (!newPassword1.equals(newPassword2)) {
-            ToastUtil.show(R.string.toast_pwd_no_fit);
-            return;
-        }
-
-        if (TextUtils.isEmpty(newPassword1)) {
-            ToastUtil.show(R.string.toast_pwd_empty);
-            return;
-        }
-
-        UserData userData = ExternalParam.getInstance().getUserData();
-        String ownerID = userData.getOwnerID();
-
-        RequestCallback callback = new RequestCallback() {
-            @Override
-            public void onProgress(boolean b) {
-
-            }
-
-            @Override
-            public void onResponse(String body) {
-                ToastUtil.show(getResources().getString(R.string.toast_pwd_edit_ok));
-                DialogFragment dialogFragment = (DialogFragment) getParentFragment();
-                dialogFragment.dismiss();
-            }
-
-            @Override
-            public void onError(String code, String message) {
-                ToastUtil.show(getString(R.string.toast_edit_pwd_fail) + message);
-            }
-        };
-
-        if (userData.isTeacher()) {
-            ScopeServer.getInstance().UpdataTeacherPasswd(ownerID, oldPassword, newPassword1, callback);
-        } else {
-            ScopeServer.getInstance().UpdataStudentPasswd(ownerID, oldPassword, newPassword1, callback);
-        }
+    public interface Callback{
+        void onBack();
     }
 }

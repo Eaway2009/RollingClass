@@ -19,6 +19,7 @@ import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
+import com.tanhd.rollingclass.MainActivity;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
@@ -185,6 +186,21 @@ public class LearnCasesActivity extends BaseActivity {
                             openMessage(message);
                     }
                 }));
+            }
+        });
+        mTopbarView.setCallback(new TopbarView.Callback() {
+            @Override
+            public void connect_again() {
+                if (ExternalParam.getInstance().getUserData() != null) {
+//                    new ConnectMqttTask(ExternalParam.getInstance().getUserData()).execute();
+                }
+            }
+
+            @Override
+            public void showPage(int modulePageId) {
+                setResult(RESULT_OK);
+                finish();
+                MainActivity.startMe(LearnCasesActivity.this);
             }
         });
     }

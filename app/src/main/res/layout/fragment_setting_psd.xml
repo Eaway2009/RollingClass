@@ -21,6 +21,7 @@
             android:id="@+id/ori_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_10"
             android:maxLines="1"
             android:background="@drawable/login_edit_bg"/>
 
@@ -53,6 +54,7 @@
             android:id="@+id/new_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_10"
             android:maxLines="1"
             android:background="@drawable/login_edit_bg"/>
 
@@ -84,10 +86,12 @@
             android:id="@+id/recheck_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_10"
             android:maxLines="1"
             android:background="@drawable/login_edit_bg"/>
 
         <TextView
+            android:id="@+id/new_password_wrong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

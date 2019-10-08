@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.fragments.UserInfoFragment;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
@@ -29,10 +30,17 @@ public class PasswordSettingFragment extends Fragment implements View.OnClickLis
     private View mSaveButton;
     private String mPassword;
     private View mOriPasswordWarning;
+    private Callback mCallback;
+    private View mNewPasswordWarning;
 
-    public static PasswordSettingFragment newInstance() {
+    public static PasswordSettingFragment newInstance(Callback callback) {
         PasswordSettingFragment fragment = new PasswordSettingFragment();
+        fragment.setCallback(callback);
         return fragment;
+    }
+
+    public void setCallback(Callback callback) {
+        mCallback = callback;
     }
 
     @Nullable
@@ -50,6 +58,7 @@ public class PasswordSettingFragment extends Fragment implements View.OnClickLis
         mRecheckPwdView = view.findViewById(R.id.recheck_password);
         mSaveButton = view.findViewById(R.id.save_button);
         mOriPasswordWarning = view.findViewById(R.id.ori_password_warning);
+        mNewPasswordWarning = view.findViewById(R.id.new_password_wrong);
 
         mSaveButton.setOnClickListener(this);
         mOriPwdView.addTextChangedListener(new TextWatcher() {
@@ -68,6 +77,8 @@ public class PasswordSettingFragment extends Fragment implements View.OnClickLis
                 String password = mOriPwdView.getText().toString();
                 if (!TextUtils.isEmpty(password) && !password.equals(mPassword)) {
                     mOriPasswordWarning.setVisibility(View.VISIBLE);
+                } else {
+                    mOriPasswordWarning.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -87,7 +98,9 @@ public class PasswordSettingFragment extends Fragment implements View.OnClickLis
                 String newPassword = mOriPwdView.getText().toString();
                 String recheckPassword = mRecheckPwdView.getText().toString();
                 if (!TextUtils.isEmpty(newPassword) && !TextUtils.isEmpty(recheckPassword) && !newPassword.equals(recheckPassword)) {
-                    mOriPasswordWarning.setVisibility(View.VISIBLE);
+                    mNewPasswordWarning.setVisibility(View.VISIBLE);
+                } else {
+                    mNewPasswordWarning.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -140,8 +153,9 @@ public class PasswordSettingFragment extends Fragment implements View.OnClickLis
             @Override
             public void onResponse(String body) {
                 ToastUtil.show(getResources().getString(R.string.toast_pwd_edit_ok));
-                DialogFragment dialogFragment = (DialogFragment) getParentFragment();
-                dialogFragment.dismiss();
+                if (mCallback != null) {
+                    mCallback.onBack();
+                }
             }
 
             @Override
@@ -155,5 +169,9 @@ public class PasswordSettingFragment extends Fragment implements View.OnClickLis
         } else {
             ScopeServer.getInstance().UpdataStudentPasswd(ownerID, oldPassword, newPassword1, callback);
         }
+    }
+
+    public interface Callback {
+        void onBack();
     }
 }

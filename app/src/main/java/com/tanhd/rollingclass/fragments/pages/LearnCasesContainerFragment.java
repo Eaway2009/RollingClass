@@ -170,7 +170,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         mPopupWindow2.setmListener(clickCallBack);
 
         if (mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) { //学生开始进入课堂 学生端全屏
-            mStudentHandsupLayout.setVisibility(View.VISIBLE);
+            mStudentHandsupLayout.setVisibility(View.GONE);
             mHandsupLayout.setVisibility(View.GONE);
             mHandsupHideLayout.setVisibility(View.GONE);
             mIsFullScreen = true;

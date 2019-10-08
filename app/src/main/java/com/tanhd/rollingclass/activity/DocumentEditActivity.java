@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.tanhd.rollingclass.MainActivity;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.db.Message;
@@ -12,6 +13,7 @@ import com.tanhd.rollingclass.fragments.ChatFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.InBoxFragment;
 import com.tanhd.rollingclass.fragments.kowledge.KnowledgeControllerFragment;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.views.TopbarView;
@@ -94,6 +96,21 @@ public class DocumentEditActivity extends BaseActivity implements KnowledgeContr
                             openMessage(message);
                     }
                 }));
+            }
+        });
+        mTopbarView.setCallback(new TopbarView.Callback() {
+            @Override
+            public void connect_again() {
+                if (ExternalParam.getInstance().getUserData() != null) {
+//                    new ConnectMqttTask(ExternalParam.getInstance().getUserData()).execute();
+                }
+            }
+
+            @Override
+            public void showPage(int modulePageId) {
+                setResult(RESULT_OK);
+                finish();
+                MainActivity.startMe(DocumentEditActivity.this);
             }
         });
     }
