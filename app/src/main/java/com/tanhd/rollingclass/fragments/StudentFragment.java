@@ -26,6 +26,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+/**
+ * 学生主界面
+ */
 public class StudentFragment extends Fragment implements View.OnClickListener {
     private BackListener mListener;
     private View mClassPageView;
@@ -80,7 +83,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
         @Override
         public void messageArrived(final PushMessage message) {
             switch (message.command) {
-                case CLASS_BEGIN: {
+                case CLASS_BEGIN: { //上课开始
                     mPushMessage = message;
                     mClassPageView.setEnabled(true);
                     if (message.parameters != null) {
@@ -94,7 +97,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                     }
                     break;
                 }
-                case CLASS_END:
+                case CLASS_END: //下课了
                     mClassPageView.setEnabled(false);
                     MQTT.publishMessage(PushMessage.COMMAND.OFFLINE, message.from, null);
                     ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.REST);
@@ -129,7 +132,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.class_page_view:
+            case R.id.class_page_view: //进入课堂
                 MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
                 ExternalParam.getInstance().setStatus(2);
                 if (mPushMessage != null && mPushMessage.parameters != null) {

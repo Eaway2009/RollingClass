@@ -366,4 +366,7 @@
     <string name="lbl_message">消息</string>
 
 
+
+    <string name="dialog_logout_hint">注销后下次需要重新登录，是否\n确定注销？</string>
+    <string name="lbl_exit">【退出】</string>
 </resources>

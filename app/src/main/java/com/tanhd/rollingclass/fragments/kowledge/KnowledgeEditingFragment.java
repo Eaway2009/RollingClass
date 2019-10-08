@@ -226,9 +226,9 @@ public class KnowledgeEditingFragment extends BaseFragment implements View.OnCli
                 || (mStatus == KeyConstants.KnowledgeStatus.AT_CLASS && mKnowledgeDetailMessage.class_process == 1)
                 || (mStatus == KeyConstants.KnowledgeStatus.AFTER_CLASS && mKnowledgeDetailMessage.class_after == 1)) {
             mKnowledgeAddButton.setVisibility(View.GONE);
-            mSyncAfterClassCheckBox.setVisibility(View.GONE);
-            mSyncInClassCheckBox.setVisibility(View.GONE);
-            mSyncFreClassCheckBox.setVisibility(View.GONE);
+            mSyncAfterClassCheckBox.setVisibility(View.VISIBLE);
+            mSyncInClassCheckBox.setVisibility(View.VISIBLE);
+            mSyncFreClassCheckBox.setVisibility(View.VISIBLE);
             mKnowledgeNameEditView.setVisibility(View.GONE);
         } else {
             mKnowledgeAddButton.setVisibility(View.VISIBLE);

@@ -47,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/knowledge_icon_selector"
                 android:enabled="false"
+                android:layout_centerVertical="true"
                 android:gravity="center"
                 android:text="@string/fre_class"
                 android:textColor="@color/white"
@@ -60,6 +61,10 @@
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/knowledge_icon_selector"
                 android:text="@string/at_class"
+                android:minHeight="@dimen/dp_35"
+                android:minWidth="@dimen/dp_35"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_12" />
 

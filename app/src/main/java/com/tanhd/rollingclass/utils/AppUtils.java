@@ -50,7 +50,7 @@ public class AppUtils {
      * @param username
      * @param password
      */
-    public static void saveLoginInfo(Context context, String username, String password) {
+    public static void saveLoginInfo(Context context, String username, String password,boolean isTeacher) {
         //获取SharedPreferences对象
         SharedPreferences sharedPre = context.getSharedPreferences("config", MODE_PRIVATE);
         //获取Editor对象
@@ -58,6 +58,7 @@ public class AppUtils {
         //设置参数
         editor.putString("username", username);
         editor.putString("password", password);
+        editor.putBoolean("isTeacher",isTeacher);
         //提交
         editor.commit();
     }
@@ -72,6 +73,12 @@ public class AppUtils {
         SharedPreferences sharedPre = context.getSharedPreferences("config", MODE_PRIVATE);
         String password = sharedPre.getString("password", "");
         return password;
+    }
+
+    public static boolean readLoginTeacherStatus(Context context) {
+        SharedPreferences sharedPre = context.getSharedPreferences("config", MODE_PRIVATE);
+        boolean isTeacher = sharedPre.getBoolean("isTeacher", false);
+        return isTeacher;
     }
 
     public static void clearLoginInfo(Context context) {

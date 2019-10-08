@@ -11,9 +11,10 @@ import android.widget.TextView;
 import com.tanhd.rollingclass.R;
 
 /**
- * 通用头部顶栏
+ * 通用头部顶栏 ---暂未使用
  * Created by YangShlai on 2019-09-30.
  */
+@Deprecated
 public class MyTitleBar extends RelativeLayout implements View.OnClickListener {
     private TextView tv_ymd,tv_week,tv_name;
     private View ll_user;

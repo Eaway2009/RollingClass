@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.base.BaseFragment;
 import com.tanhd.rollingclass.fragments.resource.AnswerDisplayFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
@@ -27,6 +28,9 @@ import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.server.data.WrongAnswerList;
+import com.tanhd.rollingclass.utils.annotate.InjectView;
+import com.tanhd.rollingclass.views.OnItemClickListener;
+import com.tanhd.rollingclass.views.PopFliterRes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +38,7 @@ import java.util.List;
 /**
  * 错题本
  */
-public class WrongAnswerListFragment extends Fragment implements View.OnClickListener {
+public class WrongAnswerListFragment extends BaseFragment implements View.OnClickListener {
 
     private static final int MODULE_ID_QUESTION_LIST = 0;
     private static final int MODULE_ID_PHOTO_LIST = 1;
@@ -48,14 +52,13 @@ public class WrongAnswerListFragment extends Fragment implements View.OnClickLis
 
     private AnswerDisplayFragment mQuestionResourceFragment;
     private WrongAnswerBookPhotoFragment mWrongAnswerBookPhotoFragment;
-    private Spinner mKnowledgeSpinner;
-    private ArrayAdapter mDocumentSpinnerAdapter;
+    private TextView tv_spinner;
     private View mBackButton;
     private View mQuestionListView;
     private View mPhotoListView;
-    private View mKnowledgeSpinnerLayout;
     private int mCurrentShowModuleId = -1;
-    private TextView mKnowledgeSpinnerTextView;
+    private List<KnowledgeDetailMessage> kldList;
+    private PopFliterRes popFliterRes;
 
     public static WrongAnswerListFragment newInstance(KnowledgeModel knowledgeModel, Callback callback) {
         Bundle args = new Bundle();
@@ -90,27 +93,20 @@ public class WrongAnswerListFragment extends Fragment implements View.OnClickLis
         mBackButton = view.findViewById(R.id.back_button);
         mQuestionListView = view.findViewById(R.id.question_list);
         mPhotoListView = view.findViewById(R.id.photo_list);
-        mKnowledgeSpinner = view.findViewById(R.id.knowledge_spinner);
-        mKnowledgeSpinnerLayout = view.findViewById(R.id.knowledge_spinner_layout);
-        mKnowledgeSpinner = view.findViewById(R.id.knowledge_spinner);
-        mKnowledgeSpinnerTextView = view.findViewById(R.id.spinner_textview);
+        tv_spinner = view.findViewById(R.id.tv_spinner);
 
-        mDocumentSpinnerAdapter = new ArrayAdapter<KnowledgeDetailMessage>(getContext(),R.layout.spinner_check_textview);
-        mDocumentSpinnerAdapter.setDropDownViewResource(R.layout.spinner_down_layout);
-        mKnowledgeSpinner.setAdapter(mDocumentSpinnerAdapter);
-        mKnowledgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        popFliterRes = new PopFliterRes(getActivity());
+        popFliterRes.setRootWidth((int) getResources().getDimension(R.dimen.dp_150));
+        popFliterRes.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                mKnowledgeDetailMessage = (KnowledgeDetailMessage) mDocumentSpinnerAdapter.getItem(pos);
-                mKnowledgeSpinnerTextView.setVisibility(View.GONE);
+            public void onItemClick(View view, int position) {
+                tv_spinner.setText(popFliterRes.getDatas().get(position));
+                mKnowledgeDetailMessage = kldList.get(position);
                 new InitQuestionDataTask().execute();
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                mKnowledgeSpinnerTextView.setVisibility(View.VISIBLE);
-            }
         });
+
+        tv_spinner.setOnClickListener(this);
         mBackButton.setOnClickListener(this);
         mPhotoListView.setOnClickListener(this);
         mQuestionListView.setOnClickListener(this);
@@ -149,6 +145,9 @@ public class WrongAnswerListFragment extends Fragment implements View.OnClickLis
                 if(mCallback!=null){
                     mCallback.onBack();
                 }
+                break;
+            case R.id.tv_spinner: //筛选
+                popFliterRes.showMask(false).showAsDropDown(v);
                 break;
         }
     }
@@ -205,10 +204,20 @@ public class WrongAnswerListFragment extends Fragment implements View.OnClickLis
 
         @Override
         protected void onPostExecute(List<KnowledgeDetailMessage> documentList) {
+            kldList = documentList;
             if (documentList != null && documentList.size() > 0) {
-                mDocumentSpinnerAdapter.addAll(documentList);
+                List<String> listStr = new ArrayList<>();
+                for (int i = 0;i<documentList.size();i++){
+                    listStr.add(documentList.get(i).knowledge_point_name);
+                }
+                popFliterRes.setDatas(listStr);
+
+                //默认选中第一个
+                tv_spinner.setText(listStr.get(0));
+                mKnowledgeDetailMessage = kldList.get(0);
+                new InitQuestionDataTask().execute();
             } else {
-                mDocumentSpinnerAdapter.clear();
+                tv_spinner.setText(R.string.no_knowledge);
             }
         }
     }

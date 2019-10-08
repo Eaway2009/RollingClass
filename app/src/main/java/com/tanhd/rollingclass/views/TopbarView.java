@@ -9,17 +9,22 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.MainActivity;
+import com.tanhd.rollingclass.MainApp;
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.base.BaseActivity;
+import com.tanhd.rollingclass.db.AppCacheInfo;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.NetWorkTestFragment;
@@ -35,7 +40,9 @@ import com.tanhd.rollingclass.views.popmenu.MenuItem;
 import java.util.Calendar;
 import java.util.List;
 
-
+/**
+ * 共用头部导航
+ */
 public class TopbarView extends CardView {
     private TextView mDateView;
     private TextView mWeekView;
@@ -43,6 +50,8 @@ public class TopbarView extends CardView {
     private PopMenu mPopMenu;
     private Callback mCallback;
     private TextView mUserNameView;
+
+    private ImageView iv_language;
     private int selectedLanguage = LanguageType.LANGUAGE_CHINESE_SIMPLIFIED;
     private AlertDialog mLogoutDialog;
 
@@ -65,30 +74,27 @@ public class TopbarView extends CardView {
         mWeekView = findViewById(R.id.weektext);
         mMessageView = findViewById(R.id.count_text);
         mUserNameView = findViewById(R.id.username);
+        iv_language = findViewById(R.id.iv_language);
 
+        if (MultiLanguageUtil.getInstance().getLanguageType() == LanguageType.LANGUAGE_EN){
+            iv_language.setImageResource(R.drawable.ic_en);
+        }else{
+            iv_language.setImageResource(R.drawable.ic_cn);
+        }
         //中英文切换
-        findViewById(R.id.iv_en).setOnClickListener(new OnClickListener() {
+        iv_language.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if ( MultiLanguageUtil.getInstance().getLanguageType() == LanguageType.LANGUAGE_EN){
-                    return;
+                    //英文切换到中文
+                    selectedLanguage = LanguageType.LANGUAGE_CHINESE_SIMPLIFIED;
+                    iv_language.setImageResource(R.drawable.ic_cn);
+                }else{
+                    //中文切换到英文
+                    selectedLanguage = LanguageType.LANGUAGE_EN;
+                    iv_language.setImageResource(R.drawable.ic_en);
                 }
 
-                selectedLanguage = LanguageType.LANGUAGE_EN;
-                MultiLanguageUtil.getInstance().updateLanguage(selectedLanguage);
-                Intent intent = new Intent(getContext(),MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                getContext().startActivity(intent);
-                ToastUtil.show(R.string.toast_change_ok);
-            }
-        });
-        findViewById(R.id.iv_cn).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ( MultiLanguageUtil.getInstance().getLanguageType() == LanguageType.LANGUAGE_CHINESE_SIMPLIFIED){
-                    return;
-                }
-                selectedLanguage = LanguageType.LANGUAGE_CHINESE_SIMPLIFIED;
                 MultiLanguageUtil.getInstance().updateLanguage(selectedLanguage);
                 Intent intent = new Intent(getContext(),MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -121,6 +127,7 @@ public class TopbarView extends CardView {
         findViewById(R.id.home_icon).setOnClickListener(onClickListener);
         findViewById(R.id.setting_icon).setOnClickListener(onClickListener);
         findViewById(R.id.power_icon).setOnClickListener(onClickListener);
+
 
         mPopMenu = new PopMenu(findViewById(R.id.more));
         mPopMenu.addItem(R.drawable.menu_save_icon, R.id.server_test, getResources().getString(R.string.menu_server_test));
@@ -213,38 +220,25 @@ public class TopbarView extends CardView {
 //                    AppCompatActivity activity = (AppCompatActivity) getContext();
 //                    FrameDialog.show(activity.getSupportFragmentManager(), new UserInfoFragment());
                     break;
-                case R.id.home_icon:
+                case R.id.home_icon: //回到首页
                     MainActivity.startMe(getContext());
                     break;
                 case R.id.setting_icon:
                     mCallback.showPage(MainActivity.MODULE_ID_SETTING_PAGE);
                     break;
-                case R.id.power_icon:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
-                            .setTitle(getResources().getString(R.string.dialog_warning))
-                            .setMessage(getResources().getString(R.string.dialog_logout_warning))
-                            .setPositiveButton(getResources().getString(R.string.sure), new DialogInterface.OnClickListener() {
+                case R.id.power_icon: //注销
+                    Context context = getContext();
+                    if (context != null){
+                        if (context instanceof BaseActivity){
+                            BaseActivity baseActivity = (BaseActivity) context;
+                            new DefaultDialog("", getResources().getString(R.string.dialog_logout_hint), "", "", null, new OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Activity activity = (Activity) getContext();
-                                    activity.finish();
+                                public void onClick(View v) {
+                                    AppCacheInfo.getInstance().logOut(getContext());
                                 }
-                            })
-                            .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    mLogoutDialog.dismiss();
-                                }
-                            })
-                            .setCancelable(false)
-                            .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                @Override
-                                public void onDismiss(DialogInterface dialog) {
-                                    mLogoutDialog = null;
-                                }
-                            });
-                    mLogoutDialog = builder.create();
-                    mLogoutDialog.show();
+                            }).show(baseActivity.getSupportFragmentManager(),"logoutDialog");
+                        }
+                    }
                     break;
             }
 

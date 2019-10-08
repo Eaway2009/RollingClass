@@ -20,7 +20,9 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tanhd.rollingclass.base.BaseActivity;
@@ -31,6 +33,9 @@ import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.ToastUtil;
+import com.tanhd.rollingclass.utils.annotate.InjectView;
+import com.tanhd.rollingclass.utils.langeuage.LanguageType;
+import com.tanhd.rollingclass.utils.langeuage.MultiLanguageUtil;
 
 import org.json.JSONObject;
 
@@ -38,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private static final int REQUEST_PERMISSION = 1;
     private static final int REQUEST_TIME = 1;
     private static final String TAG = "LoginActivity";
@@ -52,6 +57,10 @@ public class LoginActivity extends BaseActivity {
     private CheckBox mSavePwdCheckBox;
     private CheckBox mCheckBox;
     private boolean mLongClicked = false;
+    @InjectView(id = R.id.tv_exit, onClick = true)
+    private TextView tv_exit;
+    @InjectView(id = R.id.iv_language, onClick = true)
+    private ImageView iv_language;
 
 
     GestureDetector gestureDetector;
@@ -70,7 +79,7 @@ public class LoginActivity extends BaseActivity {
         mSignButtonView = findViewById(R.id.sign_button);
         mIpEditView = findViewById(R.id.ip_edittext);
         mIpButton = findViewById(R.id.ip_button);
-        mIpLayout =this.findViewById(R.id.ip_layout);
+        mIpLayout = this.findViewById(R.id.ip_layout);
         mSignButtonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,6 +176,13 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
+        if (MultiLanguageUtil.getInstance().getLanguageType() == LanguageType.LANGUAGE_EN) {
+            iv_language.setImageResource(R.drawable.ic_en);
+        } else {
+            iv_language.setImageResource(R.drawable.ic_cn);
+        }
+
+
     }
 
     @Override
@@ -224,12 +240,43 @@ public class LoginActivity extends BaseActivity {
         if (TextUtils.isEmpty(username)) {
             return;
         }
+        mCheckBox.setChecked(AppUtils.readLoginTeacherStatus(this));
 
         CheckBox checkBox = findViewById(R.id.save_pwd);
         checkBox.setChecked(true);
         mUserView.setText(username);
 //        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
 //        mSignButtonView.performClick();
+//        mUserView.setSelection(username.length());
+//        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
+//        mSignButtonView.performClick();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_language: //语言切换
+                int selectedLanguage;
+                if (MultiLanguageUtil.getInstance().getLanguageType() == LanguageType.LANGUAGE_EN) {
+                    //英文切换到中文
+                    selectedLanguage = LanguageType.LANGUAGE_CHINESE_SIMPLIFIED;
+                    iv_language.setImageResource(R.drawable.ic_cn);
+                } else {
+                    //中文切换到英文
+                    selectedLanguage = LanguageType.LANGUAGE_EN;
+                    iv_language.setImageResource(R.drawable.ic_en);
+                }
+
+                MultiLanguageUtil.getInstance().updateLanguage(selectedLanguage);
+                Intent intent = new Intent(this,LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                break;
+            case R.id.tv_exit: //关闭
+                finish();
+                break;
+
+        }
     }
 
     private class LoginTask extends AsyncTask<Void, Void, Integer> {
@@ -286,7 +333,7 @@ public class LoginActivity extends BaseActivity {
                             ExternalParam.getInstance().setUserData(userData);
                             ScopeServer.getInstance().initToken(userData);
                             if (mChecked) {
-                                AppUtils.saveLoginInfo(getApplicationContext(), mUserName, mPassword);
+                                AppUtils.saveLoginInfo(getApplicationContext(), mUserName, mPassword,mIsTeacher);
                             } else {
                                 AppUtils.clearLoginInfo(getApplicationContext());
                             }
@@ -369,11 +416,11 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case REQUEST_TIME:
                     mLongClicked = false;
                     break;

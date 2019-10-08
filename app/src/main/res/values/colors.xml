@@ -26,7 +26,8 @@
     <color name="menu_background">#FF535353</color>
     <color name="chapter_menu_background">#3c424f</color>
     <color name="chapter_menu_text">#A4A8AE</color>
-    <color name="title_bar_background">#EEEEEE</color>
+<!--    #EEEEEE-->
+    <color name="title_bar_background">#FFFFFF</color>
     <color name="micro_course_selector_title">#D6F5FF</color>
 
     <color name="count_class_left_background">#1F2837</color>

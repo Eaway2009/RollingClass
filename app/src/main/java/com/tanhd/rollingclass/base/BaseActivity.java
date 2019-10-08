@@ -2,8 +2,10 @@ package com.tanhd.rollingclass.base;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import com.tanhd.rollingclass.utils.BarTextColorUtils;
 import com.tanhd.rollingclass.utils.Logger;
 import com.tanhd.rollingclass.utils.StatusBarUtil;
 import com.tanhd.rollingclass.utils.ToastUtil;
+import com.tanhd.rollingclass.utils.annotate.ViewAnnotationUtil;
 import com.tanhd.rollingclass.utils.langeuage.MultiLanguageUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,6 +36,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         TAG = this.getClass().getSimpleName();
         AutoHideKeyboard.init(this);
         setStatusBar();
+    }
+
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        View view = getLayoutInflater().inflate(layoutResID, null);
+        ViewAnnotationUtil.autoInjectAllField(this, view);
+        this.setContentView(view);
     }
 
     @Override

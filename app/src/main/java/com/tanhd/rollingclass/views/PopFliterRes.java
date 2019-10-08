@@ -3,6 +3,8 @@ package com.tanhd.rollingclass.views;
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
@@ -20,6 +22,7 @@ public class PopFliterRes extends TopPushPopupWindow<Void> {
     private RecyclerView rv;
     private BaseListAdapter<String> adapter;
     private OnItemClickListener onItemClickListener;
+    private LinearLayout root;
     private int nowPos = 0;
 
     public PopFliterRes(Activity activity) {
@@ -34,7 +37,9 @@ public class PopFliterRes extends TopPushPopupWindow<Void> {
     }
 
     private void init(View view) {
+        root = view.findViewById(R.id.root);
         rv = view.findViewById(R.id.rv);
+        setWidth((int) activity.getResources().getDimension(R.dimen.dp_90));
 
         adapter = new BaseListAdapter<String>(activity) {
             @Override
@@ -60,6 +65,14 @@ public class PopFliterRes extends TopPushPopupWindow<Void> {
                 dismiss();
             }
         });
+    }
+
+    /**
+     * 设置宽度
+     * @param px
+     */
+    public void setRootWidth(int px){
+        setWidth(px);
     }
 
     public void setDatas(List<String> datas) {

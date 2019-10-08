@@ -6,9 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -33,6 +35,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.RxTimerUtil;
 import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.PointPopupWindow;
 import com.tanhd.rollingclass.views.PointPopupWindow.PopupClickCallBack;
@@ -50,6 +53,9 @@ import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_EXRCISE;
 import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_LOCK;
 import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_MUTE;
 
+/**
+ * 学案中间部分
+ */
 public class LearnCasesContainerFragment extends Fragment implements OnClickListener {
 
     PagesListener mListener;
@@ -87,6 +93,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private String mTeachingMaterialId;
     private String mKnowledgeId;
     private String mKnowledgeName;
+    private FrameLayout container_layout;
 
     public static LearnCasesContainerFragment newInstance(String knowledgeId, String knowledgeName, int typeId, PagesListener listener) {
         Bundle args = new Bundle();
@@ -137,6 +144,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     }
 
     private void iniViews(View view) {
+        container_layout = view.findViewById(R.id.container_layout);
         mIvSetting1 = view.findViewById(R.id.iv_set1);
         mIvSetting2 = view.findViewById(R.id.iv_set2);
         mIvFullScreen = view.findViewById(R.id.iv_full_screen);
@@ -161,13 +169,19 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         mPopupWindow2.create(getActivity(), PointPopupWindow.TYPE_SETTING_2);
         mPopupWindow2.setmListener(clickCallBack);
 
-        if (mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) {
-            mStudentHandsupLayout.setVisibility(View.GONE);
+        if (mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) { //学生开始进入课堂 学生端全屏
+            mStudentHandsupLayout.setVisibility(View.VISIBLE);
             mHandsupLayout.setVisibility(View.GONE);
             mHandsupHideLayout.setVisibility(View.GONE);
             mIsFullScreen = true;
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) container_layout.getLayoutParams();
+            layoutParams.bottomMargin = 0;
+            layoutParams.leftMargin = 0;
+            layoutParams.rightMargin = 0;
+            container_layout.setLayoutParams(layoutParams);
             fullScreen();
             mIvFullScreen.setVisibility(View.GONE);
+            //timerGoneHand();
         } else if (mPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE) {
             mRlSettingLayout.setVisibility(View.GONE);
             mIvFullScreen.setVisibility(View.GONE);
@@ -181,6 +195,23 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
             mHandsupHideLayout.setVisibility(View.VISIBLE);
             mStudentHandsupLayout.setVisibility(View.GONE);
         }
+    }
+
+
+    private void timerGoneHand(){
+        RxTimerUtil.cancel();
+        RxTimerUtil.timer(3 * 1000, new RxTimerUtil.IRxNext() {
+            @Override
+            public void doNext(long number) {
+                mStudentHandsupLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        RxTimerUtil.cancel();
     }
 
     PopupClickCallBack clickCallBack = new PopupClickCallBack() {
@@ -360,6 +391,14 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
             mqttListener.messageArrived(pushMessage);
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void showHandBtn(){
+        if (mPageType != KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) return;
+        mStudentHandsupLayout.setVisibility(View.VISIBLE);
+        timerGoneHand();
+    }
+
 
     private MqttListener mqttListener = new MqttListener() {
         @Override

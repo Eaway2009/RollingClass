@@ -8,7 +8,8 @@ public class EventTag {
     private String tag;
     //刷新学案列表
     public static final String REFRESH_CASE = "refresh_case";
-
+    //显示举手提问按钮
+    public static final String SHOW_HAND_BTN = "show_hand_btn";
 
     public EventTag(String tag){
         this.tag = tag;

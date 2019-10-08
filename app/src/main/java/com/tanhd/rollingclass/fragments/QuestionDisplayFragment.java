@@ -1,30 +1,22 @@
 package com.tanhd.rollingclass.fragments;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.FrameLayout;
 
-import com.tanhd.library.mqtthttp.MyMqttService;
-import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.pages.AnswerListFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
-import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
-import com.tanhd.rollingclass.server.data.UserData;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class QuestionDisplayFragment extends Fragment {
@@ -39,6 +31,7 @@ public class QuestionDisplayFragment extends Fragment {
     private View mShowAnswerButton;
     private String mKnowledgeName;
     private String mKnowledgeId;
+    private FrameLayout answer_fragment;
 
     public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel, String knowledgeId, String knowledgeName) {
         QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
@@ -87,6 +80,8 @@ public class QuestionDisplayFragment extends Fragment {
     }
 
     private void initViews(View view) {
+        answer_fragment = view.findViewById(R.id.answer_fragment);
+
         List<QuestionModel> questionDataList = mResourceModel.mResourceList;
         mQuestionResourceFragment = QuestionResourceFragment.newInstance(questionDataList);
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();

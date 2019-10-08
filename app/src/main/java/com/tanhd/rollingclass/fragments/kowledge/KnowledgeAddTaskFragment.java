@@ -53,6 +53,7 @@ import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.BitmapUtils;
 import com.tanhd.rollingclass.utils.GetFileHelper;
+import com.tanhd.rollingclass.utils.KeyboardUtils;
 import com.tanhd.rollingclass.utils.StringUtils;
 import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.PopUploadFile;
@@ -183,6 +184,13 @@ public class KnowledgeAddTaskFragment extends Fragment implements View.OnClickLi
         mUploadPhotoView.setOnClickListener(this);
 
         mEnterTypeRadioGroup.setOnCheckedChangeListener(this);
+
+        mTaskNameEditText.post(new Runnable() {
+            @Override
+            public void run() {
+                KeyboardUtils.showSoftInput(mTaskNameEditText);
+            }
+        });
     }
 
     @Override

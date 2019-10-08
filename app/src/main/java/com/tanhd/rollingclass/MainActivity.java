@@ -53,6 +53,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Map;
 
+/**
+ * 主界面
+ */
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
@@ -70,6 +73,10 @@ public class MainActivity extends BaseActivity {
 
     private Handler mHandler = new Handler();
     private UserData mUserData;
+    private static MainActivity instance;
+    public static MainActivity getInstance(){
+        return instance;
+    }
 
     private int mCurrentShowModuleId;
     private int mLastShowModuleId;
@@ -89,7 +96,7 @@ public class MainActivity extends BaseActivity {
         Log.i(TAG, "onCreate: 从LoginActivity过来");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        instance = this;
         EventBus.getDefault().register(this);
 
         mTopbarView = findViewById(R.id.topbar);
@@ -396,6 +403,8 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
+
+
 
     private boolean isBound = false;
     private static final int SEND_MESSAGE_CODE = 0x0001;

@@ -7,9 +7,9 @@ public class KeyConstants {
         public static final int AFTER_CLASS = 3; //课后
     }
     public class ClassPageType {
-        public static final int TEACHER_CLASS_PAGE = 1;
-        public static final int STUDENT_LEARNING_PAGE = 2;
-        public static final int STUDENT_CLASS_PAGE = 3;
+        public static final int TEACHER_CLASS_PAGE = 1; //老师上课页面
+        public static final int STUDENT_LEARNING_PAGE = 2; //学生自学页面
+        public static final int STUDENT_CLASS_PAGE = 3; //学生上课页面
     }
     public class ClassStatus {
         public static final int CLASS_UNABLE = 0;

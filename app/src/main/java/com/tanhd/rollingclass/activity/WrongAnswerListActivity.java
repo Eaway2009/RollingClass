@@ -8,12 +8,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.base.BaseActivity;
 import com.tanhd.rollingclass.fragments.WrongAnswerBookPhotoFragment;
 import com.tanhd.rollingclass.fragments.WrongAnswerListFragment;
 import com.tanhd.rollingclass.fragments.pages.ChaptersFragment;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 
-public class WrongAnswerListActivity extends AppCompatActivity implements View.OnClickListener, WrongAnswerListFragment.Callback,ChaptersFragment.ChapterListener {
+/**
+ * 错题集列表
+ */
+public class WrongAnswerListActivity extends BaseActivity implements View.OnClickListener, WrongAnswerListFragment.Callback,ChaptersFragment.ChapterListener {
 
     private static final int MODULE_ID_QUESTION_PAGE = 1;
     private static final int MODULE_ID_PHOTO_PAGE = 2;

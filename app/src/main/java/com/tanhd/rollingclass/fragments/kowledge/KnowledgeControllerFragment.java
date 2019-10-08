@@ -16,6 +16,8 @@ import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.utils.ToastUtil;
+import com.tanhd.rollingclass.utils.langeuage.LanguageType;
+import com.tanhd.rollingclass.utils.langeuage.MultiLanguageUtil;
 
 /**
  * 课前 课中 课后
@@ -93,6 +95,16 @@ public class KnowledgeControllerFragment extends Fragment implements View.OnClic
         mFreClassItemView = view.findViewById(R.id.fre_class_item);
         mAtClassItemView = view.findViewById(R.id.at_class_item);
         mAfterClassItemView = view.findViewById(R.id.after_class_item);
+
+        if (MultiLanguageUtil.getInstance().getLanguageType() == LanguageType.LANGUAGE_EN){
+            mFreClassItemView.setBackgroundResource(R.drawable.know_en_status_selector);
+            mAtClassItemView.setBackgroundResource(R.drawable.know_en_status_selector);
+            mAfterClassItemView.setBackgroundResource(R.drawable.know_en_status_selector);
+        }else{
+            mFreClassItemView.setBackgroundResource(R.drawable.knowledge_icon_selector);
+            mAtClassItemView.setBackgroundResource(R.drawable.knowledge_icon_selector);
+            mAfterClassItemView.setBackgroundResource(R.drawable.knowledge_icon_selector);
+        }
 
         mBackButton.setOnClickListener(this);
         mFreClassItemView.setOnClickListener(this);

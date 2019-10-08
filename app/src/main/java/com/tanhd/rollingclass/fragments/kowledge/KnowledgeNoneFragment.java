@@ -18,6 +18,7 @@ import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.utils.KeyboardUtils;
 import com.tanhd.rollingclass.utils.ToastUtil;
 
 /**
@@ -65,6 +66,13 @@ public class KnowledgeNoneFragment extends Fragment implements View.OnClickListe
         mKnowledgeNameEditText = view.findViewById(R.id.knowledge_name_et);
         mKnowledgeAddButton = view.findViewById(R.id.knowledge_add_button);
         mAddButtonsLayout = view.findViewById(R.id.knowledge_add_button_layout);
+
+        mKnowledgeNameEditText.post(new Runnable() {
+            @Override
+            public void run() {
+                KeyboardUtils.showSoftInput(mKnowledgeNameEditText);
+            }
+        });
 
         mKnowledgeAddButton.setOnClickListener(this);
     }
