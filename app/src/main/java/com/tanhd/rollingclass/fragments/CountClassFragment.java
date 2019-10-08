@@ -13,17 +13,15 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.activity.DatasActivity;
-import com.tanhd.rollingclass.fragments.pages.ChaptersFragment;
 import com.tanhd.rollingclass.fragments.pages.CountClassMicroCoursePage;
 import com.tanhd.rollingclass.fragments.pages.CountExamPage;
-import com.tanhd.rollingclass.fragments.pages.DocumentsPageFragment;
-import com.tanhd.rollingclass.fragments.resource.ResourcesPageFragment;
 import com.tanhd.rollingclass.fragments.statistics.ClassStudentsFragment;
 import com.tanhd.rollingclass.fragments.statistics.StatisticsActivity;
-import com.tanhd.rollingclass.fragments.statistics.StatisticsPageFragment;
 import com.tanhd.rollingclass.server.data.ClassData;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.StudentData;
+
+import java.io.Serializable;
 
 import static com.tanhd.rollingclass.fragments.statistics.StatisticsActivity.PAGE_ID_MICRO_COURSE;
 import static com.tanhd.rollingclass.fragments.statistics.StatisticsActivity.PAGE_ID_QUESTION;
@@ -31,7 +29,6 @@ import static com.tanhd.rollingclass.fragments.statistics.StatisticsActivity.PAG
 public class CountClassFragment extends Fragment {
     private CountExamPage examPage;
     private int mPageId;
-    private String mTeachingMaterialId;
     private int mCurrentShowModuleId = -1;
     private RadioGroup mStatisticsTypeRadioGroup;
     private PagesListener mPagesListener;
@@ -39,11 +36,12 @@ public class CountClassFragment extends Fragment {
     private StudentData mStudentData;
     private ClassStudentsFragment mClassStudentsFragment;
     private CountClassMicroCoursePage microCourseInfoPage;
+    private KnowledgeModel mKownledgeModel;
 
-    public static CountClassFragment newInstance(String teachingMaterialId,int pageId,PagesListener listener) {
+    public static CountClassFragment newInstance(KnowledgeModel knowledgeModel, int pageId, PagesListener listener) {
         Bundle args = new Bundle();
         args.putInt(StatisticsActivity.PAGE_ID, pageId);
-        args.putString(StatisticsActivity.TEACHING_MATERIAL_ID, teachingMaterialId);
+        args.putSerializable(StatisticsActivity.TEACHING_MATERIAL_ID, knowledgeModel);
         CountClassFragment page = new CountClassFragment();
         page.setArguments(args);
         page.setListener(listener);
@@ -52,7 +50,7 @@ public class CountClassFragment extends Fragment {
 
     private void initParams() {
         mPageId = getArguments().getInt(StatisticsActivity.PAGE_ID, PAGE_ID_MICRO_COURSE);
-        mTeachingMaterialId = getArguments().getString(StatisticsActivity.TEACHING_MATERIAL_ID);
+        mKownledgeModel = (KnowledgeModel) getArguments().getSerializable(StatisticsActivity.TEACHING_MATERIAL_ID);
     }
 
     @Nullable
@@ -65,7 +63,7 @@ public class CountClassFragment extends Fragment {
         return view;
     }
 
-    private void setListener(PagesListener listener){
+    private void setListener(PagesListener listener) {
         mPagesListener = listener;
     }
 
@@ -74,7 +72,7 @@ public class CountClassFragment extends Fragment {
         mStatisticsTypeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.micro_course:
 //                        showModulePage(PAGE_ID_MICRO_COURSE);
                         break;
@@ -84,7 +82,7 @@ public class CountClassFragment extends Fragment {
                 }
             }
         });
-        switch (mPageId){
+        switch (mPageId) {
             case PAGE_ID_MICRO_COURSE:
 //                mStatisticsTypeRadioGroup.check(R.id.micro_course);
                 break;
@@ -97,12 +95,18 @@ public class CountClassFragment extends Fragment {
             @Override
             public void onCheckClass(ClassData classData) {
                 mClssData = classData;
+                if (examPage != null) {
+                    examPage.resetData(classData);
+                }
             }
 
             @Override
             public void onCheckStudent(ClassData classData, StudentData studentData) {
                 mClssData = classData;
                 mStudentData = studentData;
+                if (examPage != null) {
+                    examPage.resetData(studentData);
+                }
             }
         });
         getFragmentManager().beginTransaction().replace(R.id.fragment_class_menu, mClassStudentsFragment).commit();
@@ -110,7 +114,7 @@ public class CountClassFragment extends Fragment {
         view.findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mPagesListener!=null){
+                if (mPagesListener != null) {
                     mPagesListener.onBack();
                 }
             }
@@ -138,7 +142,7 @@ public class CountClassFragment extends Fragment {
             }
         } else if (moduleId == PAGE_ID_QUESTION) {
             if (examPage == null) {
-                examPage = CountExamPage.getInstance(mStudentData, mTeachingMaterialId);
+                examPage = CountExamPage.getInstance(mKownledgeModel);
                 transaction.add(R.id.content_layout, examPage);
             }
             moduleFragment = examPage;

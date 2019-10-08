@@ -79,7 +79,6 @@ public class StudentStatisticsFragment extends Fragment implements View.OnClickL
         microCourse.setChecked(false);
 
         mKnowledgeSpinner = view.findViewById(R.id.knowledge_spinner);
-        mKnowledgeSpinner = view.findViewById(R.id.knowledge_spinner);
         mKnowledgeSpinnerTextView = view.findViewById(R.id.spinner_textview);
 
         mDocumentSpinnerAdapter = new ArrayAdapter<KnowledgeDetailMessage>(getContext(),R.layout.spinner_check_textview);

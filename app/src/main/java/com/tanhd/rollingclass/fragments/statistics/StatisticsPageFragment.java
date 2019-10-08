@@ -1,6 +1,5 @@
 package com.tanhd.rollingclass.fragments.statistics;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,18 +10,12 @@ import android.view.ViewGroup;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
-import com.tanhd.rollingclass.db.KeyConstants;
-import com.tanhd.rollingclass.fragments.CountClassFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.TeacherMicroCourseSelectorFragment;
-import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
-import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.UserData;
-
-import java.util.List;
 
 public class StatisticsPageFragment extends Fragment implements View.OnClickListener {
 
@@ -83,14 +76,14 @@ public class StatisticsPageFragment extends Fragment implements View.OnClickList
                         new TeacherMicroCourseSelectorFragment.SelectorMicroCourseListener() {
                             @Override
                             public void onMicroCourseSelected(MicroCourseData microCourseData) {
-                                StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_MICRO_COURSE, mKnowledgeModel.teaching_material_id);
+                                StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_MICRO_COURSE, mKnowledgeModel);
                             }
                         }));
                 break;
             case R.id.xiti_view:
                 UserData userData = ExternalParam.getInstance().getUserData();
                 if (userData.isTeacher()) {
-                    StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_QUESTION, mKnowledgeModel.teaching_material_id);
+                    StatisticsActivity.startMe(getActivity(), StatisticsActivity.PAGE_ID_QUESTION, mKnowledgeModel);
                 } else {
                     if (mCallback != null) {
                         mCallback.onOpenStatistics(mKnowledgeModel);

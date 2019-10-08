@@ -1,4 +1,4 @@
-package com.tanhd.rollingclass.fragments.statistics;
+package com.tanhd.rollingclass.fragments.pages;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,17 +19,18 @@ import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.QuerstionTypeShow;
 import com.tanhd.rollingclass.fragments.resource.AnswerDisplayFragment;
+import com.tanhd.rollingclass.fragments.statistics.StudentExamStatisticsFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerModel;
 import com.tanhd.rollingclass.server.data.AnswerSet;
-import com.tanhd.rollingclass.server.data.CountClassLessonSampleData;
+import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.QuestionInfo;
-import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionStatistics;
 import com.tanhd.rollingclass.server.data.StudentData;
+import com.tanhd.rollingclass.server.data.TeacherData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.server.data.WrongAnswerList;
 import com.tanhd.rollingclass.utils.MyValueFormatter;
@@ -38,11 +39,10 @@ import com.tanhd.rollingclass.views.BarChartView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentExamStatisticsFragment extends Fragment{
+public class ClassExamStatisticsFragment extends Fragment {
 
     private static final int MODULE_ID_QUESTION_LIST = 0;
     private static final int ROOT_LAYOUT_ID = R.id.framelayout;
-    private KnowledgeModel mKnowledgeModel;
     private KnowledgeDetailMessage mKnowledgeDetailMessage;
 
     private int mPageSize = 100;
@@ -54,12 +54,11 @@ public class StudentExamStatisticsFragment extends Fragment{
     private ArrayList<BarEntry> yVals;
     private List<String> xAxisValue;
     private BarChartView mBarChartView;
-    private StudentData mStudentData;
+    private ClassData mClassData;
 
-    public static StudentExamStatisticsFragment newInstance(KnowledgeModel knowledgeModel) {
+    public static ClassExamStatisticsFragment newInstance() {
         Bundle args = new Bundle();
-        args.putSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA, knowledgeModel);
-        StudentExamStatisticsFragment page = new StudentExamStatisticsFragment();
+        ClassExamStatisticsFragment page = new ClassExamStatisticsFragment();
         page.setArguments(args);
         return page;
     }
@@ -77,12 +76,11 @@ public class StudentExamStatisticsFragment extends Fragment{
 
     private void initParams() {
         Bundle args = getArguments();
-        mKnowledgeModel = (KnowledgeModel) args.getSerializable(DocumentEditActivity.PARAM_TEACHING_MATERIAL_DATA);
     }
 
     private void initViews(View view) {
         mBarChartView = view.findViewById(R.id.chartView);
-        mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness),getResources().getString(R.string.lbl_err),getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter(getResources().getString(R.string.lbl_di),getResources().getString(R.string.lbl_topic)), new MyValueFormatter("", getResources().getString(R.string.lbl_people)), getResources().getString(R.string.lbl_people));
+        mBarChartView.setData(null, new String[]{"正确", "错误", "未提交"}, yVals, new MyValueFormatter("第", "题"), new MyValueFormatter("", "人"), "人");
         mBarChartView.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
@@ -108,26 +106,13 @@ public class StudentExamStatisticsFragment extends Fragment{
     private void initData() {
     }
 
-    public void resetData(KnowledgeModel module, KnowledgeDetailMessage knowledgeDetailMessage) {
+    public void resetData(ClassData classData, KnowledgeDetailMessage knowledgeDetailMessage) {
         mIsRequesting = true;
-        mKnowledgeModel = module;
+        mClassData = classData;
         mKnowledgeDetailMessage = knowledgeDetailMessage;
         if (mQuestionResourceFragment != null) {
             mQuestionResourceFragment.clearListData();
         }
-        new InitQuestionDataTask().execute();
-        new InitClassDataTask().execute();
-    }
-
-    public void resetData(StudentData studentData, KnowledgeModel module, KnowledgeDetailMessage knowledgeDetailMessage) {
-        mIsRequesting = true;
-        mStudentData = studentData;
-        mKnowledgeModel = module;
-        mKnowledgeDetailMessage = knowledgeDetailMessage;
-        if (mQuestionResourceFragment != null) {
-            mQuestionResourceFragment.clearListData();
-        }
-        new InitQuestionDataTask().execute();
         new InitClassDataTask().execute();
     }
 
@@ -157,7 +142,7 @@ public class StudentExamStatisticsFragment extends Fragment{
         mCurrentShowModuleId = moduleId;
     }
 
-    private class InitQuestionDataTask extends AsyncTask<Void, Void, List<AnswerModel>> {
+    private class InitClassDataTask extends AsyncTask<Void, Void, List<AnswerModel>> {
 
         @Override
         protected void onPreExecute() {
@@ -166,34 +151,29 @@ public class StudentExamStatisticsFragment extends Fragment{
 
         @Override
         protected List<AnswerModel> doInBackground(Void... voids) {
-            UserData userData = ExternalParam.getInstance().getUserData();
-            StudentData studentData;
-            if (!userData.isTeacher()) {
-                studentData = (StudentData) userData.getUserData();
-            } else {
-                studentData = mStudentData;
-            }
-            if (mKnowledgeModel != null) {
-                WrongAnswerList wrongAnswerList = ScopeServer.getInstance().QureyAnswerv2ByStudentIDAndCourseID(
-                        studentData.StudentID, mKnowledgeDetailMessage.knowledge_id);
-                List<AnswerModel> questions = new ArrayList<>();
-                if (wrongAnswerList.questions != null && wrongAnswerList.questions.size() > 0) {
-                    for (AnswerModel answerModel : wrongAnswerList.questions) {
-                        for (AnswerSet answerSet : wrongAnswerList.correct_set) {
-                            if (answerModel.question_id.equals(answerSet.QuestionID)) {
-                                answerModel.answer_right = true;
-                            }
-                        }
-                        questions.add(answerModel);
-                    }
+            QuestionStatistics statistics = ScopeServer.getInstance().QureyAnswerv2ByClassIDAndCourseID(
+                    mClassData.ClassID, mKnowledgeDetailMessage.knowledge_id);
+            if (statistics != null && statistics.question_info != null) {
+                yVals = new ArrayList<>();
+                xAxisValue = new ArrayList<>();
+                ArrayList<AnswerModel> answerModels = new ArrayList<>();
+                for (int i = 0; i < statistics.question_info.size(); i++) {
+                    QuestionInfo data = statistics.question_info.get(i);
+                    AnswerModel answerModel = data.question;
+                    BarEntry entry = new BarEntry(answerModel.context.OrderIndex, new float[]{data.correct_cnt, data.error_cnt, data.unanswer_cnt}, answerModel.context.OrderIndex + "");
+                    yVals.add(entry);
+                    entry.setData(answerModel.question_id);
+                    xAxisValue.add(String.format("第%d题", answerModel.context.OrderIndex));
+                    answerModels.add(answerModel);
                 }
-                return questions;
+                return answerModels;
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(List<AnswerModel> documentList) {
+            mBarChartView.invalidate();
             if (mQuestionResourceFragment == null) {
                 mIsRequesting = false;
                 return;
@@ -204,47 +184,6 @@ public class StudentExamStatisticsFragment extends Fragment{
                 mQuestionResourceFragment.clearListData();
             }
             mIsRequesting = false;
-        }
-    }
-
-    private class InitClassDataTask extends AsyncTask<Void, Void, List<AnswerModel>> {
-
-        @Override
-        protected void onPreExecute() {
-            mIsRequesting = true;
-        }
-
-        @Override
-        protected List<AnswerModel> doInBackground(Void... voids) {
-            UserData userData = ExternalParam.getInstance().getUserData();
-            StudentData studentData;
-            if (!userData.isTeacher()) {
-                studentData = (StudentData) userData.getUserData();
-            } else {
-                studentData = mStudentData;
-            }
-            if (mKnowledgeModel != null) {
-                QuestionStatistics statistics = ScopeServer.getInstance().QureyAnswerv2ByClassIDAndCourseID(
-                        studentData.ClassID, mKnowledgeDetailMessage.knowledge_id);
-                if (statistics != null && statistics.question_info != null) {
-                    yVals = new ArrayList<>();
-                    xAxisValue = new ArrayList<>();
-                    for (int i = 0; i < statistics.question_info.size(); i++) {
-                        QuestionInfo data = statistics.question_info.get(i);
-                        AnswerModel answerModel = data.question;
-                        BarEntry entry = new BarEntry(answerModel.context.OrderIndex, new float[]{data.correct_cnt, data.error_cnt, data.unanswer_cnt}, answerModel.context.OrderIndex + "");
-                        yVals.add(entry);
-                        entry.setData(answerModel.question_id);
-                        xAxisValue.add(String.format("第%d题", answerModel.context.OrderIndex));
-                    }
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<AnswerModel> documentList) {
-            mBarChartView.invalidate();
         }
     }
 }

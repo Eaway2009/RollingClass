@@ -155,6 +155,7 @@
     <string name="toast_answer_ok">提交答案成功!</string>
     <string name="toast_answer_fail">提交失败!</string>
     <string name="toast_no_chapters">没有找到章节!</string>
+    <string name="toast_no_classes">获取班级信息失败!</string>
     <string name="toast_load_fail">加载数据失败!</string>
     <string name="toast_select_topic">请先选择题目</string>
     <string name="toast_select_student">请选择需要参与测评的学生</string>

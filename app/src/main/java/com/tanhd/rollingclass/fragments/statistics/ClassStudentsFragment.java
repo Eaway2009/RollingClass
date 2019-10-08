@@ -101,7 +101,7 @@ public class ClassStudentsFragment extends Fragment implements ExpandableListVie
     private void refreshTeachingClass(List<ClassData> classDataList) {
         if (classDataList == null || classDataList.size() == 0) {
             try {
-                ToastUtil.show(R.string.toast_no_chapters);
+                ToastUtil.show(R.string.toast_no_classes);
             } catch (Exception e) {
             }
             return;

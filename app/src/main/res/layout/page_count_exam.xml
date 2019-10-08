@@ -7,31 +7,53 @@
     android:paddingRight="40dp"
     android:paddingLeft="40dp">
 
+
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_50"
+        android:paddingLeft="@dimen/dp_50"
+        android:paddingBottom="@dimen/dp_10">
+
         <TextView
-            android:id="@+id/knowledage_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/knowledge"
-            android:textSize="22sp"
-            android:textColor="@color/class_title"/>
+            android:paddingRight="@dimen/dp_10"
+            android:layout_gravity="center"
+            android:textColor="@color/button_gray"
+            android:textSize="@dimen/dp_16" />
 
-
-        <Spinner
-            android:id="@+id/knowledge_select_view"
+        <LinearLayout
+            android:id="@+id/knowledge_spinner_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginLeft="28dp"
-            android:spinnerMode="dropdown"></Spinner>
-    </LinearLayout>
+            android:gravity="center"
+            android:background="@drawable/records_bg">
 
+            <TextView
+                android:id="@+id/spinner_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:paddingLeft="5dp"
+                android:text="@string/no_knowledge"
+                android:textColor="@color/button_gray"
+                android:textSize="@dimen/dp_16" />
+
+            <Spinner
+                android:id="@+id/knowledge_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"></Spinner>
+        </LinearLayout>
+    </LinearLayout>
     <FrameLayout
-        android:id="@+id/framelayout"
+        android:id="@+id/content_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

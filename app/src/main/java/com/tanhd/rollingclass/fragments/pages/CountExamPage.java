@@ -1,6 +1,5 @@
 package com.tanhd.rollingclass.fragments.pages;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,35 +16,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.ExternalParam;
-import com.tanhd.rollingclass.server.data.KnowledgeData;
+import com.tanhd.rollingclass.fragments.statistics.StudentExamStatisticsFragment;
+import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
-import com.tanhd.rollingclass.server.data.LessonSampleData;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.StudentData;
-import com.tanhd.rollingclass.server.data.TeachingMaterialData;
-import com.tanhd.rollingclass.utils.ToastUtil;
-import com.tanhd.rollingclass.views.StudentListView;
-
-import java.io.Serializable;
-import java.util.List;
 
 public class CountExamPage extends Fragment {
-    private static final String PARAM_STUDENT_DATA = "PARAM_STUDENT_DATA";
     private static final String PARAM_TEACHING_MATERIAL = "PARAM_TEACHING_MATERIAL";
+    private static final int MODULE_ID_STUDENT_PAGE = 1;
+    private static final int MODULE_ID_CLASS_PAGE = 2;
+    private static final int ROOT_LAYOUT_ID = R.id.content_layout;
 
-    private StudentListView mStudentListView;
-    private Spinner mKnowLedgeSpinner;
-    private List<KnowledgeDetailMessage> mItemList;
-    private ArrayAdapter mAdapter;
+    private Spinner mKnowledgeSpinner;
+    private TextView mKnowledgeSpinnerTextView;
+    private ArrayAdapter<KnowledgeDetailMessage> mDocumentSpinnerAdapter;
+    private KnowledgeDetailMessage mKnowledgeDetailMessage;
+    private int mCurrentShowModuleId = -1;
+    private StudentExamStatisticsFragment mStatisticsFragment;
+    private KnowledgeModel mKnowledgeModel;
+    private ClassExamStatisticsFragment mClassFragment;
+    private ClassData mClassData;
     private StudentData mStudentData;
-    private String mTeachingMaterialId;
 
-    public static CountExamPage getInstance(StudentData studentData, String teachingMaterial) {
+    public static CountExamPage getInstance(KnowledgeModel knowledgeModel) {
         CountExamPage countExamPage = new CountExamPage();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(PARAM_STUDENT_DATA, studentData);
-        bundle.putSerializable(PARAM_TEACHING_MATERIAL, teachingMaterial);
+        bundle.putSerializable(PARAM_TEACHING_MATERIAL, knowledgeModel);
         countExamPage.setArguments(bundle);
         return countExamPage;
     }
@@ -56,107 +53,93 @@ public class CountExamPage extends Fragment {
         View view = inflater.inflate(R.layout.page_count_exam, container, false);
         initParams();
         initViews(view);
-        initDatas();
+        initFragments();
         return view;
     }
 
     private void initParams() {
         Bundle args = getArguments();
-        mStudentData = (StudentData) args.getSerializable(PARAM_STUDENT_DATA);
-        mTeachingMaterialId = args.getString(PARAM_TEACHING_MATERIAL);
+        mKnowledgeModel = (KnowledgeModel) args.getSerializable(PARAM_TEACHING_MATERIAL);
     }
 
     private void initViews(View view) {
-        //关联控件
-        mKnowLedgeSpinner = (Spinner) view.findViewById(R.id.knowledge_select_view);
+        mKnowledgeSpinner = view.findViewById(R.id.knowledge_spinner);
+        mKnowledgeSpinnerTextView = view.findViewById(R.id.spinner_textview);
 
-        // 将可选内容与ArrayAdapter连接起来
-
-        mAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item) {
-            @NonNull
+        mDocumentSpinnerAdapter = new ArrayAdapter<KnowledgeDetailMessage>(getContext(), R.layout.spinner_check_textview);
+        mDocumentSpinnerAdapter.setDropDownViewResource(R.layout.spinner_down_layout);
+        mKnowledgeSpinner.setAdapter(mDocumentSpinnerAdapter);
+        mKnowledgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                TextView textView = convertView.findViewById(android.R.id.text1);
-                LessonSampleData item = (LessonSampleData) getItem(position);
-                textView.setText(item.LessonSampleName);
-                return super.getView(position, convertView, parent);
-            }
-        };
-        // 第1个参数为Context对象
-        // 第2个参数为设置Spinner的样式
-
-        // 设置Spinner中每一项的样式
-        mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // 设置Spinner数据来源适配器
-        mKnowLedgeSpinner.setAdapter(mAdapter);
-
-        // 使用内部类形式来实现事件监听
-        mKnowLedgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
-                /*
-                 * 第一个参数parent是你当前所操作的Spinner，可根据parent.getId()与R.id.
-                 * currentSpinner是否相等，来判断是否你当前操作的Spinner,一般在onItemSelected
-                 * 方法中用switch语句来解决多个Spinner问题。
-                 * 第二个参数view一般不用到；
-                 * 第三个参数position表示下拉中选中的选项位置，自上而下从0开始；
-                 * 第四个参数id表示的意义与第三个参数相同。
-                 */
-
-                //对选中项进行显示
-                //Toast用于临时信息的显示
-                //第一个参数是上下文环境，可用this；
-                //第二个参数是要显示的字符串；
-                //第三个参数是显示的时间长短；
-                KnowledgeDetailMessage lessonSampleData = (KnowledgeDetailMessage) parent.getItemAtPosition(position);
-
-                ToastUtil.show(getString(R.string.toast_select_hint) + lessonSampleData.knowledge_point_name);
-                checkData(lessonSampleData);
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                mKnowledgeDetailMessage = (KnowledgeDetailMessage) mDocumentSpinnerAdapter.getItem(pos);
+                mKnowledgeSpinnerTextView.setVisibility(View.GONE);
+                if (mCurrentShowModuleId == MODULE_ID_STUDENT_PAGE) {
+                    if (mStatisticsFragment != null && mStudentData != null) {
+                        mStatisticsFragment.resetData(mStudentData, mKnowledgeModel, mKnowledgeDetailMessage);
+                    }
+                } else if (mCurrentShowModuleId == MODULE_ID_STUDENT_PAGE) {
+                    if (mClassFragment != null && mClassData != null) {
+                        mClassFragment.resetData(mClassData, mKnowledgeDetailMessage);
+                    }
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // TODO Auto-generated method stub
-
+                mKnowledgeSpinnerTextView.setVisibility(View.VISIBLE);
             }
         });
+
     }
 
-    private void initDatas() {
-        new InitDataTask().execute();
+    private void initFragments() {
+        showModulePage(MODULE_ID_CLASS_PAGE);
+        showModulePage(MODULE_ID_STUDENT_PAGE);
     }
 
-    public void checkData(KnowledgeDetailMessage lessonSampleData) {
-        CountStudentExamPage page = CountStudentExamPage.newInstance(mStudentData, lessonSampleData);
-        showFragment(page);
-    }
 
-    private class InitDataTask extends AsyncTask<Void, Void, List<KnowledgeDetailMessage>> {
-
-        @Override
-        protected List<KnowledgeDetailMessage> doInBackground(Void... voids) {
-            List<KnowledgeDetailMessage> sampleList = ScopeServer.getInstance().QureyKnowledgeByChapterAndTeacherID(ExternalParam.getInstance().getUserData().getOwnerID(), mTeachingMaterialId);
-            return sampleList;
+    /**
+     * [展示指定Id的页面]<BR>
+     */
+    public void showModulePage(int moduleId) {
+        if (mCurrentShowModuleId == moduleId) {
+            return;
         }
-
-        @Override
-        protected void onPostExecute(List<KnowledgeDetailMessage> aVoid) {
-            if(mItemList!=null) {
-                mAdapter.clear();
-                mAdapter.addAll(mItemList);
-                mAdapter.notifyDataSetChanged();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        Fragment moduleFragment = null;
+        if (moduleId == MODULE_ID_STUDENT_PAGE) {
+            if (mStatisticsFragment == null) {
+                mStatisticsFragment = StudentExamStatisticsFragment.newInstance(mKnowledgeModel);
+                transaction.add(ROOT_LAYOUT_ID, mStatisticsFragment);
+            }
+            moduleFragment = mStatisticsFragment;
+            if (mClassFragment != null) {
+                transaction.hide(mClassFragment);
+            }
+        } else if (moduleId == MODULE_ID_CLASS_PAGE) {
+            if (mClassFragment == null) {
+                mClassFragment = ClassExamStatisticsFragment.newInstance();
+                transaction.add(ROOT_LAYOUT_ID, mClassFragment);
+            }
+            moduleFragment = mClassFragment;
+            if (mStatisticsFragment != null) {
+                transaction.hide(mStatisticsFragment);
             }
         }
+        transaction.show(moduleFragment);
+        transaction.commitAllowingStateLoss();
     }
 
-    private void showFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getChildFragmentManager();
-        FragmentTransaction beginTransaction = fragmentManager.beginTransaction();
-        beginTransaction.replace(R.id.framelayout, fragment);
-        beginTransaction.addToBackStack("exam");
-        beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        beginTransaction.commit();
+    public void resetData(ClassData classData) {
+        mClassData = classData;
+        showModulePage(MODULE_ID_CLASS_PAGE);
+        mClassFragment.resetData(classData, mKnowledgeDetailMessage);
+    }
+
+    public void resetData(StudentData studentData) {
+        mStudentData = studentData;
+        showModulePage(MODULE_ID_STUDENT_PAGE);
+        mStatisticsFragment.resetData(studentData, mKnowledgeModel, mKnowledgeDetailMessage);
     }
 }

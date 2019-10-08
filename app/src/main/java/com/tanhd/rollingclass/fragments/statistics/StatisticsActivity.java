@@ -3,7 +3,6 @@ package com.tanhd.rollingclass.fragments.statistics;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.tanhd.rollingclass.R;
@@ -13,6 +12,7 @@ import com.tanhd.rollingclass.fragments.ChatFragment;
 import com.tanhd.rollingclass.fragments.CountClassFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.InBoxFragment;
+import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.views.TopbarView;
 
 public class StatisticsActivity extends BaseActivity {
@@ -28,12 +28,12 @@ public class StatisticsActivity extends BaseActivity {
     public static final int PAGE_ID_QUESTION = 1;
 
     private int mPageId;
-    private String mTeachingMaterialId;
+    private KnowledgeModel mKnowledgeModel;
 
-    public static void startMe(Activity context, int pageId, String teachingMaterialId){
+    public static void startMe(Activity context, int pageId, KnowledgeModel knowledgeModel) {
         Intent intent = new Intent(context, StatisticsActivity.class);
         intent.putExtra(PAGE_ID, pageId);
-        intent.putExtra(TEACHING_MATERIAL_ID, teachingMaterialId);
+        intent.putExtra(TEACHING_MATERIAL_ID, knowledgeModel);
         context.startActivity(intent);
     }
 
@@ -46,12 +46,12 @@ public class StatisticsActivity extends BaseActivity {
         initFragment();
     }
 
-    private void initParams(){
+    private void initParams() {
         mPageId = getIntent().getIntExtra(PAGE_ID, PAGE_ID_MICRO_COURSE);
-        mTeachingMaterialId = getIntent().getStringExtra(TEACHING_MATERIAL_ID);
+        mKnowledgeModel = (KnowledgeModel) getIntent().getSerializableExtra(TEACHING_MATERIAL_ID);
     }
 
-    private void initViews(){
+    private void initViews() {
 
         mTopbarView = findViewById(R.id.topbar);
         mBackButton = findViewById(R.id.back_button);
@@ -77,7 +77,7 @@ public class StatisticsActivity extends BaseActivity {
     }
 
     private void initFragment() {
-        mCountClassFragment = CountClassFragment.newInstance(mTeachingMaterialId,mPageId, new CountClassFragment.PagesListener() {
+        mCountClassFragment = CountClassFragment.newInstance(mKnowledgeModel, mPageId, new CountClassFragment.PagesListener() {
             @Override
             public void onPageChange(int id) {
 
