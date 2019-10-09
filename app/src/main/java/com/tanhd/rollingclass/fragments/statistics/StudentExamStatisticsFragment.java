@@ -38,6 +38,9 @@ import com.tanhd.rollingclass.views.BarChartView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 学生习题数据
+ */
 public class StudentExamStatisticsFragment extends Fragment {
 
     private static final int MODULE_ID_QUESTION_LIST = 0;

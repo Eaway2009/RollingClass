@@ -78,32 +78,26 @@
                 android:paddingRight="@dimen/dp_10"
                 android:layout_gravity="center"
                 android:textColor="@color/button_gray"
-                android:textSize="@dimen/dp_16" />
+                android:textSize="@dimen/text_size_12" />
 
-            <LinearLayout
-                android:id="@+id/knowledge_spinner_layout"
-                android:layout_width="wrap_content"
+
+            <TextView
+                android:id="@+id/tv_spinner"
+                android:layout_width="@dimen/dp_150"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:background="@drawable/records_bg">
+                android:layout_gravity="right"
+                android:drawableRight="@mipmap/ic_down"
+                android:drawablePadding="@dimen/dp_6"
+                android:gravity="left|center"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingTop="@dimen/dp_6"
+                android:paddingBottom="@dimen/dp_6"
+                android:background="@drawable/bg_spinner"
+                android:textSize="@dimen/text_size_12"
+                android:text="@string/no_knowledge"
+                android:textColor="@color/resource_name" />
 
-                <TextView
-                    android:id="@+id/spinner_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:paddingLeft="5dp"
-                    android:text="@string/no_knowledge"
-                    android:textColor="@color/button_gray"
-                    android:textSize="@dimen/dp_16" />
-
-                <Spinner
-                    android:id="@+id/knowledge_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"></Spinner>
-            </LinearLayout>
         </LinearLayout>
         <FrameLayout
             android:id="@+id/content_layout"

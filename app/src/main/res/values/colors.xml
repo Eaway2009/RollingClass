@@ -88,4 +88,10 @@
     <color name="section_select_bg">#33363d</color>
     <!-- 任务选中颜色 -->
     <color name="task_select">#63B1F3</color>
+    <!-- 习题-未作答 -->
+    <color name="xt_un_select">#CACA36</color>
+    <!-- 习题-回答正确 -->
+    <color name="xt_select_ok">#3DC900</color>
+    <!-- 习题-回答错误 -->
+    <color name="xt_select_no">#FF0000</color>
 </resources>

@@ -142,10 +142,10 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                     LearnCasesActivity.startMe(getActivity(), knowledgeId, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, teacherName);
                 }
                 break;
-            case R.id.knowledge_page_view:
+            case R.id.knowledge_page_view: //自学
                 DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_DOCUMENTS, true);
                 break;
-            case R.id.statics_page_view:
+            case R.id.statics_page_view: //学情
                 DatasActivity.startMe(getActivity(), DatasActivity.PAGE_ID_STATISTICS, true);
                 break;
         }

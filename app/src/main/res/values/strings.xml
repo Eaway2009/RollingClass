@@ -145,8 +145,9 @@
     <string name="class_summary">课堂总结</string>
     <string name="relevant_info">相关资料</string>
     <string name="my_answer">我的答案： %1$s</string>
-    <string name="answer_right">［正确］</string>
-    <string name="answer_wrong">［错误］</string>
+    <string name="answer_unselect">【 未作答 】</string>
+    <string name="answer_right">【 正确 】</string>
+    <string name="answer_wrong">【 错误 】</string>
     <string name="collect">收藏</string>
     <string name="check">选用</string>
     <string name="pop_res_lbl">资源库导入</string>
@@ -266,8 +267,6 @@
     <string name="toast_allow"><![CDATA[请点击<允许>]]></string>
     <string name="dialog_net_err">网络异常</string>
     <string name="dialog_reconnect_hint">网络连接失败, 正在进行重新连接, 请稍后...</string>
-    <string name="dialog_warning">温馨提示</string>
-    <string name="dialog_logout_warning">注销后下次需要重新登录，是否确定注销？</string>
     <string name="lbl_close">关闭</string>
     <string name="toast_read_err">读取题目失败!</string>
     <string name="lbl_from">来自:</string>
@@ -364,9 +363,8 @@
     <string name="lbl_smart_pen">智能笔</string>
     <string name="lbl_img">图片</string>
     <string name="lbl_message">消息</string>
-
-
-
     <string name="dialog_logout_hint">注销后下次需要重新登录，是否\n确定注销？</string>
     <string name="lbl_exit">【退出】</string>
+    <string name="lbl_weike">微课</string>
+    <string name="lbl_xiti">习题</string>
 </resources>

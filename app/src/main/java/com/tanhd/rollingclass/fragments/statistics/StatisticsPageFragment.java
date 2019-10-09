@@ -17,6 +17,9 @@ import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.MicroCourseData;
 import com.tanhd.rollingclass.server.data.UserData;
 
+/**
+ * 学情
+ */
 public class StatisticsPageFragment extends Fragment implements View.OnClickListener {
 
     private KnowledgeModel mKnowledgeModel;

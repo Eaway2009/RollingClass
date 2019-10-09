@@ -27,6 +27,11 @@
     <string name="back">return</string>
     <string name="document_title">learning case</string>
     <string name="add_document">new case built</string>
+    <string name="ori_password">输入原密码：</string>
+    <string name="new_password">输入新密码：</string>
+    <string name="ori_password_wrong">您输入的原密码不正确</string>
+    <string name="new_password_wrong">您输入的新密码不一致</string>
+    <string name="recheck_password">确认新密码：</string>
     <string name="wrong_answer_book">wrong answer book</string>
     <string name="wrong_answer_question">question</string>
     <string name="wrong_answer_photo">photo</string>
@@ -140,8 +145,8 @@
     <string name="class_summary">class summary</string>
     <string name="relevant_info">relevant info</string>
     <string name="my_answer">my answer： %1$s</string>
-    <string name="answer_right">［right］</string>
-    <string name="answer_wrong">［wrong］</string>
+    <string name="answer_right">【 right 】</string>
+    <string name="answer_wrong">【 wrong 】</string>
     <string name="collect">collect</string>
     <string name="check">select</string>
     <string name="pop_res_lbl">res import</string>
@@ -155,6 +160,7 @@
     <string name="toast_answer_ok">submit ok!</string>
     <string name="toast_answer_fail">submit fail!</string>
     <string name="toast_no_chapters">no chapter!</string>
+    <string name="toast_no_classes">获取班级信息失败!</string>
     <string name="toast_load_fail">load fail!</string>
     <string name="toast_select_topic">select topic</string>
     <string name="toast_select_student">select student</string>
@@ -356,8 +362,9 @@
     <string name="lbl_smart_pen">smart pen</string>
     <string name="lbl_img">image</string>
     <string name="lbl_message">message</string>
-
-
     <string name="dialog_logout_hint">Next time we need to login again after cancellation, \ n determine the cancellation?</string>
     <string name="lbl_exit">【Exit】</string>
+    <string name="lbl_weike">微课</string>
+    <string name="lbl_xiti">习题</string>
+    <string name="answer_unselect">【 未作答 】</string>
 </resources>

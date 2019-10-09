@@ -24,6 +24,7 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.KeyConstants.SYNC_MODE;
+import com.tanhd.rollingclass.db.model.EventTag;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.ImageShowFragment;
 import com.tanhd.rollingclass.fragments.QuestionDisplayFragment;
@@ -198,15 +199,15 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     }
 
 
-    private void timerGoneHand(){
-        RxTimerUtil.cancel();
-        RxTimerUtil.timer(3 * 1000, new RxTimerUtil.IRxNext() {
-            @Override
-            public void doNext(long number) {
-                mStudentHandsupLayout.setVisibility(View.GONE);
-            }
-        });
-    }
+//    private void timerGoneHand(){
+//        RxTimerUtil.cancel();
+//        RxTimerUtil.timer(3 * 1000, new RxTimerUtil.IRxNext() {
+//            @Override
+//            public void doNext(long number) {
+//                mStudentHandsupLayout.setVisibility(View.GONE);
+//            }
+//        });
+//    }
 
     @Override
     public void onDestroyView() {
@@ -277,6 +278,12 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
             case R.id.container_layout:
                 if (mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) {
                     mStudentHandsupLayout.setVisibility(View.VISIBLE);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mStudentHandsupLayout.setVisibility(View.GONE);
+                        }
+                    }, 3000);
                 }
                 break;
         }
@@ -392,12 +399,12 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void showHandBtn(){
-        if (mPageType != KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) return;
-        mStudentHandsupLayout.setVisibility(View.VISIBLE);
-        timerGoneHand();
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void showHandBtn(EventTag eventTag){
+//        if (mPageType != KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) return;
+//        mStudentHandsupLayout.setVisibility(View.VISIBLE);
+//        timerGoneHand();
+//    }
 
 
     private MqttListener mqttListener = new MqttListener() {

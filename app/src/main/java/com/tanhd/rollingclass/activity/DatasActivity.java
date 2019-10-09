@@ -34,7 +34,7 @@ public class DatasActivity extends BaseActivity {
     public static final int PAGE_ID_RESOURCES = 1;
     public static final int PAGE_ID_STATISTICS = 2;
     private int mPageId;
-    private boolean mIsStudentPage;
+    private boolean mIsStudentPage; //是否学生页面
 
     public static void startMe(Activity context, int pageId) {
         Intent intent = new Intent(context, DatasActivity.class);

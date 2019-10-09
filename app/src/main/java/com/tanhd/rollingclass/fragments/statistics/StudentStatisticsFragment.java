@@ -17,13 +17,17 @@ import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.fragments.WrongAnswerListFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.views.OnItemClickListener;
+import com.tanhd.rollingclass.views.PopFliterRes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudentStatisticsFragment extends Fragment implements View.OnClickListener {
@@ -38,11 +42,11 @@ public class StudentStatisticsFragment extends Fragment implements View.OnClickL
     private StudentStatisticsFragment.Callback mCallback;
 
     private StudentExamStatisticsFragment mStatisticsFragment;
-    private Spinner mKnowledgeSpinner;
-    private ArrayAdapter mDocumentSpinnerAdapter;
     private View mBackButton;
     private int mCurrentShowModuleId = -1;
-    private TextView mKnowledgeSpinnerTextView;
+    private TextView tv_spinner;
+    private PopFliterRes popFliterRes;
+    private List<KnowledgeDetailMessage> kldList = new ArrayList<>();
 
     public static StudentStatisticsFragment newInstance(KnowledgeModel knowledgeModel, StudentStatisticsFragment.Callback callback) {
         Bundle args = new Bundle();
@@ -78,25 +82,19 @@ public class StudentStatisticsFragment extends Fragment implements View.OnClickL
         RadioButton microCourse = view.findViewById(R.id.micro_course);
         microCourse.setChecked(false);
 
-        mKnowledgeSpinner = view.findViewById(R.id.knowledge_spinner);
-        mKnowledgeSpinnerTextView = view.findViewById(R.id.spinner_textview);
-
-        mDocumentSpinnerAdapter = new ArrayAdapter<KnowledgeDetailMessage>(getContext(),R.layout.spinner_check_textview);
-        mDocumentSpinnerAdapter.setDropDownViewResource(R.layout.spinner_down_layout);
-        mKnowledgeSpinner.setAdapter(mDocumentSpinnerAdapter);
-        mKnowledgeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        tv_spinner = view.findViewById(R.id.tv_spinner);
+        popFliterRes = new PopFliterRes(getActivity());
+        popFliterRes.setRootWidth((int) getResources().getDimension(R.dimen.dp_150));
+        popFliterRes.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                mKnowledgeDetailMessage = (KnowledgeDetailMessage) mDocumentSpinnerAdapter.getItem(pos);
-                mKnowledgeSpinnerTextView.setVisibility(View.GONE);
+            public void onItemClick(View view, int position) {
+                tv_spinner.setText(popFliterRes.getDatas().get(position));
+                mKnowledgeDetailMessage = kldList.get(position);
                 mStatisticsFragment.resetData(mKnowledgeModel, mKnowledgeDetailMessage);
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                mKnowledgeSpinnerTextView.setVisibility(View.VISIBLE);
-            }
         });
+
+        tv_spinner.setOnClickListener(this);
         mBackButton.setOnClickListener(this);
     }
 
@@ -107,7 +105,7 @@ public class StudentStatisticsFragment extends Fragment implements View.OnClickL
     public void resetData(KnowledgeModel module){
         mIsRequesting = true;
         mKnowledgeModel = module;
-        mDocumentSpinnerAdapter.clear();
+        if (popFliterRes != null) popFliterRes.clear();
         new InitDataTask().execute();
     }
 
@@ -122,6 +120,9 @@ public class StudentStatisticsFragment extends Fragment implements View.OnClickL
                 if(mCallback!=null){
                     mCallback.onBack();
                 }
+                break;
+            case R.id.tv_spinner: //筛选
+                popFliterRes.showMask(false).showAsDropDown(v);
                 break;
         }
     }
@@ -165,9 +166,19 @@ public class StudentStatisticsFragment extends Fragment implements View.OnClickL
         @Override
         protected void onPostExecute(List<KnowledgeDetailMessage> documentList) {
             if (documentList != null && documentList.size() > 0) {
-                mDocumentSpinnerAdapter.addAll(documentList);
+                kldList = documentList;
+                List<String> listStr = new ArrayList<>();
+                for (int i = 0;i<documentList.size();i++){
+                    listStr.add(documentList.get(i).knowledge_point_name);
+                }
+                popFliterRes.setDatas(listStr);
+
+                //默认选中第一个
+                tv_spinner.setText(listStr.get(0));
+                mKnowledgeDetailMessage = kldList.get(0);
+                mStatisticsFragment.resetData(mKnowledgeModel, mKnowledgeDetailMessage);
             } else {
-                mDocumentSpinnerAdapter.clear();
+                popFliterRes.clear();
             }
         }
     }

@@ -245,11 +245,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         CheckBox checkBox = findViewById(R.id.save_pwd);
         checkBox.setChecked(true);
         mUserView.setText(username);
-//        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
-//        mSignButtonView.performClick();
-//        mUserView.setSelection(username.length());
-//        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
-//        mSignButtonView.performClick();
+        mUserView.setSelection(username.length());
+        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
+        mSignButtonView.performClick();
     }
 
     @Override

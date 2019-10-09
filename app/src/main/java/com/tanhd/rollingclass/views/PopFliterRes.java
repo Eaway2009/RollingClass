@@ -67,6 +67,10 @@ public class PopFliterRes extends TopPushPopupWindow<Void> {
         });
     }
 
+    public void clear(){
+        adapter.clear();
+    }
+
     /**
      * 设置宽度
      * @param px

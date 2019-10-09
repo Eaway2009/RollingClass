@@ -86,14 +86,6 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
         if (mIsStudentPage) {
             mDocumentView.setText(R.string.learning_seft);
             mResourceView.setVisibility(View.GONE);
-            LinearLayout.LayoutParams mDocumentViewLayoutParams = (LinearLayout.LayoutParams) mDocumentView.getLayoutParams();
-            mDocumentViewLayoutParams.setMargins(getResources().getDimensionPixelSize(R.dimen.page_title_padding), mDocumentViewLayoutParams.topMargin,
-                    getResources().getDimensionPixelSize(R.dimen.page_title_padding), mDocumentViewLayoutParams.bottomMargin);
-            mDocumentView.setLayoutParams(mDocumentViewLayoutParams);
-            LinearLayout.LayoutParams mStatisticsViewLayoutParams = (LinearLayout.LayoutParams) mStatisticsView.getLayoutParams();
-            mStatisticsViewLayoutParams.setMargins(getResources().getDimensionPixelSize(R.dimen.page_title_padding), mStatisticsViewLayoutParams.topMargin,
-                    getResources().getDimensionPixelSize(R.dimen.page_title_padding), mStatisticsViewLayoutParams.bottomMargin);
-            mStatisticsView.setLayoutParams(mStatisticsViewLayoutParams);
         }
 
         view.findViewById(R.id.back_button).setOnClickListener(this);
@@ -176,7 +168,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
                 });
                 transaction.add(ROOT_LAYOUT_ID, mDocumentsFragment);
             }
-            if(mModuleFragment!=null) {
+            if (mModuleFragment != null) {
                 transaction.hide(mModuleFragment);
             }
             mModuleFragment = mDocumentsFragment;
@@ -185,7 +177,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
                 mResourcesFragment = ResourcesPageFragment.newInstance(mKnowledgeModel);
                 transaction.add(ROOT_LAYOUT_ID, mResourcesFragment);
             }
-            if(mModuleFragment!=null) {
+            if (mModuleFragment != null) {
                 transaction.hide(mModuleFragment);
             }
             mModuleFragment = mResourcesFragment;
@@ -200,7 +192,7 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
                 });
                 transaction.add(ROOT_LAYOUT_ID, mStatisticsFragment);
             }
-            if(mModuleFragment!=null) {
+            if (mModuleFragment != null) {
                 transaction.hide(mModuleFragment);
             }
             mModuleFragment = mStatisticsFragment;
@@ -215,22 +207,22 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
                 });
                 transaction.add(ROOT_LAYOUT_ID, mWrongAnswerListFragment);
             }
-            if(mModuleFragment!=null) {
+            if (mModuleFragment != null) {
                 transaction.hide(mModuleFragment);
             }
             mModuleFragment = mWrongAnswerListFragment;
-        }else if (moduleId == MODULE_ID_ANSWER_STATISTICS) {  //习题数据
+        } else if (moduleId == MODULE_ID_ANSWER_STATISTICS) {  //习题数据
             if (mStudentStatisticsFragment == null) {
                 mStudentStatisticsFragment = StudentStatisticsFragment.newInstance(mKnowledgeModel, new StudentStatisticsFragment.Callback() {
                     @Override
-                    public void onBack(){
+                    public void onBack() {
                         mTitleView.setVisibility(View.GONE);
                         changeToFragment(MODULE_ID_STATISTICS);
                     }
                 });
                 transaction.add(ROOT_LAYOUT_ID, mStudentStatisticsFragment);
             }
-            if(mModuleFragment!=null) {
+            if (mModuleFragment != null) {
                 transaction.hide(mModuleFragment);
             }
             mModuleFragment = mStudentStatisticsFragment;
@@ -253,8 +245,8 @@ public class ShowPageFragment extends Fragment implements View.OnClickListener, 
         resetData();
     }
 
-    public void resetDocumentsData(){
-        if(mCurrentShowModuleId ==MODULE_ID_DOCUMENTS){
+    public void resetDocumentsData() {
+        if (mCurrentShowModuleId == MODULE_ID_DOCUMENTS) {
             mDocumentsFragment.resetData(mKnowledgeModel);
         }
     }

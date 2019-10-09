@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:paddingTop="@dimen/dp_71"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:paddingTop="@dimen/dp_71">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -20,12 +20,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_teacher_one"
-                android:paddingTop="10dp"
-                android:minWidth="142dp"
-                android:paddingBottom="10dp"
                 android:gravity="center"
+                android:minWidth="142dp"
                 android:paddingLeft="@dimen/dp_35"
+                android:paddingTop="10dp"
                 android:paddingRight="@dimen/dp_30"
+                android:paddingBottom="10dp"
                 android:text="@string/page_teacher_one"
                 android:textColor="@color/white"
                 android:textSize="23sp" />
@@ -44,12 +44,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_teacher_two"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
                 android:gravity="center"
                 android:minWidth="142dp"
                 android:paddingLeft="@dimen/dp_35"
+                android:paddingTop="10dp"
                 android:paddingRight="@dimen/dp_30"
+                android:paddingBottom="10dp"
                 android:text="@string/page_teacher_two"
                 android:textColor="@color/white"
                 android:textSize="23sp" />
@@ -67,12 +67,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_teacher_three"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
                 android:gravity="center"
                 android:minWidth="142dp"
                 android:paddingLeft="@dimen/dp_35"
+                android:paddingTop="10dp"
                 android:paddingRight="@dimen/dp_30"
+                android:paddingBottom="10dp"
                 android:text="@string/page_teacher_three"
                 android:textColor="@color/white"
                 android:textSize="23sp" />

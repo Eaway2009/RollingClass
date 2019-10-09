@@ -164,14 +164,18 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
 
                 if(mType == 1){
                     tv_my_answer.setVisibility(View.VISIBLE);
-                    answerResultTextview.setVisibility(View.GONE);
+                    answerResultTextview.setVisibility(View.VISIBLE);
+                    answerResultTextview.setText(R.string.answer_unselect);
+                    answerResultTextview.setTextColor(getResources().getColor(R.color.xt_un_select));
                 }else{
                     tv_my_answer.setVisibility(View.GONE);
                     answerResultTextview.setVisibility(View.VISIBLE);
                     if(answerModel.answer_right) {
                         answerResultTextview.setText(R.string.answer_right);
+                        answerResultTextview.setTextColor(getResources().getColor(R.color.xt_select_ok));
                     }else{
                         answerResultTextview.setText(R.string.answer_wrong);
+                        answerResultTextview.setTextColor(getResources().getColor(R.color.xt_select_no));
                     }
                 }
 

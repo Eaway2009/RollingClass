@@ -207,7 +207,7 @@ public class TopbarView extends CardView {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.profile_image:
-                case R.id.username:
+                case R.id.username: //个人中心
                     if(mCallback!=null) {
                         mCallback.showPage(MainActivity.MODULE_ID_USER_PAGE);
                     }
@@ -217,7 +217,7 @@ public class TopbarView extends CardView {
                         mCallback.showPage(MainActivity.MODULE_ID_MAIN_PAGE);
                     }
                     break;
-                case R.id.setting_icon:
+                case R.id.setting_icon: //设置
                     if(mCallback!=null) {
                         mCallback.showPage(MainActivity.MODULE_ID_SETTING_PAGE);
                     }
