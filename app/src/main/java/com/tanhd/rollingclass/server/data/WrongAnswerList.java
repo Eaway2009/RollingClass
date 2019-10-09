@@ -10,9 +10,9 @@ import java.util.List;
 public class WrongAnswerList extends BaseJsonClass {
 
     public List<AnswerModel> questions;
-    public List<AnswerSet> error_set;
-    public List<AnswerSet> correct_set;
-    public List<AnswerSet> unanswer_set;
+    public List<AnswerData> error_set;
+    public List<AnswerData> correct_set;
+    public List<AnswerData> unanswer_set;
     public int error_cnt;
     public int correct_cnt;
     public int unanswer_cnt;
@@ -25,9 +25,9 @@ public class WrongAnswerList extends BaseJsonClass {
             if (array == null)
                 return;
 
-            ArrayList<AnswerSet> list = new ArrayList<>();
+            ArrayList<AnswerData> list = new ArrayList<>();
             for (int i=0; i<array.length(); i++) {
-                AnswerSet optionData = new AnswerSet();
+                AnswerData optionData = new AnswerData();
                 optionData.parse(optionData, array.optJSONObject(i));
                 list.add(optionData);
             }

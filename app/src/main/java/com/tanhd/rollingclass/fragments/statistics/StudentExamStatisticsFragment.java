@@ -20,6 +20,7 @@ import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.QuerstionTypeShow;
 import com.tanhd.rollingclass.fragments.resource.AnswerDisplayFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.AnswerModel;
 import com.tanhd.rollingclass.server.data.AnswerSet;
 import com.tanhd.rollingclass.server.data.CountClassLessonSampleData;
@@ -182,7 +183,7 @@ public class StudentExamStatisticsFragment extends Fragment {
                 List<AnswerModel> questions = new ArrayList<>();
                 if (wrongAnswerList.questions != null && wrongAnswerList.questions.size() > 0) {
                     for (AnswerModel answerModel : wrongAnswerList.questions) {
-                        for (AnswerSet answerSet : wrongAnswerList.correct_set) {
+                        for (AnswerData answerSet : wrongAnswerList.correct_set) {
                             if (answerModel.question_id.equals(answerSet.QuestionID)) {
                                 answerModel.answer_right = true;
                             }

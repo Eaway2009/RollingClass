@@ -22,6 +22,7 @@ import com.tanhd.rollingclass.fragments.resource.AnswerDisplayFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.AnswerModel;
+import com.tanhd.rollingclass.server.data.AnswerSet;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
@@ -239,7 +240,17 @@ public class WrongAnswerListFragment extends BaseFragment implements View.OnClic
                 if (mKnowledgeModel != null) {
                     WrongAnswerList wrongAnswerList = ScopeServer.getInstance().QureyAnswerv2ByStudentIDAndCourseID(
                             studentData.StudentID, mKnowledgeDetailMessage.knowledge_id);
-                    return wrongAnswerList.questions;
+                    List<AnswerModel> questions = new ArrayList<>();
+                    if (wrongAnswerList.questions != null && wrongAnswerList.questions.size() > 0) {
+                        for (AnswerModel answerModel : wrongAnswerList.questions) {
+                            for (AnswerData answerSet : wrongAnswerList.error_set) {
+                                if (answerModel.question_id.equals(answerSet.QuestionID)) {
+                                    questions.add(answerModel);
+                                }
+                            }
+                        }
+                    }
+                    return questions;
                 }
             } else {
                 return null;

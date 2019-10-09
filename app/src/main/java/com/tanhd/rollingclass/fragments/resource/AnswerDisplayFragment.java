@@ -41,7 +41,7 @@ import java.util.List;
  */
 public class AnswerDisplayFragment extends ResourceBaseFragment {
     private static final String PARAM_TYPE = "PARAM_TYPE";
-    private List<AnswerData> mQuestionList = new ArrayList<>();
+    private List<AnswerModel> mQuestionList = new ArrayList<>();
 
     private RecyclerView recyclerView;
     private QuestionAdapter mAdapter;

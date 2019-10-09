@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AnswerData extends BaseJsonClass {
+    public boolean answer_right;
     public String AnswerID;
     public String AnswerName;
     public int AnswerType;

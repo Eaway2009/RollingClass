@@ -240,7 +240,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         if (TextUtils.isEmpty(username)) {
             return;
         }
-        mCheckBox.setChecked(AppUtils.readLoginTeacherStatus(this));
 
         CheckBox checkBox = findViewById(R.id.save_pwd);
         checkBox.setChecked(true);
