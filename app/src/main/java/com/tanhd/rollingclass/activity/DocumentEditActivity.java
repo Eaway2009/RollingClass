@@ -110,7 +110,7 @@ public class DocumentEditActivity extends BaseActivity implements KnowledgeContr
             public void showPage(int modulePageId) {
                 setResult(RESULT_OK);
                 finish();
-                MainActivity.startMe(DocumentEditActivity.this);
+                MainActivity.startMe(DocumentEditActivity.this,modulePageId);
             }
         });
     }

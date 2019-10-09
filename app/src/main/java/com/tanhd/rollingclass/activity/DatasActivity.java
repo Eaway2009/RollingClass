@@ -98,7 +98,7 @@ public class DatasActivity extends BaseActivity {
             public void showPage(int modulePageId) {
                 setResult(RESULT_OK);
                 finish();
-                MainActivity.startMe(DatasActivity.this);
+                MainActivity.startMe(DatasActivity.this, modulePageId);
             }
         });
     }
@@ -125,7 +125,7 @@ public class DatasActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             mShowPageFragment.resetDocumentsData();
         }
     }

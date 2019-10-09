@@ -200,7 +200,7 @@ public class LearnCasesActivity extends BaseActivity {
             public void showPage(int modulePageId) {
                 setResult(RESULT_OK);
                 finish();
-                MainActivity.startMe(LearnCasesActivity.this);
+                MainActivity.startMe(LearnCasesActivity.this,modulePageId);
             }
         });
     }

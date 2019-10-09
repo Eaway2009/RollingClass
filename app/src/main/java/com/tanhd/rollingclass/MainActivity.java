@@ -62,6 +62,7 @@ import java.util.Map;
 public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
+    private static final String PAGE_ID = "PAGE_ID";
     private static final int REQUEST_PERMISSION = 1;
     public static final int MODULE_ID_MAIN_PAGE = 1;
     public static final int MODULE_ID_SETTING_PAGE = 2;
@@ -79,8 +80,9 @@ public class MainActivity extends BaseActivity {
     private UserData mUserData;
     private static MainActivity instance;
     private UserInfoFragment mUserInfoFragment;
+    private int mPageId = MODULE_ID_MAIN_PAGE;
 
-    public static MainActivity getInstance(){
+    public static MainActivity getInstance() {
         return instance;
     }
 
@@ -92,8 +94,13 @@ public class MainActivity extends BaseActivity {
     private PasswordSettingFragment mSettingFragment;
 
     public static void startMe(Context context) {
-        Intent intent = new Intent(context, LearnCasesActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startMe(Context context, int pageId) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(PAGE_ID, pageId);
         context.startActivity(intent);
     }
 
@@ -153,7 +160,7 @@ public class MainActivity extends BaseActivity {
                 showModulePage(modulePageId);
             }
         });
-        initUserUI();
+        initPageUI();
         SmartPenService.getInstance().init(getApplicationContext());
         SmartPenService.getInstance().tryToConnect();
         startMqttService();
@@ -194,6 +201,18 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        initParams();
+        initPageUI();
+    }
+
+    private void initParams() {
+        mPageId = getIntent().getIntExtra(PAGE_ID, MODULE_ID_MAIN_PAGE);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(mConnection);
@@ -209,8 +228,8 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void initUserUI() {
-        showModulePage(MODULE_ID_MAIN_PAGE);
+    private void initPageUI() {
+        showModulePage(mPageId);
     }
 
     /**
@@ -267,8 +286,8 @@ public class MainActivity extends BaseActivity {
                 transaction.hide(mModuleFragment);
             }
             mModuleFragment = mSettingFragment;
-        } else if(moduleId == MODULE_ID_USER_PAGE) {
-            if(mUserInfoFragment == null){
+        } else if (moduleId == MODULE_ID_USER_PAGE) {
+            if (mUserInfoFragment == null) {
                 mUserInfoFragment = UserInfoFragment.getInstance(new UserInfoFragment.Callback() {
                     @Override
                     public void onBack() {
@@ -436,7 +455,6 @@ public class MainActivity extends BaseActivity {
             }
         }
     };
-
 
 
     private boolean isBound = false;
