@@ -210,6 +210,7 @@ public class ResourcesPageFragment extends Fragment implements View.OnClickListe
         if (popFliterRes == null){
             popFliterRes = new PopFliterRes(getActivity());
         }
+        popFliterRes.setRootWidth((int) getResources().getDimension(R.dimen.dp_90));
         popFliterRes.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

@@ -95,7 +95,9 @@ public class WrongAnswerListFragment extends BaseFragment implements View.OnClic
         mPhotoListView = view.findViewById(R.id.photo_list);
         tv_spinner = view.findViewById(R.id.tv_spinner);
 
-        popFliterRes = new PopFliterRes(getActivity());
+        if (popFliterRes == null){
+            popFliterRes = new PopFliterRes(getActivity());
+        }
         popFliterRes.setRootWidth((int) getResources().getDimension(R.dimen.dp_150));
         popFliterRes.setOnItemClickListener(new OnItemClickListener() {
             @Override

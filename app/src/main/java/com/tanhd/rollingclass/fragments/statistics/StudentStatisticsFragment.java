@@ -83,7 +83,9 @@ public class StudentStatisticsFragment extends Fragment implements View.OnClickL
         microCourse.setChecked(false);
 
         tv_spinner = view.findViewById(R.id.tv_spinner);
-        popFliterRes = new PopFliterRes(getActivity());
+        if (popFliterRes == null){
+            popFliterRes = new PopFliterRes(getActivity());
+        }
         popFliterRes.setRootWidth((int) getResources().getDimension(R.dimen.dp_150));
         popFliterRes.setOnItemClickListener(new OnItemClickListener() {
             @Override

@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingTop="@dimen/dp_12"
     android:paddingRight="@dimen/dp_32">
 
     <LinearLayout
@@ -14,38 +15,36 @@
             android:id="@+id/school_resource"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_15"
+            android:textColor="@color/resource_select_title"
             android:enabled="false"
             android:paddingLeft="@dimen/dp_28"
-            android:paddingTop="@dimen/dp_9"
             android:paddingRight="@dimen/dp_28"
+            android:paddingTop="@dimen/dp_9"
             android:paddingBottom="@dimen/dp_9"
-            android:text="@string/school_resource"
-            android:textColor="@color/resource_select_title"
-            android:textSize="@dimen/text_size_15" />
-
+            android:text="@string/school_resource"/>
         <TextView
             android:id="@+id/public_resource"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_28"
-            android:paddingTop="@dimen/dp_9"
-            android:paddingRight="@dimen/dp_28"
-            android:paddingBottom="@dimen/dp_9"
-            android:text="@string/public_resource"
+            android:textSize="@dimen/text_size_15"
             android:textColor="@color/resource_select_title"
-            android:textSize="@dimen/text_size_15" />
-
+            android:paddingLeft="@dimen/dp_28"
+            android:paddingRight="@dimen/dp_28"
+            android:paddingTop="@dimen/dp_9"
+            android:paddingBottom="@dimen/dp_9"
+            android:text="@string/public_resource"/>
         <TextView
             android:id="@+id/my_resource"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_28"
-            android:paddingTop="@dimen/dp_9"
-            android:paddingRight="@dimen/dp_28"
-            android:paddingBottom="@dimen/dp_9"
-            android:text="@string/my_resource"
+            android:textSize="@dimen/text_size_15"
             android:textColor="@color/resource_select_title"
-            android:textSize="@dimen/text_size_15" />
+            android:paddingLeft="@dimen/dp_28"
+            android:paddingRight="@dimen/dp_28"
+            android:paddingTop="@dimen/dp_9"
+            android:paddingBottom="@dimen/dp_9"
+            android:text="@string/my_resource"/>
     </LinearLayout>
 
     <View
@@ -71,20 +70,25 @@
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
             android:text="@string/cancel"
-            android:textColor="@color/button_blue_item_checked"
-            android:textSize="@dimen/text_size_15"
-            android:background="@drawable/task_add_cancel_button" />
-
+            android:minHeight="0dp"
+            android:paddingTop="@dimen/dp_7"
+            android:paddingBottom="@dimen/dp_7"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/text_size_13"
+            android:background="@drawable/task_add_cancel_button"/>
         <Button
             android:id="@+id/commit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:textSize="20sp"
+            android:paddingTop="@dimen/dp_7"
+            android:paddingBottom="@dimen/dp_7"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_marginLeft="@dimen/dp_36"
+            android:textSize="@dimen/text_size_13"
             android:text="@string/sure"
             android:textColor="@color/white"
-            android:background="@drawable/task_add_save_button" />
+            android:background="@drawable/task_add_save_button"/>
     </LinearLayout>
 </LinearLayout>

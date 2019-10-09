@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 抢答
+ */
 public class ResponderFragment extends Fragment implements View.OnClickListener {
 
     private static final String PARAM_CLASS_DATA = "PARAM_CLASS_DATA";
