@@ -26,8 +26,10 @@ import com.tanhd.rollingclass.base.BaseListAdapter;
 import com.tanhd.rollingclass.base.BaseViewHolder;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.AnswerModel;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
+import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.views.AnalysisDialog;
 import com.tanhd.rollingclass.views.OnItemClickListener;
@@ -84,7 +86,7 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
             @Override
             public void onItemClick(View view, int position) {
                 AnswerModel answerModel = mAdapter.getDataList().get(position);
-                AnalysisDialog.newInstance(answerModel.context.Answer,answerModel.context.Analysis).show(getChildFragmentManager(),"AnalysisDialog");
+                AnalysisDialog.newInstance(answerModel.context.Answer, answerModel.context.Analysis).show(getChildFragmentManager(), "AnalysisDialog");
             }
         });
     }
@@ -93,7 +95,7 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
         mQuestionList = resourceList;
         if (mAdapter != null) {
             mAdapter.setDataList(resourceList);
-        }else{
+        } else {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -102,7 +104,7 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
                         mAdapter.notifyDataSetChanged();
                     }
                 }
-            },1000);
+            }, 1000);
         }
     }
 
@@ -123,10 +125,12 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
      * 适配器
      */
     private class QuestionAdapter extends BaseListAdapter<AnswerModel> {
+        private final UserData userData;
         private OnItemClickListener analysisListener;
 
         public QuestionAdapter(Context context) {
             super(context);
+            userData = ExternalParam.getInstance().getUserData();
         }
 
         @Override
@@ -147,12 +151,17 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
             WebView stemView = holder.getView(R.id.stem);
             View overView = holder.getView(R.id.over);
             TextView tv_analysis = holder.getView(R.id.tv_analysis);
+            if (!userData.isTeacher() && mType != 1) {
+                tv_analysis.setVisibility(View.GONE);
+            }else{
+                tv_analysis.setVisibility(View.VISIBLE);
+            }
             TextView tv_my_answer = holder.getView(R.id.tv_my_answer);
             TextView answerResultTextview = holder.getView(R.id.answer_result_textview);
             tv_analysis.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (analysisListener != null) analysisListener.onItemClick(v,position);
+                    if (analysisListener != null) analysisListener.onItemClick(v, position);
                 }
             });
             if (answerModel.context != null) {
@@ -162,18 +171,18 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
                 String html = AppUtils.dealHtmlText(answerModel.context.Stem);
                 stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
-                if(mType == 1){
+                if (mType == 1) {
                     tv_my_answer.setVisibility(View.VISIBLE);
                     answerResultTextview.setVisibility(View.VISIBLE);
                     answerResultTextview.setText(R.string.answer_unselect);
                     answerResultTextview.setTextColor(getResources().getColor(R.color.xt_un_select));
-                }else{
+                } else {
                     tv_my_answer.setVisibility(View.GONE);
                     answerResultTextview.setVisibility(View.VISIBLE);
-                    if(answerModel.answer_right) {
+                    if (answerModel.answer_right) {
                         answerResultTextview.setText(R.string.answer_right);
                         answerResultTextview.setTextColor(getResources().getColor(R.color.xt_select_ok));
-                    }else{
+                    } else {
                         answerResultTextview.setText(R.string.answer_wrong);
                         answerResultTextview.setTextColor(getResources().getColor(R.color.xt_select_no));
                     }
@@ -206,7 +215,6 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
 
         }
     }
-
 
 
     //这里面的resource就是fromhtml函数的第一个参数里面的含有的url

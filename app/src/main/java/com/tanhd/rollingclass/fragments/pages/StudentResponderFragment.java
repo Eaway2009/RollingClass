@@ -17,9 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.fragments.resource.ResourceBaseFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
-import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionData;
 import com.tanhd.rollingclass.server.data.UserData;

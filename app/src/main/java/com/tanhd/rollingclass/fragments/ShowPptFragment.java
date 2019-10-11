@@ -182,7 +182,9 @@ public class ShowPptFragment extends Fragment {
                 .onPageScroll(new OnPageScrollListener() {
                     @Override
                     public void onPageScrolled(int page, float positionOffset) {
-                        mThumbsListView.smoothScrollToPosition(page);
+                        if (mThumbAdapter.getCount() > page) {
+                            mThumbsListView.smoothScrollToPosition(page);
+                        }
                     }
                 })
                 .onLoad(new OnLoadCompleteListener() {
@@ -214,7 +216,9 @@ public class ShowPptFragment extends Fragment {
     private OnPageScrollListener mPageScrollListener = new OnPageScrollListener() {
         @Override
         public void onPageScrolled(int page, float positionOffset) {
-            mThumbsListView.smoothScrollToPosition(page);
+            if(mThumbAdapter.getCount()>page) {
+                mThumbsListView.smoothScrollToPosition(page);
+            }
             HashMap<String, String> params = new HashMap<>();
             params.put("page", String.valueOf(page));
             params.put("positionOffset", String.valueOf(positionOffset));

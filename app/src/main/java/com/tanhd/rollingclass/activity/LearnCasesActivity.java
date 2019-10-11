@@ -283,7 +283,7 @@ public class LearnCasesActivity extends BaseActivity {
                         String examID = message.parameters.get("examID");
                         final String teacherID = message.parameters.get("teacherID");
 
-                        FrameDialog.showLittleDialog(getSupportFragmentManager(), StudentResponderFragment.newInstance(examID, new StudentResponderFragment.ExamListener() {
+                        FrameDialog.show(getSupportFragmentManager(), StudentResponderFragment.newInstance(examID, new StudentResponderFragment.ExamListener() {
                             @Override
                             public void onFinished(String answer) {
                                 message.parameters.put("answer", answer);

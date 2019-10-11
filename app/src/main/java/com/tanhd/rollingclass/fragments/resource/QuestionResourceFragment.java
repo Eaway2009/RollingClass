@@ -24,8 +24,10 @@ import android.widget.TextView;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.base.BaseListAdapter;
 import com.tanhd.rollingclass.base.BaseViewHolder;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
+import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.views.AnalysisDialog;
 import com.tanhd.rollingclass.views.OnItemClickListener;
@@ -139,10 +141,12 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
      * 适配器
      */
     private class QuestionAdapter extends BaseListAdapter<QuestionModel> {
+        private final UserData userData;
         private OnItemClickListener analysisListener;
 
         public QuestionAdapter(Context context) {
             super(context);
+            userData = ExternalParam.getInstance().getUserData();
         }
 
         @Override
@@ -163,6 +167,9 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
             WebView stemView = holder.getView(R.id.stem);
             View overView = holder.getView(R.id.over);
             TextView tv_analysis = holder.getView(R.id.tv_analysis);
+            if(!userData.isTeacher()){
+                tv_analysis.setVisibility(View.GONE);
+            }
             tv_analysis.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

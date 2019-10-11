@@ -150,7 +150,7 @@ public class StudentExamStatisticsFragment extends Fragment {
         Fragment moduleFragment = null;
         if (moduleId == MODULE_ID_QUESTION_LIST) { //习题
             if (mQuestionResourceFragment == null) {
-                mQuestionResourceFragment = AnswerDisplayFragment.newInstance(2);
+                mQuestionResourceFragment = AnswerDisplayFragment.newInstance(1);
                 transaction.add(ROOT_LAYOUT_ID, mQuestionResourceFragment);
             }
             moduleFragment = mQuestionResourceFragment;
