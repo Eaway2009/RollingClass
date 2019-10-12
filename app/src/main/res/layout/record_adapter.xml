@@ -1,41 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:weightSum="3">
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:weightSum="3">
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:background="@color/button_gray" />
 
         <TextView
             android:id="@+id/learning_the_class"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:minWidth="@dimen/dp_200"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="@string/learning_the_class"
-            android:textColor="@color/button_gray"
-            android:textSize="@dimen/dp_24" />
+            android:textColor="@color/record_title_color"
+            android:textSize="@dimen/text_size_15" />
 
         <View
             android:layout_width="1px"
             android:layout_height="match_parent"
-            android:background="@color/button_gray" />
+            android:background="@color/record_title_color" />
 
         <TextView
             android:id="@+id/learning_the_date"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -43,17 +37,17 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="@string/learning_the_date"
-            android:textColor="@color/button_gray"
-            android:textSize="@dimen/dp_24" />
+            android:textColor="@color/record_title_color"
+            android:textSize="@dimen/text_size_15" />
 
         <View
             android:layout_width="1px"
             android:layout_height="match_parent"
-            android:background="@color/button_gray" />
+            android:background="@color/record_title_color" />
 
         <TextView
             android:id="@+id/learning_the_time"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -61,17 +55,12 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="@string/learning_the_time"
-            android:textColor="@color/button_gray"
-            android:textSize="@dimen/dp_24" />
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:background="@color/button_gray" />
+            android:textColor="@color/record_title_color"
+            android:textSize="@dimen/text_size_15" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/button_gray" />
+        android:background="@color/record_title_color" />
 </LinearLayout>

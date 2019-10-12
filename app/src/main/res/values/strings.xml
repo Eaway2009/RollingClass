@@ -367,4 +367,10 @@
     <string name="lbl_exit">【退出】</string>
     <string name="lbl_weike">微课</string>
     <string name="lbl_xiti">习题</string>
+    <string name="lbl_ten_month">10月</string>
+    <string name="lbl_year">年</string>
+    <string name="lbl_month">月</string>
+    <string name="study_the_data">学习日期</string>
+    <string name="study_the_time">学习时间</string>
+    <string name="study_the_status">学习情况</string>
 </resources>

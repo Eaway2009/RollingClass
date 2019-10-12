@@ -76,7 +76,7 @@ public class StringUtils {
 
     public static String getFormatYear(Date resourse) {
         if (resourse != null) {
-            SimpleDateFormat time = new SimpleDateFormat("yyyy年");
+            SimpleDateFormat time = new SimpleDateFormat("yyyy" + MainApp.getInstance().getResources().getString(R.string.lbl_year));
             return time.format(resourse);
         }
         return "";
@@ -84,7 +84,7 @@ public class StringUtils {
 
     public static String getFormatMonth(Date resourse) {
         if (resourse != null) {
-            SimpleDateFormat time = new SimpleDateFormat(MainApp.getInstance().getString(R.string.lbl_moneth));
+            SimpleDateFormat time = new SimpleDateFormat("MM" + MainApp.getInstance().getString(R.string.lbl_month));
             return time.format(resourse);
         }
         return "";

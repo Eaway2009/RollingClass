@@ -200,7 +200,7 @@ public class LearnCasesActivity extends BaseActivity {
             public void showPage(int modulePageId) {
                 setResult(RESULT_OK);
                 finish();
-                MainActivity.startMe(LearnCasesActivity.this,modulePageId);
+                MainActivity.startMe(LearnCasesActivity.this, modulePageId);
             }
         });
     }
@@ -278,7 +278,7 @@ public class LearnCasesActivity extends BaseActivity {
                     }
                     break;
                 }
-                case RESPONDER: {
+                case RESPONDER: { //抢答
                     if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
                         String examID = message.parameters.get("examID");
                         final String teacherID = message.parameters.get("teacherID");
@@ -291,7 +291,7 @@ public class LearnCasesActivity extends BaseActivity {
                                 message.parameters.put("askName", studentData.Username);
                                 MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, message.parameters);
                             }
-                        }));
+                        }),0.5d);
                     }
                     break;
                 }

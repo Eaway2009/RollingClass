@@ -14,11 +14,18 @@ import com.tanhd.rollingclass.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 上课记录
+ */
 public class RecordAdapter extends BaseAdapter {
 
     private static final String TAG = "RecordAdapter";
     private Activity mContext;
     private List<KnowledgeDetailMessage.Record> mDataList = new ArrayList<>();
+
+    public RecordAdapter(Activity mContext){
+        this.mContext = mContext;
+    }
 
     public void setData(List<KnowledgeDetailMessage.Record> datas) {
         mDataList = datas;

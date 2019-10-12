@@ -48,6 +48,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 上课课堂
+ */
 public class LearnCasesFragment extends Fragment implements OnClickListener, ExpandableListView.OnChildClickListener, ExpandableListView.OnGroupClickListener {
 
     private RelativeLayout mRlInnerTitle;

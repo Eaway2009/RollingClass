@@ -7,35 +7,36 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
+import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.StringUtils;
+import com.tanhd.rollingclass.views.OnItemClickListener;
+import com.tanhd.rollingclass.views.PopFliterRes;
 import com.tanhd.rollingclass.views.RecordAdapter;
-import com.tanhd.rollingclass.views.RecordsSpinnerAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 上课记录/学习记录
+ */
 public class ClassRecordsFragment extends Fragment {
 
     private static final String PARAM_KNOWLEDGE = "PARAM_KNOWLEDGE";
     private KnowledgeDetailMessage mKnowledgeMessage;
-    private Spinner mYearSpinner;
-    private View mYearSpinnerView;
-    private Spinner mMonthSpinner;
-    private View mMonthSpinnerView;
     private ListView mRecordsListView;
     private RecordAdapter mAdapter;
-    private RecordsSpinnerAdapter mYearAdapter;
-    private RecordsSpinnerAdapter mMonthAdapter;
-    private TextView mYearTextView;
-    private TextView mMonthTextView;
+    private TextView tv_one_lbl,tv_two_lbl,tv_three_lbl;
+    private TextView tv_year;
+    private TextView tv_month;
+    private PopFliterRes popYear, popMoneth;
+
     private String mYearText;
     private String mMonthText;
 
@@ -63,52 +64,88 @@ public class ClassRecordsFragment extends Fragment {
     }
 
     private void initViews(View contentView) {
+        tv_one_lbl = contentView.findViewById(R.id.tv_one_lbl);
+        tv_two_lbl = contentView.findViewById(R.id.tv_two_lbl);
+        tv_three_lbl = contentView.findViewById(R.id.tv_three_lbl);
         mRecordsListView = contentView.findViewById(R.id.records_listview);
-        mAdapter = new RecordAdapter();
+        mAdapter = new RecordAdapter(getActivity());
         mRecordsListView.setAdapter(mAdapter);
 
-        mYearSpinner = contentView.findViewById(R.id.year_spinner);
-        mYearTextView = contentView.findViewById(R.id.year_textview);
-        mYearSpinnerView = contentView.findViewById(R.id.year_spinner_layout);
+        UserData userData = ExternalParam.getInstance().getUserData();
+        if (!userData.isTeacher()){ //学生端学习记录
+            tv_one_lbl.setText(R.string.study_the_data);
+            tv_two_lbl.setText(R.string.study_the_time);
+            tv_three_lbl.setText(R.string.study_the_status);
+        }
 
-        mMonthSpinner = contentView.findViewById(R.id.month_spinner);
-        mMonthTextView = contentView.findViewById(R.id.month_textview);
-        mMonthSpinnerView = contentView.findViewById(R.id.month_spinner_layout);
+        tv_year = contentView.findViewById(R.id.tv_year);
+        tv_month = contentView.findViewById(R.id.tv_month);
 
-        mYearAdapter = new RecordsSpinnerAdapter(getContext(), true);
-        mYearSpinner.setAdapter(mYearAdapter);
-        mYearAdapter.setDataList(mKnowledgeMessage.records);
-        mYearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        List<String> monthList = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            monthList.add((i < 10 ? ("0" + i) : i) + getResources().getString(R.string.lbl_month));
+        }
+        popMoneth = new PopFliterRes(getActivity());
+        popMoneth.setDatas(monthList);
+        popMoneth.setRootWidth((int) getResources().getDimension(R.dimen.dp_90));
+        popMoneth.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String yearText = StringUtils.getFormatYear(((KnowledgeDetailMessage.Record) mYearAdapter.getItem(pos)).time_record);
-                flitData(yearText, mMonthText);
-                mYearTextView.setText(yearText);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onItemClick(View view, int position) {
+                mMonthText = popMoneth.getDatas().get(position);
+                tv_month.setText(mMonthText);
+                //选中
+                flitData(mYearText, mMonthText);
             }
         });
-        mMonthAdapter = new RecordsSpinnerAdapter(getContext(), false);
-        mMonthSpinner.setAdapter(mMonthAdapter);
-        mMonthAdapter.setDataList(mKnowledgeMessage.records);
-        mMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String monthText = StringUtils.getFormatMonth(((KnowledgeDetailMessage.Record) mMonthAdapter.getItem(pos)).time_record);
-                flitData(mYearText, monthText);
-                mMonthTextView.setText(monthText);
-            }
 
+        List<String> yearList = new ArrayList<>();
+        yearList.add("2019" + getResources().getString(R.string.lbl_year));
+        yearList.add("2018" + getResources().getString(R.string.lbl_year));
+        yearList.add("2017" + getResources().getString(R.string.lbl_year));
+
+        popYear = new PopFliterRes(getActivity());
+        popYear.setDatas(yearList);
+        popYear.setRootWidth((int) getResources().getDimension(R.dimen.dp_90));
+        popYear.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onItemClick(View view, int position) {
+                mYearText = popYear.getDatas().get(position);
+                tv_year.setText(mYearText);
+                //选中
+                flitData(mYearText, mMonthText);
+            }
+        });
+
+        tv_year.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popYear.showMask(false).showAsDropDown(v);
+            }
+        });
+
+        //月
+        tv_month.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popMoneth.showMask(false).showAsDropDown(v);
             }
         });
     }
 
     private void initData() {
-        flitData(StringUtils.getFormatYear(new Date()), StringUtils.getFormatMonth(new Date()));
+        mYearText = StringUtils.getFormatYear(new Date());
+        mMonthText = StringUtils.getFormatMonth(new Date());
+
+        for (int i = 0; i < popMoneth.getDatas().size(); i++) {
+            if (popMoneth.getDatas().get(i).equals(mMonthText)) {
+                popMoneth.setNowPos(i);
+                break;
+            }
+        }
+
+        tv_month.setText(mMonthText);
+        tv_year.setText(mYearText);
+        flitData(mYearText, mMonthText);
     }
 
     private void flitData(String year, String month) {

@@ -94,4 +94,7 @@
     <color name="xt_select_ok">#3DC900</color>
     <!-- 习题-回答错误 -->
     <color name="xt_select_no">#FF0000</color>
+    <color name="record_title_color">#575757</color>
+    <color name="record_item_color">#797979</color>
+
 </resources>

@@ -83,6 +83,11 @@ public class PopFliterRes extends TopPushPopupWindow<Void> {
         adapter.setDataList(datas);
     }
 
+    public void setNowPos(int nowPos) {
+        this.nowPos = nowPos;
+        adapter.notifyDataSetChanged();
+    }
+
     public List<String> getDatas() {
         return adapter.getDataList();
     }

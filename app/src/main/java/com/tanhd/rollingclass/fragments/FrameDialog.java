@@ -1,8 +1,6 @@
 package com.tanhd.rollingclass.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,19 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 import com.tanhd.rollingclass.R;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 public class FrameDialog extends DialogFragment {
     private static String mTopName;
     private Fragment mFragment;
     private boolean mIsFullMode;
     private boolean mIsLittleMode;
+    private double widthFloat = 0;
 
     private static FrameDialog newInstance(boolean fullMode) {
         Bundle bundle = new Bundle();
@@ -48,6 +42,14 @@ public class FrameDialog extends DialogFragment {
         return dialog;
     }
 
+    public static FrameDialog newInstance(double widthFloat) {
+        Bundle bundle = new Bundle();
+        bundle.putDouble("widthFloat", widthFloat);
+        FrameDialog dialog = new FrameDialog();
+        dialog.setArguments(bundle);
+        return dialog;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setRetainInstance(true);
@@ -60,6 +62,9 @@ public class FrameDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mIsFullMode = getArguments().getBoolean("fullMode");
         mIsLittleMode = getArguments().getBoolean("littleMode");
+        if (getArguments().containsKey("widthFloat")) {
+            widthFloat = getArguments().getDouble("widthFloat");
+        }
 
         View view;
         if (!mIsFullMode) {
@@ -98,7 +103,7 @@ public class FrameDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(!mIsLittleMode) {
+        if (!mIsLittleMode || widthFloat > 0) {
             Dialog dialog = getDialog();
             if (dialog != null) {
                 Window window = dialog.getWindow();
@@ -111,7 +116,7 @@ public class FrameDialog extends DialogFragment {
 
                     DisplayMetrics dm = new DisplayMetrics();
                     getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-                    window.setLayout((int) (dm.widthPixels * 0.85), ViewGroup.LayoutParams.WRAP_CONTENT);
+                    window.setLayout((int) (dm.widthPixels *  (widthFloat > 0 ? widthFloat : 0.85)), ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
             }
         }
@@ -145,4 +150,11 @@ public class FrameDialog extends DialogFragment {
         dialog.setFragment(fragment);
         dialog.show(manager, (String) null);
     }
+
+    public static void show(FragmentManager manager, Fragment fragment,double wf) {
+        FrameDialog dialog = FrameDialog.newInstance(wf);
+        dialog.setFragment(fragment);
+        dialog.show(manager, (String) null);
+    }
+
 }

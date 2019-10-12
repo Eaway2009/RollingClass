@@ -1,99 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_50"
+    android:paddingLeft="@dimen/dp_40"
     android:paddingTop="@dimen/dp_30"
-    android:paddingRight="@dimen/dp_50"
+    android:paddingRight="@dimen/dp_40"
     android:paddingBottom="@dimen/dp_30">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:gravity="center|right">
+        android:gravity="center|right"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/year_spinner_layout"
-            android:layout_width="wrap_content"
+
+        <TextView
+            android:id="@+id/tv_year"
+            android:layout_width="@dimen/dp_90"
             android:layout_height="wrap_content"
-            android:background="@drawable/records_bg">
+            android:layout_gravity="right"
+            android:background="@drawable/bg_spinner"
+            android:drawableRight="@mipmap/ic_down"
+            android:drawablePadding="@dimen/dp_6"
+            android:gravity="left|center"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_6"
+            android:textColor="@color/resource_name"
+            android:textSize="@dimen/text_size_15" />
 
-            <TextView
-                android:id="@+id/year_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="22dp"
-                android:paddingRight="10dp"
-                android:text="@string/lbl_current_year"
-                android:textColor="@color/button_gray"
-                android:textSize="@dimen/dp_24" />
-
-            <Spinner
-                android:id="@+id/year_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-            </Spinner>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/month_spinner_layout"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_month"
+            android:layout_width="@dimen/dp_90"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_80"
-            android:background="@drawable/records_bg">
+            android:layout_gravity="right"
+            android:background="@drawable/bg_spinner"
+            android:drawableRight="@mipmap/ic_down"
+            android:drawablePadding="@dimen/dp_6"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:gravity="left|center"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_6"
+            android:textColor="@color/resource_name"
+            android:textSize="@dimen/text_size_15" />
 
-            <TextView
-                android:id="@+id/month_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingLeft="22dp"
-                android:paddingRight="10dp"
-                android:text="9月"
-                android:textColor="@color/button_gray"
-                android:textSize="@dimen/dp_24" />
 
-            <Spinner
-                android:id="@+id/month_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
 
-            </Spinner>
-        </LinearLayout>
     </LinearLayout>
 
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_21"
         android:background="@drawable/shape_records_bg"
         android:weightSum="3">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_one_lbl"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:minWidth="@dimen/dp_200"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="@string/learning_the_class"
-            android:textColor="@color/button_gray"
-            android:textSize="@dimen/dp_24" />
+            android:textColor="@color/record_title_color"
+            android:textSize="@dimen/text_size_15" />
 
         <View
             android:layout_width="1px"
             android:layout_height="match_parent"
-            android:background="@color/button_gray" />
+            android:background="@color/record_title_color" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_two_lbl"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -101,16 +88,17 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="@string/learning_the_date"
-            android:textColor="@color/button_gray"
-            android:textSize="@dimen/dp_24" />
+            android:textColor="@color/record_title_color"
+            android:textSize="@dimen/text_size_15" />
 
         <View
             android:layout_width="1px"
             android:layout_height="match_parent"
-            android:background="@color/button_gray" />
+            android:background="@color/record_title_color" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_three_lbl"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
@@ -118,13 +106,17 @@
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="@string/learning_the_time"
-            android:textColor="@color/button_gray"
-            android:textSize="@dimen/dp_24" />
+            android:textColor="@color/record_title_color"
+            android:textSize="@dimen/text_size_15" />
     </LinearLayout>
 
     <ListView
         android:id="@+id/records_listview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:paddingLeft="1px"
+        android:paddingRight="1px"
+        android:background="@drawable/shape_records_list_bg"
         android:scrollbars="none"></ListView>
 </LinearLayout>

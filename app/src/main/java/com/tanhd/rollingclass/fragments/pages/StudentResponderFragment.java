@@ -2,17 +2,15 @@ package com.tanhd.rollingclass.fragments.pages;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.CheckBox;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,14 +18,14 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionData;
-import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
-import com.tanhd.rollingclass.views.AnalysisDialog;
 import com.tanhd.rollingclass.views.WebViewEx;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 学生端-抢答弹窗
+ */
 public class StudentResponderFragment extends Fragment {
     private static final String QUESTION_ID = "QUESTION_ID";
     private String mQuestionId;
@@ -110,13 +108,13 @@ public class StudentResponderFragment extends Fragment {
 
                     try {
                         for (OptionData optionData : mQuestionModel.Context.Options) {
-                            View optionRoundView = getLayoutInflater().inflate(R.layout.view_option, mOptionsLayout, false);
+                            View optionRoundView = getLayoutInflater().inflate(R.layout.view_option, mAnswerLayout, false);
                             TextView optionTextView = optionRoundView.findViewById(R.id.option_textview);
                             String answer = AppUtils.OPTION_NO[optionData.OrderIndex - 1];
                             optionTextView.setText(answer);
                             optionTextView.setTag(answer);
                             optionTextView.setOnClickListener(onClickListener);
-                            mAnswerLayout.addView(optionTextView);
+                            mAnswerLayout.addView(optionRoundView);
 
                             View optionView = getLayoutInflater().inflate(R.layout.layout_question_option, mOptionsLayout, false);
                             mNoView = optionView.findViewById(R.id.no);
@@ -125,6 +123,7 @@ public class StudentResponderFragment extends Fragment {
                             mNoView.setText(AppUtils.OPTION_NO[optionData.OrderIndex - 1] + ".");
                             html = AppUtils.dealHtmlText(optionData.OptionText);
                             textView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
+
                             mOptionsLayout.addView(optionView);
                         }
                     } catch (Exception e) {

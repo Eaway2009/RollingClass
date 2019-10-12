@@ -145,9 +145,9 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         moreDeleteView.setOnClickListener(onClickListener);
         statusView.setOnClickListener(onClickListener);
 
-        if(mIsTeacher){
+        if (mIsTeacher) {
             moreView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             moreView.setVisibility(View.GONE);
         }
 
@@ -200,14 +200,14 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
     private void classStatusClick(KnowledgeDetailMessage data) {
         if (!mIsTeacher || (data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
-            if (data.records != null && data.records.size() > 0) {
-                if(mIsTeacher) {
+            if (data.records != null && data.records.size() > 0) { //上课记录or学习记录
+                FrameDialog.show(mContext.getFragmentManager(), ClassRecordsFragment.getInstance(data), 0.54d);
+            } else {
+                if (mIsTeacher) {
                     Toast.makeText(mContext.getContext(), R.string.no_class_records_warning, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(mContext.getContext(), R.string.no_learning_records_warning, Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                FrameDialog.showLittleDialog(mContext.getFragmentManager(), ClassRecordsFragment.getInstance(data));
             }
         } else {
             KnowledgeModel knowledgeModel = new KnowledgeModel(data.school_id, data.teacher_id, data.chapter_id, data.chapter_name, data.section_id, data.section_name, data.subject_code, data.subject_name, data.teaching_material_id, null);
