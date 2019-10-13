@@ -157,6 +157,7 @@
     <string name="lbl_analysis">analysis</string>
     <string name="check_analysis">check analysis</string>
     <string name="lbl_answer">answer:</string>
+    <string name="toast_answer_all">提交答案前请答完所有题目</string>
     <string name="toast_answer_ok">submit ok!</string>
     <string name="toast_answer_fail">submit fail!</string>
     <string name="toast_no_chapters">no chapter!</string>

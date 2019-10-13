@@ -159,6 +159,7 @@
     <string name="check_analysis">查看解析</string>
     <string name="lbl_answer">答案:</string>
     <string name="toast_answer_ok">提交答案成功!</string>
+    <string name="toast_answer_all">提交答案前请答完所有题目</string>
     <string name="toast_answer_fail">提交失败!</string>
     <string name="toast_no_chapters">没有找到章节!</string>
     <string name="toast_no_classes">获取班级信息失败!</string>

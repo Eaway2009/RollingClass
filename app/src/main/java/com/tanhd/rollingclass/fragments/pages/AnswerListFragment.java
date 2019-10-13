@@ -132,11 +132,11 @@ public class AnswerListFragment extends Fragment {
         mShowAnswerButton.setOnClickListener(onClickListener);
     }
 
-    public void setListener(ExamListener listener){
+    public void setListener(ExamListener listener) {
         mListener = listener;
     }
 
-    public void setShowAnswer(boolean setShowAnswer){
+    public void setShowAnswer(boolean setShowAnswer) {
         mAdapter.setShowAnswer(setShowAnswer);
     }
 
@@ -173,7 +173,7 @@ public class AnswerListFragment extends Fragment {
             switch (v.getId()) {
                 case R.id.commit_button:
                     new CommitAnswerTask(mAdapter.getData()).execute();
-                    if(mListener!=null){
+                    if (mListener != null) {
                         mListener.onFinished(mAdapter.getAnswer());
                     }
                     break;
@@ -203,6 +203,8 @@ public class AnswerListFragment extends Fragment {
                 ToastUtil.show(R.string.toast_answer_ok);
                 mAdapter.setAnswerCommitted(true);
                 mCommitButton.setVisibility(View.GONE);
+            } else if (result == -2) {
+                ToastUtil.show(R.string.toast_answer_all);
             } else {
                 ToastUtil.show(R.string.toast_answer_fail);
             }
@@ -213,7 +215,7 @@ public class AnswerListFragment extends Fragment {
             UserData userData = ExternalParam.getInstance().getUserData();
             String userID = "";
             String userName = "";
-            if (userData!=null){
+            if (userData != null) {
                 userID = userData.getOwnerID();
                 userName = userData.getOwnerName();
             }
@@ -221,6 +223,9 @@ public class AnswerListFragment extends Fragment {
             for (int i = 0; i < mQuestionList.size(); i++) {
                 ResultClass resultClass = mQuestionList.get(i).context.resultClass;
                 boolean isUrl = false;
+                if(resultClass==null){
+                    return -2;
+                }
                 String result = resultClass.getResult(getContext());
 
                 if (result != null && resultClass.isAnswerFile()) {
@@ -235,7 +240,7 @@ public class AnswerListFragment extends Fragment {
 
                 //如果未作答，则不提交答案
                 if (TextUtils.isEmpty(result)) {
-                    continue;
+                    return -2;
                 }
 
                 QuestionModel questionData = mQuestionList.get(i);
@@ -248,7 +253,8 @@ public class AnswerListFragment extends Fragment {
                 answerData.AnswerUserName = userName;
                 answerData.KnowledgeID = mKnowledgeId;
                 answerData.KnowledgeName = mKnowledgeName;
-                answerData.LessonSampleID = TextUtils.isEmpty(mLessonSampleId)?"":mLessonSampleId;;
+                answerData.LessonSampleID = TextUtils.isEmpty(mLessonSampleId) ? "" : mLessonSampleId;
+                ;
                 answerData.LessonSampleName = mLessonSampleName;
                 answerData.TeacherID = questionData.teacher_id;
                 answerData.TeacherName = questionData.teacher_name;
@@ -256,7 +262,7 @@ public class AnswerListFragment extends Fragment {
                 answerData.QuestionCategoryName = questionData.context.QuestionCategoryName;
                 answerData.QuestionCategoryId = questionData.context.QuestionCategoryId;
                 answerData.QuestionType = questionData.QuestionType;
-                answerData.QuestionSetID = TextUtils.isEmpty(mQuestionSetId)?"undefine":mQuestionSetId;
+                answerData.QuestionSetID = TextUtils.isEmpty(mQuestionSetId) ? "undefine" : mQuestionSetId;
                 answerData.GoodAnswer = questionData.context.Answer;
                 answerData.Analysis = questionData.context.Analysis;
                 answerData.Modify = 2;
