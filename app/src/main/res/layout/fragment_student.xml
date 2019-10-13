@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
     android:paddingTop="@dimen/dp_71"
     android:gravity="center_horizontal">
@@ -41,7 +42,7 @@
                 android:paddingRight="8dp"
                 android:background="@drawable/class_warning"
                 android:gravity="center"
-                android:text="@string/class_started_warning"
+                tools:text="@string/class_started_warning"
                 android:textColor="@color/white"
                 android:visibility="gone" />
         </FrameLayout>

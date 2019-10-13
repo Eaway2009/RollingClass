@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +87,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                 case CLASS_BEGIN: { //上课开始
                     mPushMessage = message;
                     mClassPageView.setEnabled(true);
-                    if (message.parameters != null) {
+                    if (message.parameters != null&& !TextUtils.isEmpty(message.parameters.get(PushMessage.TEACHER_NAME))) {
                         String teacherName = message.parameters.get(PushMessage.TEACHER_NAME);
                         mClassStartedWarningView.setText(getResources().getString(R.string.class_started_warning, teacherName));
                         mClassStartedWarningView.setVisibility(View.VISIBLE);

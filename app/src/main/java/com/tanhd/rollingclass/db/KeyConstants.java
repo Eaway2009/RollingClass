@@ -37,6 +37,18 @@ public class KeyConstants {
         public static final int WARNING_UP = 1;
         public static final int CLASSING = 2;
     }
+    //3: 错题本    1:学生学情    2:老师学情
+    public static class QuestionDisplayPage {
+        public static final int CLASS_STATISTICS = 2;
+        public static final int STUDENT_STATISTICS = 1;
+        public static final int WRONG_ANSWER = 3;
+    }
+    //0: 空闲    1:提示上课    2:上课中
+    public static class AnswerStatus {
+        public static final int WRONG = 1;
+        public static final int RIGHT = 2;
+        public static final int NO_ANSWER = 3;
+    }
 
     public static enum SYNC_MODE {
         NONE,

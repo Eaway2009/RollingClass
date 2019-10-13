@@ -144,7 +144,8 @@
     <string name="difficult_break">difficult break</string>
     <string name="class_summary">class summary</string>
     <string name="relevant_info">relevant info</string>
-    <string name="my_answer">right answer： %1$s</string>
+    <string name="my_answer">my answer： %1$s</string>
+    <string name="right_answer">right answer： %1$s</string>
     <string name="answer_right">【 right 】</string>
     <string name="answer_wrong">【 wrong 】</string>
     <string name="collect">collect</string>

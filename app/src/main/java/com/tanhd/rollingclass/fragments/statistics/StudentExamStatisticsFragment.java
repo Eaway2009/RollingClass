@@ -15,6 +15,9 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.fragments.FrameDialog;
+import com.tanhd.rollingclass.fragments.QuerstionTypeShow;
 import com.tanhd.rollingclass.fragments.resource.AnswerDisplayFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
@@ -124,6 +127,18 @@ public class StudentExamStatisticsFragment extends Fragment {
     private void initData() {
     }
 
+    public void clearData() {
+        mIsRequesting = true;
+        mKnowledgeDetailMessage = null;
+        if (mQuestionResourceFragment != null) {
+            mQuestionResourceFragment.clearListData();
+        }
+        yVals = new ArrayList<>();
+        if (mBarChartView != null) {
+            mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter(getResources().getString(R.string.lbl_di), getResources().getString(R.string.lbl_topic)), new MyValueFormatter("", getResources().getString(R.string.lbl_people)), getResources().getString(R.string.lbl_people));
+        }
+    }
+
     public void resetData(KnowledgeModel module, KnowledgeDetailMessage knowledgeDetailMessage) {
         mIsRequesting = true;
         mKnowledgeModel = module;
@@ -162,7 +177,7 @@ public class StudentExamStatisticsFragment extends Fragment {
         Fragment moduleFragment = null;
         if (moduleId == MODULE_ID_QUESTION_LIST) { //习题
             if (mQuestionResourceFragment == null) {
-                mQuestionResourceFragment = AnswerDisplayFragment.newInstance(1);
+                mQuestionResourceFragment = AnswerDisplayFragment.newInstance(KeyConstants.QuestionDisplayPage.STUDENT_STATISTICS);
                 transaction.add(ROOT_LAYOUT_ID, mQuestionResourceFragment);
             }
             moduleFragment = mQuestionResourceFragment;
@@ -197,7 +212,17 @@ public class StudentExamStatisticsFragment extends Fragment {
                     for (AnswerModel answerModel : wrongAnswerList.questions) {
                         for (AnswerData answerSet : wrongAnswerList.correct_set) {
                             if (answerModel.question_id.equals(answerSet.QuestionID)) {
-                                answerModel.answer_right = true;
+                                answerModel.answer_status = KeyConstants.AnswerStatus.RIGHT;
+                            }
+                        }
+                        for (AnswerData answerSet : wrongAnswerList.error_set) {
+                            if (answerModel.question_id.equals(answerSet.QuestionID)) {
+                                answerModel.answer_status = KeyConstants.AnswerStatus.WRONG;
+                            }
+                        }
+                        for (AnswerData answerSet : wrongAnswerList.unanswer_set) {
+                            if (answerModel.question_id.equals(answerSet.QuestionID)) {
+                                answerModel.answer_status = KeyConstants.AnswerStatus.NO_ANSWER;
                             }
                         }
                         questions.add(answerModel);

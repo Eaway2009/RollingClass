@@ -28,8 +28,10 @@ public class AnswerModel extends ResourceBaseModel {
     public int QuestionType;
     public ContextData context;
     public boolean isChecked;
-    public boolean answer_right = false;
+    public int answer_status = KeyConstants.AnswerStatus.NO_ANSWER;
     public int resource_type = KeyConstants.ResourceType.QUESTION_TYPE;
+
+    public String myAnswer;
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {

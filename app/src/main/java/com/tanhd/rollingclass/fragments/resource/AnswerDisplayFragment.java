@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.base.BaseListAdapter;
 import com.tanhd.rollingclass.base.BaseViewHolder;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.AnswerModel;
 import com.tanhd.rollingclass.server.data.ExternalParam;
@@ -31,6 +32,7 @@ import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.AnalysisDialog;
 import com.tanhd.rollingclass.views.OnItemClickListener;
 
@@ -70,7 +72,7 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
 
     private void initParams() {
         Bundle args = getArguments();
-        mType = args.getInt(PARAM_TYPE);
+        mType = args.getInt(PARAM_TYPE, 0);
     }
 
     private void initViews(View view) {
@@ -112,8 +114,7 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
         if (mAdapter != null) {
             recyclerView.smoothScrollToPosition(0);
             mQuestionList.clear();
-            mAdapter.clear();
-            mAdapter.notifyDataSetChanged();
+            mAdapter.setDataList(mQuestionList);
         }
     }
 
@@ -152,9 +153,9 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
             WebView stemView = holder.getView(R.id.stem);
             View overView = holder.getView(R.id.over);
             TextView tv_analysis = holder.getView(R.id.tv_analysis);
-            if (!userData.isTeacher() && mType != 1) {
+            if (!userData.isTeacher() && mType == 0) {
                 tv_analysis.setVisibility(View.GONE);
-            }else{
+            } else {
                 tv_analysis.setVisibility(View.VISIBLE);
             }
             TextView tv_my_answer = holder.getView(R.id.tv_my_answer);
@@ -166,25 +167,26 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
                 }
             });
             if (answerModel.context != null) {
-                tv_my_answer.setText(getString(R.string.my_answer, answerModel.context.Answer));
                 typeView.setText(String.format("[%s]", answerModel.context.QuestionCategoryName));
                 noView.setText(String.format(getResources().getString(R.string.lbl_question_no), answerModel.context.OrderIndex));
                 String html = AppUtils.dealHtmlText(answerModel.context.Stem);
                 stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 
-                if (mType == 1) {
+                tv_my_answer.setText(getString(R.string.my_answer, answerModel.myAnswer));
+                if (mType == KeyConstants.QuestionDisplayPage.WRONG_ANSWER) {
                     tv_my_answer.setVisibility(View.VISIBLE);
-                    answerResultTextview.setVisibility(View.VISIBLE);
-                    answerResultTextview.setText(R.string.answer_unselect);
-                    answerResultTextview.setTextColor(getResources().getColor(R.color.xt_un_select));
+                    answerResultTextview.setVisibility(View.GONE);
                 } else {
                     tv_my_answer.setVisibility(View.GONE);
                     answerResultTextview.setVisibility(View.VISIBLE);
-                    if (answerModel.answer_right) {
+                    if (answerModel.answer_status == KeyConstants.AnswerStatus.RIGHT) {
                         answerResultTextview.setText(R.string.answer_right);
                         answerResultTextview.setTextColor(getResources().getColor(R.color.xt_select_ok));
-                    } else {
+                    } else if (answerModel.answer_status == KeyConstants.AnswerStatus.WRONG) {
                         answerResultTextview.setText(R.string.answer_wrong);
+                        answerResultTextview.setTextColor(getResources().getColor(R.color.xt_select_no));
+                    } else {
+                        answerResultTextview.setText(R.string.answer_unselect);
                         answerResultTextview.setTextColor(getResources().getColor(R.color.xt_select_no));
                     }
                 }

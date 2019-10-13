@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
 import com.tanhd.rollingclass.base.BaseFragment;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.resource.AnswerDisplayFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
@@ -166,7 +167,7 @@ public class WrongAnswerListFragment extends BaseFragment implements View.OnClic
         Fragment moduleFragment = null;
         if (moduleId == MODULE_ID_QUESTION_LIST) { //习题
             if (mQuestionResourceFragment == null) {
-                mQuestionResourceFragment = AnswerDisplayFragment.newInstance(1);
+                mQuestionResourceFragment = AnswerDisplayFragment.newInstance(KeyConstants.QuestionDisplayPage.WRONG_ANSWER);
                 transaction.add(ROOT_LAYOUT_ID, mQuestionResourceFragment);
             }
             moduleFragment = mQuestionResourceFragment;
@@ -220,6 +221,7 @@ public class WrongAnswerListFragment extends BaseFragment implements View.OnClic
                 mKnowledgeDetailMessage = kldList.get(0);
                 new InitQuestionDataTask().execute();
             } else {
+                mQuestionResourceFragment.clearListData();
                 tv_spinner.setText(R.string.no_knowledge);
             }
         }
@@ -245,6 +247,7 @@ public class WrongAnswerListFragment extends BaseFragment implements View.OnClic
                         for (AnswerModel answerModel : wrongAnswerList.questions) {
                             for (AnswerData answerSet : wrongAnswerList.error_set) {
                                 if (answerModel.question_id.equals(answerSet.QuestionID)) {
+                                    answerModel.myAnswer = answerSet.AnswerText;
                                     questions.add(answerModel);
                                 }
                             }

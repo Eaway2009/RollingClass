@@ -32,12 +32,19 @@ public class ThumbAdapter  extends BaseAdapter {
                 .cacheOnDisk(true).build();
     }
 
+    private int mClickedIndex;
+
     public ThumbAdapter(Activity context) {
         mContext = context;
     }
 
     public void setData(ArrayList<String> thumbs){
         mDataList = thumbs;
+        notifyDataSetChanged();
+    }
+
+    public void setClickedIndex(int clickedIndex){
+        mClickedIndex = clickedIndex;
         notifyDataSetChanged();
     }
 
@@ -58,14 +65,18 @@ public class ThumbAdapter  extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView = (ImageView) convertView;
-        if (imageView == null) {
-            imageView = (ImageView) mContext.getLayoutInflater().inflate(R.layout.imageview, parent, false);
+        LinearLayout contentView = (LinearLayout) convertView;
+        if (contentView == null) {
+            contentView = (LinearLayout) mContext.getLayoutInflater().inflate(R.layout.imageview, parent, false);
         }
-
+        ImageView imageView = contentView.findViewById(R.id.image_view);
         String thumbUrl = mDataList.get(position);
         ImageLoader.getInstance().displayImage(ScopeServer.getInstance().getResourceUrl() + thumbUrl, imageView, mImageOptions);
-
-        return imageView;
+        if(position == mClickedIndex){
+            contentView.setBackgroundColor(mContext.getResources().getColor(R.color.button_orange));
+        }else{
+            contentView.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
+        }
+        return contentView;
     }
 }

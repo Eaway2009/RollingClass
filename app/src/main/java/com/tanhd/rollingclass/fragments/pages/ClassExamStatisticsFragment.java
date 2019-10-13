@@ -16,6 +16,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.QuerstionTypeShow;
 import com.tanhd.rollingclass.fragments.resource.AnswerDisplayFragment;
@@ -131,7 +132,7 @@ public class ClassExamStatisticsFragment extends Fragment {
         Fragment moduleFragment = null;
         if (moduleId == MODULE_ID_QUESTION_LIST) { //习题
             if (mQuestionResourceFragment == null) {
-                mQuestionResourceFragment = AnswerDisplayFragment.newInstance(2);
+                mQuestionResourceFragment = AnswerDisplayFragment.newInstance(KeyConstants.QuestionDisplayPage.CLASS_STATISTICS);
                 transaction.add(ROOT_LAYOUT_ID, mQuestionResourceFragment);
             }
             moduleFragment = mQuestionResourceFragment;

@@ -24,6 +24,7 @@ import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
+import com.tanhd.rollingclass.utils.ToastUtil;
 import com.tanhd.rollingclass.views.OnItemClickListener;
 import com.tanhd.rollingclass.views.PopFliterRes;
 
@@ -110,7 +111,15 @@ public class StudentStatisticsFragment extends Fragment implements View.OnClickL
     public void resetData(KnowledgeModel module){
         mIsRequesting = true;
         mKnowledgeModel = module;
-        if (popFliterRes != null) popFliterRes.clear();
+        if (popFliterRes != null) {
+            popFliterRes.clear();
+
+            //默认选中第一个
+            tv_spinner.setText(getString(R.string.no_knowledge));
+        }
+        if(mStatisticsFragment!=null) {
+            mStatisticsFragment.clearData();
+        }
         new InitDataTask().execute();
     }
 
@@ -184,6 +193,7 @@ public class StudentStatisticsFragment extends Fragment implements View.OnClickL
                 mStatisticsFragment.resetData(mKnowledgeModel, mKnowledgeDetailMessage);
             } else {
                 popFliterRes.clear();
+                mStatisticsFragment.clearData();
             }
         }
     }

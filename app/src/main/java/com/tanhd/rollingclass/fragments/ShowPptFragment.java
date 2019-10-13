@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class ShowPptFragment extends Fragment {
     private boolean downLoadFinish = true;
     private static final String TAG = "ShowPptFragment";
     private ArrayList<String> mThumbsList;
+    private int mPage = 0;
 
     public static ShowPptFragment newInstance(Activity activity, String url, ArrayList<String> thumbs, SYNC_MODE mode) {
         Bundle args = new Bundle();
@@ -91,6 +93,9 @@ public class ShowPptFragment extends Fragment {
         mThumbsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "onItemClick: " + position);
+                mPage = position;
+                mThumbAdapter.setClickedIndex(position);
                 webView.jumpTo(position);
             }
         });
@@ -114,8 +119,8 @@ public class ShowPptFragment extends Fragment {
     public void refreshPpt(String url, ArrayList<String> thumbs) {
         if (downLoadFinish || mUrl != url) {
             mUrl = url;
-            mThumbsList.clear();
-            mThumbsList.addAll(thumbs);
+            mThumbsList = thumbs;
+            mThumbAdapter.setData(mThumbsList);
             if (thumbs == null || thumbs.size() < 1) {
                 mThumbsListView.setVisibility(View.GONE);
             }
@@ -182,8 +187,13 @@ public class ShowPptFragment extends Fragment {
                 .onPageScroll(new OnPageScrollListener() {
                     @Override
                     public void onPageScrolled(int page, float positionOffset) {
-                        if (mThumbAdapter.getCount() > page) {
-                            mThumbsListView.smoothScrollToPosition(page);
+                        Log.d(TAG, "onPageScrolled: " + page);
+                        if (mPage - page == 1 || page - mPage == 1) {
+                            mPage = page;
+                            if (mThumbAdapter.getCount() > page) {
+                                mThumbsListView.smoothScrollToPosition(page);
+                                mThumbAdapter.setClickedIndex(page);
+                            }
                         }
                     }
                 })
@@ -216,7 +226,7 @@ public class ShowPptFragment extends Fragment {
     private OnPageScrollListener mPageScrollListener = new OnPageScrollListener() {
         @Override
         public void onPageScrolled(int page, float positionOffset) {
-            if(mThumbAdapter.getCount()>page) {
+            if (mThumbAdapter.getCount() > page) {
                 mThumbsListView.smoothScrollToPosition(page);
             }
             HashMap<String, String> params = new HashMap<>();
