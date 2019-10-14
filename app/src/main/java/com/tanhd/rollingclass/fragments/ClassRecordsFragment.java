@@ -87,7 +87,7 @@ public class ClassRecordsFragment extends Fragment {
         }
         popMoneth = new PopFliterRes(getActivity());
         popMoneth.setDatas(monthList);
-        popMoneth.setRootWidth((int) getResources().getDimension(R.dimen.dp_90));
+        popMoneth.setRootWidth((int) getResources().getDimension(R.dimen.dp_110));
         popMoneth.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -105,7 +105,7 @@ public class ClassRecordsFragment extends Fragment {
 
         popYear = new PopFliterRes(getActivity());
         popYear.setDatas(yearList);
-        popYear.setRootWidth((int) getResources().getDimension(R.dimen.dp_90));
+        popYear.setRootWidth((int) getResources().getDimension(R.dimen.dp_110));
         popYear.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

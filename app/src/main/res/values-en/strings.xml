@@ -374,4 +374,5 @@
     <string name="study_the_data">学习日期</string>
     <string name="study_the_time">学习时间</string>
     <string name="study_the_status">学习情况</string>
+    <string name="lbl_answer_card">答题卡</string>
 </resources>

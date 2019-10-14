@@ -30,6 +30,9 @@ import com.tanhd.rollingclass.views.PopFliterRes;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 学情页面
+ */
 public class StudentStatisticsFragment extends Fragment implements View.OnClickListener {
 
     private static final int MODULE_ID_QUESTION_LIST = 0;

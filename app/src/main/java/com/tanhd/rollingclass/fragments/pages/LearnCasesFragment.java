@@ -212,14 +212,14 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 break;
             case R.id.tv_exercise_result:
                 break;
-            case R.id.after_class_learning_tv:
+            case R.id.after_class_learning_tv: //课后复习
                 mPreClassLearningButton.setEnabled(true);
                 mAfterClassLearningButton.setEnabled(false);
                 mKnowledgeStatus = KeyConstants.KnowledgeStatus.AFTER_CLASS;
                 init = true;
                 new InitDataTask().execute();
                 break;
-            case R.id.pre_class_learning_tv:
+            case R.id.pre_class_learning_tv: //课前学习
                 mPreClassLearningButton.setEnabled(false);
                 mAfterClassLearningButton.setEnabled(true);
                 mKnowledgeStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
@@ -430,7 +430,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
 
         @Override
         protected List<KnowledgeLessonSample> doInBackground(Void... voids) {
-            if (mClassPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE) {
+            if (mClassPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE) { //学生自学
                 return ScopeServer.getInstance().QuerySampleByKnowledge(mKnowledgeId, mKnowledgeStatus);
             } else if (mClassPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) {
                 return ScopeServer.getInstance().QuerySampleByKnowledge(mKnowledgeId, 2);

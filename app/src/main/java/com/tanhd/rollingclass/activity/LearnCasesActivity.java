@@ -270,7 +270,7 @@ public class LearnCasesActivity extends BaseActivity {
                     }
                     break;
                 }
-                case QUESTIONING: {
+                case QUESTIONING: { //发起提问
                     if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
                         String examID = message.parameters.get("examID");
                         final String teacherID = message.parameters.get("teacherID");

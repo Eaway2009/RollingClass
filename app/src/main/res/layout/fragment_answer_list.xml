@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
     <View
         android:layout_width="0dp"
@@ -19,13 +20,26 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:visibility="gone"
+        tools:visibility="visible"
         android:text="@string/show_right_answers"
         android:textColor="@color/white"
         android:textSize="20dp" />
 
+    <TextView
+        android:id="@+id/tv_answer_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_18"
+        android:layout_marginBottom="@dimen/dp_35"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_gravity="center"
+        android:text="@string/lbl_answer_card" />
+
     <ListView
         android:id="@+id/listview"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@null"
         android:layout_gravity="center"
@@ -39,10 +53,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
+        android:paddingLeft="@dimen/dp_25"
+        android:paddingRight="@dimen/dp_25"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8"
         android:layout_gravity="bottom|center_horizontal"
-        android:text="@string/commit_answer"
+        android:text="@string/lbl_submit"
         android:gravity="center"
-        android:textSize="20dp"
+        android:textSize="@dimen/text_size_14"
         android:textColor="@color/white"
         android:background="@drawable/commit_answer_button"/>
 </LinearLayout>

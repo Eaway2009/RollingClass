@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:weightSum="8">
+    android:orientation="horizontal"
+    android:background="@color/white">
 
     <FrameLayout
         android:id="@+id/question_layout_fragment"
@@ -18,5 +18,5 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="3" />
+        android:layout_weight="3.2" />
 </LinearLayout>

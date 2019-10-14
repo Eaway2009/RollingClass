@@ -3,105 +3,108 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/answer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingLeft="38dp"
-    android:paddingTop="5dp"
-    android:paddingRight="26dp"
-    android:paddingBottom="5dp">
+    android:paddingLeft="@dimen/dp_25"
+    android:paddingTop="@dimen/dp_5"
+    android:paddingBottom="@dimen/dp_5">
 
     <TextView
         android:id="@+id/test_index"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="10dp"
+        android:minWidth="@dimen/dp_35"
+        android:gravity="left"
         android:textColor="@color/lesson_text"
-        android:textSize="20sp"
+        android:textSize="@dimen/text_size_16"
         tools:text="1." />
 
     <LinearLayout
         android:id="@+id/answer_list_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_weight="1"
+            android:gravity="left"
             android:text="【A】"
             android:textColor="@color/lesson_text"
-            android:textSize="20sp"
-            android:visibility="gone" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="left"
             android:text="【B】"
             android:textColor="@color/lesson_text"
-            android:textSize="20sp"
-            android:visibility="gone" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_weight="1"
+            android:gravity="left"
             android:text="【C】"
             android:textColor="@color/lesson_text"
-            android:textSize="20sp"
-            android:visibility="gone" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_weight="1"
+            android:gravity="left"
             android:text="【D】"
             android:textColor="@color/lesson_text"
-            android:textSize="20sp"
-            android:visibility="gone" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_weight="1"
             android:text="【E】"
             android:textColor="@color/lesson_text"
-            android:textSize="20sp"
-            android:visibility="gone" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_weight="1"
             android:text="【F】"
             android:textColor="@color/lesson_text"
-            android:textSize="20sp"
-            android:visibility="gone" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_weight="1"
             android:text="【G】"
             android:textColor="@color/lesson_text"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_size_16"
             android:visibility="gone" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="12dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:layout_weight="1"
             android:text="【H】"
             android:textColor="@color/lesson_text"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_size_16"
             android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

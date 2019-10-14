@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MqttListener;
 import com.tanhd.library.mqtthttp.MyMqttService;
@@ -24,7 +22,6 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.KeyConstants.SYNC_MODE;
-import com.tanhd.rollingclass.db.model.EventTag;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.ImageShowFragment;
 import com.tanhd.rollingclass.fragments.QuestionDisplayFragment;
@@ -307,14 +304,23 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
         showFragment(resourceModel.resource_type, resourceModel);
     }
 
+    /**
+     * 显示习题及答题卡
+     * @param resourceModel
+     * @param knowledgeId
+     * @param knowledgeName
+     * @param lessonSampleId
+     * @param lessonSampleName
+     */
     public void showExercises(ResourceModel resourceModel, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName) {
         mKnowledgeId = knowledgeId;
         mKnowledgeName = knowledgeName;
-        if (mQuestionFragment == null) {
-            mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName, lessonSampleId, lessonSampleName);
-        } else {
-            mQuestionFragment.resetData(resourceModel, lessonSampleId, lessonSampleName);
-        }
+        mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName, lessonSampleId, lessonSampleName);
+//        if (mQuestionFragment == null) {
+//
+//        } else {
+//            mQuestionFragment.resetData(resourceModel, lessonSampleId, lessonSampleName);
+//        }
         if (mCurrentShowModuleId != KeyConstants.ResourceType.QUESTION_TYPE) {
             getChildFragmentManager().beginTransaction().replace(R.id.container_layout, mQuestionFragment).commit();
         }

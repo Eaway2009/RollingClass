@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MyMqttService;
@@ -36,8 +37,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 答案列表
+ */
 public class AnswerListFragment extends Fragment {
     private ListView mAnswerListView;
+    private TextView tv_answer_card;
 
     private List<QuestionModel> mQuestionModelList;
     private AnswerCardAdapter mAdapter;
@@ -111,10 +116,12 @@ public class AnswerListFragment extends Fragment {
     }
 
     private void initViews(View contentView) {
+        tv_answer_card = contentView.findViewById(R.id.tv_answer_card);
         mAnswerListView = contentView.findViewById(R.id.listview);
         mCommitButton = contentView.findViewById(R.id.commit_button);
         if (mPageType != KeyConstants.ClassPageType.TEACHER_CLASS_PAGE) {
             mCommitButton.setVisibility(View.VISIBLE);
+            tv_answer_card.setVisibility(View.VISIBLE);
             mCommitButton.setOnClickListener(onClickListener);
         } else {
             mCommitButton.setVisibility(View.GONE);

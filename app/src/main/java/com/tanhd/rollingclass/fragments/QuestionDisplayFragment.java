@@ -11,7 +11,6 @@ import android.widget.FrameLayout;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
-import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.pages.AnswerListFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
 import com.tanhd.rollingclass.server.data.QuestionModel;
@@ -19,6 +18,9 @@ import com.tanhd.rollingclass.server.data.ResourceModel;
 
 import java.util.List;
 
+/**
+ * 习题问答页面
+ */
 public class QuestionDisplayFragment extends Fragment {
 
     private QuestionResourceFragment mQuestionResourceFragment;

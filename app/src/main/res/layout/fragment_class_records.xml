@@ -18,7 +18,7 @@
 
         <TextView
             android:id="@+id/tv_year"
-            android:layout_width="@dimen/dp_90"
+            android:layout_width="@dimen/dp_110"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:background="@drawable/bg_spinner"
@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/tv_month"
-            android:layout_width="@dimen/dp_90"
+            android:layout_width="@dimen/dp_110"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:background="@drawable/bg_spinner"
