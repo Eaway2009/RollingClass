@@ -1,4 +1,4 @@
-package com.tanhd.library.mqtthttp;
+package com.tanhd.rollingclass.base;
 
 import android.app.Service;
 import android.content.ComponentName;
@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,13 @@ import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.tanhd.library.mqtthttp.PushMessage;
+import com.tanhd.library.mqtthttp.Utils;
+import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ClassStatusInfo;
+import com.tanhd.rollingclass.server.data.ExternalParam;
+import com.tanhd.rollingclass.server.data.StudentData;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -36,6 +44,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import static com.tanhd.library.mqtthttp.PushMessage.COMMAND.CLASS_END;
 
 /**
  * Author       wildma
@@ -370,7 +380,30 @@ public class MyMqttService extends Service {
             return;
         }
 
-        EventBus.getDefault().post(pm);
+        new CheckMessageTask(pm).execute();
+    }
+
+
+    private class CheckMessageTask extends AsyncTask<Void, Void, ClassStatusInfo> {
+        PushMessage pushMessage;
+        public CheckMessageTask(PushMessage pm) {
+            pushMessage = pm;
+        }
+
+        @Override
+        protected ClassStatusInfo doInBackground(Void... voids) {
+            StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+            return ScopeServer.getInstance().GetKnowledgeCourseInfo(studentData.ClassID);
+        }
+
+        @Override
+        protected void onPostExecute(ClassStatusInfo classStatusInfo) {
+            if (classStatusInfo != null && classStatusInfo.status == 1) {
+                EventBus.getDefault().post(pushMessage);
+            }else if(CLASS_END == pushMessage.command){
+                EventBus.getDefault().post(pushMessage);
+            }
+        }
     }
 
     @Override

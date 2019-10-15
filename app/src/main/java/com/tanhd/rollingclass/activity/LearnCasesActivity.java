@@ -11,13 +11,14 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
-import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.rollingclass.base.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.MainActivity;
 import com.tanhd.rollingclass.R;
@@ -63,6 +64,7 @@ public class LearnCasesActivity extends BaseActivity {
     public static final String PARAM_KNOWLEDGE_ID = "PARAM_KNOWLEDGE_ID";
     public static final String PARAM_KNOWLEDGE_NAME = "PARAM_KNOWLEDGE_NAME";
     public static final String PARAM_LESSON_SAMPLE_ID = "PARAM_LESSON_SAMPLE_ID";
+    public static final String PARAM_RESOURCE_ID = "PARAM_RESOURCE_ID";
     public static final String PARAM_LESSON_SAMPLE_NAME = "PARAM_LESSON_SAMPLE_NAME";
     public static final String PARAM_TEACHER_NAME = "PARAM_TEACHER_NAME";
     public static final String PARAM_SHOW_NO = "PARAM_SHOW_NO";
@@ -78,6 +80,8 @@ public class LearnCasesActivity extends BaseActivity {
     private UserData mUserData;
     private String mTeacherName;
     private String mTeachingMaterialId;
+    private String mLessonSampleId;
+    private String mResourceId;
 
     /**
      * 老师端
@@ -116,6 +120,26 @@ public class LearnCasesActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    /**
+     * 学生端
+     *
+     * @param context
+     * @param knowledgeId
+     * @param knowledgeName
+     * @param classPageType
+     * @param teacherName
+     */
+    public static void startMe(Activity context, String knowledgeId, String lessonSampleId, String resourceId, String knowledgeName, int classPageType, String teacherName) {
+        Intent intent = new Intent(context, LearnCasesActivity.class);
+        intent.putExtra(PARAM_KNOWLEDGE_ID, knowledgeId);
+        intent.putExtra(PARAM_LESSON_SAMPLE_ID, lessonSampleId);
+        intent.putExtra(PARAM_RESOURCE_ID, resourceId);
+        intent.putExtra(PARAM_KNOWLEDGE_NAME, knowledgeName);
+        intent.putExtra(PARAM_TEACHER_NAME, teacherName);
+        intent.putExtra(PARAM_CLASS_STUDENT_PAGE, classPageType);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,6 +168,8 @@ public class LearnCasesActivity extends BaseActivity {
         mKnowledgeName = getIntent().getStringExtra(PARAM_KNOWLEDGE_NAME);
         mTeachingMaterialId = getIntent().getStringExtra(PARAM_TEACHING_MATERIAL_ID);
         mTeacherName = getIntent().getStringExtra(PARAM_TEACHER_NAME);
+        mLessonSampleId = getIntent().getStringExtra(PARAM_LESSON_SAMPLE_ID);
+        mResourceId = getIntent().getStringExtra(PARAM_RESOURCE_ID);
     }
 
     private void initFragment() {
@@ -164,6 +190,14 @@ public class LearnCasesActivity extends BaseActivity {
             }
         });
         getSupportFragmentManager().beginTransaction().replace(R.id.framelayout, mLearnCasesFragment).commit();
+        if (!TextUtils.isEmpty(mLessonSampleId)) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLearnCasesFragment.showItem(mLessonSampleId, mResourceId);
+                }
+            }, 500);
+        }
     }
 
     private void initViews() {
@@ -272,6 +306,12 @@ public class LearnCasesActivity extends BaseActivity {
                     }
                     break;
                 }
+                case REFRESH_DATA: {
+                    if (ExternalParam.getInstance().getStatus() == 2 && !mUserData.isTeacher()) {
+                        mLearnCasesFragment.refreshData();
+                    }
+                    break;
+                }
                 case QUESTIONING: { //发起提问
                     if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
                         String examID = message.parameters.get("examID");
@@ -293,7 +333,7 @@ public class LearnCasesActivity extends BaseActivity {
                                 message.parameters.put("askName", studentData.Username);
                                 MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_COMPLETED, teacherID, message.parameters);
                             }
-                        }),0.5d);
+                        }), 0.5d);
                     }
                     break;
                 }

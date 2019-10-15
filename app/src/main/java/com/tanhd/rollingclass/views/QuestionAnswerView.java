@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tanhd.library.mqtthttp.MQTT;
-import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.rollingclass.base.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.MSG_TYPE;

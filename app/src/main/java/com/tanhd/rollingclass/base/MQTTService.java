@@ -1,4 +1,4 @@
-package com.tanhd.library.mqtthttp;
+package com.tanhd.rollingclass.base;
 
 import android.app.Service;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,6 +15,18 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+
+import com.tanhd.rollingclass.base.MyMqttService;
+import com.tanhd.library.mqtthttp.PushMessage;
+import com.tanhd.library.mqtthttp.Utils;
+import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.activity.LearnCasesActivity;
+import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ClassStatusInfo;
+import com.tanhd.rollingclass.server.data.ExternalParam;
+import com.tanhd.rollingclass.server.data.StudentData;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -288,7 +301,6 @@ public class MQTTService  extends Service {
         public void onSuccess(IMqttToken arg0) {
             Log.i(TAG, "连接成功 ");
             subscribe();
-            MyMqttService.publishMessage(PushMessage.COMMAND.PING, (List<String>)null, null);
         }
 
         @Override
@@ -356,7 +368,28 @@ public class MQTTService  extends Service {
             return;
         }
 
-        EventBus.getDefault().post(pm);
+        new CheckMessageTask(pm).execute();
+    }
+
+
+    private class CheckMessageTask extends AsyncTask<Void, Void, ClassStatusInfo> {
+        PushMessage pushMessage;
+        public CheckMessageTask(PushMessage pm) {
+            pushMessage = pm;
+        }
+
+        @Override
+        protected ClassStatusInfo doInBackground(Void... voids) {
+            StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+            return ScopeServer.getInstance().GetKnowledgeCourseInfo(studentData.ClassID);
+        }
+
+        @Override
+        protected void onPostExecute(ClassStatusInfo classStatusInfo) {
+            if (classStatusInfo != null&&classStatusInfo.status == 1) {
+                EventBus.getDefault().post(pushMessage);
+            }
+        }
     }
 
     @Override

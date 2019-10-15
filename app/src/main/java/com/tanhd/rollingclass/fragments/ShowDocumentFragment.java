@@ -20,7 +20,7 @@ import com.github.barteksc.pdfviewer.listener.OnErrorListener;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageScrollListener;
 import com.tanhd.library.mqtthttp.MqttListener;
-import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.rollingclass.base.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.KeyConstants;
@@ -159,7 +159,7 @@ public class ShowDocumentFragment extends Fragment {
                     @Override
                     public void loadComplete(int nbPages) {
                         mProgressBarView.setVisibility(View.GONE);
-                        publish(PushMessage.COMMAND.SCROLL_CUR, (List<String>) null, null);
+//                        publish(PushMessage.COMMAND.SCROLL_CUR, (List<String>) null, null);
                     }
                 })
                 .onError(new OnErrorListener() {
@@ -177,21 +177,21 @@ public class ShowDocumentFragment extends Fragment {
         configurator.load();
     }
 
-    public void publish(PushMessage.COMMAND command, List<String> to, Map<String, String> data) {
-        if (mSyncMode != SYNC_MODE.MASTER)
-            return;
-
-        MyMqttService.publishMessage(command, to, data);
-    }
+//    public void publish(PushMessage.COMMAND command, List<String> to, Map<String, String> data) {
+//        if (mSyncMode != SYNC_MODE.MASTER)
+//            return;
+//
+//        MyMqttService.publishMessage(command, to, data);
+//    }
 
     private OnPageScrollListener mPageScrollListener = new OnPageScrollListener() {
         @Override
         public void onPageScrolled(int page, float positionOffset) {
-            HashMap<String, String> params = new HashMap<>();
-            params.put("page", String.valueOf(page));
-            params.put("positionOffset", String.valueOf(positionOffset));
-            params.put("scale", String.valueOf(webView.getZoom()));
-            MyMqttService.publishMessage(PushMessage.COMMAND.SCROLL_TO, (List<String>) null, params);
+//            HashMap<String, String> params = new HashMap<>();
+//            params.put("page", String.valueOf(page));
+//            params.put("positionOffset", String.valueOf(positionOffset));
+//            params.put("scale", String.valueOf(webView.getZoom()));
+//            MyMqttService.publishMessage(PushMessage.COMMAND.SCROLL_TO, (List<String>) null, params);
         }
     };
 

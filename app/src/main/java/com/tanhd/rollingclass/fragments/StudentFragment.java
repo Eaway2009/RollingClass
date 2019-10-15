@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,14 +13,19 @@ import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
-import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.rollingclass.base.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DatasActivity;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ClassStatusInfo;
 import com.tanhd.rollingclass.server.data.ExternalParam;
+import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
+import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.utils.AppUtils;
+import com.tanhd.rollingclass.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,6 +44,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
     private TextView mClassStartedWarningView;
 
     private PushMessage mPushMessage;
+    private ClassStatusInfo mClassStatusInfo;
 
     public static StudentFragment newInstance(BackListener listener) {
         StudentFragment fragment = new StudentFragment();
@@ -56,6 +63,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
 
         EventBus.getDefault().register(this);
         initViews(view);
+        new CheckClassTask().execute();
         return view;
     }
 
@@ -86,16 +94,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
             switch (message.command) {
                 case CLASS_BEGIN: { //上课开始
                     mPushMessage = message;
-                    mClassPageView.setEnabled(true);
-                    if (message.parameters != null&& !TextUtils.isEmpty(message.parameters.get(PushMessage.TEACHER_NAME))) {
-                        String teacherName = message.parameters.get(PushMessage.TEACHER_NAME);
-                        mClassStartedWarningView.setText(getResources().getString(R.string.class_started_warning, teacherName));
-                        mClassStartedWarningView.setVisibility(View.VISIBLE);
-                    }
-                    if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.REST) {
-                        mClassPageView.callOnClick();
-                        ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.CLASSING);
-                    }
+                    new InitDataTask(message).execute();
                     break;
                 }
                 case CLASS_END: //下课了
@@ -130,17 +129,79 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+
+    private class InitDataTask extends AsyncTask<Void, Void, ClassStatusInfo> {
+
+        private String mKnowledgeId;
+
+        public InitDataTask(PushMessage message) {
+            if (mPushMessage != null && mPushMessage.parameters != null) {
+                mKnowledgeId = mPushMessage.parameters.get(PushMessage.KNOWLEDGE_ID);
+            }
+        }
+
+        @Override
+        protected ClassStatusInfo doInBackground(Void... voids) {
+            StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+            return ScopeServer.getInstance().GetKnowledgeStatus(mKnowledgeId, studentData.StudentID);
+        }
+
+        @Override
+        protected void onPostExecute(ClassStatusInfo classStatusInfo) {
+            if (classStatusInfo != null) {
+                mClassStatusInfo = classStatusInfo;
+                mClassPageView.setEnabled(true);
+                String knowledgeId = classStatusInfo.knowledge_id;
+                String knowledgeName = classStatusInfo.knowledge_point_name;
+                mClassStartedWarningView.setText(getResources().getString(R.string.class_started_warning, classStatusInfo.teacher_name));
+                mClassStartedWarningView.setVisibility(View.VISIBLE);
+                if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.REST) {
+                    MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
+                    LearnCasesActivity.startMe(getActivity(), knowledgeId, classStatusInfo.lessonsample_id, classStatusInfo.resource_id, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, classStatusInfo.teacher_name);
+                    ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.CLASSING);
+                }
+            }
+        }
+    }
+
+
+    private class CheckClassTask extends AsyncTask<Void, Void, ClassStatusInfo> {
+
+        public CheckClassTask() {
+        }
+
+        @Override
+        protected ClassStatusInfo doInBackground(Void... voids) {
+            StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+            return ScopeServer.getInstance().GetKnowledgeCourseInfo(studentData.ClassID);
+        }
+
+        @Override
+        protected void onPostExecute(ClassStatusInfo classStatusInfo) {
+            if (classStatusInfo != null) {
+                mClassStatusInfo = classStatusInfo;
+                mClassPageView.setEnabled(true);
+                String knowledgeId = classStatusInfo.knowledge_id;
+                String knowledgeName = classStatusInfo.knowledge_point_name;
+                mClassStartedWarningView.setText(getResources().getString(R.string.class_started_warning, classStatusInfo.teacher_name));
+                mClassStartedWarningView.setVisibility(View.VISIBLE);
+                if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.REST) {
+                    MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
+                    LearnCasesActivity.startMe(getActivity(), knowledgeId, classStatusInfo.lessonsample_id, classStatusInfo.resource_id, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, classStatusInfo.teacher_name);
+                    ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.CLASSING);
+                }
+            }
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.class_page_view: //进入课堂
                 MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
-                ExternalParam.getInstance().setStatus(2);
-                if (mPushMessage != null && mPushMessage.parameters != null) {
-                    String knowledgeId = mPushMessage.parameters.get(PushMessage.KNOWLEDGE_ID);
-                    String knowledgeName = mPushMessage.parameters.get(PushMessage.KnowledgePointName);
-                    String teacherName = mPushMessage.parameters.get(PushMessage.TEACHER_NAME);
-                    LearnCasesActivity.startMe(getActivity(), knowledgeId, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, teacherName);
+                ExternalParam.getInstance().setStatus(KeyConstants.ClassStatus.CLASS_ING);
+                if (mClassStatusInfo != null) {
+                    LearnCasesActivity.startMe(getActivity(), mClassStatusInfo.knowledge_id, mClassStatusInfo.lessonsample_id, mClassStatusInfo.resource_id, mClassStatusInfo.knowledge_point_name, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, mClassStatusInfo.teacher_name);
                 }
                 break;
             case R.id.knowledge_page_view: //自学

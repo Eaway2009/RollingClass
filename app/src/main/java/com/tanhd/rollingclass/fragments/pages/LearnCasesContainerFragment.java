@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MqttListener;
-import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.rollingclass.base.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
@@ -198,6 +198,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     }
 
 
+
 //    private void timerGoneHand(){
 //        RxTimerUtil.cancel();
 //        RxTimerUtil.timer(3 * 1000, new RxTimerUtil.IRxNext() {
@@ -275,15 +276,15 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 fullScreen();
                 break;
             case R.id.container_layout:
-                if (mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) {
-                    mStudentHandsupLayout.setVisibility(View.VISIBLE);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mStudentHandsupLayout.setVisibility(View.GONE);
-                        }
-                    }, 3000);
-                }
+//                if (mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE) {
+//                    mStudentHandsupLayout.setVisibility(View.VISIBLE);
+//                    handler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            mStudentHandsupLayout.setVisibility(View.GONE);
+//                        }
+//                    }, 3000);
+//                }
                 break;
         }
     }

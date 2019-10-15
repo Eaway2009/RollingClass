@@ -23,7 +23,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.tanhd.library.mqtthttp.MqttListener;
-import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.rollingclass.base.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.library.smartpen.SmartPenService;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;

@@ -133,10 +133,6 @@ public class StudentExamStatisticsFragment extends Fragment {
         if (mQuestionResourceFragment != null) {
             mQuestionResourceFragment.clearListData();
         }
-        yVals = new ArrayList<>();
-        if (mBarChartView != null) {
-            mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter(getResources().getString(R.string.lbl_di), getResources().getString(R.string.lbl_topic)), new MyValueFormatter("", getResources().getString(R.string.lbl_people)), getResources().getString(R.string.lbl_people));
-        }
     }
 
     public void resetData(KnowledgeModel module, KnowledgeDetailMessage knowledgeDetailMessage) {

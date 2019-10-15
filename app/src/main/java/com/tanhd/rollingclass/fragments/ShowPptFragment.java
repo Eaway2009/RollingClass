@@ -17,12 +17,15 @@ import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnErrorListener;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageScrollListener;
+import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
-import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.rollingclass.base.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.views.ThumbAdapter;
 
@@ -33,6 +36,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.tanhd.rollingclass.db.KeyConstants.SYNC_MODE;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class ShowPptFragment extends Fragment {
     private Activity mActivity;
@@ -82,6 +89,7 @@ public class ShowPptFragment extends Fragment {
             webView.setEnabled(false);
         }
         initListView(view);
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -165,9 +173,6 @@ public class ShowPptFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-//临时注释
-//        if (mSyncMode == SYNC_MODE.SLAVE)
-//            MQTT.unregister(mqttListener);
     }
 
     private void load() {
@@ -201,7 +206,7 @@ public class ShowPptFragment extends Fragment {
                     @Override
                     public void loadComplete(int nbPages) {
                         mProgressBarView.setVisibility(View.GONE);
-                        publish(PushMessage.COMMAND.SCROLL_CUR, (List<String>) null, null);
+//                        publish(PushMessage.COMMAND.SCROLL_CUR, (List<String>) null, null);
                     }
                 })
                 .onError(new OnErrorListener() {
@@ -219,9 +224,9 @@ public class ShowPptFragment extends Fragment {
         mConfigurator.load();
     }
 
-    public void publish(PushMessage.COMMAND command, List<String> to, Map<String, String> data) {
-        MyMqttService.publishMessage(command, to, data);
-    }
+//    public void publish(PushMessage.COMMAND command, List<String> to, Map<String, String> data) {
+//        MyMqttService.publishMessage(command, to, data);
+//    }
 
     private OnPageScrollListener mPageScrollListener = new OnPageScrollListener() {
         @Override
@@ -233,37 +238,30 @@ public class ShowPptFragment extends Fragment {
             params.put("page", String.valueOf(page));
             params.put("positionOffset", String.valueOf(positionOffset));
             params.put("scale", String.valueOf(webView.getZoom()));
-            MyMqttService.publishMessage(PushMessage.COMMAND.SCROLL_TO, (List<String>) null, params);
+//            MyMqttService.publishMessage(PushMessage.COMMAND.SCROLL_TO, (List<String>) null, params);
         }
     };
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleEventBus(PushMessage pushMessage) {
+        if (pushMessage != null) {
+            mqttListener.messageArrived(pushMessage);
+        }
+    }
+
     private MqttListener mqttListener = new MqttListener() {
+
         @Override
-        public void messageArrived(PushMessage message) {
-            if (mSyncMode == SYNC_MODE.NONE)
-                return;
-
-            if (mSyncMode == SYNC_MODE.SLAVE) {
-                if (message.command == PushMessage.COMMAND.SCROLL_TO) {
+        public void messageArrived(final PushMessage message) {
+            switch (message.command) {
+                case SCROLL_CUR:
                     try {
-                        int page = Integer.parseInt(message.parameters.get("page"));
-                        float positionOffset = Float.parseFloat(message.parameters.get("positionOffset"));
-                        float scale = Float.parseFloat(message.parameters.get("scale"));
+                        int page = Integer.parseInt(message.parameters.get(PushMessage.PARAM_PAGE));
                         webView.jumpTo(page);
-                        webView.setPositionOffset(positionOffset);
-                        webView.zoomWithAnimation(scale);
-                    } catch (Exception ex) {
+                    }catch (NumberFormatException exception){
+
                     }
-                }
-
-                return;
-            }
-
-            if (message.command == PushMessage.COMMAND.SCROLL_CUR) {
-                try {
-                    mPageScrollListener.onPageScrolled(webView.getCurrentPage(), webView.getPositionOffset());
-                } catch (Exception ex) {
-                }
+                    break;
             }
         }
 
@@ -272,5 +270,11 @@ public class ShowPptFragment extends Fragment {
 
         }
     };
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
 
 }

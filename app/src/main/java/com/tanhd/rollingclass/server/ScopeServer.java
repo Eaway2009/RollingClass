@@ -11,6 +11,7 @@ import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.model.Course;
 import com.tanhd.rollingclass.db.model.Result;
 import com.tanhd.rollingclass.server.data.AnswerModel;
+import com.tanhd.rollingclass.server.data.ClassStatusInfo;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
@@ -62,8 +63,8 @@ public class ScopeServer extends ServerRequest {
     private static final String HOST_URL_HTTP = "http://";
     private static final String HOST_URL_PORT = ":8001/flip";
     public static final String RESOURCE_URL_PORT = ":8002/";
-//    private String mHostUrl = "sea-ai.com";
-    private String mHostUrl = "192.168.90.203";
+    private String mHostUrl = "sea-ai.com";
+//    private String mHostUrl = "192.168.90.203";
     private static final String TAG = "ScopeServer";
 
     private String mToken;
@@ -1490,6 +1491,31 @@ public class ScopeServer extends ServerRequest {
         }
         if (list == null) {
             list = new ArrayList<>();
+        }
+        return list;
+    }
+
+    public ClassStatusInfo GetKnowledgeStatus(String knowledgeid, String studentID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("knowledgeid", knowledgeid);
+        params.put("studentID", studentID);
+//        knowledgeid=5da3f98d37a49e219817958c&studentID=5c9dcff837a49e47876bd0be
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/GetKnowledgeStatus/" + mToken, METHOD.GET, params);
+        ClassStatusInfo list = null;
+        if (response != null) {
+            list = (ClassStatusInfo) jsonToModel(ClassStatusInfo.class.getName(), response);
+        }
+        return list;
+    }
+
+    public ClassStatusInfo GetKnowledgeCourseInfo(String classID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("classID", classID);
+//        knowledgeid=5da3f98d37a49e219817958c&studentID=5c9dcff837a49e47876bd0be
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/GetKnowledgeCourseInfo/" + mToken, METHOD.GET, params);
+        ClassStatusInfo list = null;
+        if (response != null) {
+            list = (ClassStatusInfo) jsonToModel(ClassStatusInfo.class.getName(), response);
         }
         return list;
     }

@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
-import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.rollingclass.base.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
@@ -177,6 +177,10 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         if (init) {
             new InitDataTask().execute();
         }
+    }
+
+    public void refreshData(){
+        new InitDataTask().execute();
     }
 
     LearnCasesContainerFragment.PagesListener mPagesListener = new LearnCasesContainerFragment.PagesListener() {

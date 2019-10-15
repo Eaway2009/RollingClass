@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tanhd.library.mqtthttp.MyMqttService;
+import com.tanhd.rollingclass.base.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
@@ -180,9 +180,6 @@ public class AnswerListFragment extends Fragment {
             switch (v.getId()) {
                 case R.id.commit_button: //提交答案
                     new CommitAnswerTask(mAdapter.getData()).execute();
-                    if (mListener != null) {
-                        mListener.onFinished(mAdapter.getAnswer());
-                    }
                     break;
                 case R.id.show_answers_button: //公布答案
                     MyMqttService.publishMessage(PushMessage.COMMAND.SHOW_RIGHT_ANSWER, (List<String>) null, mParameters);
@@ -213,6 +210,9 @@ public class AnswerListFragment extends Fragment {
                 ToastUtil.show(R.string.toast_answer_ok);
                 mAdapter.setAnswerCommitted(true);
                 mCommitButton.setVisibility(View.GONE);
+                if (mListener != null) {
+                    mListener.onFinished(mAdapter.getAnswer());
+                }
             } else if (result == -2) {
                 ToastUtil.show(R.string.toast_answer_all);
             } else {

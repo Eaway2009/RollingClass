@@ -82,6 +82,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+        <service android:name="com.tanhd.rollingclass.base.MyMqttService" /> <!--MyMqttService-->
     </application>
 
     <supports-screens

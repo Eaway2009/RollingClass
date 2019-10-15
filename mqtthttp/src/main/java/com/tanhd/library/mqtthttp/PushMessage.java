@@ -25,6 +25,7 @@ public class PushMessage {
     public static final String PARAM_STUDENT_NAME = "PARAM_STUDENT_NAME";
     public static final String PARAM_LESSON_SAMPLE_ID = "lesson_sample_id";
     public static final String PARAM_RESOURCE_ID = "resource_id";
+    public static final String PARAM_PAGE = "page";
 
     public static enum COMMAND {
         OPEN_DOCUMENT,//打开学案(切换教案)
@@ -43,6 +44,7 @@ public class PushMessage {
         SCROLL_TO,//滚动翻页
         SCROLL_CUR,//跳转（第几页）
         MESSAGE,//指定提问
+        REFRESH_DATA,//刷新数据
 
         QUESTIONING,//发起提问
         RESPONDER,//抢答
