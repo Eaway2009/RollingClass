@@ -1,5 +1,6 @@
 package com.tanhd.rollingclass.fragments.statistics;
 
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,8 +34,10 @@ import com.tanhd.rollingclass.server.data.QuestionStatistics;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.server.data.WrongAnswerList;
+import com.tanhd.rollingclass.utils.Logger;
 import com.tanhd.rollingclass.utils.MyValueFormatter;
 import com.tanhd.rollingclass.views.BarChartView;
+import com.tanhd.rollingclass.views.MyBarChartView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +58,7 @@ public class StudentExamStatisticsFragment extends Fragment {
     private AnswerDisplayFragment mQuestionResourceFragment;
     private int mCurrentShowModuleId = -1;
 
-    private ArrayList<BarEntry> yVals;
-    private List<String> xAxisValue;
-    private BarChartView mBarChartView;
+    private MyBarChartView myBarChartView;
     private StudentData mStudentData;
 
     public static StudentExamStatisticsFragment newInstance(KnowledgeModel knowledgeModel) {
@@ -71,7 +72,7 @@ public class StudentExamStatisticsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_student_answer_statistics, container, false);
+        View view = inflater.inflate(R.layout.fragment_student_answer_statistics_new, container, false);
         initParams();
         initViews(view);
         initFragment();
@@ -85,28 +86,29 @@ public class StudentExamStatisticsFragment extends Fragment {
     }
 
     private void initViews(View view) {
-        mBarChartView = view.findViewById(R.id.chartView);
-        mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter(getResources().getString(R.string.lbl_di), getResources().getString(R.string.lbl_topic)), new MyValueFormatter("", getResources().getString(R.string.lbl_people)), getResources().getString(R.string.lbl_people));
-        mBarChartView.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                String questionID = (String) e.getData();
-                int stackIndex = h.getStackIndex();
-                QuerstionTypeShow.TYPE type = QuerstionTypeShow.TYPE.CORRECT;
-                if (stackIndex == 1)
-                    type = QuerstionTypeShow.TYPE.ERROR;
-                else if (stackIndex == 2)
-                    type = QuerstionTypeShow.TYPE.NOANSWER;
-
-                QuerstionTypeShow fragment = QuerstionTypeShow.newInstance(questionID, ExternalParam.getInstance().getUserData().getOwnerID(), type);
-                FrameDialog.show(getChildFragmentManager(), fragment);
-            }
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
+        //mBarChartView = view.findViewById(R.id.chartView);
+        //mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter(getResources().getString(R.string.lbl_di), getResources().getString(R.string.lbl_topic)), new MyValueFormatter("", getResources().getString(R.string.lbl_people)), getResources().getString(R.string.lbl_people));
+//        mBarChartView.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+//            @Override
+//            public void onValueSelected(Entry e, Highlight h) {
+//                String questionID = (String) e.getData();
+//                int stackIndex = h.getStackIndex();
+//                QuerstionTypeShow.TYPE type = QuerstionTypeShow.TYPE.CORRECT;
+//                if (stackIndex == 1)
+//                    type = QuerstionTypeShow.TYPE.ERROR;
+//                else if (stackIndex == 2)
+//                    type = QuerstionTypeShow.TYPE.NOANSWER;
+//
+//                QuerstionTypeShow fragment = QuerstionTypeShow.newInstance(questionID, ExternalParam.getInstance().getUserData().getOwnerID(), type);
+//                FrameDialog.show(getChildFragmentManager(), fragment);
+//            }
+//
+//            @Override
+//            public void onNothingSelected() {
+//
+//            }
+//        });
+        myBarChartView = view.findViewById(R.id.my_barchart);
     }
 
     private void initData() {
@@ -211,7 +213,7 @@ public class StudentExamStatisticsFragment extends Fragment {
         }
     }
 
-    private class InitClassDataTask extends AsyncTask<Void, Void, List<AnswerModel>> {
+    private class InitClassDataTask extends AsyncTask<Void,Void,QuestionStatistics> {
 
         @Override
         protected void onPreExecute() {
@@ -219,7 +221,7 @@ public class StudentExamStatisticsFragment extends Fragment {
         }
 
         @Override
-        protected List<AnswerModel> doInBackground(Void... voids) {
+        protected QuestionStatistics doInBackground(Void... voids) {
             UserData userData = ExternalParam.getInstance().getUserData();
             StudentData studentData;
             if (!userData.isTeacher()) {
@@ -231,25 +233,27 @@ public class StudentExamStatisticsFragment extends Fragment {
                 QuestionStatistics statistics = ScopeServer.getInstance().QureyAnswerv2ByClassIDAndCourseID(
                         studentData.ClassID, mKnowledgeDetailMessage.knowledge_id);
                 if (statistics != null && statistics.question_info != null) {
-                    yVals = new ArrayList<>();
-                    xAxisValue = new ArrayList<>();
-                    for (int i = 0; i < statistics.question_info.size(); i++) {
-                        QuestionInfo data = statistics.question_info.get(i);
-                        AnswerModel answerModel = data.question;
-                        BarEntry entry = new BarEntry(answerModel.context.OrderIndex, new float[]{data.correct_cnt, data.error_cnt, data.unanswer_cnt}, answerModel.context.OrderIndex + "");
-                        yVals.add(entry);
-                        entry.setData(answerModel.question_id);
-                        xAxisValue.add(getString(R.string.lbl_question_no, answerModel.context.OrderIndex));
-                    }
+                    return statistics;
                 }
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(List<AnswerModel> documentList) {
-            mBarChartView.setData(null, new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)}, yVals, new MyValueFormatter(getResources().getString(R.string.lbl_di), getResources().getString(R.string.lbl_topic)), new MyValueFormatter("", getResources().getString(R.string.lbl_people)), getResources().getString(R.string.lbl_people));
-            mBarChartView.invalidate();
+        protected void onPostExecute(QuestionStatistics questionStatistics) {
+            if (questionStatistics == null){
+                myBarChartView.clearData();
+                mQuestionResourceFragment.clearListData();
+                return;
+            }
+
+            myBarChartView.setData("",
+                    new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)},
+                    questionStatistics.question_info,
+                    new MyValueFormatter("T", ""),
+                    //new MyValueFormatter(getResources().getString(R.string.lbl_di), getResources().getString(R.string.lbl_topic)),
+                    new MyValueFormatter("", getResources().getString(R.string.lbl_people)),
+                    getResources().getString(R.string.lbl_people));
         }
     }
 }

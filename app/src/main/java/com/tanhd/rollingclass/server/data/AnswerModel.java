@@ -16,7 +16,7 @@ public class AnswerModel extends ResourceBaseModel {
     public String lesson_sample_name;
     public String QuestionCoordinate;
     public String question_id;
-    public String resource_id;
+    public transient String resource_id;
     public String resource_name;
     public String teaching_material_id;
     public String QuestionName;

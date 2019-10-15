@@ -4,15 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/chartView"
-        layout="@layout/view_barchart"
-        android:layout_width="match_parent"
-        android:layout_height="400dp" />
-
-    <FrameLayout
-        android:id="@+id/framelayout"
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barchart"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </LinearLayout>

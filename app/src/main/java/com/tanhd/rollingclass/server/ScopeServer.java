@@ -3,10 +3,13 @@ package com.tanhd.rollingclass.server;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tanhd.rollingclass.MainApp;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.db.model.Course;
+import com.tanhd.rollingclass.db.model.Result;
 import com.tanhd.rollingclass.server.data.AnswerModel;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeLessonSample;
@@ -47,6 +50,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -636,7 +640,14 @@ public class ScopeServer extends ServerRequest {
         String response = sendRequest(getHostUrl() + "/answer/QureyAnswerv2ByClassIDAndCourseID/" +
                appenUrl(mToken), METHOD.GET, params);
         if (response != null) {
-            QuestionStatistics list = (QuestionStatistics) jsonToModel(QuestionStatistics.class.getName(), response);
+            //QuestionStatistics list = (QuestionStatistics) jsonToModel(QuestionStatistics.class.getName(), response);
+
+            Type resultType = new TypeToken<Result<QuestionStatistics>>(){}.getType();
+            QuestionStatistics list = null;
+            Result<QuestionStatistics> result = new Gson().fromJson(response, resultType);
+            if (result.getStatus() == 0){
+                list = result.getData();
+            }
             return list;
         }
         return null;

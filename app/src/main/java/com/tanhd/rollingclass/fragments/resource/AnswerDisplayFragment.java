@@ -112,6 +112,7 @@ public class AnswerDisplayFragment extends ResourceBaseFragment {
         if (mAdapter != null) {
             recyclerView.smoothScrollToPosition(0);
             mQuestionList.clear();
+            mAdapter.clear();
             mAdapter.notifyDataSetChanged();
         }
     }

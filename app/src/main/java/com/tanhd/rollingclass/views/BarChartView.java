@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,8 +15,10 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.StackedValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
@@ -30,7 +33,6 @@ public class BarChartView extends LinearLayout {
     private BarChart mBarChart;
     private TextView mTitleView;
     private List<BarEntry> yEntries;
-    private List<String> xLabels;
     private String mTitle;
     private String[] mStackLables;
     private MyValueFormatter yValueFormatter;
@@ -62,6 +64,15 @@ public class BarChartView extends LinearLayout {
             return;
 
         chart.getDescription().setEnabled(false);
+        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+            }
+
+            @Override
+            public void onNothingSelected() {
+            }
+        });
 
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
@@ -69,6 +80,8 @@ public class BarChartView extends LinearLayout {
 
         // scaling can now only be done on x- and y-axis separately
         chart.setPinchZoom(false);
+//        chart.setEnabled(false);
+        chart.setDoubleTapToZoomEnabled(false);
 
         chart.setDrawGridBackground(false);
         chart.setDrawBarShadow(false);
@@ -82,7 +95,7 @@ public class BarChartView extends LinearLayout {
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setValueFormatter(yValueFormatter);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        leftAxis.setDrawTopYLabelEntry(false);
+        //leftAxis.setDrawTopYLabelEntry(false);
         //leftAxis.setDrawGridLines(false);
         //leftAxis.setDrawAxisLine(false);
         chart.getAxisRight().setEnabled(false);
@@ -105,8 +118,22 @@ public class BarChartView extends LinearLayout {
         l.setXEntrySpace(6f);
 
         mTitleView.setText(mTitle);
-        BarDataSet set1;
 
+//        yEntries.clear();
+//        for (int i = 0; i < 10; i++) {
+//            //float mul = (100 + 1);
+////            float val1 = (float) (Math.random() * mul) + mul / 3;
+////            float val2 = (float) (Math.random() * mul) + mul / 3;
+////            float val3 = (float) (Math.random() * mul) + mul / 3;
+//
+//            float val1 = (float) 30;
+//            float val2 = (float) 20;
+//            float val3 = (float) 50;
+//
+//            yEntries.add(new BarEntry(i, new float[]{val1, val2, val3}));
+//        }
+
+        BarDataSet set1;
         if (mBarChart.getData() != null &&
                 mBarChart.getData().getDataSetCount() > 0) {
             set1 = (BarDataSet) mBarChart.getData().getDataSetByIndex(0);
@@ -114,13 +141,14 @@ public class BarChartView extends LinearLayout {
             mBarChart.getData().notifyDataChanged();
             mBarChart.notifyDataSetChanged();
         } else {
-            set1 = new BarDataSet(yEntries, mTitle);
+            set1 = new BarDataSet(yEntries,mTitle);
             set1.setColors(ColorTemplate.rgb("#2ecc71"), ColorTemplate.rgb("#e74c3c"), ColorTemplate.rgb("#f1c40f"));
-            if (mStackLables != null) {
-                set1.setStackLabels(mStackLables);
-            }
+//            if (mStackLables != null) {
+//                set1.setStackLabels(mStackLables);
+//            }
+            set1.setStackLabels(new String[]{"Births", "Divorces", "Marriages"});
 
-            set1.setDrawValues(true);
+            //set1.setDrawValues(true);
 
             ArrayList<IBarDataSet> dataSets = new ArrayList<>();
             dataSets.add(set1);
@@ -128,6 +156,7 @@ public class BarChartView extends LinearLayout {
             BarData data = new BarData(dataSets);
             data.setValueFormatter(new MyValueFormatter("", mAppendix));
             //data.setValueFormatter(new StackedValueFormatter(true, mAppendix, 0));
+//            data.setValueFormatter(new StackedValueFormatter(false, "", 1));
             data.setValueTextColor(Color.WHITE);
 
             mBarChart.setData(data);
@@ -137,6 +166,20 @@ public class BarChartView extends LinearLayout {
         mBarChart.invalidate();
     }
 
+    public void setOnChartValueSelectedListener(OnChartValueSelectedListener listener) {
+        mBarChart.setOnChartValueSelectedListener(listener);
+    }
+
+    /**
+     * 设置数据
+     *
+     * @param title       标题
+     * @param stackLabels 图例
+     * @param entries     数据
+     * @param xFormatter  X 轴
+     * @param yFormatter  Y 轴
+     * @param appendix
+     */
     public void setData(String title, String[] stackLabels, List<BarEntry> entries, MyValueFormatter xFormatter, MyValueFormatter yFormatter, String appendix) {
         mTitle = title;
         mStackLables = stackLabels;
@@ -150,10 +193,6 @@ public class BarChartView extends LinearLayout {
         init(mBarChart);
 
 
-    }
-
-    public void setOnChartValueSelectedListener(OnChartValueSelectedListener listener) {
-        mBarChart.setOnChartValueSelectedListener(listener);
     }
 
 }

@@ -13,9 +13,9 @@ public class QuestionInfo extends BaseJsonClass {
     public List<AnswerData> error_set;
     public List<AnswerData> correct_set;
     public List<AnswerData> unanswer_set;
-    public int error_cnt;
-    public int correct_cnt;
-    public int unanswer_cnt;
+    public int error_cnt; //错误人数
+    public int correct_cnt; //正确人数
+    public int unanswer_cnt; //未作答人数
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {
