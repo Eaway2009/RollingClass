@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.server.data.ContextData;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.utils.AppUtils;
@@ -15,6 +16,9 @@ import com.tanhd.rollingclass.utils.ResultClass;
 
 import java.util.List;
 
+/**
+ * 答题卡适配器
+ */
 public class AnswerCardAdapter extends BaseAdapter {
     private boolean mStudentAnswer;
     private boolean mTeacherShowAnswer;
@@ -89,21 +93,25 @@ public class AnswerCardAdapter extends BaseAdapter {
             LinearLayout answerListLayout = view.findViewById(R.id.answer_list_layout);
             answerListLayout.setTag(position);
             TextView testIndexView = view.findViewById(R.id.test_index);
-            testIndexView.setText(data.context.OrderIndex + mDot);
-            for (int i = 0; i < data.context.Options.size(); i++) {
-                OptionData option = data.context.Options.get(i);
+            testIndexView.setText((position + 1) + mDot);
+
+            ContextData contextData = data.context;
+            for (int i = 0; i < contextData.Options.size(); i++) {
+                OptionData option = contextData.Options.get(i);
                 TextView optionView = (TextView) answerListLayout.getChildAt(i);
                 optionView.setText(mClosingCheron + AppUtils.OPTION_NO[option.OrderIndex - 1] + mOpeningCheron);
                 optionView.setTag(option);
-                if (option.OrderIndex == data.context.OrderIndex && (!mStudentAnswer || (mTeacherShowAnswer && mAnswerCommitted))) {
+
+                //公布正确答案
+                if (option.OrderIndex == AppUtils.getAnswerIndex(contextData.Answer) + 1 && (!mStudentAnswer || (mTeacherShowAnswer && mAnswerCommitted))) {
                     optionView.setTextColor(mContext.getResources().getColor(R.color.button_orange));
                 } else {
                     optionView.setTextColor(mContext.getResources().getColor(R.color.lesson_text));
                 }
                 if (mStudentAnswer) {
                     optionView.setOnClickListener(onClickListener);
-                    if (data.context.resultClass != null) {
-                        if (AppUtils.OPTION_NO[option.OrderIndex - 1].equals(data.context.resultClass.text)) {
+                    if (contextData.resultClass != null) {
+                        if (AppUtils.OPTION_NO[option.OrderIndex - 1].equals(contextData.resultClass.text)) {
                             optionView.setTextColor(mContext.getResources().getColor(R.color.button_blue_item_checked));
                         }
                     }

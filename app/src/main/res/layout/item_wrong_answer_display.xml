@@ -36,6 +36,7 @@
                         android:id="@+id/type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:textColor="@color/button_blue"
                         android:textSize="@dimen/text_size_15"
                         tools:text="[单选题]" />
@@ -45,6 +46,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
+                        android:visibility="gone"
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size_15"
                         tools:text="第一题" />
@@ -67,7 +69,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="@dimen/dp_24"
-                android:orientation="vertical"
+                android:gravity="center|left"
+                android:orientation="horizontal"
                 android:paddingLeft="@dimen/dp_30"
                 android:paddingRight="@dimen/dp_30" />
 

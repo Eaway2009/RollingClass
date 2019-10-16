@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 答案列表
+ * 答题卡列表
  */
 public class AnswerListFragment extends Fragment {
     private ListView mAnswerListView;
@@ -178,14 +178,15 @@ public class AnswerListFragment extends Fragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.commit_button:
+                case R.id.commit_button: //提交答案
                     new CommitAnswerTask(mAdapter.getData()).execute();
                     if (mListener != null) {
                         mListener.onFinished(mAdapter.getAnswer());
                     }
                     break;
-                case R.id.show_answers_button:
+                case R.id.show_answers_button: //公布答案
                     MyMqttService.publishMessage(PushMessage.COMMAND.SHOW_RIGHT_ANSWER, (List<String>) null, mParameters);
+                    ToastUtil.show(R.string.toast_change_ok);
                     break;
             }
         }

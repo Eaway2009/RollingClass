@@ -374,13 +374,14 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
         if (groupPosition < mAdapter.getGroupCount() && mAdapter.getGroup(groupPosition) != null) {
-            mAdapter.setSelectPos(groupPosition);
             callClickItem(groupPosition, childPosition);
         }
         return true;
     }
 
     public void callClickItem(int groupPosition, int childPosition) {
+        mAdapter.setSelectPos(groupPosition);
+
         KnowledgeLessonSample group = mAdapter.getGroup(groupPosition);
         if (childPosition < group.getChildren().size() && group.getChildren().get(childPosition) != null) {
             ResourceModel item = group.getChildren().get(childPosition);

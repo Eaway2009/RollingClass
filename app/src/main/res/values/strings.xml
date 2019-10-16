@@ -276,7 +276,7 @@
     <string name="inbox_tj_hint">%s已完成练习题(学案:%s), 答案已提交, 请点击进行查看!)</string>
     <string name="lbl_stop">停止</string>
     <string name="lbl_min">分</string>
-    <string name="lbl_question_no">第%d题:</string>
+    <string name="lbl_question_no">%d.</string>
     <string name="lbl_question_no_undot">第%d题</string>
     <string name="lbl_tw_no">第%d次课堂提问</string>
     <string name="lbl_tw_time">提问时间:</string>

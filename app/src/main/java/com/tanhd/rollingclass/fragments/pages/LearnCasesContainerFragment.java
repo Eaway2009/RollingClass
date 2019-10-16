@@ -306,6 +306,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 
     /**
      * 显示习题及答题卡
+     *
      * @param resourceModel
      * @param knowledgeId
      * @param knowledgeName
@@ -321,9 +322,9 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
 //        } else {
 //            mQuestionFragment.resetData(resourceModel, lessonSampleId, lessonSampleName);
 //        }
-        if (mCurrentShowModuleId != KeyConstants.ResourceType.QUESTION_TYPE) {
-            getChildFragmentManager().beginTransaction().replace(R.id.container_layout, mQuestionFragment).commit();
-        }
+//        if (mCurrentShowModuleId != KeyConstants.ResourceType.QUESTION_TYPE) {
+        getChildFragmentManager().beginTransaction().replace(R.id.container_layout, mQuestionFragment).commit();
+//        }
         mCurrentShowModuleId = KeyConstants.ResourceType.QUESTION_TYPE;
     }
 

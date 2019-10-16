@@ -47,6 +47,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
     private QuestionAdapter mAdapter;
     private ListCallback mListListener;
     private Callback mListener;
+    private boolean isShowNo = false; //是否显示题号
 
     private Handler mHandler = new Handler();
 
@@ -55,9 +56,10 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
         return page;
     }
 
-    public static QuestionResourceFragment newInstance(List<QuestionModel> questionList) {
+    public static QuestionResourceFragment newInstance(List<QuestionModel> questionList,boolean isShowNo) {
         QuestionResourceFragment page = new QuestionResourceFragment();
         page.setListData(questionList);
+        page.isShowNo = isShowNo;
         return page;
     }
 
@@ -167,6 +169,9 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
             WebView stemView = holder.getView(R.id.stem);
             View overView = holder.getView(R.id.over);
             TextView tv_analysis = holder.getView(R.id.tv_analysis);
+
+            noView.setVisibility(isShowNo ? View.VISIBLE : View.GONE);
+
             if(!userData.isTeacher()){
                 tv_analysis.setVisibility(View.GONE);
             }
@@ -186,7 +191,7 @@ public class QuestionResourceFragment extends ResourceBaseFragment {
 
             if (question.context != null) {
                 typeView.setText(String.format("[%s]", question.context.QuestionCategoryName));
-                noView.setText(String.format(getResources().getString(R.string.lbl_question_no), question.context.OrderIndex));
+                noView.setText(String.format(getResources().getString(R.string.lbl_question_no),position + 1));
                 String html = AppUtils.dealHtmlText(question.context.Stem);
                 stemView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
 

@@ -1,15 +1,13 @@
 package com.tanhd.rollingclass.views;
 
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 学案适配器
+ * 学案/自学列表适配器
  */
 public class DocumentAdapter extends BaseAdapter implements RequestCallback {
 
@@ -95,6 +93,9 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         ImageView moreShareView = view.findViewById(R.id.more_share_iv);
         ImageView moreEditView = view.findViewById(R.id.more_edit_iv);
         ImageView moreDeleteView = view.findViewById(R.id.more_delete_iv);
+        View ll_progress = view.findViewById(R.id.ll_progress);
+        ProgressBar progress = view.findViewById(R.id.progress);
+        TextView tv_progress = view.findViewById(R.id.tv_progress);
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -152,8 +153,12 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         }
 
         StringBuffer publishStatus = new StringBuffer();
+        ll_progress.setVisibility(View.GONE);
         if (!mIsTeacher) {
             publishStatus.append(mContext.getResources().getString(R.string.learning_record));
+            ll_progress.setVisibility(View.VISIBLE);
+            tv_progress.setText("80%");
+            progress.setProgress(80);
         } else if ((data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
             publishStatus.append(mContext.getResources().getString(R.string.class_record));
         } else {

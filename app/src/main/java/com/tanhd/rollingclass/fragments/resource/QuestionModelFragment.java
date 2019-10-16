@@ -1,38 +1,22 @@
 package com.tanhd.rollingclass.fragments.resource;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.MainApp;
 import com.tanhd.rollingclass.R;
-import com.tanhd.rollingclass.db.KeyConstants;
-import com.tanhd.rollingclass.fragments.ExamFragment;
-import com.tanhd.rollingclass.fragments.QuestionSelectorFragment;
-import com.tanhd.rollingclass.server.data.ExternalParam;
-import com.tanhd.rollingclass.server.data.LessonSampleData;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
-import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.utils.AppUtils;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class QuestionModelFragment extends Fragment {
 

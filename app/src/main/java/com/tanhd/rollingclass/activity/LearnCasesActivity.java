@@ -65,6 +65,7 @@ public class LearnCasesActivity extends BaseActivity {
     public static final String PARAM_LESSON_SAMPLE_ID = "PARAM_LESSON_SAMPLE_ID";
     public static final String PARAM_LESSON_SAMPLE_NAME = "PARAM_LESSON_SAMPLE_NAME";
     public static final String PARAM_TEACHER_NAME = "PARAM_TEACHER_NAME";
+    public static final String PARAM_SHOW_NO = "PARAM_SHOW_NO";
 
     private LearnCasesFragment mLearnCasesFragment;
 

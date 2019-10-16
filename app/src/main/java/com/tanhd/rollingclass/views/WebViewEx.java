@@ -2,24 +2,27 @@ package com.tanhd.rollingclass.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 public class WebViewEx extends WebView {
     public WebViewEx(Context context) {
-        super(context);
+        this(context,null);
     }
 
     public WebViewEx(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs,0);
     }
 
     public WebViewEx(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
     }
 
-    public WebViewEx(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+    private void init(Context context) {
     }
 
     @Override

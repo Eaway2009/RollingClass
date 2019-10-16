@@ -34,6 +34,7 @@ public class QuestionDisplayFragment extends Fragment {
     private String mKnowledgeName;
     private String mKnowledgeId;
     private FrameLayout answer_fragment;
+    private boolean isShowNo = false; //是否显示题号
 
     public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel, String knowledgeId, String knowledgeName) {
         QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
@@ -57,6 +58,7 @@ public class QuestionDisplayFragment extends Fragment {
         args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME, knowledgeName);
         args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_ID, lessonSampleId);
         args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_NAME, lessonSampleName);
+        args.putBoolean(LearnCasesActivity.PARAM_SHOW_NO,true);
         QuestionDisplayFragment.setArguments(args);
         return QuestionDisplayFragment;
     }
@@ -79,13 +81,14 @@ public class QuestionDisplayFragment extends Fragment {
         mLessonSampleId = args.getString(LearnCasesActivity.PARAM_LESSON_SAMPLE_ID);
         mKnowledgeId = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_ID);
         mKnowledgeName = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME);
+        isShowNo = args.getBoolean(LearnCasesActivity.PARAM_SHOW_NO,false);
     }
 
     private void initViews(View view) {
         answer_fragment = view.findViewById(R.id.answer_fragment);
 
         List<QuestionModel> questionDataList = mResourceModel.mResourceList;
-        mQuestionResourceFragment = QuestionResourceFragment.newInstance(questionDataList);
+        mQuestionResourceFragment = QuestionResourceFragment.newInstance(questionDataList,isShowNo);
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
         mAnswerListFragment = AnswerListFragment.getInstance(mPageType, mKnowledgeId, mKnowledgeName, mLessonSampleId, mLessonSampleName);
         getFragmentManager().beginTransaction().replace(R.id.answer_fragment, mAnswerListFragment).commit();

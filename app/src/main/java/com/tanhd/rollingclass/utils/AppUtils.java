@@ -44,6 +44,24 @@ public class AppUtils {
     }
 
     /**
+     * 根据答案展示正确答案index
+     * @param answer
+     * @return
+     */
+    public static int getAnswerIndex(String answer){
+        if (TextUtils.isEmpty(answer)) return 0;
+
+        int index = 0;
+        for (int i = 0;i<OPTION_NO.length;i++){
+            if (answer.equals(OPTION_NO[i])){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    /**
      * 使用SharedPreferences保存用户登录信息
      *
      * @param context

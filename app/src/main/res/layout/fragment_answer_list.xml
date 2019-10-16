@@ -3,11 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/dp_30"
+    android:paddingTop="@dimen/dp_30"
     android:orientation="vertical">
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
 
     <Button
         android:id="@+id/show_answers_button"
@@ -29,32 +27,32 @@
         android:id="@+id/tv_answer_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dp_35"
+        android:text="@string/lbl_answer_card"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_18"
-        android:layout_marginBottom="@dimen/dp_35"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_gravity="center"
-        android:text="@string/lbl_answer_card" />
+        tools:visibility="visible" />
 
     <ListView
         android:id="@+id/listview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@null"
-        android:layout_gravity="center"
-        android:dividerHeight="0dp"></ListView>
-    <View
-        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"
+        android:layout_gravity="center"
+        android:dividerHeight="0dp"/>
     <Button
         android:id="@+id/commit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
         android:paddingLeft="@dimen/dp_25"
         android:paddingRight="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_10"
         android:minHeight="0dp"
         android:minWidth="0dp"
         android:paddingBottom="@dimen/dp_8"

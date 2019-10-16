@@ -275,7 +275,7 @@
     <string name="inbox_tj_hint">%s excercies complted(learning case:%s) ,anwers submitted, click to check!)</string>
     <string name="lbl_stop">stop</string>
     <string name="lbl_min">score</string>
-    <string name="lbl_question_no">question No.:</string>
+    <string name="lbl_question_no">%d.</string>
     <string name="lbl_question_no_undot">question No.</string>
     <string name="lbl_tw_no">quiz No.</string>
     <string name="lbl_tw_time">question time:</string>
