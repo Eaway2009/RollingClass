@@ -1,10 +1,5 @@
 package com.tanhd.rollingclass.server.data;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class AnswerData extends BaseJsonClass {
@@ -13,7 +8,7 @@ public class AnswerData extends BaseJsonClass {
     public String AnswerName;
     public int AnswerType;
     public String AnswerUserID;
-    public String AnswerUserName;
+    public String AnswerUserName; //作答学生名字
     public long CreateTime;
     public String LessonSampleID;
     public String KnowledgeID;
@@ -30,9 +25,9 @@ public class AnswerData extends BaseJsonClass {
     public String ClassID;
     public int QuestionCategoryId;
     public String QuestionCategoryName;
-    public String GoodAnswer;
+    public String GoodAnswer; //正确答案
+    public String AnswerText; //学生作答答案
     public String Analysis;
-    public String AnswerText;
     public String AnswerUrl;
     public int ErrCode;
     public int Modify;  //批改字段 1:已批改   2:未批改

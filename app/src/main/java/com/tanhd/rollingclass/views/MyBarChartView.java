@@ -32,6 +32,7 @@ import java.util.List;
  */
 public class MyBarChartView extends LinearLayout {
     private BarChart chart;
+    private OnChartValueSelectedListener onChartValueSelectedListener;
 
     public MyBarChartView(Context context) {
         this(context, null);
@@ -51,10 +52,12 @@ public class MyBarChartView extends LinearLayout {
         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
+                if (onChartValueSelectedListener != null) onChartValueSelectedListener.onValueSelected(e,h);
             }
 
             @Override
             public void onNothingSelected() {
+                if (onChartValueSelectedListener != null) onChartValueSelectedListener.onNothingSelected();
             }
         });
 
@@ -87,6 +90,14 @@ public class MyBarChartView extends LinearLayout {
         l.setFormSize(8f);
         l.setFormToTextSpace(4f);
         l.setXEntrySpace(6f);
+    }
+
+    /**
+     * 点击事件
+     * @param onChartValueSelectedListener
+     */
+    public void setOnChartValueSelectedListener(OnChartValueSelectedListener onChartValueSelectedListener) {
+        this.onChartValueSelectedListener = onChartValueSelectedListener;
     }
 
     /**

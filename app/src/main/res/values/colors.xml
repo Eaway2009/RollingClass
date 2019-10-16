@@ -53,6 +53,7 @@
     <color name="button_orange">#FF4200</color>
     <color name="button_gray">#959595</color>
     <color name="gray_line">#DFDFDF</color>
+    <color name="cut_line">#EEEEEE</color>
     <color name="button_disable">#A0A0A0</color>
     <color name="frame_color">#E7E7E7</color>
     <color name="frame_solid_light_color">#F8F9FB</color>

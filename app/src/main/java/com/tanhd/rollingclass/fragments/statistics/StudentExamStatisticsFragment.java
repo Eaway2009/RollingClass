@@ -1,6 +1,5 @@
 package com.tanhd.rollingclass.fragments.statistics;
 
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,33 +10,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.DocumentEditActivity;
-import com.tanhd.rollingclass.fragments.FrameDialog;
-import com.tanhd.rollingclass.fragments.QuerstionTypeShow;
 import com.tanhd.rollingclass.fragments.resource.AnswerDisplayFragment;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.AnswerModel;
-import com.tanhd.rollingclass.server.data.AnswerSet;
-import com.tanhd.rollingclass.server.data.CountClassLessonSampleData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.KnowledgeModel;
 import com.tanhd.rollingclass.server.data.QuestionInfo;
-import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.QuestionStatistics;
 import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.server.data.WrongAnswerList;
 import com.tanhd.rollingclass.utils.Logger;
 import com.tanhd.rollingclass.utils.MyValueFormatter;
-import com.tanhd.rollingclass.views.BarChartView;
 import com.tanhd.rollingclass.views.MyBarChartView;
+import com.tanhd.rollingclass.views.StudentAnswerListDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +53,7 @@ public class StudentExamStatisticsFragment extends Fragment {
 
     private MyBarChartView myBarChartView;
     private StudentData mStudentData;
+    private List<QuestionInfo> questionInfoList = new ArrayList<>();
 
     public static StudentExamStatisticsFragment newInstance(KnowledgeModel knowledgeModel) {
         Bundle args = new Bundle();
@@ -109,6 +103,22 @@ public class StudentExamStatisticsFragment extends Fragment {
 //            }
 //        });
         myBarChartView = view.findViewById(R.id.my_barchart);
+        myBarChartView.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                int x = (int) e.getX() - 1;
+                int pos = h.getStackIndex();
+                Logger.i("ysl","x==" + x + "|pos=" + pos);
+                if (x >= 0 && x < questionInfoList.size()){
+                    StudentAnswerListDialog.newInstance(pos,questionInfoList.get(x)).show(getChildFragmentManager(),"StudentAnswerListDialog");
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
     }
 
     private void initData() {
@@ -247,9 +257,10 @@ public class StudentExamStatisticsFragment extends Fragment {
                 return;
             }
 
+            questionInfoList = questionStatistics.question_info;
             myBarChartView.setData("",
-                    new String[]{getResources().getString(R.string.lbl_exactness), getResources().getString(R.string.lbl_err), getResources().getString(R.string.lbl_un_submit)},
-                    questionStatistics.question_info,
+                    new String[]{getResources().getString(R.string.lbl_answer_ok), getResources().getString(R.string.lbl_answer_err), getResources().getString(R.string.lbl_answer_null)},
+                    questionInfoList,
                     new MyValueFormatter("T", ""),
                     //new MyValueFormatter(getResources().getString(R.string.lbl_di), getResources().getString(R.string.lbl_topic)),
                     new MyValueFormatter("", getResources().getString(R.string.lbl_people)),

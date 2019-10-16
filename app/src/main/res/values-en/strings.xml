@@ -375,4 +375,8 @@
     <string name="study_the_time">学习时间</string>
     <string name="study_the_status">学习情况</string>
     <string name="lbl_answer_card">答题卡</string>
+    <string name="lbl_answer_ok">答对</string>
+    <string name="lbl_answer_err">答错</string>
+    <string name="lbl_answer_null">未答</string>
+    <string name="lbl_answer_respond">作答</string>
 </resources>
