@@ -410,10 +410,6 @@ public class MainActivity extends BaseActivity {
                     AppUtils.playBeepSoundAndVibrate(getApplicationContext(), null);
                     break;
                 }
-                case PING: {
-                    MyMqttService.publishMessage(PushMessage.COMMAND.PING_OK, message.from, null);
-                    break;
-                }
                 case COMMENT_START: {
                     String question = message.parameters.get("Question");
                     String answer = message.parameters.get("Answer");

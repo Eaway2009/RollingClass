@@ -179,7 +179,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         }
     }
 
-    public void refreshData(){
+    public void refreshData() {
         new InitDataTask().execute();
     }
 
@@ -280,7 +280,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         }
     }
 
-    public void showAnswers(boolean showAnswer){
+    public void showAnswers(boolean showAnswer) {
         if (mLearnCasesContainerFragment != null) {
             mLearnCasesContainerFragment.showAnswer(showAnswer);
         }
@@ -402,7 +402,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
             } else {
                 mLearnCasesContainerFragment.showResource(item);
             }
-            if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassStatus.CLASS_ING) {
+            if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassStatus.CLASS_ING && ExternalParam.getInstance().getUserData().isTeacher()) {
                 HashMap<String, String> params = new HashMap<>();
                 params.put(PushMessage.PARAM_LESSON_SAMPLE_ID, group.lesson_sample_id);
                 params.put(PushMessage.PARAM_RESOURCE_ID, item.resource_id);
@@ -447,11 +447,18 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 }
                 for (int j = 0; j < group.getChildren().size(); j++) {
                     ResourceModel resourceModel = group.getChildren().get(j);
-                    if (resourceModel.resource_id.equals(resource_id)) {
+                    if (resourceModel != null && resourceModel.resource_id != null && resourceModel.resource_id.equals(resource_id)) {
                         mLearnCasesContainerFragment.showResource(resourceModel);
                         return;
                     }
                 }
+            }
+        }
+        if (mAdapter.getGroupCount() > 0 && mAdapter.getGroup(0).getChildren() != null && mAdapter.getGroup(0).getChildren().size() > 0) {
+            ResourceModel resourceModel = mAdapter.getGroup(0).getChildren().get(0);
+            if (resourceModel != null && resourceModel.resource_id != null && resourceModel.resource_id.equals(resource_id)) {
+                mLearnCasesContainerFragment.showResource(resourceModel);
+                return;
             }
         }
     }

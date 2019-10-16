@@ -101,16 +101,10 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                     mClassPageView.setEnabled(false);
                     MQTT.publishMessage(PushMessage.COMMAND.OFFLINE, message.from, null);
                     ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.REST);
-                    if (mPushMessage != null && message.from.equals(mPushMessage.from)) {
-                        mClassStartedWarningView.setVisibility(View.GONE);
-                    }
+                    mClassStartedWarningView.setVisibility(View.GONE);
                     break;
                 case SERVER_PING: {
                     FrameDialog.show(getChildFragmentManager(), ServerTesterFragment.newInstance());
-                    break;
-                }
-                case PING: {
-                    MyMqttService.publishMessage(PushMessage.COMMAND.QUERY_CLASS, (List<String>) null, null);
                     break;
                 }
                 case QUERY_STATUS: {

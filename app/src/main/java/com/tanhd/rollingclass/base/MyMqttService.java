@@ -312,7 +312,6 @@ public class MyMqttService extends Service {
         public void onSuccess(IMqttToken arg0) {
             Log.i(TAG, "连接成功 ");
             subscribe();
-            MyMqttService.publishMessage(PushMessage.COMMAND.PING, (List<String>)null, null);
         }
 
         @Override

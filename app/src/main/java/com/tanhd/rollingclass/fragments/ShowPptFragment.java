@@ -103,8 +103,8 @@ public class ShowPptFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick: " + position);
                 mPage = position;
-                mThumbAdapter.setClickedIndex(position);
                 webView.jumpTo(position);
+                mThumbAdapter.setClickedIndex(position);
             }
         });
         if (mSyncMode == SYNC_MODE.SLAVE) {
@@ -217,30 +217,8 @@ public class ShowPptFragment extends Fragment {
                     }
                 });
 
-        if (mSyncMode == SYNC_MODE.MASTER) {
-            mConfigurator.onPageScroll(mPageScrollListener);
-        }
-
         mConfigurator.load();
     }
-
-//    public void publish(PushMessage.COMMAND command, List<String> to, Map<String, String> data) {
-//        MyMqttService.publishMessage(command, to, data);
-//    }
-
-    private OnPageScrollListener mPageScrollListener = new OnPageScrollListener() {
-        @Override
-        public void onPageScrolled(int page, float positionOffset) {
-            if (mThumbAdapter.getCount() > page) {
-                mThumbsListView.smoothScrollToPosition(page);
-            }
-            HashMap<String, String> params = new HashMap<>();
-            params.put("page", String.valueOf(page));
-            params.put("positionOffset", String.valueOf(positionOffset));
-            params.put("scale", String.valueOf(webView.getZoom()));
-//            MyMqttService.publishMessage(PushMessage.COMMAND.SCROLL_TO, (List<String>) null, params);
-        }
-    };
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void handleEventBus(PushMessage pushMessage) {
@@ -258,7 +236,7 @@ public class ShowPptFragment extends Fragment {
                     try {
                         int page = Integer.parseInt(message.parameters.get(PushMessage.PARAM_PAGE));
                         webView.jumpTo(page);
-                    }catch (NumberFormatException exception){
+                    } catch (NumberFormatException exception) {
 
                     }
                     break;
