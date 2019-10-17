@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 记录logcat日志功能 所需的权限 -->
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
         android:name=".MainApp"

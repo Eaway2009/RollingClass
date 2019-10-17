@@ -1,55 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/dp_12"
+    android:layout_weight="7"
+    android:orientation="horizontal"
     android:paddingLeft="@dimen/dp_32"
-    android:layout_weight="7">
+    android:paddingTop="@dimen/dp_12">
+
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1.3"
         android:layout_height="match_parent"
-        android:paddingRight="@dimen/dp_32"
-        android:orientation="vertical">
+        android:layout_weight="1.3"
+        android:orientation="vertical"
+        android:paddingRight="@dimen/dp_32">
+
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
             <TextView
                 android:id="@+id/school_resource"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_15"
-                android:textColor="@color/resource_select_title"
                 android:enabled="false"
                 android:paddingLeft="@dimen/dp_28"
-                android:paddingRight="@dimen/dp_28"
                 android:paddingTop="@dimen/dp_9"
+                android:paddingRight="@dimen/dp_28"
                 android:paddingBottom="@dimen/dp_9"
-                android:text="@string/school_resource"/>
+                android:text="@string/school_resource"
+                android:textColor="@color/resource_select_title"
+                android:textSize="@dimen/text_size_15" />
+
             <TextView
                 android:id="@+id/public_resource"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_15"
-                android:textColor="@color/resource_select_title"
                 android:paddingLeft="@dimen/dp_28"
-                android:paddingRight="@dimen/dp_28"
                 android:paddingTop="@dimen/dp_9"
+                android:paddingRight="@dimen/dp_28"
                 android:paddingBottom="@dimen/dp_9"
-                android:text="@string/public_resource"/>
+                android:text="@string/public_resource"
+                android:textColor="@color/resource_select_title"
+                android:textSize="@dimen/text_size_15" />
+
             <TextView
                 android:id="@+id/my_resource"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_15"
-                android:textColor="@color/resource_select_title"
                 android:paddingLeft="@dimen/dp_28"
-                android:paddingRight="@dimen/dp_28"
                 android:paddingTop="@dimen/dp_9"
+                android:paddingRight="@dimen/dp_28"
                 android:paddingBottom="@dimen/dp_9"
-                android:text="@string/my_resource"/>
+                android:text="@string/my_resource"
+                android:textColor="@color/resource_select_title"
+                android:textSize="@dimen/text_size_15" />
         </LinearLayout>
 
         <View
@@ -62,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_17"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
     </LinearLayout>
 
@@ -71,54 +76,58 @@
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp_30"
-        android:layout_marginBottom="@dimen/dp_30"
         android:layout_marginRight="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_30"
         android:background="#EEEEEE" />
 
     <LinearLayout
         android:id="@+id/ll_student"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp">
+        android:orientation="vertical">
+
         <FrameLayout
             android:id="@+id/student_select_layout_fragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dp_24"
-            android:paddingRight="@dimen/dp_32"
-            android:paddingTop="@dimen/dp_20"
+            android:layout_gravity="right"
             android:gravity="center"
-            android:layout_gravity="right">
+            android:paddingTop="@dimen/dp_20"
+            android:paddingRight="@dimen/dp_32"
+            android:paddingBottom="@dimen/dp_24">
+
             <Button
                 android:id="@+id/cancel_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cancel"
+                android:background="@drawable/task_add_cancel_button"
                 android:minHeight="0dp"
                 android:paddingTop="@dimen/dp_7"
                 android:paddingBottom="@dimen/dp_7"
+                android:text="@string/cancel"
                 android:textColor="@color/gray"
-                android:textSize="@dimen/text_size_13"
-                android:background="@drawable/task_add_cancel_button"/>
+                android:textSize="@dimen/text_size_13" />
+
             <Button
                 android:id="@+id/commit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_36"
+                android:background="@drawable/task_add_save_button"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
                 android:paddingTop="@dimen/dp_7"
                 android:paddingBottom="@dimen/dp_7"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:layout_marginLeft="@dimen/dp_36"
-                android:textSize="@dimen/text_size_13"
                 android:text="@string/sure"
                 android:textColor="@color/white"
-                android:background="@drawable/task_add_save_button"/>
+                android:textSize="@dimen/text_size_13" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

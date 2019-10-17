@@ -245,8 +245,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         checkBox.setChecked(true);
         mUserView.setText(username);
         mUserView.setSelection(username.length());
-//        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
-//        mSignButtonView.performClick();
+
+        //TEST
+        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
+        mSignButtonView.performClick();
     }
 
     @Override

@@ -193,10 +193,11 @@ public class AnswerListFragment extends Fragment {
     };
 
 
+    /**
+     * 提交答案
+     */
     private class CommitAnswerTask extends AsyncTask<Void, Void, Integer> {
-
         private List<QuestionModel> mQuestionList;
-
         CommitAnswerTask(List<QuestionModel> questionModelList) {
             mQuestionList = questionModelList;
         }
@@ -231,7 +232,7 @@ public class AnswerListFragment extends Fragment {
             for (int i = 0; i < mQuestionList.size(); i++) {
                 ResultClass resultClass = mQuestionList.get(i).context.resultClass;
                 boolean isUrl = false;
-                if(resultClass==null){
+                if (resultClass == null) {
                     return -2;
                 }
                 String result = resultClass.getResult(getContext());

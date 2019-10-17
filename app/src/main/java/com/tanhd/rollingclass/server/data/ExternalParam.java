@@ -1,6 +1,6 @@
 package com.tanhd.rollingclass.server.data;
 
-import com.tanhd.rollingclass.server.ScopeServer;
+import com.tanhd.rollingclass.db.AppCacheInfo;
 
 import java.util.List;
 
@@ -37,9 +37,13 @@ public class ExternalParam {
 
     public void setUserData(UserData userData) {
         mUserData = userData;
+        AppCacheInfo.getInstance().setUserData(userData);
     }
 
     public UserData getUserData() {
+        if (mUserData == null){
+            mUserData = AppCacheInfo.getInstance().getUserData();
+        }
         return mUserData;
     }
 

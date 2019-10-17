@@ -24,6 +24,7 @@ import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.tanhd.rollingclass.utils.Logger;
 import com.tanhd.rollingclass.utils.ScreenUtils;
+import com.tanhd.rollingclass.utils.configs.BaiduCrashConfigs;
 import com.tanhd.rollingclass.utils.langeuage.MultiLanguageUtil;
 
 @ReportsCrashes(
@@ -87,6 +88,8 @@ public class MainApp extends Application {
         mInstance = this;
         Logger.setDebug(BuildConfig.DEBUG);
         initImageLoader(getApplicationContext());
+        //Crash统计
+        BaiduCrashConfigs.init(this);
         //多语言初始化
         MultiLanguageUtil.init(this);
         

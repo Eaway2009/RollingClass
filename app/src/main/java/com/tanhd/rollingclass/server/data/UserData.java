@@ -2,7 +2,9 @@ package com.tanhd.rollingclass.server.data;
 
 import org.json.JSONObject;
 
-public class UserData {
+import java.io.Serializable;
+
+public class UserData implements Serializable {
     public static enum ROLE{
         TEACHER,
         STUDENT,

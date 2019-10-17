@@ -8,5 +8,7 @@ public class ACacheHelper {
     public static final String LOGIN_USER = "LOGIN_USER";
     //版本 code
     public static final String VERSION_CODE = "VERSION_CODE";
+    //用户数据
+    public static final String USER_DATA = "USER_DATA";
 
 }

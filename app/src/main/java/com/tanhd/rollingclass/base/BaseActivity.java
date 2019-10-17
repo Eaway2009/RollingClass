@@ -10,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.baidu.crabsdk.CrabSDK;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
 import com.tanhd.rollingclass.db.model.EventTag;
@@ -52,7 +53,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        CrabSDK.onPause(this);
+        super.onPause();
+    }
+
+    @Override
     protected void onResume() {
+        CrabSDK.onResume(this);
         super.onResume();
         Logger.i("onResume",TAG);
     }
