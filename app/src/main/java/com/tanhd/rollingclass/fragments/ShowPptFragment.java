@@ -57,6 +57,7 @@ public class ShowPptFragment extends Fragment {
     private static final String TAG = "ShowPptFragment";
     private ArrayList<String> mThumbsList;
     private int mPage = 0;
+    private int mInitPage;
 
     public static ShowPptFragment newInstance(Activity activity, String url, ArrayList<String> thumbs, SYNC_MODE mode) {
         Bundle args = new Bundle();
@@ -69,11 +70,24 @@ public class ShowPptFragment extends Fragment {
         return fragment;
     }
 
+    public static ShowPptFragment newInstance(Activity activity, String url, ArrayList<String> thumbs, int page, SYNC_MODE mode) {
+        Bundle args = new Bundle();
+        args.putString("url", url);
+        args.putStringArrayList("thumbs", thumbs);
+        args.putInt("mode", mode.ordinal());
+        args.putInt("page", page);
+        ShowPptFragment fragment = new ShowPptFragment();
+        fragment.setArguments(args);
+        fragment.setActivity(activity);
+        return fragment;
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mThumbsList = getArguments().getStringArrayList("thumbs");
         mUrl = getArguments().getString("url");
         int mode = getArguments().getInt("mode");
+        mInitPage = getArguments().getInt("page", 0);
         mSyncMode = SYNC_MODE.values()[mode];
         View view = inflater.inflate(R.layout.fragment_show_ppt, container, false);
         webView = view.findViewById(R.id.webview);
@@ -88,6 +102,7 @@ public class ShowPptFragment extends Fragment {
         if (mSyncMode == SYNC_MODE.SLAVE) {
             webView.setEnabled(false);
         }
+
         initListView(view);
         EventBus.getDefault().register(this);
         return view;
@@ -124,10 +139,11 @@ public class ShowPptFragment extends Fragment {
         downloadPDF();
     }
 
-    public void refreshPpt(String url, ArrayList<String> thumbs) {
+    public void refreshPpt(String url, ArrayList<String> thumbs, int pptIndex) {
         if (downLoadFinish || mUrl != url) {
             mUrl = url;
             mThumbsList = thumbs;
+            mInitPage = pptIndex;
             mThumbAdapter.setData(mThumbsList);
             if (thumbs == null || thumbs.size() < 1) {
                 mThumbsListView.setVisibility(View.GONE);
@@ -182,7 +198,7 @@ public class ShowPptFragment extends Fragment {
                 .enableSwipe(true) // allows to block changing pages using swipe
                 .swipeHorizontal(false)
                 .enableDoubletap(true)
-                .defaultPage(0)
+                .defaultPage(mInitPage)
                 .enableAnnotationRendering(false) // render annotations (such as comments, colors or forms)
                 .password(null)
                 .scrollHandle(null)
@@ -206,6 +222,9 @@ public class ShowPptFragment extends Fragment {
                     @Override
                     public void loadComplete(int nbPages) {
                         mProgressBarView.setVisibility(View.GONE);
+                        if(mInitPage>0){
+                            webView.jumpTo(mInitPage);
+                        }
 //                        publish(PushMessage.COMMAND.SCROLL_CUR, (List<String>) null, null);
                     }
                 })

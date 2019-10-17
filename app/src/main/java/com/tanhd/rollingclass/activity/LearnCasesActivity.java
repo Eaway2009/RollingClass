@@ -68,6 +68,7 @@ public class LearnCasesActivity extends BaseActivity {
     public static final String PARAM_LESSON_SAMPLE_NAME = "PARAM_LESSON_SAMPLE_NAME";
     public static final String PARAM_TEACHER_NAME = "PARAM_TEACHER_NAME";
     public static final String PARAM_SHOW_NO = "PARAM_SHOW_NO";
+    public static final String PARAM_PPT_INDEX = "PARAM_PPT_INDEX";
     public static final String PARAM_IS_SUBMIT_ANSWER = "PARAM_IS_SUBMIT_ANSWER";
 
     private LearnCasesFragment mLearnCasesFragment;
@@ -82,6 +83,7 @@ public class LearnCasesActivity extends BaseActivity {
     private String mTeachingMaterialId;
     private String mLessonSampleId;
     private String mResourceId;
+    private int mPptIndex;
 
     /**
      * 老师端
@@ -140,6 +142,27 @@ public class LearnCasesActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    /**
+     * 学生端
+     *
+     * @param context
+     * @param knowledgeId
+     * @param knowledgeName
+     * @param classPageType
+     * @param teacherName
+     */
+    public static void startMe(Activity context, String knowledgeId, String lessonSampleId, String resourceId, String knowledgeName, int classPageType, String teacherName, int pptIndex) {
+        Intent intent = new Intent(context, LearnCasesActivity.class);
+        intent.putExtra(PARAM_KNOWLEDGE_ID, knowledgeId);
+        intent.putExtra(PARAM_LESSON_SAMPLE_ID, lessonSampleId);
+        intent.putExtra(PARAM_RESOURCE_ID, resourceId);
+        intent.putExtra(PARAM_KNOWLEDGE_NAME, knowledgeName);
+        intent.putExtra(PARAM_TEACHER_NAME, teacherName);
+        intent.putExtra(PARAM_CLASS_STUDENT_PAGE, classPageType);
+        intent.putExtra(PARAM_PPT_INDEX, pptIndex);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,6 +193,7 @@ public class LearnCasesActivity extends BaseActivity {
         mTeacherName = getIntent().getStringExtra(PARAM_TEACHER_NAME);
         mLessonSampleId = getIntent().getStringExtra(PARAM_LESSON_SAMPLE_ID);
         mResourceId = getIntent().getStringExtra(PARAM_RESOURCE_ID);
+        mPptIndex = getIntent().getIntExtra(PARAM_PPT_INDEX, 0);
     }
 
     private void initFragment() {
@@ -194,7 +218,11 @@ public class LearnCasesActivity extends BaseActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mLearnCasesFragment.showItem(mLessonSampleId, mResourceId);
+                    if (mPptIndex > 0) {
+                        mLearnCasesFragment.showItem(mLessonSampleId, mResourceId, mPptIndex);
+                    } else {
+                        mLearnCasesFragment.showItem(mLessonSampleId, mResourceId);
+                    }
                 }
             }, 500);
         }

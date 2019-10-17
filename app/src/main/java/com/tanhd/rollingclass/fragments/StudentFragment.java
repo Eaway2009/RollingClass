@@ -151,7 +151,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                 mClassStartedWarningView.setVisibility(View.VISIBLE);
                 if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.REST) {
                     MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
-                    LearnCasesActivity.startMe(getActivity(), knowledgeId, classStatusInfo.lessonsample_id, classStatusInfo.resource_id, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, classStatusInfo.teacher_name);
+                    LearnCasesActivity.startMe(getActivity(), knowledgeId, classStatusInfo.lessonsample_id, classStatusInfo.resource_id, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, classStatusInfo.teacher_name, classStatusInfo.ppt_index);
                     ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.CLASSING);
                 }
             }
@@ -181,7 +181,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                 mClassStartedWarningView.setVisibility(View.VISIBLE);
                 if (ExternalParam.getInstance().getStatus() == KeyConstants.ClassLearningStatus.REST) {
                     MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
-                    LearnCasesActivity.startMe(getActivity(), knowledgeId, classStatusInfo.lessonsample_id, classStatusInfo.resource_id, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, classStatusInfo.teacher_name);
+                    LearnCasesActivity.startMe(getActivity(), knowledgeId, classStatusInfo.lessonsample_id, classStatusInfo.resource_id, knowledgeName, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, classStatusInfo.teacher_name, classStatusInfo.ppt_index);
                     ExternalParam.getInstance().setStatus(KeyConstants.ClassLearningStatus.CLASSING);
                 }
             }
@@ -195,7 +195,7 @@ public class StudentFragment extends Fragment implements View.OnClickListener {
                 MyMqttService.publishMessage(PushMessage.COMMAND.ONLINE, (List<String>) null, null);
                 ExternalParam.getInstance().setStatus(KeyConstants.ClassStatus.CLASS_ING);
                 if (mClassStatusInfo != null) {
-                    LearnCasesActivity.startMe(getActivity(), mClassStatusInfo.knowledge_id, mClassStatusInfo.lessonsample_id, mClassStatusInfo.resource_id, mClassStatusInfo.knowledge_point_name, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, mClassStatusInfo.teacher_name);
+                    LearnCasesActivity.startMe(getActivity(), mClassStatusInfo.knowledge_id, mClassStatusInfo.lessonsample_id, mClassStatusInfo.resource_id, mClassStatusInfo.knowledge_point_name, KeyConstants.ClassPageType.STUDENT_CLASS_PAGE, mClassStatusInfo.teacher_name, mClassStatusInfo.ppt_index);
                 }
                 break;
             case R.id.knowledge_page_view: //自学

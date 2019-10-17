@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -438,6 +439,10 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     }
 
     public void showItem(String lesson_sample_id, String resource_id) {
+        showItem(lesson_sample_id, resource_id, 0);
+    }
+
+    public void showItem(String lesson_sample_id, String resource_id, int pptIndex) {
         for (int i = 0; i < mAdapter.getGroupCount(); i++) {
             KnowledgeLessonSample group = mAdapter.getGroup(i);
             if (group.lesson_sample_id.equals(lesson_sample_id)) {
@@ -448,6 +453,9 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 for (int j = 0; j < group.getChildren().size(); j++) {
                     ResourceModel resourceModel = group.getChildren().get(j);
                     if (resourceModel != null && resourceModel.resource_id != null && resourceModel.resource_id.equals(resource_id)) {
+                        if(resourceModel.resource_type == KeyConstants.ResourceType.PPT_TYPE){
+                            resourceModel.pptIndex = pptIndex;
+                        }
                         mLearnCasesContainerFragment.showResource(resourceModel);
                         return;
                     }

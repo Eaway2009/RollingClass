@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -198,7 +199,6 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     }
 
 
-
 //    private void timerGoneHand(){
 //        RxTimerUtil.cancel();
 //        RxTimerUtil.timer(3 * 1000, new RxTimerUtil.IRxNext() {
@@ -350,7 +350,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     public void showFragment(int moduleId, ResourceModel resourceModel) {
         Fragment fragment = getFragment(moduleId, resourceModel);
         if (mCurrentShowModuleId != moduleId) {
-            getChildFragmentManager().beginTransaction().replace(R.id.container_layout, fragment).commit();
+            getChildFragmentManager().beginTransaction().replace(R.id.container_layout, fragment).commitAllowingStateLoss();
         }
         mCurrentShowModuleId = moduleId;
     }
@@ -368,9 +368,9 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                             sync_mode = SYNC_MODE.SLAVE;
                             break;
                     }
-                    mPptFragment = ShowPptFragment.newInstance(getActivity(), resourceModel.pdf_url, resourceModel.thumbs, sync_mode);
+                    mPptFragment = ShowPptFragment.newInstance(getActivity(), resourceModel.pdf_url, resourceModel.thumbs, resourceModel.pptIndex, sync_mode);
                 } else {
-                    mPptFragment.refreshPpt(resourceModel.pdf_url, resourceModel.thumbs);
+                    mPptFragment.refreshPpt(resourceModel.pdf_url, resourceModel.thumbs, resourceModel.pptIndex);
                 }
                 return mPptFragment;
             case KeyConstants.ResourceType.VIDEO_TYPE:

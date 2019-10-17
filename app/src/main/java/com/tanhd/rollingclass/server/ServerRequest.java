@@ -334,7 +334,6 @@ public class ServerRequest {
         try {
             Response response = okHttpClient.newCall(request).execute();
             String text = response.body().string();
-            Log.i(TAG, text);
 
             return text;
 
@@ -370,7 +369,6 @@ public class ServerRequest {
         try {
             Response response = okHttpClient.newCall(request).execute();
             String text = response.body().string();
-            Log.i(TAG, text);
 
             if (response == null) {
                 return null;

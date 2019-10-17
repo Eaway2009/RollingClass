@@ -24,6 +24,7 @@ public class ResourceModel extends ResourceBaseModel {
     public long update_time;
     public String url;
     public boolean isChecked;
+    public int pptIndex;
 
     public ArrayList<String> thumbs;
 
