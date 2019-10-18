@@ -19,13 +19,13 @@ public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelMo
     public List<ResourceModel> ppt_set;
     public List<ResourceModel> video_set;
     public List<ResourceModel> doc_set;
-    public List<QuestionModel> question_set;
+    public List<QuestionModel> question_set; //习题列表
     public List<ResourceModel> image_set;
     public String create_time;
     public String update_time;
     private List<ResourceModel> resourceModelList = new ArrayList<>();
     public boolean isSelect = true;
-
+    public boolean isSubmitAnswer; //是否提交过答案
 
 
     @Override

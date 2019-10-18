@@ -10,5 +10,7 @@ public class ACacheHelper {
     public static final String VERSION_CODE = "VERSION_CODE";
     //用户数据
     public static final String USER_DATA = "USER_DATA";
+    //ClassData
+    public static final String CLASS_DATA = "CLASS_DATA";
 
 }

@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MyMqttService;
 import com.tanhd.library.mqtthttp.PushMessage;
@@ -25,14 +24,12 @@ import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.QuestionModel;
-import com.tanhd.rollingclass.server.data.ResourceModel;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.ResultClass;
 import com.tanhd.rollingclass.utils.ToastUtil;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +55,7 @@ public class AnswerListFragment extends Fragment {
     private String mLessonSampleName;
     private String mKnowledgeId;
     private String mKnowledgeName;
+    private boolean isSubmitAnswer; //是否提交过答案
 
     public static AnswerListFragment getInstance(int pageType, String knowledgeId, String knowledgeName) {
         AnswerListFragment answerListFragment = new AnswerListFragment();
@@ -70,7 +68,7 @@ public class AnswerListFragment extends Fragment {
         return answerListFragment;
     }
 
-    public static AnswerListFragment getInstance(int pageType, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName) {
+    public static AnswerListFragment getInstance(int pageType, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName,boolean isSubmitAnser) {
         AnswerListFragment answerListFragment = new AnswerListFragment();
         Bundle args = new Bundle();
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, pageType);
@@ -79,6 +77,7 @@ public class AnswerListFragment extends Fragment {
         args.putString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME, knowledgeName);
         args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_ID, lessonSampleId);
         args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_NAME, lessonSampleName);
+        args.putBoolean(LearnCasesActivity.PARAM_IS_SUBMIT_ANSWER,isSubmitAnser);
         answerListFragment.setArguments(args);
         return answerListFragment;
     }
@@ -113,6 +112,7 @@ public class AnswerListFragment extends Fragment {
         mLessonSampleName = args.getString(LearnCasesActivity.PARAM_LESSON_SAMPLE_NAME);
         mKnowledgeId = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_ID);
         mKnowledgeName = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME);
+        isSubmitAnswer = args.getBoolean(LearnCasesActivity.PARAM_IS_SUBMIT_ANSWER,false);
     }
 
     private void initViews(View contentView) {
@@ -199,6 +199,7 @@ public class AnswerListFragment extends Fragment {
     private class CommitAnswerTask extends AsyncTask<Void, Void, Integer> {
         private List<QuestionModel> mQuestionList;
         CommitAnswerTask(List<QuestionModel> questionModelList) {
+            if (questionModelList == null) questionModelList = new ArrayList<>();
             mQuestionList = questionModelList;
         }
 
@@ -292,7 +293,6 @@ public class AnswerListFragment extends Fragment {
                     return errCode;
                 }
             }
-
             return 0;
         }
     }

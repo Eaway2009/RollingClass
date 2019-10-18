@@ -247,8 +247,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         mUserView.setSelection(username.length());
 
         //TEST
-        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
-        mSignButtonView.performClick();
+//        mPasswordView.setText(AppUtils.readLoginPassword(getApplicationContext()));
+//        mSignButtonView.performClick();
     }
 
     @Override

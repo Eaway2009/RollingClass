@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.tanhd.rollingclass.LoginActivity;
 import com.tanhd.rollingclass.MainActivity;
+import com.tanhd.rollingclass.server.data.ClassData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 
@@ -42,6 +43,25 @@ public class AppCacheInfo implements Serializable {
             return new UserData();
         }
         return (UserData) ACache.getInstance().getAsObject(ACacheHelper.USER_DATA);
+    }
+
+    /**
+     * 保存ClassData
+     * @param classData
+     */
+    public void setClassData(ClassData classData){
+        ACache.getInstance().put(ACacheHelper.CLASS_DATA,classData);
+    }
+
+    /**
+     * 获取ClassData
+     * @return
+     */
+    public ClassData getClassData() {
+        if (null == ACache.getInstance().getAsObject(ACacheHelper.CLASS_DATA)) {
+            return new ClassData();
+        }
+        return (ClassData) ACache.getInstance().getAsObject(ACacheHelper.CLASS_DATA);
     }
 
 

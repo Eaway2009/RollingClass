@@ -45,6 +45,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_ANSWER;
 import static com.tanhd.rollingclass.views.PointPopupWindow.ITEM_EXRCISE;
@@ -92,6 +93,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     private String mKnowledgeId;
     private String mKnowledgeName;
     private FrameLayout container_layout;
+    private Map<String,Boolean> openStatusMap = new HashMap<>(); //打开状态保存
 
     public static LearnCasesContainerFragment newInstance(String knowledgeId, String knowledgeName, int typeId, PagesListener listener) {
         Bundle args = new Bundle();
@@ -312,11 +314,18 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
      * @param knowledgeName
      * @param lessonSampleId
      * @param lessonSampleName
+     * @param isSubmitAnswer 是否提交过答案
      */
-    public void showExercises(ResourceModel resourceModel, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName) {
+    public void showExercises(ResourceModel resourceModel, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName,boolean isSubmitAnswer,boolean isReset) {
         mKnowledgeId = knowledgeId;
         mKnowledgeName = knowledgeName;
-        mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName, lessonSampleId, lessonSampleName);
+        if (openStatusMap.containsKey(lessonSampleId) && openStatusMap.get(lessonSampleId) && !isReset){
+            //曾已打开过习题
+
+        }else{  //从未打开过改习题
+            openStatusMap.put(lessonSampleId,true);
+            mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName, lessonSampleId, lessonSampleName,isSubmitAnswer);
+        }
 //        if (mQuestionFragment == null) {
 //
 //        } else {

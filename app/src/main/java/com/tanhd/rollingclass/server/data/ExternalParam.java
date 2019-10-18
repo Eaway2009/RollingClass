@@ -19,7 +19,6 @@ public class ExternalParam {
     public static ExternalParam getInstance() {
         if (mInstance == null)
             mInstance = new ExternalParam();
-
         return mInstance;
     }
 
@@ -57,9 +56,13 @@ public class ExternalParam {
 
     public void setClassData(ClassData classData) {
         mClassData = classData;
+        AppCacheInfo.getInstance().setClassData(classData);
     }
 
     public ClassData getClassData() {
+        if (mClassData == null){
+            mClassData = AppCacheInfo.getInstance().getClassData();
+        }
         return mClassData;
     }
 

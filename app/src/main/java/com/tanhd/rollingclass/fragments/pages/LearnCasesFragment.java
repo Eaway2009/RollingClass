@@ -16,7 +16,6 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tanhd.library.mqtthttp.MQTT;
 import com.tanhd.library.mqtthttp.MqttListener;
@@ -27,7 +26,6 @@ import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.Database;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.ClassSelectorFragment;
-import com.tanhd.rollingclass.fragments.ExamFragment;
 import com.tanhd.rollingclass.fragments.FrameDialog;
 import com.tanhd.rollingclass.fragments.WaitAnswerFragment;
 import com.tanhd.rollingclass.server.RequestCallback;
@@ -73,6 +71,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     private String mTeachingMaterialId;
 
     private boolean init = true;
+    private boolean isResetQuestion; //是否重新设置习题页面
     private int mKnowledgeStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
     private Button mPreClassLearningButton;
     private Button mAfterClassLearningButton;
@@ -217,6 +216,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 mAfterClassLearningButton.setEnabled(false);
                 mKnowledgeStatus = KeyConstants.KnowledgeStatus.AFTER_CLASS;
                 init = true;
+                isResetQuestion = true;
                 new InitDataTask().execute();
                 break;
             case R.id.pre_class_learning_tv: //课前学习
@@ -224,6 +224,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 mAfterClassLearningButton.setEnabled(true);
                 mKnowledgeStatus = KeyConstants.KnowledgeStatus.FRE_CLASS;
                 init = true;
+                isResetQuestion = true;
                 new InitDataTask().execute();
                 break;
             case R.id.tv_class_begin: //开始上课
@@ -385,8 +386,9 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
         KnowledgeLessonSample group = mAdapter.getGroup(groupPosition);
         if (childPosition < group.getChildren().size() && group.getChildren().get(childPosition) != null) {
             ResourceModel item = group.getChildren().get(childPosition);
-            if (item.resource_type == KeyConstants.ResourceType.QUESTION_TYPE) {
-                mLearnCasesContainerFragment.showExercises(item, mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name);
+            if (item.resource_type == KeyConstants.ResourceType.QUESTION_TYPE) { //习题
+                mLearnCasesContainerFragment.showExercises(item, mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name,group.isSubmitAnswer,isResetQuestion);
+                isResetQuestion = false;
             } else {
                 mLearnCasesContainerFragment.showResource(item);
             }
@@ -412,7 +414,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
             KnowledgeLessonSample group = mAdapter.getGroup(i);
             if (group.lesson_sample_id.equals(lesson_sample_id)) {
                 if (TextUtils.isEmpty(resource_id)) {
-                    mLearnCasesContainerFragment.showExercises(new ResourceModel(group.question_set, getResources().getString(R.string.exercises)), mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name);
+                    mLearnCasesContainerFragment.showExercises(new ResourceModel(group.question_set, getResources().getString(R.string.exercises)), mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name,group.isSubmitAnswer,false);
                     return;
                 }
                 for (int j = 0; j < group.getChildren().size(); j++) {

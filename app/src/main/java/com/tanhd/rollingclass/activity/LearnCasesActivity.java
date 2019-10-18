@@ -66,6 +66,7 @@ public class LearnCasesActivity extends BaseActivity {
     public static final String PARAM_LESSON_SAMPLE_NAME = "PARAM_LESSON_SAMPLE_NAME";
     public static final String PARAM_TEACHER_NAME = "PARAM_TEACHER_NAME";
     public static final String PARAM_SHOW_NO = "PARAM_SHOW_NO";
+    public static final String PARAM_IS_SUBMIT_ANSWER = "PARAM_IS_SUBMIT_ANSWER";
 
     private LearnCasesFragment mLearnCasesFragment;
 
@@ -262,7 +263,7 @@ public class LearnCasesActivity extends BaseActivity {
                 case CLASS_END:
                     finish();
                     break;
-                case OPEN_DOCUMENT: {
+                case OPEN_DOCUMENT: { //切换学案
                     if (ExternalParam.getInstance().getStatus() == 2 && !mUserData.isTeacher()) {
                         String lesson_sample_id = message.parameters.get(PushMessage.PARAM_LESSON_SAMPLE_ID);
                         String resourceId = message.parameters.get(PushMessage.PARAM_RESOURCE_ID);

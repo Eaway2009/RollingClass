@@ -11,17 +11,19 @@ import android.widget.FrameLayout;
 
 import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
+import com.tanhd.rollingclass.base.BaseFragment;
 import com.tanhd.rollingclass.fragments.pages.AnswerListFragment;
 import com.tanhd.rollingclass.fragments.resource.QuestionResourceFragment;
 import com.tanhd.rollingclass.server.data.QuestionModel;
 import com.tanhd.rollingclass.server.data.ResourceModel;
+import com.tanhd.rollingclass.utils.AutoHideKeyboard;
 
 import java.util.List;
 
 /**
  * 习题问答页面
  */
-public class QuestionDisplayFragment extends Fragment {
+public class QuestionDisplayFragment extends BaseFragment {
 
     private QuestionResourceFragment mQuestionResourceFragment;
     private AnswerListFragment mAnswerListFragment;
@@ -35,6 +37,8 @@ public class QuestionDisplayFragment extends Fragment {
     private String mKnowledgeId;
     private FrameLayout answer_fragment;
     private boolean isShowNo = false; //是否显示题号
+    private boolean isSubmitAnswer; //是否已提交过答案
+    private View mContentView;
 
     public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel, String knowledgeId, String knowledgeName) {
         QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
@@ -48,7 +52,7 @@ public class QuestionDisplayFragment extends Fragment {
         return QuestionDisplayFragment;
     }
 
-    public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName) {
+    public static QuestionDisplayFragment getInstance(int typeId, ResourceModel resourceModel, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName,boolean isSubmitAnswer) {
         QuestionDisplayFragment QuestionDisplayFragment = new QuestionDisplayFragment();
         Bundle args = new Bundle();
         args.putInt(LearnCasesActivity.PARAM_CLASS_STUDENT_PAGE, typeId);
@@ -59,6 +63,7 @@ public class QuestionDisplayFragment extends Fragment {
         args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_ID, lessonSampleId);
         args.putString(LearnCasesActivity.PARAM_LESSON_SAMPLE_NAME, lessonSampleName);
         args.putBoolean(LearnCasesActivity.PARAM_SHOW_NO,true);
+        args.putBoolean(LearnCasesActivity.PARAM_IS_SUBMIT_ANSWER,false);
         QuestionDisplayFragment.setArguments(args);
         return QuestionDisplayFragment;
     }
@@ -66,11 +71,20 @@ public class QuestionDisplayFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_question_display, null);
-        initParams();
-        initViews(contentView);
-        initData();
-        return contentView;
+        if (this.mContentView == null) {
+            mContentView = inflater.inflate(R.layout.fragment_question_display, null);
+            initParams();
+            initViews(mContentView);
+            initData();
+            AutoHideKeyboard.init(getActivity());
+        }
+        else{
+            ViewGroup parent = (ViewGroup) this.mContentView.getParent();
+            if (parent != null) {
+                parent.removeView(this.mContentView);
+            }
+        }
+        return mContentView;
     }
 
     private void initParams() {
@@ -82,6 +96,7 @@ public class QuestionDisplayFragment extends Fragment {
         mKnowledgeId = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_ID);
         mKnowledgeName = args.getString(LearnCasesActivity.PARAM_KNOWLEDGE_NAME);
         isShowNo = args.getBoolean(LearnCasesActivity.PARAM_SHOW_NO,false);
+        isSubmitAnswer = args.getBoolean(LearnCasesActivity.PARAM_IS_SUBMIT_ANSWER,false);
     }
 
     private void initViews(View view) {
@@ -90,7 +105,7 @@ public class QuestionDisplayFragment extends Fragment {
         List<QuestionModel> questionDataList = mResourceModel.mResourceList;
         mQuestionResourceFragment = QuestionResourceFragment.newInstance(questionDataList,isShowNo);
         getFragmentManager().beginTransaction().replace(R.id.question_layout_fragment, mQuestionResourceFragment).commit();
-        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, mKnowledgeId, mKnowledgeName, mLessonSampleId, mLessonSampleName);
+        mAnswerListFragment = AnswerListFragment.getInstance(mPageType, mKnowledgeId, mKnowledgeName, mLessonSampleId, mLessonSampleName,isSubmitAnswer);
         getFragmentManager().beginTransaction().replace(R.id.answer_fragment, mAnswerListFragment).commit();
 
     }
