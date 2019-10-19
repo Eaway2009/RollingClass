@@ -64,7 +64,7 @@ public class ScopeServer extends ServerRequest {
     private static final String HOST_URL_PORT = ":8001/flip";
     public static final String RESOURCE_URL_PORT = ":8002/";
     private String mHostUrl = "sea-ai.com";
-//    private String mHostUrl = "192.168.90.203";
+//    private String mHostUrl = "192.168.0.220";
     private static final String TAG = "ScopeServer";
 
     private String mToken;

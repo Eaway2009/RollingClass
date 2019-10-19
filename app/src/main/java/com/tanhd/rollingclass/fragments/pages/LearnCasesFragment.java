@@ -443,6 +443,8 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     }
 
     public void showItem(String lesson_sample_id, String resource_id, int pptIndex) {
+        Log.d("PPT_INDEX", "showItem: lesson_sample_id"+lesson_sample_id);
+        Log.d("PPT_INDEX", "showItem: resource_id"+resource_id);
         for (int i = 0; i < mAdapter.getGroupCount(); i++) {
             KnowledgeLessonSample group = mAdapter.getGroup(i);
             if (group.lesson_sample_id.equals(lesson_sample_id)) {

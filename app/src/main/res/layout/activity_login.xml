@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="老师登录"
         android:checked="false"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_centerInParent="true"/>
     <LinearLayout
         android:id="@+id/ip_layout"

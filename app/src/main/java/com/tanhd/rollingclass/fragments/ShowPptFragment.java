@@ -145,8 +145,11 @@ public class ShowPptFragment extends Fragment {
             mThumbsList = thumbs;
             mInitPage = pptIndex;
             mThumbAdapter.setData(mThumbsList);
+            mThumbAdapter.setClickedIndex(0);
             if (thumbs == null || thumbs.size() < 1) {
                 mThumbsListView.setVisibility(View.GONE);
+            }else{
+                mThumbsListView.smoothScrollToPosition(0);
             }
             downloadPDF();
         }
