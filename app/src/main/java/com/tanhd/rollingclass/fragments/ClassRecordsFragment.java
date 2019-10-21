@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.StringUtils;
+import com.tanhd.rollingclass.utils.TimeUtils;
+import com.tanhd.rollingclass.views.KnowledgeRecordAdapter;
 import com.tanhd.rollingclass.views.OnItemClickListener;
 import com.tanhd.rollingclass.views.PopFliterRes;
 import com.tanhd.rollingclass.views.RecordAdapter;
@@ -32,6 +35,7 @@ public class ClassRecordsFragment extends Fragment {
     private KnowledgeDetailMessage mKnowledgeMessage;
     private ListView mRecordsListView;
     private RecordAdapter mAdapter;
+    private KnowledgeRecordAdapter knowledgeRecordAdapter;
     private TextView tv_one_lbl,tv_two_lbl,tv_three_lbl;
     private TextView tv_year;
     private TextView tv_month;
@@ -68,14 +72,19 @@ public class ClassRecordsFragment extends Fragment {
         tv_two_lbl = contentView.findViewById(R.id.tv_two_lbl);
         tv_three_lbl = contentView.findViewById(R.id.tv_three_lbl);
         mRecordsListView = contentView.findViewById(R.id.records_listview);
-        mAdapter = new RecordAdapter(getActivity());
-        mRecordsListView.setAdapter(mAdapter);
 
-        UserData userData = ExternalParam.getInstance().getUserData();
-        if (!userData.isTeacher()){ //学生端学习记录
+
+
+        if (ExternalParam.getInstance().getUserData().isTeacher()){ //老师端
+            mAdapter = new RecordAdapter(getActivity());
+            mRecordsListView.setAdapter(mAdapter);
+        }else{  //学生端学习记录
             tv_one_lbl.setText(R.string.study_the_data);
             tv_two_lbl.setText(R.string.study_the_time);
             tv_three_lbl.setText(R.string.study_the_status);
+
+            knowledgeRecordAdapter = new KnowledgeRecordAdapter(getActivity());
+            mRecordsListView.setAdapter(knowledgeRecordAdapter);
         }
 
         tv_year = contentView.findViewById(R.id.tv_year);
@@ -151,12 +160,29 @@ public class ClassRecordsFragment extends Fragment {
     private void flitData(String year, String month) {
         mYearText = year;
         mMonthText = month;
-        List<KnowledgeDetailMessage.Record> records = new ArrayList<>();
-        for (KnowledgeDetailMessage.Record record : mKnowledgeMessage.records) {
-            if (StringUtils.getFormatYear(record.time_record).equals(year) && StringUtils.getFormatMonth(record.time_record).equals(month)) {
-                records.add(record);
+
+        if (ExternalParam.getInstance().getUserData().isTeacher()){ //老师
+            List<KnowledgeDetailMessage.Record> records = new ArrayList<>();
+            for (KnowledgeDetailMessage.Record record : mKnowledgeMessage.records) {
+                if (StringUtils.getFormatYear(record.time_record).equals(year) && StringUtils.getFormatMonth(record.time_record).equals(month)) {
+                    records.add(record);
+                }
             }
+            mAdapter.setData(records);
+        }else{
+            List<KnowledgeDetailMessage.KnowledgeRecord> records = new ArrayList<>();
+            for (KnowledgeDetailMessage.KnowledgeRecord record : mKnowledgeMessage.knowledge_records) {
+                String ymd = TimeUtils.longToStr(record.getCreate_time(),TimeUtils.DEFAULT_FORMAT);
+                if (TextUtils.isEmpty(ymd)) continue;
+                String[] ymdArray = ymd.split("-");
+                if (ymdArray.length == 0) continue;
+                String mYear = ymdArray[0] + "年";
+                String mMonth = ymdArray[1] + "月";
+                if (year.equals(mYear) && month.equals(mMonth)) {
+                    records.add(record);
+                }
+            }
+            knowledgeRecordAdapter.setData(records);
         }
-        mAdapter.setData(records);
     }
 }

@@ -580,6 +580,29 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
+    /**
+     * 学生通过学生ID查询已经发布的课时
+     * @param studentID
+     * @param teaching_material_id
+     * @return
+     */
+    public List<KnowledgeDetailMessage> qureyKnowledgeByStudentID(String studentID, String teaching_material_id) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teaching_material_id", "" + teaching_material_id);
+        params.put("studentID",studentID);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QureyKnowledgeByStudentID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            Type resultType = new TypeToken<Result<List<KnowledgeDetailMessage>>>(){}.getType();
+            List<KnowledgeDetailMessage> list = null;
+            Result<List<KnowledgeDetailMessage>> result = new Gson().fromJson(response, resultType);
+            if (result.getStatus() == 0){
+                list = result.getData();
+            }
+            return list;
+        }
+        return null;
+    }
+
     public List<ResourceModel> QureyResourceByTeacherID(String teacherId, String teaching_material_id,
                                                         int level, int resourceType, int page, int pagesize) {
         HashMap<String, String> params = new HashMap<>();
@@ -1469,5 +1492,35 @@ public class ScopeServer extends ServerRequest {
             list = new ArrayList<>();
         }
         return list;
+    }
+
+
+    /**
+     * 点击课时进入自学记录
+     * @param knowledgeID
+     * @param studentID
+     * @param callback
+     */
+    public void insertKnowledgeRecord(String knowledgeID,String studentID,RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("knowledgeID", knowledgeID);
+        params.put("studentID", studentID);
+        new RequestTask(getHostUrl() + "/teachingMaterial/InsertKnowledgeRecord/" + mToken, METHOD.POST, params, null, callback).execute();
+    }
+
+    /**
+     * 学生学习记录插入
+     * @param knowledgeID
+     * @param lessonsampleID
+     * @param resourceID
+     * @param studentID
+     * @param callback
+     */
+    public void insertLearnRecord(String knowledgeID,String lessonsampleID,String resourceID,String studentID,RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("knowledgeID", knowledgeID);
+        params.put("lessonsampleID", lessonsampleID);
+        params.put("studentID", studentID);
+        new RequestTask(getHostUrl() + "/teachingMaterial/InsertLearnRecord/" + mToken, METHOD.POST, params, null, callback).execute();
     }
 }

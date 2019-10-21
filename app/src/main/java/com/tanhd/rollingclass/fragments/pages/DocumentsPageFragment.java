@@ -123,11 +123,12 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
         protected List<KnowledgeDetailMessage> doInBackground(Void... voids) {
             UserData userData = ExternalParam.getInstance().getUserData();
             if (mKnowledgeModel != null) {
-                if (userData.isTeacher()) {
+                if (userData.isTeacher()) { //教师备课学案列表
                     return ScopeServer.getInstance().QureyKnowledgeByChapterAndTeacherID(mKnowledgeModel.teacher_id, mKnowledgeModel.teaching_material_id);
-                } else {
+                } else {//学生看到的学案
                     StudentData studentData = (StudentData) userData.getUserData();
-                    return ScopeServer.getInstance().QureyKnowledgeByClassID(studentData.ClassID, mKnowledgeModel.teaching_material_id);
+//                    return ScopeServer.getInstance().QureyKnowledgeByClassID(studentData.ClassID, mKnowledgeModel.teaching_material_id);
+                    return ScopeServer.getInstance().qureyKnowledgeByStudentID(studentData.StudentID,mKnowledgeModel.teaching_material_id);
                 }
             }
             return null;

@@ -83,13 +83,93 @@ public class KnowledgeDetailMessage extends BaseJsonClass {
      */
     public int class_after;
     /**
-     * 记录
+     * 上课记录
      */
     public List<Record> records;
+    /**
+     * 学习记录
+     */
+    public List<KnowledgeRecord> knowledge_records;
     /**
      *
      */
     public long create_time;
+
+
+    public class KnowledgeRecord{
+        /**
+         * knowledge_learn_record_id : 5dabe76937a49e3a6dc3291c
+         * student_id : 5c9dcfdd37a49e47876bd0bd
+         * knowledge_id : 5da67e2437a49e227984cf72
+         * rate : 8
+         * date_time : 2019-10-20
+         * learn_time : 12:49:45
+         * create_time : 1571546985893
+         */
+        private String knowledge_learn_record_id;
+        private String student_id;
+        private String knowledge_id;
+        private int rate; //进度
+        private String date_time;  //日期
+        private String learn_time; //学习时间
+        private long create_time;
+
+        public String getKnowledge_learn_record_id() {
+            return knowledge_learn_record_id;
+        }
+
+        public void setKnowledge_learn_record_id(String knowledge_learn_record_id) {
+            this.knowledge_learn_record_id = knowledge_learn_record_id;
+        }
+
+        public String getStudent_id() {
+            return student_id;
+        }
+
+        public void setStudent_id(String student_id) {
+            this.student_id = student_id;
+        }
+
+        public String getKnowledge_id() {
+            return knowledge_id;
+        }
+
+        public void setKnowledge_id(String knowledge_id) {
+            this.knowledge_id = knowledge_id;
+        }
+
+        public int getRate() {
+            return rate;
+        }
+
+        public void setRate(int rate) {
+            this.rate = rate;
+        }
+
+        public String getDate_time() {
+            return date_time;
+        }
+
+        public void setDate_time(String date_time) {
+            this.date_time = date_time;
+        }
+
+        public String getLearn_time() {
+            return learn_time;
+        }
+
+        public void setLearn_time(String learn_time) {
+            this.learn_time = learn_time;
+        }
+
+        public long getCreate_time() {
+            return create_time;
+        }
+
+        public void setCreate_time(long create_time) {
+            this.create_time = create_time;
+        }
+    }
 
     public class Record extends BaseJsonClass{
         public String class_id;

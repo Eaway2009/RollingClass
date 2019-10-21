@@ -15,24 +15,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 上课记录
+ * 学习记录
  */
-public class RecordAdapter extends BaseAdapter {
+public class KnowledgeRecordAdapter extends BaseAdapter {
 
     private static final String TAG = "RecordAdapter";
     private Activity mContext;
-    private List<KnowledgeDetailMessage.Record> mDataList = new ArrayList<>();
+    private List<KnowledgeDetailMessage.KnowledgeRecord> mDataList = new ArrayList<>();
 
-    public RecordAdapter(Activity mContext){
+    public KnowledgeRecordAdapter(Activity mContext) {
         this.mContext = mContext;
     }
 
-    public void setData(List<KnowledgeDetailMessage.Record> datas) {
+    public void setData(List<KnowledgeDetailMessage.KnowledgeRecord> datas) {
         mDataList = datas;
         notifyDataSetChanged();
     }
 
-    public List<KnowledgeDetailMessage.Record> getDataList() {
+    public List<KnowledgeDetailMessage.KnowledgeRecord> getDataList() {
         return mDataList;
     }
 
@@ -63,16 +63,16 @@ public class RecordAdapter extends BaseAdapter {
             view = (LinearLayout) mContext.getLayoutInflater().inflate(R.layout.record_adapter, parent, false);
         }
 
-        final KnowledgeDetailMessage.Record data = mDataList.get(position);
+        final KnowledgeDetailMessage.KnowledgeRecord data = mDataList.get(position);
 
-        TextView nameView = view.findViewById(R.id.learning_the_class);
-        TextView dateView = view.findViewById(R.id.learning_the_date);
-        TextView timeView = view.findViewById(R.id.learning_the_time);
+        TextView tv_data = view.findViewById(R.id.learning_the_class);
+        TextView tv_time = view.findViewById(R.id.learning_the_date);
+        TextView tv_rate = view.findViewById(R.id.learning_the_time);
         View view_cut = view.findViewById(R.id.view_cut);
 
-        nameView.setText(data.class_name);
-        dateView.setText(StringUtils.getFormatDate2(data.time_record));
-        timeView.setText(StringUtils.getFormatTime(data.time_record));
+        tv_data.setText(data.getDate_time());
+        tv_time.setText(data.getLearn_time());
+        tv_rate.setText(data.getRate() + "%");
         view_cut.setVisibility(position == getCount() - 1 ? View.GONE : View.VISIBLE);
         return view;
     }

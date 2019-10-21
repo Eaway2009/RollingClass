@@ -131,7 +131,7 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
                         moreBottomView.setVisibility(View.INVISIBLE);
                         showDeleteDialog(data);
                         break;
-                    case R.id.document_status_tv:
+                    case R.id.document_status_tv: //学习 or 上课记录
                         classStatusClick(data);
                         break;
                 }
@@ -157,8 +157,13 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         if (!mIsTeacher) {
             publishStatus.append(mContext.getResources().getString(R.string.learning_record));
             ll_progress.setVisibility(View.VISIBLE);
-            tv_progress.setText("80%");
-            progress.setProgress(80);
+
+            int rate = 0;
+            if (data.knowledge_records != null && !data.knowledge_records.isEmpty()){
+                rate = data.knowledge_records.get(0).getRate();
+            }
+            tv_progress.setText(rate + "%");
+            progress.setProgress(rate);
         } else if ((data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
             publishStatus.append(mContext.getResources().getString(R.string.class_record));
         } else {
@@ -203,9 +208,14 @@ public class DocumentAdapter extends BaseAdapter implements RequestCallback {
         }
     }
 
+    /**
+     * 学习 or 上课记录
+     *
+     * @param data
+     */
     private void classStatusClick(KnowledgeDetailMessage data) {
         if (!mIsTeacher || (data.class_before == 1 && data.class_process == 1 && data.class_after == 1)) {
-            if (data.records != null && data.records.size() > 0) { //上课记录or学习记录
+            if ((data.records != null && !data.records.isEmpty()) || (data.knowledge_records != null && !data.knowledge_records.isEmpty())) { //上课记录or学习记录
                 FrameDialog.show(mContext.getFragmentManager(), ClassRecordsFragment.getInstance(data), 0.54d);
             } else {
                 if (mIsTeacher) {
