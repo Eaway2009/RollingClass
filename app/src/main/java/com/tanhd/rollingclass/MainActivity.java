@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.tanhd.library.mqtthttp.MqttListener;
@@ -496,4 +497,23 @@ public class MainActivity extends BaseActivity {
             Log.i("DemoLog", "客户端 onServiceDisconnected");
         }
     };
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //当按下键盘上返回按钮，给出退出对话框
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // System.exit(0);
+            //直接退出程序
+       /*Intent setIntent = new Intent(Intent.ACTION_MAIN);
+       setIntent.addCategory(Intent.CATEGORY_HOME);
+       setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+       startActivity(setIntent);
+       */
+            onBackPressed();
+            //不退出程序仅仅返回桌面
+            return false;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
 }

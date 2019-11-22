@@ -127,8 +127,7 @@ public class DocumentsPageFragment extends Fragment implements View.OnClickListe
                     return ScopeServer.getInstance().QureyKnowledgeByChapterAndTeacherID(mKnowledgeModel.teacher_id, mKnowledgeModel.teaching_material_id);
                 } else {//学生看到的学案
                     StudentData studentData = (StudentData) userData.getUserData();
-//                    return ScopeServer.getInstance().QureyKnowledgeByClassID(studentData.ClassID, mKnowledgeModel.teaching_material_id);
-                    return ScopeServer.getInstance().qureyKnowledgeByStudentID(studentData.StudentID,mKnowledgeModel.teaching_material_id);
+                    return ScopeServer.getInstance().QureyKnowledgeByStudentID(studentData.StudentID, mKnowledgeModel.teaching_material_id);
                 }
             }
             return null;

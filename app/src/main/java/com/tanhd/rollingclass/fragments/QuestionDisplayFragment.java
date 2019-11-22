@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,6 +114,7 @@ public class QuestionDisplayFragment extends BaseFragment {
     public void resetData(ResourceModel resourceModel) {
         if (resourceModel != null) {
             mResourceModel = resourceModel;
+            Log.d("AnswerCardAdapter", "mResourceModel: "+mResourceModel.mResourceList.size());
             initData();
         }
     }
@@ -136,7 +138,7 @@ public class QuestionDisplayFragment extends BaseFragment {
         List<QuestionModel> questionDataList = mResourceModel.mResourceList;
         if (questionDataList != null && questionDataList.size() > 0) {
             mQuestionResourceFragment.setListData(questionDataList);
-            mAnswerListFragment.resetData("", questionDataList);
+            mAnswerListFragment.resetData("", mLessonSampleId, questionDataList);
         } else {
             mQuestionResourceFragment.clearListData();
             mAnswerListFragment.clearListData();

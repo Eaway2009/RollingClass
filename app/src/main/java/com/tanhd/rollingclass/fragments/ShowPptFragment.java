@@ -84,11 +84,7 @@ public class ShowPptFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mThumbsList = getArguments().getStringArrayList("thumbs");
-        mUrl = getArguments().getString("url");
-        int mode = getArguments().getInt("mode");
-        mInitPage = getArguments().getInt("page", 0);
-        mSyncMode = SYNC_MODE.values()[mode];
+        initParams();
         View view = inflater.inflate(R.layout.fragment_show_ppt, container, false);
         webView = view.findViewById(R.id.webview);
         mLoadFailView = view.findViewById(R.id.load_fail);
@@ -105,7 +101,16 @@ public class ShowPptFragment extends Fragment {
 
         initListView(view);
         EventBus.getDefault().register(this);
+        downloadPDF();
         return view;
+    }
+
+    private void initParams(){
+        mThumbsList = getArguments().getStringArrayList("thumbs");
+        mUrl = getArguments().getString("url");
+        mInitPage = getArguments().getInt("page", 0);
+        int mode = getArguments().getInt("mode");
+        mSyncMode = SYNC_MODE.values()[mode];
     }
 
     private void initListView(View view) {
@@ -136,31 +141,50 @@ public class ShowPptFragment extends Fragment {
         super.onStart();
 //        if (mSyncMode == SYNC_MODE.SLAVE)
 //            MQTT.register(mqttListener);
-        downloadPDF();
+    }
+
+    public void refreshData(String url, ArrayList<String> thumbs, int pptIndex, SYNC_MODE sync_mode) {
+        Bundle args = new Bundle();
+        args.putString("url", url);
+        args.putStringArrayList("thumbs", thumbs);
+        args.putInt("page", pptIndex);
+        args.putInt("mode", sync_mode.ordinal());
+        setArguments(args);
+
+        initParams();
+        refreshPpt(mUrl, mThumbsList, mInitPage);
     }
 
     public void refreshPpt(String url, ArrayList<String> thumbs, int pptIndex) {
+        Log.d("PPT_INDEX", "refreshPpt url:"+url);
+        Log.d("PPT_INDEX", "downLoadFinish downLoadFinish:"+downLoadFinish);
         if (downLoadFinish || mUrl != url) {
+            Log.d(TAG, "refreshPpt: "+ downLoadFinish + mUrl);
             mUrl = url;
+            downloadPDF();
             mThumbsList = thumbs;
             mInitPage = pptIndex;
-            mThumbAdapter.setData(mThumbsList);
-            mThumbAdapter.setClickedIndex(0);
-            if (thumbs == null || thumbs.size() < 1) {
-                mThumbsListView.setVisibility(View.GONE);
-            }else{
-                mThumbsListView.smoothScrollToPosition(0);
+            if(mThumbAdapter!=null) {
+                mThumbAdapter.setData(mThumbsList);
+                mThumbAdapter.setClickedIndex(0);
+                if (thumbs == null || thumbs.size() < 1) {
+                    mThumbsListView.setVisibility(View.GONE);
+                } else {
+                    mThumbsListView.smoothScrollToPosition(0);
+                }
             }
-            downloadPDF();
         }
     }
 
     private void downloadPDF() {
+        Log.d(TAG, "downloadPDF: "+mPdfFilePath);
         String fileName = AppUtils.md5(mUrl);
         mPdfFilePath = mActivity.getApplicationContext().getFilesDir().getAbsolutePath()
                 + "/" + fileName;
         File file = new File(mPdfFilePath);
+        Log.d(TAG, "downloadPDF: "+mPdfFilePath);
         if (file.exists()) {
+            Log.d(TAG, "file.exists: "+file.exists());
             load();
             return;
         }
@@ -195,8 +219,12 @@ public class ShowPptFragment extends Fragment {
     }
 
     private void load() {
+        if (mLoadFailView == null || mProgressBarView == null || webView == null) {
+            return;
+        }
         mLoadFailView.setVisibility(View.GONE);
         mProgressBarView.setVisibility(View.VISIBLE);
+        Log.d(TAG, "load: " + mPdfFilePath);
         mConfigurator = webView.fromFile(new File(mPdfFilePath))
                 .enableSwipe(true) // allows to block changing pages using swipe
                 .swipeHorizontal(false)
@@ -224,6 +252,7 @@ public class ShowPptFragment extends Fragment {
                 .onLoad(new OnLoadCompleteListener() {
                     @Override
                     public void loadComplete(int nbPages) {
+                        Log.d(TAG, "loadComplete: ");
                         mProgressBarView.setVisibility(View.GONE);
                         if(mInitPage>0){
                             webView.jumpTo(mInitPage);
@@ -234,6 +263,7 @@ public class ShowPptFragment extends Fragment {
                 .onError(new OnErrorListener() {
                     @Override
                     public void onError(Throwable t) {
+                        Log.d(TAG, "onError: ");
                         mProgressBarView.setVisibility(View.GONE);
                         mLoadFailView.setVisibility(View.VISIBLE);
                     }

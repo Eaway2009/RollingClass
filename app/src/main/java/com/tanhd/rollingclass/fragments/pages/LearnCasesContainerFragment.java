@@ -320,18 +320,18 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     public void showExercises(ResourceModel resourceModel, String knowledgeId, String knowledgeName, String lessonSampleId, String lessonSampleName,boolean isSubmitAnswer,boolean isReset) {
         mKnowledgeId = knowledgeId;
         mKnowledgeName = knowledgeName;
-        if (openStatusMap.containsKey(lessonSampleId) && openStatusMap.get(lessonSampleId) && !isReset){
-            //曾已打开过习题
-
-        }else{  //从未打开过改习题
-            openStatusMap.put(lessonSampleId,true);
-            mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName, lessonSampleId, lessonSampleName,isSubmitAnswer);
-        }
-//        if (mQuestionFragment == null) {
+//        if (openStatusMap.containsKey(lessonSampleId) && openStatusMap.get(lessonSampleId) && !isReset){
+//            //曾已打开过习题
 //
-//        } else {
-//            mQuestionFragment.resetData(resourceModel, lessonSampleId, lessonSampleName);
+//        }else{  //从未打开过改习题
+//            openStatusMap.put(lessonSampleId,true);
+//            mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName, lessonSampleId, lessonSampleName,isSubmitAnswer);
 //        }
+        if (mQuestionFragment == null) {
+            mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName, lessonSampleId, lessonSampleName,isSubmitAnswer);
+        } else {
+            mQuestionFragment.resetData(resourceModel, lessonSampleId, lessonSampleName);
+        }
 //        if (mCurrentShowModuleId != KeyConstants.ResourceType.QUESTION_TYPE) {
         getChildFragmentManager().beginTransaction().replace(R.id.container_layout, mQuestionFragment).commit();
 //        }
@@ -356,21 +356,25 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
     }
 
     private Fragment getFragment(int moduleId, ResourceModel resourceModel) {
+        Log.d("PPT_INDEX", "getFragment resource_id:"+resourceModel.resource_id);
         switch (moduleId) {
             case KeyConstants.ResourceType.PPT_TYPE:
+                SYNC_MODE sync_mode = SYNC_MODE.MASTER;
+                switch (mPageType) {
+                    case KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE:
+                        sync_mode = SYNC_MODE.NONE;
+                        break;
+                    case KeyConstants.ClassPageType.STUDENT_CLASS_PAGE:
+                        sync_mode = SYNC_MODE.SLAVE;
+                        break;
+                }
+                Log.d("PPT_INDEX", "getFragment: ppt_index"+ resourceModel.pptIndex);
                 if (mPptFragment == null) {
-                    SYNC_MODE sync_mode = SYNC_MODE.MASTER;
-                    switch (mPageType) {
-                        case KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE:
-                            sync_mode = SYNC_MODE.NONE;
-                            break;
-                        case KeyConstants.ClassPageType.STUDENT_CLASS_PAGE:
-                            sync_mode = SYNC_MODE.SLAVE;
-                            break;
-                    }
                     mPptFragment = ShowPptFragment.newInstance(getActivity(), resourceModel.pdf_url, resourceModel.thumbs, resourceModel.pptIndex, sync_mode);
                 } else {
-                    mPptFragment.refreshPpt(resourceModel.pdf_url, resourceModel.thumbs, resourceModel.pptIndex);
+                    Log.d("PPT_INDEX", "getFragment resetData resource_id:"+resourceModel.resource_id);
+                    Log.d("PPT_INDEX", "getFragment resetData pdf_url:"+resourceModel.pdf_url);
+                    mPptFragment.refreshData(resourceModel.pdf_url, resourceModel.thumbs, resourceModel.pptIndex, sync_mode);
                 }
                 return mPptFragment;
             case KeyConstants.ResourceType.VIDEO_TYPE:
@@ -384,7 +388,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 if (mDocumentPageFragment == null) {
                     mDocumentPageFragment = ShowDocumentFragment.newInstance(getActivity(), resourceModel.pdf_url, KeyConstants.SYNC_MODE.MASTER);
                 } else {
-                    mDocumentPageFragment.refreshPdf(resourceModel.pdf_url);
+                    mDocumentPageFragment.refreshData(resourceModel.pdf_url, KeyConstants.SYNC_MODE.MASTER);
                 }
                 return mDocumentPageFragment;
             case KeyConstants.ResourceType.IMAGE_TYPE:
@@ -398,6 +402,7 @@ public class LearnCasesContainerFragment extends Fragment implements OnClickList
                 if (mQuestionFragment == null) {
                     mQuestionFragment = QuestionDisplayFragment.getInstance(mPageType, resourceModel, mKnowledgeId, mKnowledgeName);
                 } else {
+                    Log.d("AnswerCardAdapter", "resourceModel: "+resourceModel.mResourceList.size());
                     mQuestionFragment.resetData(resourceModel);
                 }
                 return mQuestionFragment;

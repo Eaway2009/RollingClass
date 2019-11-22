@@ -145,6 +145,8 @@
                     android:layout_marginLeft="@dimen/dp_60"
                     android:paddingTop="@dimen/dp_10"
                     android:paddingBottom="@dimen/dp_10"
+                    android:paddingLeft="@dimen/dp_12"
+                    android:paddingRight="@dimen/dp_12"
                     android:button="@null"
                     android:drawableRight="@drawable/check_selector"
                     android:text="@string/check"

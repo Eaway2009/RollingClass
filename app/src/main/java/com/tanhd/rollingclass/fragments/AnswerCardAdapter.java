@@ -1,6 +1,8 @@
 package com.tanhd.rollingclass.fragments;
 
 import android.app.Activity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -8,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tanhd.rollingclass.R;
+import com.tanhd.rollingclass.db.KeyConstants;
+import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ContextData;
 import com.tanhd.rollingclass.server.data.OptionData;
 import com.tanhd.rollingclass.server.data.QuestionModel;
@@ -20,27 +24,32 @@ import java.util.List;
  * 答题卡适配器
  */
 public class AnswerCardAdapter extends BaseAdapter {
-    private boolean mStudentAnswer;
+    private static final String TAG = "AnswerCardAdapter";
+    private int mPageType;
     private boolean mTeacherShowAnswer;
     private boolean mAnswerCommitted;
     private Activity mContext;
     private List<QuestionModel> mDataList;
+    private List<AnswerData> mAnswerDataList;
 
     private final String mDot;
     private final String mClosingCheron;
     private final String mOpeningCheron;
     private String mAnswer;
 
-    public AnswerCardAdapter(Activity context, boolean answer) {
+    public AnswerCardAdapter(Activity context, int pageType) {
         mContext = context;
         mClosingCheron = mContext.getResources().getString(R.string.closing_chevron);
         mOpeningCheron = mContext.getResources().getString(R.string.opening_chevron);
         mDot = mContext.getResources().getString(R.string.dot);
 
-        mStudentAnswer = answer;
+        mPageType = pageType;
     }
 
     public void setData(List<QuestionModel> dataList) {
+        if(mDataList!=null) {
+            Log.d(TAG, "setData: " + mDataList.size());
+        }
         mDataList = dataList;
         notifyDataSetChanged();
     }
@@ -51,6 +60,11 @@ public class AnswerCardAdapter extends BaseAdapter {
 
     public void setShowAnswer(boolean teacherShowAnswer) {
         mTeacherShowAnswer = teacherShowAnswer;
+        notifyDataSetChanged();
+    }
+
+    public void setAnswers(List<AnswerData> answerDataList) {
+        mAnswerDataList = answerDataList;
         notifyDataSetChanged();
     }
 
@@ -103,13 +117,19 @@ public class AnswerCardAdapter extends BaseAdapter {
                 optionView.setTag(option);
 
                 //公布正确答案
-                if (option.OrderIndex == AppUtils.getAnswerIndex(contextData.Answer) + 1 && (!mStudentAnswer || (mTeacherShowAnswer && mAnswerCommitted))) {
+                if (option.OrderIndex == AppUtils.getAnswerIndex(contextData.Answer) + 1 && (mPageType == KeyConstants.ClassPageType.TEACHER_CLASS_PAGE || (mPageType == KeyConstants.ClassPageType.STUDENT_LEARNING_PAGE&&mAnswerCommitted) || (mTeacherShowAnswer && mAnswerCommitted))) {
                     optionView.setTextColor(mContext.getResources().getColor(R.color.button_orange));
                 } else {
                     optionView.setTextColor(mContext.getResources().getColor(R.color.lesson_text));
                 }
-                if (mStudentAnswer) {
+                if (mPageType != KeyConstants.ClassPageType.TEACHER_CLASS_PAGE) {
                     optionView.setOnClickListener(onClickListener);
+                    if(mAnswerCommitted) {
+                        if (contextData.resultClass == null || TextUtils.isEmpty(contextData.resultClass.text)) {
+                            data = getAnswerText(data);
+                            mDataList.set(position, data);
+                        }
+                    }
                     if (contextData.resultClass != null) {
                         if (AppUtils.OPTION_NO[option.OrderIndex - 1].equals(contextData.resultClass.text)) {
                             optionView.setTextColor(mContext.getResources().getColor(R.color.button_blue_item_checked));
@@ -122,9 +142,26 @@ public class AnswerCardAdapter extends BaseAdapter {
         return view;
     }
 
+    private QuestionModel getAnswerText(QuestionModel questionModel){
+        if(mAnswerDataList!=null){
+            for (AnswerData answerData:mAnswerDataList){
+                if(questionModel.question_id.equals(answerData.QuestionID)){
+                    if (questionModel.context.resultClass == null) {
+                        questionModel.context.resultClass = new ResultClass();
+                    }
+                    questionModel.context.resultClass.text = answerData.AnswerText;
+                    return questionModel;
+                }
+            }
+        }
+        return questionModel;
+    }
+
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+            Log.d(TAG, "onClick: "+mAnswerCommitted);
             if(mAnswerCommitted){
                 return;
             }

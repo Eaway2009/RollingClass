@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelModel<ResourceModel> {
@@ -24,9 +25,9 @@ public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelMo
     public String create_time;
     public String update_time;
     private List<ResourceModel> resourceModelList = new ArrayList<>();
+    private HashMap<String, ResourceModel> resourceHashMap = new HashMap<>();
     public boolean isSelect = true;
     public boolean isSubmitAnswer; //是否提交过答案
-
 
     @Override
     protected void onDealListField(Object object, Field field, JSONObject json, String key) {
@@ -61,6 +62,31 @@ public class KnowledgeLessonSample extends BaseJsonClass implements MultiLevelMo
                 e.printStackTrace();
             }
         }
+    }
+
+    public HashMap<String, ResourceModel> getResourceHashMap() {
+        resourceHashMap.clear();
+        if (ppt_set != null&&ppt_set.size()>0) {
+            for(ResourceModel resourceModel:ppt_set){
+                resourceHashMap.put(resourceModel.resource_id, resourceModel);
+            }
+        }
+        if (doc_set != null&&doc_set.size()>0) {
+            for(ResourceModel resourceModel:doc_set){
+                resourceHashMap.put(resourceModel.resource_id, resourceModel);
+            }
+        }
+        if (video_set != null&&video_set.size()>0) {
+            for(ResourceModel resourceModel:video_set){
+                resourceHashMap.put(resourceModel.resource_id, resourceModel);
+            }
+        }
+        if (image_set != null&&image_set.size()>0) {
+            for(ResourceModel resourceModel:image_set){
+                resourceHashMap.put(resourceModel.resource_id, resourceModel);
+            }
+        }
+        return resourceHashMap;
     }
 
     @Override

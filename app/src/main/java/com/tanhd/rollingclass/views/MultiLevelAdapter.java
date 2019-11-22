@@ -38,17 +38,6 @@ public abstract class MultiLevelAdapter<Group extends MultiLevelModel, Child> ex
     }
 
     /**
-     * 添加数据
-     */
-    public void addMore(List<Group> list) {
-        if (mDataList == null) {
-            mDataList = new ArrayList<Group>();
-        }
-        mDataList.addAll(list);
-        this.notifyDataSetInvalidated();
-    }
-
-    /**
      * 重置数据
      */
     public void setDataList(List<Group> list) {

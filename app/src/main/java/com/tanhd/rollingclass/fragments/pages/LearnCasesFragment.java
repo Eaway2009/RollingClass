@@ -83,6 +83,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     private View mLearningButtonsLayout;
     private ClassData mClassData;
     private KnowledgeLessonSample mRelativeData;
+    private String mLessonSampleId;
 
     public static LearnCasesFragment newInstance(String knowledgeId, String knowledgeName, String teachingMaterialId, int pageType, String teacherName, LearnCasesFragment.PagesListener listener) {
         Bundle args = new Bundle();
@@ -398,7 +399,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
             ResourceModel item = group.getChildren().get(childPosition);
             resourceID = item.resource_id;
             if (item.resource_type == KeyConstants.ResourceType.QUESTION_TYPE) { //习题
-                mLearnCasesContainerFragment.showExercises(item, mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name,group.isSubmitAnswer,isResetQuestion);
+                mLearnCasesContainerFragment.showExercises(item, mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name, group.isSubmitAnswer, isResetQuestion);
                 isResetQuestion = false;
             } else {
                 mLearnCasesContainerFragment.showResource(item);
@@ -439,34 +440,36 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
     }
 
     public void showItem(String lesson_sample_id, String resource_id) {
+        init = false;
         showItem(lesson_sample_id, resource_id, 0);
     }
 
     public void showItem(String lesson_sample_id, String resource_id, int pptIndex) {
-        Log.d("PPT_INDEX", "showItem: lesson_sample_id"+lesson_sample_id);
-        Log.d("PPT_INDEX", "showItem: resource_id"+resource_id);
-        for (int i = 0; i < mAdapter.getGroupCount(); i++) {
-            KnowledgeLessonSample group = mAdapter.getGroup(i);
-            if (group.lesson_sample_id.equals(lesson_sample_id)) {
-                if (TextUtils.isEmpty(resource_id)) {
-                    mLearnCasesContainerFragment.showExercises(new ResourceModel(group.question_set, getResources().getString(R.string.exercises)), mKnowledgeId, mKnowledgeDetailName, group.lesson_sample_id, group.lesson_sample_name,group.isSubmitAnswer,false);
-                    return;
+        init = false;
+        mLessonSampleId = lesson_sample_id;
+        Log.d("PPT_INDEX", "showItem: lesson_sample_id" + lesson_sample_id);
+        Log.d("PPT_INDEX", "showItem: resource_id" + resource_id);
+        KnowledgeLessonSample lessonSample = mAdapter.getGroup(lesson_sample_id);
+        if (lessonSample != null) {
+            if (TextUtils.isEmpty(resource_id)) {
+                mLearnCasesContainerFragment.showExercises(new ResourceModel(lessonSample.question_set, getResources().getString(R.string.exercises)), mKnowledgeId, mKnowledgeDetailName, lessonSample.lesson_sample_id, lessonSample.lesson_sample_name, lessonSample.isSubmitAnswer, false);
+                return;
+            }
+            ResourceModel model = lessonSample.getResourceHashMap().get(resource_id);
+            if (model != null) {
+                if (model.resource_type == KeyConstants.ResourceType.PPT_TYPE) {
+                    model.pptIndex = pptIndex;
                 }
-                for (int j = 0; j < group.getChildren().size(); j++) {
-                    ResourceModel resourceModel = group.getChildren().get(j);
-                    if (resourceModel != null && resourceModel.resource_id != null && resourceModel.resource_id.equals(resource_id)) {
-                        if(resourceModel.resource_type == KeyConstants.ResourceType.PPT_TYPE){
-                            resourceModel.pptIndex = pptIndex;
-                        }
-                        mLearnCasesContainerFragment.showResource(resourceModel);
-                        return;
-                    }
-                }
+                mLearnCasesContainerFragment.showResource(model);
+                return;
             }
         }
         if (mAdapter.getGroupCount() > 0 && mAdapter.getGroup(0).getChildren() != null && mAdapter.getGroup(0).getChildren().size() > 0) {
             ResourceModel resourceModel = mAdapter.getGroup(0).getChildren().get(0);
             if (resourceModel != null && resourceModel.resource_id != null && resourceModel.resource_id.equals(resource_id)) {
+                if (resourceModel.resource_type == KeyConstants.ResourceType.PPT_TYPE) {
+                    resourceModel.pptIndex = pptIndex;
+                }
                 mLearnCasesContainerFragment.showResource(resourceModel);
                 return;
             }
@@ -511,7 +514,7 @@ public class LearnCasesFragment extends Fragment implements OnClickListener, Exp
                 }
 
                 mExpandableListView.expandGroup(0);
-                if (init) {
+                if (init && TextUtils.isEmpty(mLessonSampleId)) {
                     callClickItem(0, 0);
                 }
                 init = false;

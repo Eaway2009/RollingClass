@@ -146,7 +146,7 @@ public class ClassAnsweringFragment extends Fragment implements View.OnClickList
         protected void onPostExecute(List<QuestionModel> questionDataList) {
             if (questionDataList != null && questionDataList.size() > 0) {
                 mQuestionResourceFragment.setListData(questionDataList);
-                mAnswerListFragment.resetData(questionSetID, questionDataList);
+                mAnswerListFragment.resetData(questionSetID, mLessonSampleID,questionDataList);
             } else {
                 mQuestionResourceFragment.clearListData();
                 mAnswerListFragment.clearListData();

@@ -30,6 +30,7 @@ import com.tanhd.rollingclass.server.data.ExternalParam;
 import com.tanhd.rollingclass.utils.AppUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
@@ -61,9 +62,7 @@ public class ShowDocumentFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        int mode = getArguments().getInt("mode");
-        mUrl = getArguments().getString("url");
-        mSyncMode = SYNC_MODE.values()[mode];
+        initParams();
         View view = inflater.inflate(R.layout.fragment_show_document, container, false);
         webView = view.findViewById(R.id.webview);
         mLoadFailView = view.findViewById(R.id.load_fail);
@@ -77,10 +76,11 @@ public class ShowDocumentFragment extends Fragment {
         if (mSyncMode == SYNC_MODE.SLAVE) {
             webView.setEnabled(false);
         }
+        downloadPDF();
         return view;
     }
 
-    public void setActivity(Activity activity){
+    public void setActivity(Activity activity) {
         mActivity = activity;
     }
 
@@ -89,11 +89,26 @@ public class ShowDocumentFragment extends Fragment {
         super.onStart();
 //        if (mSyncMode == SYNC_MODE.SLAVE)
 //            MQTT.register(mqttListener);
-        downloadPDF();
     }
 
-    public void refreshPdf(String url){
-        if(downLoadFinish || mUrl!=url){
+    public void refreshData(String url, SYNC_MODE sync_mode) {
+        Bundle args = new Bundle();
+        args.putString("url", url);
+        args.putInt("mode", sync_mode.ordinal());
+        setArguments(args);
+
+        initParams();
+        refreshPdf(mUrl);
+    }
+
+    private void initParams() {
+        int mode = getArguments().getInt("mode");
+        mUrl = getArguments().getString("url");
+        mSyncMode = SYNC_MODE.values()[mode];
+    }
+
+    public void refreshPdf(String url) {
+        if (downLoadFinish || mUrl != url) {
             mUrl = url;
             downloadPDF();
         }
@@ -142,6 +157,9 @@ public class ShowDocumentFragment extends Fragment {
     }
 
     private void load() {
+        if (mLoadFailView == null || mProgressBarView == null || webView == null) {
+            return;
+        }
         mLoadFailView.setVisibility(View.GONE);
         mProgressBarView.setVisibility(View.VISIBLE);
         PDFView.Configurator configurator = webView.fromFile(new File(mPdfFilePath))

@@ -604,6 +604,57 @@ public class ScopeServer extends ServerRequest {
         return null;
     }
 
+    /**
+     * 学生查询已经发布的课时
+     * @param studentId
+     * @param teaching_material_id
+     * @return
+     */
+    public List<KnowledgeDetailMessage> QureyKnowledgeByStudentID(String studentId, String teaching_material_id) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("teaching_material_id", "" + teaching_material_id);
+        params.put("studentID", "" + studentId);
+        params.put("token", mToken);
+        String response = sendRequest(getHostUrl() + "/teachingMaterial/QureyKnowledgeByStudentID/" + mToken, METHOD.GET, params);
+        if (response != null) {
+            List<KnowledgeDetailMessage> list = jsonToList(KnowledgeDetailMessage.class.getName(), response);
+            return list;
+        }
+
+        return null;
+    }
+
+    /**
+     * 学生查询已经发布的课时
+     * @param studentID
+     * @param lessonsampleID
+     * @param knowledgeID
+     * @return
+     */
+    public void InsertLearnRecord(String knowledgeID, String lessonsampleID, String resourceID, String studentID) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("knowledgeID", "" + knowledgeID);
+        params.put("lessonsampleID", "" + lessonsampleID);
+        params.put("studentID", "" + studentID);
+        params.put("token", mToken);
+        new RequestTask(getHostUrl() + "/teachingMaterial/InsertLearnRecord/" + mToken, METHOD.POST, params, null, new RequestCallback() {
+            @Override
+            public void onProgress(boolean b) {
+
+            }
+
+            @Override
+            public void onResponse(String body) {
+
+            }
+
+            @Override
+            public void onError(String code, String message) {
+
+            }
+        }).execute();
+    }
+
     public List<ResourceModel> QureyResourceByTeacherID(String teacherId, String teaching_material_id,
                                                         int level, int resourceType, int page, int pagesize) {
         HashMap<String, String> params = new HashMap<>();
@@ -1116,6 +1167,14 @@ public class ScopeServer extends ServerRequest {
         }
 
         return -1;
+    }
+
+    public void QureyAnswerv2ByStudentIDAndLessonSampleID(String studentID, String lessonsampleID, RequestCallback callback) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("studentID", studentID);
+        params.put("lessonsampleID", lessonsampleID);
+        new RequestTask(getHostUrl() + "/answer/QureyAnswerv2ByStudentIDAndLessonSampleID/" + mToken, METHOD.GET, params, null, callback).execute();
+
     }
 
     public int InsertMicroCourseStatistic(String data) {

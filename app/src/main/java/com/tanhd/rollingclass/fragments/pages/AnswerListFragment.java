@@ -20,10 +20,13 @@ import com.tanhd.rollingclass.R;
 import com.tanhd.rollingclass.activity.LearnCasesActivity;
 import com.tanhd.rollingclass.db.KeyConstants;
 import com.tanhd.rollingclass.fragments.AnswerCardAdapter;
+import com.tanhd.rollingclass.server.RequestCallback;
 import com.tanhd.rollingclass.server.ScopeServer;
 import com.tanhd.rollingclass.server.data.AnswerData;
 import com.tanhd.rollingclass.server.data.ExternalParam;
+import com.tanhd.rollingclass.server.data.KnowledgeDetailMessage;
 import com.tanhd.rollingclass.server.data.QuestionModel;
+import com.tanhd.rollingclass.server.data.StudentData;
 import com.tanhd.rollingclass.server.data.UserData;
 import com.tanhd.rollingclass.utils.AppUtils;
 import com.tanhd.rollingclass.utils.ResultClass;
@@ -56,6 +59,7 @@ public class AnswerListFragment extends Fragment {
     private String mKnowledgeId;
     private String mKnowledgeName;
     private boolean isSubmitAnswer; //是否提交过答案
+    private boolean mShowingAnswer; //是否公布了答案
 
     public static AnswerListFragment getInstance(int pageType, String knowledgeId, String knowledgeName) {
         AnswerListFragment answerListFragment = new AnswerListFragment();
@@ -126,7 +130,7 @@ public class AnswerListFragment extends Fragment {
         } else {
             mCommitButton.setVisibility(View.GONE);
         }
-        mAdapter = new AnswerCardAdapter(getActivity(), mPageType != KeyConstants.ClassPageType.TEACHER_CLASS_PAGE);
+        mAdapter = new AnswerCardAdapter(getActivity(), mPageType);
         mAnswerListView.setAdapter(mAdapter);
 
         mShowAnswerButton = contentView.findViewById(R.id.show_answers_button);
@@ -144,13 +148,19 @@ public class AnswerListFragment extends Fragment {
     }
 
     public void setShowAnswer(boolean setShowAnswer) {
+        mShowingAnswer = setShowAnswer;
         mAdapter.setShowAnswer(setShowAnswer);
     }
 
-    public void resetData(String questionSetId, List<QuestionModel> questionModelList) {
+    public void resetData(String questionSetId, String lessonSampleId, List<QuestionModel> questionModelList) {
         mParameters = new HashMap<>();
         mParameters.put(PushMessage.PARAM_LESSON_SAMPLE_ID, mLessonSampleId);
         mQuestionSetId = questionSetId;
+        resetAdapterData(questionModelList);
+        checkAnswered(lessonSampleId);
+    }
+
+    private void resetAdapterData(List<QuestionModel> questionModelList){
         mQuestionModelList = questionModelList;
         if (mAdapter != null) {
             mAdapter.setData(mQuestionModelList);
@@ -163,6 +173,37 @@ public class AnswerListFragment extends Fragment {
                     }
                 }
             }, 500);
+        }
+    }
+
+    private void checkAnswered(String lessonSampleId){
+        UserData userData = ExternalParam.getInstance().getUserData();
+        if(!userData.isTeacher()){
+            StudentData studentData = (StudentData) userData.getUserData();
+            ScopeServer.getInstance().QureyAnswerv2ByStudentIDAndLessonSampleID(studentData.StudentID, lessonSampleId, new RequestCallback() {
+                @Override
+                public void onProgress(boolean b) {
+                }
+
+                @Override
+                public void onResponse(String body) {
+                    final List<AnswerData> answerDataList = ScopeServer.getInstance().jsonToList(AnswerData.class.getName(),body);
+                    if(answerDataList!=null&&answerDataList.size()>0) {
+                        mCommitButton.setVisibility(View.GONE);
+                        mAdapter.setAnswerCommitted(true);
+                    }else{
+                        mCommitButton.setVisibility(View.VISIBLE);
+                        mAdapter.setAnswerCommitted(false);
+                    }
+                    mAdapter.setAnswers(answerDataList);
+                    mAdapter.setShowAnswer(mShowingAnswer);
+                }
+
+                @Override
+                public void onError(String code, String message) {
+                }
+            });
+
         }
     }
 
@@ -212,6 +253,12 @@ public class AnswerListFragment extends Fragment {
                 mCommitButton.setVisibility(View.GONE);
                 if (mListener != null) {
                     mListener.onFinished(mAdapter.getAnswer());
+                } else if(mPageType == KeyConstants.ClassPageType.STUDENT_CLASS_PAGE){
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("LessonSampleID", mLessonSampleId);
+                    StudentData studentData = (StudentData) ExternalParam.getInstance().getUserData().getUserData();
+                    params.put("StudentID", studentData.StudentID);
+                    MyMqttService.publishMessage(PushMessage.COMMAND.ANSWER_FINISH, (List<String>) null, params);
                 }
             } else if (result == -2) {
                 ToastUtil.show(R.string.toast_answer_all);

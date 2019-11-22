@@ -63,6 +63,7 @@ public class MyMqttService extends Service {
     private MqttConnectOptions mMqttConnectOptions;
 
     private static final String HOST = "tcp://www.sea-ai.com:1883";
+//    private static final String HOST = "tcp://20.40.1.7:1883";
     public String USERNAME = "admin";//用户名
     public String PASSWORD = "admin";//密码
     //    public static String PUBLISH_TOPIC = "tourist_enter";//发布主题
@@ -173,9 +174,11 @@ public class MyMqttService extends Service {
     private static void publish(String topic, int qos, String message) {
         Boolean retained = false;
         try {
-            //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
-            mqttAndroidClient.publish(topic, message.getBytes(), qos, retained.booleanValue());
-        } catch (MqttException e) {
+            if(mqttAndroidClient!=null) {
+                //参数分别为：主题、消息的字节数组、服务质量、是否在服务器保留断开连接后的最后一条消息
+                mqttAndroidClient.publish(topic, message.getBytes(), qos, retained.booleanValue());
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -399,7 +402,7 @@ public class MyMqttService extends Service {
         protected void onPostExecute(ClassStatusInfo classStatusInfo) {
             if (classStatusInfo != null && classStatusInfo.status == 1) {
                 EventBus.getDefault().post(pushMessage);
-            }else if(CLASS_END == pushMessage.command){
+            } else if(CLASS_END == pushMessage.command){
                 EventBus.getDefault().post(pushMessage);
             }
         }

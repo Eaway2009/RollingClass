@@ -47,7 +47,7 @@ public class ServerRequest {
     }
 
     private static OkHttpClient okHttpClient;
-    private Handler mHandler;
+    private Handler mHandler = new Handler();
 
     protected ServerRequest() {
         if (okHttpClient == null) {
@@ -59,8 +59,6 @@ public class ServerRequest {
                     .connectTimeout(30, SECONDS)
                     .build();
         }
-
-        mHandler = new Handler();
     }
 
     protected void call(final Object var1, String methodName, final Object... objects) {
@@ -120,7 +118,7 @@ public class ServerRequest {
                     }
                     try {
                         builder.append(String.format("%s=%s", k, URLEncoder.encode(params.get(k), "utf-8")));
-                    } catch (UnsupportedEncodingException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     pos++;

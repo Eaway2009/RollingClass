@@ -2,17 +2,20 @@ package com.tanhd.rollingclass.activity;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Messenger;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -84,6 +87,7 @@ public class LearnCasesActivity extends BaseActivity {
     private String mLessonSampleId;
     private String mResourceId;
     private int mPptIndex;
+    private PowerManager.WakeLock mWakeLock;
 
     /**
      * 老师端
@@ -267,6 +271,10 @@ public class LearnCasesActivity extends BaseActivity {
                 MainActivity.startMe(LearnCasesActivity.this, modulePageId);
             }
         });
+        // 获取WakeLock对象
+        PowerManager powerManager= (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = powerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "keep_screen_on_tag");
+
     }
 
     private void openMessage(Message message) {
@@ -490,9 +498,33 @@ public class LearnCasesActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mWakeLock.acquire();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(mConnection);
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    //安卓重写返回键事件
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            if (ExternalParam.getInstance().getStatus() == 2 && !ExternalParam.getInstance().getUserData().isTeacher()) {
+
+            } else {
+                finish();
+            }
+        }
+        return true;
     }
 }
